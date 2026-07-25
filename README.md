@@ -1,56 +1,59 @@
 # logoanimations
 
-Takes **one logo** and dresses it in a **theme** — samurai, robotics, whatever
-you ask for next — as production marketing material: Instagram posts, stories,
-reels, print stills.
+Same idea as [`animations`](https://github.com/dadafivethousand/animations) —
+full-screen compositions, one rendered at a time, screen-recorded for social —
+except **the only thing on screen is the logo**, dressed in a theme.
 
-Sibling to [`animations`](https://github.com/dadafivethousand/animations), which
-holds full ad units. Here the mark is the whole subject.
+Name a theme, it gets built. Samurai and Robotics are in as the templates.
 
-## Quick start
+## Run it
 
 ```bash
 npm install
-npm run logo        # pulls the newest image from ~/Downloads into src/Images/logo.png
+npm run logo        # imports the newest image from ~/Downloads as src/Images/logo.png
 npm start           # http://localhost:3000
 ```
 
 The logo **must be a PNG with a transparent background** — themes mask their
-material through its alpha, so a mark flattened onto white comes out as a styled
-rectangle. `npm run logo` warns you if it can't find an alpha channel.
+material through the mark's alpha, so a logo flattened onto white comes out as a
+styled rectangle. `npm run logo` warns you if it can't find an alpha channel.
 
-## Animated or static — your call, per render
+Mobile only, portrait phone. There is no desktop layout.
 
-Every theme runs both ways. Top of `src/App.js`:
+## Pick a theme, pick a mode
+
+`src/App.js`:
 
 ```js
-const MODE = "animated";   // "animated" | "static"
-const CANVAS = "9x16";     // "9x16" story/reel · "4x5" feed portrait · "1x1" feed square
-const GUIDES = false;      // safe-margin overlay while composing
+// import Robotics from "./Components/Robotics";
+import Samurai from "./Components/Samurai";
+
+function App() {
+  return <Samurai mode="animated" />;
+}
 ```
 
-| | |
+| mode | |
 |---|---|
-| **animated** | The sequence plays and loops, so you get take after take while screen-recording. |
-| **static** | Snaps to the final frame with all motion off — that's the poster. |
-
-Themes are authored at **true export resolution** and scaled to fit your window,
-so a 3px bevel is 3px in the exported file.
+| `"animated"` | The sequence plays and loops, so you get take after take while screen-recording. |
+| `"static"` | Snaps to the final frame with all motion off — that's the still. |
 
 ## Themes
 
 **Samurai** — the mark forged as a lacquered armour plate with kintsugi gold
-seams, on washi paper against a torn-edge hinomaru. Dry-brush sumi strokes,
-hanko seal.
+seams, on washi paper against a torn-edge hinomaru, with dry-brush sumi strokes
+and a hanko seal.
 
 **Robotics** — the mark milled from brushed aluminium with an anodized red edge,
-bolted to a mounting plate with PCB traces feeding into it and a HUD wrapped
-around the frame.
+bolted to a mounting plate, PCB traces running current into it, HUD frame.
 
 ## Adding one
 
-Name a theme and it gets built: copy a theme's `.js` + `.css`, rename (including
-the class prefix), give it a palette of its own, and point `src/App.js` at it.
+One theme = one component in `src/Components/` + one stylesheet in
+`src/Stylesheets/`, classes namespaced with a short prefix, timing driven by
+`usePhases`. Copy an existing pair, give it a palette of its own, and point
+`src/App.js` at it.
+
 The techniques that make these read as real materials — alpha-masked material
-layers, `drop-shadow` bevel chains, `feTurbulence` for organic edges, and the
-traps to avoid — are written up in `CLAUDE.md`.
+layers, `drop-shadow` bevel chains, `feTurbulence` for organic edges — and the
+traps that waste an hour are written up in `CLAUDE.md`.

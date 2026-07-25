@@ -51,7 +51,7 @@ export default function Robotics({
       {/* ---- PCB: right-angle trace runs that feed INTO the mounting plate,
              so the board is wired to the mark rather than decorating around
              it. Dim copper underneath, a travelling pulse on top. ---- */}
-      <svg className="rb-pcb" viewBox="0 0 1080 1920" aria-hidden>
+      <svg className="rb-pcb" viewBox="0 0 1080 1920" preserveAspectRatio="none" aria-hidden>
         <g className="rb-copper" fill="none" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
           <path d={TRACES.l1} />
           <path d={TRACES.l2} />

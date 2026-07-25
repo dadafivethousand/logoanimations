@@ -1,6 +1,6 @@
 /* Samurai — forged lacquer plate + kintsugi, on washi with a torn hinomaru.
-   Authored at true export resolution: all sizes are real export pixels.
-   Positions are % of the stage so the theme survives 1:1 / 4:5 / 9:16. */
+   Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
+   px is reserved for hairlines that must stay hairlines (bevels, rules). */
 
 @property --sm-sheen {
   syntax: "<angle>";
@@ -19,8 +19,12 @@
   --gold-hi: #f7e2a0;
   --gold-lo: #7d5417;
 
+  /* screen-recording crop: nothing meaningful inside this band */
+  --safe-x: 11.5vw;
+  --safe-y: 4.7vh;
+
   /* the one knob the composition scales from */
-  --mark-w: 748px;
+  --mark-w: 69.3vw;
 
   position: absolute;
   inset: 0;
@@ -111,11 +115,11 @@
      half-on, half-off and the whole composition reads as a misalignment */
   left: 50%;
   top: 50%;
-  width: 660px;
-  height: 660px;
+  width: 61vw;
+  height: 61vw;
   transform: translate(-50%, -50%) scale(0.86);
   opacity: 0;
-  filter: drop-shadow(0 18px 44px rgba(139, 10, 32, 0.22));
+  filter: drop-shadow(0 1.7vw 4vw rgba(139, 10, 32, 0.22));
   transition:
     opacity 900ms ease,
     transform 1500ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -138,7 +142,7 @@
   position: absolute;
   left: -4%;
   width: 108%;
-  height: 300px;
+  height: 28vw;
   opacity: 0.85;
   clip-path: inset(0 100% 0 0);
   transition: clip-path 1100ms cubic-bezier(0.5, 0, 0.2, 1);
@@ -207,7 +211,7 @@
     transparent 72%
   );
   mix-blend-mode: multiply;
-  filter: blur(26px);
+  filter: blur(2.4vw);
   opacity: 0;
   transition: opacity 800ms ease;
 }
@@ -223,7 +227,7 @@
      register no matter what file is dropped in */
   aspect-ratio: var(--logo-aspect, 2.17);
   opacity: 0;
-  transform: translateY(26px) scale(0.955);
+  transform: translateY(2.4vw) scale(0.955);
   transition:
     opacity 620ms ease,
     transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -251,8 +255,8 @@
 /* --- cast shadow: the plate sits above the paper --- */
 .sm-cast {
   background: rgba(60, 44, 22, 0.5);
-  filter: blur(18px);
-  transform: translateY(22px) scale(1.008);
+  filter: blur(1.7vw);
+  transform: translateY(2vw) scale(1.008);
   opacity: 0;
   transition: opacity 700ms ease;
 }
@@ -431,13 +435,13 @@
 }
 
 .sm-caption {
-  font-size: 46px;
+  font-size: 4.3vw;
   font-weight: 900;
   letter-spacing: 0.42em;
   text-indent: 0.42em;
   color: #1b1712;
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(1.3vw);
   transition: opacity 620ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .sm-p4 .sm-caption {
@@ -448,7 +452,7 @@
 .sm-rule {
   width: 0;
   height: 3px;
-  margin: 26px auto 0;
+  margin: 2.4vw auto 0;
   background: linear-gradient(90deg, transparent, var(--vermilion) 22%, var(--vermilion) 78%, transparent);
   transition: width 900ms 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -457,14 +461,14 @@
 }
 
 .sm-kicker {
-  margin-top: 26px;
-  font-size: 24px;
+  margin-top: 2.4vw;
+  font-size: 2.2vw;
   font-weight: 700;
   letter-spacing: 0.34em;
   text-indent: 0.34em;
   color: #6d6250;
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(0.9vw);
   transition: opacity 620ms 260ms ease, transform 700ms 260ms ease;
 }
 .sm-p4 .sm-kicker {
@@ -480,8 +484,8 @@
   position: absolute;
   right: var(--safe-x);
   bottom: var(--safe-y);
-  width: 132px;
-  height: 132px;
+  width: 12.2vw;
+  height: 12.2vw;
   z-index: 22;
   display: grid;
   place-items: center;
@@ -514,7 +518,7 @@
 }
 .sm-seal-text {
   position: relative;
-  font-size: 46px;
+  font-size: 4.3vw;
   font-weight: 900;
   letter-spacing: 0.04em;
   color: #f7efe0;

@@ -1,6 +1,6 @@
 /* Robotics — machined aluminium mark, anodized edge, live PCB, HUD frame.
-   Authored at true export resolution: sizes are real export pixels,
-   positions are % of the stage so it survives 1:1 / 4:5 / 9:16. */
+   Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
+   px is reserved for hairlines that must stay hairlines (bevels, rules). */
 
 @property --rb-aniso {
   syntax: "<angle>";
@@ -25,9 +25,13 @@
   --red: #e4002b;
   --red-hi: #ff2a4d;
 
+  /* screen-recording crop: nothing meaningful inside this band */
+  --safe-x: 11.5vw;
+  --safe-y: 4.7vh;
+
   /* sized so the mounting plate lands at x 130–950, leaving the trace runs
      at x 70 / 1010 room to reach it */
-  --mark-w: 680px;
+  --mark-w: 63vw;
 
   position: absolute;
   inset: 0;
@@ -218,17 +222,17 @@
 .rb-readout {
   position: absolute;
   left: var(--safe-x);
-  top: calc(var(--safe-y) + 210px);
+  top: calc(var(--safe-y) + 19.5vw);
   z-index: 26;
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 22px;
+  gap: 1.3vw;
+  font-size: 2vw;
   font-weight: 700;
   letter-spacing: 0.28em;
   color: rgba(168, 255, 224, 0.9);
   opacity: 0;
-  transform: translateX(-10px);
+  transform: translateX(-0.9vw);
   transition: opacity 500ms ease, transform 600ms ease;
 }
 .rb-p4 .rb-readout {
@@ -236,8 +240,8 @@
   transform: translateX(0);
 }
 .rb-dot {
-  width: 12px;
-  height: 12px;
+  width: 1.1vw;
+  height: 1.1vw;
   border-radius: 50%;
   background: var(--trace);
   box-shadow: 0 0 12px var(--trace);
@@ -261,7 +265,7 @@
    Without it the hardware floats and the board reads as wallpaper. --- */
 .rb-panel {
   position: absolute;
-  inset: -60px -70px;
+  inset: -5.6vw -6.5vw;
   opacity: 0;
   transform: scale(0.985);
   transition: opacity 600ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -283,7 +287,7 @@
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.16),
     inset 0 -2px 0 rgba(0, 0, 0, 0.8),
-    0 26px 50px rgba(0, 0, 0, 0.75);
+    0 2.4vw 4.6vw rgba(0, 0, 0, 0.75);
 }
 /* fine machining grain across the face */
 .rb-panel-face::after {
@@ -354,8 +358,8 @@
 
 .rb-cast {
   background: rgba(0, 0, 0, 0.85);
-  filter: blur(22px);
-  transform: translateY(20px) scale(1.01);
+  filter: blur(2vw);
+  transform: translateY(1.9vw) scale(1.01);
   opacity: 0.7;
 }
 
@@ -439,14 +443,14 @@
 /* --- anodized red edge: the mark offset behind itself in brand red --- */
 .rb-anodize {
   background: linear-gradient(180deg, var(--red-hi), var(--red) 55%, #8f0019);
-  transform: translate(0, 7px);
+  transform: translate(0, 0.65vw);
   filter: drop-shadow(0 0 18px rgba(228, 0, 43, 0.55));
   opacity: 0;
   transition: opacity 600ms ease, transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .rb-p4 .rb-anodize {
   opacity: 1;
-  transform: translate(0, 10px);
+  transform: translate(0, 0.9vw);
 }
 
 /* --- milling pass: the cut edge glows hot while the clip-path opens the mark
@@ -516,8 +520,8 @@
 /* --- hardware --- */
 .rb-bolt {
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 2.8vw;
+  height: 2.8vw;
   /* hex head via clip-path, lit from the top-left */
   clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0% 50%);
   background:
@@ -533,22 +537,22 @@
 }
 /* inset from the panel's corners, so they read as fixings in the plate */
 .rb-bolt-tl {
-  left: -44px;
-  top: -34px;
+  left: -4.1vw;
+  top: -3.2vw;
 }
 .rb-bolt-tr {
-  right: -44px;
-  top: -34px;
+  right: -4.1vw;
+  top: -3.2vw;
   transition-delay: 60ms;
 }
 .rb-bolt-bl {
-  left: -44px;
-  bottom: -34px;
+  left: -4.1vw;
+  bottom: -3.2vw;
   transition-delay: 120ms;
 }
 .rb-bolt-br {
-  right: -44px;
-  bottom: -34px;
+  right: -4.1vw;
+  bottom: -3.2vw;
   transition-delay: 180ms;
 }
 
@@ -567,14 +571,14 @@
 }
 
 .rb-caption {
-  font-size: 46px;
+  font-size: 4.3vw;
   font-weight: 900;
   letter-spacing: 0.42em;
   text-indent: 0.42em;
   color: #eaf2fa;
   text-shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(1.3vw);
   transition: opacity 560ms ease, transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .rb-p4 .rb-caption {
@@ -586,7 +590,7 @@
 .rb-bar {
   width: 62%;
   height: 6px;
-  margin: 28px auto 0;
+  margin: 2.6vw auto 0;
   background: rgba(255, 255, 255, 0.09);
   border-radius: 3px;
   overflow: hidden;
@@ -604,14 +608,14 @@
 }
 
 .rb-kicker {
-  margin-top: 26px;
-  font-size: 24px;
+  margin-top: 2.4vw;
+  font-size: 2.2vw;
   font-weight: 700;
   letter-spacing: 0.32em;
   text-indent: 0.32em;
   color: #8fa0b2;
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(0.9vw);
   transition: opacity 560ms 300ms ease, transform 640ms 300ms ease;
 }
 .rb-p4 .rb-kicker {
