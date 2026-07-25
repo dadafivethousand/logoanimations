@@ -2,7 +2,7 @@
 // Palette: arcade violet + cyan/magenta split. Deliberately louder than
 // LogoAssemble so consecutive posts don't look like the same ad twice.
 import React from "react";
-import "../Stylesheets/LogoNeonGlitch.css";
+import "./LogoNeonGlitch.css";
 import usePhases from "../Utils/usePhases";
 import logo from "../Images/cn-woodbridge-logo.png";
 

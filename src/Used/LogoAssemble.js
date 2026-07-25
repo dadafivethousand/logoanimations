@@ -1,7 +1,7 @@
 // LogoAssemble.js — shards fly in, lock into the mark, shine sweep, tagline.
 // Palette: cold graphite + brand red. Cinematic "product drop" stage.
 import React from "react";
-import "../Stylesheets/LogoAssemble.css";
+import "./LogoAssemble.css";
 import usePhases from "../Utils/usePhases";
 import logo from "../Images/cn-woodbridge-logo.png";
 

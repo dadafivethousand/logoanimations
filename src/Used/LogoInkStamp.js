@@ -2,7 +2,7 @@
 // Palette: warm cream paper + ink black + a single red stamp ring. Bright,
 // daylight counterpoint to the two dark stages.
 import React from "react";
-import "../Stylesheets/LogoInkStamp.css";
+import "./LogoInkStamp.css";
 import usePhases from "../Utils/usePhases";
 import logo from "../Images/cn-woodbridge-logo.png";
 

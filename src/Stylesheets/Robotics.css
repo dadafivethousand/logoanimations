@@ -1,0 +1,702 @@
+/* Robotics — machined aluminium mark, anodized edge, live PCB, HUD frame.
+   Authored at true export resolution: sizes are real export pixels,
+   positions are % of the stage so it survives 1:1 / 4:5 / 9:16. */
+
+@property --rb-aniso {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --rb-pulse {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: false;
+}
+
+.rb {
+  /* palette */
+  --steel-hi: #f2f6fa;
+  --steel: #b9c3cd;
+  --steel-mid: #7e8a97;
+  --steel-lo: #39424c;
+  --graphite: #0c0f13;
+  --board: #0a1a16;
+  --trace: #1fd39a;
+  --red: #e4002b;
+  --red-hi: #ff2a4d;
+
+  /* sized so the mounting plate lands at x 130–950, leaving the trace runs
+     at x 70 / 1010 room to reach it */
+  --mark-w: 680px;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--graphite);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--steel);
+  isolation: isolate;
+}
+
+/* ====================================================================
+   GROUND
+   ==================================================================== */
+
+.rb-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(72% 46% at 50% 44%, #1b2530 0%, #10161d 44%, var(--graphite) 100%),
+    linear-gradient(180deg, #0e141a, #06080a);
+}
+
+/* blueprint grid, perspective-flattened toward the horizon */
+.rb-grid {
+  position: absolute;
+  inset: -10%;
+  background-image:
+    linear-gradient(rgba(120, 200, 255, 0.075) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(120, 200, 255, 0.075) 2px, transparent 2px),
+    linear-gradient(rgba(120, 200, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 200, 255, 0.035) 1px, transparent 1px);
+  background-size: 180px 180px, 180px 180px, 36px 36px, 36px 36px;
+  mask-image: radial-gradient(62% 52% at 50% 50%, #000 0%, transparent 82%);
+  -webkit-mask-image: radial-gradient(62% 52% at 50% 50%, #000 0%, transparent 82%);
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 700ms ease, transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rb-p1 .rb-grid,
+.rb-p2 .rb-grid,
+.rb-p3 .rb-grid,
+.rb-p4 .rb-grid {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* hex mesh — a real hexagon tile, faint, over the whole board */
+.rb-hex {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'><g fill='none' stroke='%23a8ffe0' stroke-width='1.6' opacity='0.5'><path d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z'/><path d='M28 64 L56 80 L56 97'/><path d='M28 64 L0 80 L0 97'/></g></svg>");
+  background-size: 56px 97px;
+  mask-image: radial-gradient(48% 40% at 50% 46%, transparent 30%, #000 78%);
+  -webkit-mask-image: radial-gradient(48% 40% at 50% 46%, transparent 30%, #000 78%);
+  transition: opacity 900ms ease;
+}
+.rb-p1 .rb-hex,
+.rb-p2 .rb-hex,
+.rb-p3 .rb-hex,
+.rb-p4 .rb-hex {
+  opacity: 0.18;
+}
+
+/* ====================================================================
+   PCB TRACES
+   ==================================================================== */
+
+.rb-pcb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 800ms ease;
+}
+.rb-p2 .rb-pcb,
+.rb-p3 .rb-pcb,
+.rb-p4 .rb-pcb {
+  opacity: 1;
+}
+
+/* dim copper laid down first */
+.rb-copper {
+  stroke: rgba(31, 211, 154, 0.22);
+}
+
+/* the live pulse: a short dash chasing along the same path. Dash animation
+   beats a moving gradient here because it follows the corners. */
+.rb-current {
+  stroke: var(--trace);
+  filter: drop-shadow(0 0 7px rgba(31, 211, 154, 0.85));
+}
+.rb-pulse {
+  stroke-dasharray: 90 520;
+  stroke-dashoffset: 610;
+}
+.rb-p2 .rb-pulse,
+.rb-p3 .rb-pulse,
+.rb-p4 .rb-pulse {
+  animation: rb-flow 2800ms linear infinite;
+}
+.rb-pulse-2 {
+  animation-delay: -400ms;
+}
+.rb-pulse-3 {
+  animation-delay: -900ms;
+}
+.rb-pulse-4 {
+  animation-delay: -1400ms;
+}
+.rb-pulse-5 {
+  animation-delay: -1900ms;
+}
+.rb-pulse-6 {
+  animation-delay: -2300ms;
+}
+@keyframes rb-flow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.rb-pads circle {
+  fill: #0d1a17;
+  stroke: var(--trace);
+  stroke-width: 4;
+  filter: drop-shadow(0 0 10px rgba(31, 211, 154, 0.6));
+}
+.rb-p2 .rb-pads circle,
+.rb-p3 .rb-pads circle,
+.rb-p4 .rb-pads circle {
+  animation: rb-blink 1900ms ease-in-out infinite;
+}
+.rb-pads circle:nth-child(2n) {
+  animation-delay: -700ms;
+}
+.rb-pads circle:nth-child(3n) {
+  animation-delay: -1300ms;
+}
+
+@keyframes rb-blink {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ====================================================================
+   HUD
+   ==================================================================== */
+
+.rb-hud {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: rgba(150, 220, 255, 0.75);
+  z-index: 25;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.rb-p1 .rb-hud,
+.rb-p2 .rb-hud,
+.rb-p3 .rb-hud,
+.rb-p4 .rb-hud {
+  opacity: 1;
+}
+.rb-hud-g {
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+}
+.rb-p1 .rb-hud-g,
+.rb-p2 .rb-hud-g,
+.rb-p3 .rb-hud-g,
+.rb-p4 .rb-hud-g {
+  animation: rb-draw 900ms cubic-bezier(0.5, 0, 0.2, 1) forwards;
+}
+@keyframes rb-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.rb-readout {
+  position: absolute;
+  left: var(--safe-x);
+  top: calc(var(--safe-y) + 210px);
+  z-index: 26;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: rgba(168, 255, 224, 0.9);
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 500ms ease, transform 600ms ease;
+}
+.rb-p4 .rb-readout {
+  opacity: 1;
+  transform: translateX(0);
+}
+.rb-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--trace);
+  box-shadow: 0 0 12px var(--trace);
+  animation: rb-blink 1400ms ease-in-out infinite;
+}
+
+/* ====================================================================
+   THE MARK
+   ==================================================================== */
+
+.rb-markwrap {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  width: var(--mark-w);
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+/* --- mounting plate: what the traces terminate on and the bolts bolt into.
+   Without it the hardware floats and the board reads as wallpaper. --- */
+.rb-panel {
+  position: absolute;
+  inset: -60px -70px;
+  opacity: 0;
+  transform: scale(0.985);
+  transition: opacity 600ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rb-p2 .rb-panel,
+.rb-p3 .rb-panel,
+.rb-p4 .rb-panel {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.rb-panel-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  /* dark anodized aluminium, lit from above */
+  background:
+    linear-gradient(176deg, #262e37 0%, #171d24 34%, #10151b 66%, #1d242c 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.8),
+    0 26px 50px rgba(0, 0, 0, 0.75);
+}
+/* fine machining grain across the face */
+.rb-panel-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.09) 0px,
+    rgba(255, 255, 255, 0.09) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+/* chamfered rim, brighter along the top edge */
+.rb-panel-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(
+      170deg,
+      rgba(226, 240, 255, 0.55),
+      rgba(120, 138, 156, 0.18) 34%,
+      rgba(0, 0, 0, 0.5) 100%
+    )
+    border-box;
+  -webkit-mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.rb-mark {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--logo-aspect, 2.17);
+  /* milled in from the centre outward */
+  clip-path: inset(0 50% 0 50%);
+  transition: clip-path 950ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rb-p3 .rb-mark,
+.rb-p4 .rb-mark {
+  clip-path: inset(0 0 0 0);
+}
+
+.rb-layer {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: var(--logo);
+  mask-image: var(--logo);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.rb-cast {
+  background: rgba(0, 0, 0, 0.85);
+  filter: blur(22px);
+  transform: translateY(20px) scale(1.01);
+  opacity: 0.7;
+}
+
+/* --- chamfer: shadows read the alpha of the metal they wrap --- */
+.rb-plate {
+  position: absolute;
+  inset: 0;
+  filter:
+    drop-shadow(0 -2px 0 rgba(255, 255, 255, 0.7))
+    drop-shadow(0 2px 0 rgba(0, 0, 0, 0.92))
+    drop-shadow(-1.5px 0 0 rgba(220, 240, 255, 0.35))
+    drop-shadow(1.5px 0 0 rgba(0, 0, 0, 0.7))
+    drop-shadow(0 5px 8px rgba(0, 0, 0, 0.55));
+}
+
+/* --- base aluminium: cool, with a bright band across the upper third --- */
+.rb-alu {
+  background:
+    linear-gradient(
+      178deg,
+      var(--steel-hi) 0%,
+      var(--steel) 18%,
+      var(--steel-mid) 42%,
+      var(--steel-lo) 58%,
+      var(--steel-mid) 74%,
+      #cdd6e0 92%,
+      var(--steel-lo) 100%
+    );
+}
+
+/* --- brushing: fine directional grain, the thing that makes it read as metal
+       rather than a grey gradient. Two frequencies so it isn't a moiré. --- */
+.rb-brush {
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.16) 0px,
+      rgba(255, 255, 255, 0.16) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.14) 0px,
+      rgba(0, 0, 0, 0.14) 1px,
+      transparent 1px,
+      transparent 7px
+    ),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.02 1.4' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='240' height='240' filter='url(%23b)' opacity='0.5'/></svg>");
+  background-size: auto, auto, 240px 240px;
+}
+
+/* --- anisotropic specular: a conic highlight that rotates around the plate.
+       This is what real brushed metal does under a moving light. --- */
+.rb-aniso {
+  mix-blend-mode: screen;
+  opacity: 0.42;
+  background: conic-gradient(
+    from var(--rb-aniso) at 50% 46%,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.62) 26deg,
+    transparent 62deg,
+    transparent 176deg,
+    rgba(190, 226, 255, 0.5) 206deg,
+    transparent 244deg,
+    transparent 360deg
+  );
+}
+.rb-p3 .rb-aniso,
+.rb-p4 .rb-aniso {
+  animation: rb-rotate 9000ms linear infinite;
+}
+@keyframes rb-rotate {
+  to {
+    --rb-aniso: 360deg;
+  }
+}
+
+/* --- anodized red edge: the mark offset behind itself in brand red --- */
+.rb-anodize {
+  background: linear-gradient(180deg, var(--red-hi), var(--red) 55%, #8f0019);
+  transform: translate(0, 7px);
+  filter: drop-shadow(0 0 18px rgba(228, 0, 43, 0.55));
+  opacity: 0;
+  transition: opacity 600ms ease, transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rb-p4 .rb-anodize {
+  opacity: 1;
+  transform: translate(0, 10px);
+}
+
+/* --- milling pass: the cut edge glows hot while the clip-path opens the mark
+   from the centre out, then cools. Two symmetric bands, no transform (see the
+   note on .rb-scan). --- */
+.rb-mill {
+  background: linear-gradient(
+    90deg,
+    transparent 44%,
+    rgba(210, 245, 255, 0.95) 50%,
+    transparent 56%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.rb-p3 .rb-mill,
+.rb-p4 .rb-mill {
+  animation: rb-mill 950ms ease-out forwards;
+}
+@keyframes rb-mill {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* --- HUD scan across the metal, animated only.
+   Scrolls the background behind a fixed mask rather than translating the
+   layer: a transform would carry the mask with it and the band would sweep
+   past the mark instead of across it. --- */
+.rb-scan {
+  background: linear-gradient(
+    180deg,
+    transparent 42%,
+    rgba(31, 211, 154, 0.6) 50%,
+    transparent 58%
+  );
+  background-size: 100% 300%;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.rb-p4 .rb-scan {
+  animation: rb-scan 2400ms 300ms ease-in-out infinite;
+}
+@keyframes rb-scan {
+  0% {
+    opacity: 0;
+    background-position: 0 100%;
+  }
+  12% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    opacity: 0;
+    background-position: 0 0%;
+  }
+}
+
+/* --- hardware --- */
+.rb-bolt {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  /* hex head via clip-path, lit from the top-left */
+  clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0% 50%);
+  background:
+    linear-gradient(150deg, #e8eef5 0%, #98a4b1 38%, #4c5661 66%, #aab5c1 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 400ms ease, transform 500ms cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+.rb-p4 .rb-bolt {
+  opacity: 1;
+  transform: scale(1);
+}
+/* inset from the panel's corners, so they read as fixings in the plate */
+.rb-bolt-tl {
+  left: -44px;
+  top: -34px;
+}
+.rb-bolt-tr {
+  right: -44px;
+  top: -34px;
+  transition-delay: 60ms;
+}
+.rb-bolt-bl {
+  left: -44px;
+  bottom: -34px;
+  transition-delay: 120ms;
+}
+.rb-bolt-br {
+  right: -44px;
+  bottom: -34px;
+  transition-delay: 180ms;
+}
+
+/* ====================================================================
+   TYPE
+   ==================================================================== */
+
+.rb-type {
+  position: absolute;
+  left: 50%;
+  top: 66%;
+  width: calc(100% - 2 * var(--safe-x));
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 26;
+}
+
+.rb-caption {
+  font-size: 46px;
+  font-weight: 900;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: #eaf2fa;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 560ms ease, transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rb-p4 .rb-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* a loading-bar rule that fills — reads as machinery, not decoration */
+.rb-bar {
+  width: 62%;
+  height: 6px;
+  margin: 28px auto 0;
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.rb-bar-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--trace), #9ef7d8);
+  box-shadow: 0 0 14px rgba(31, 211, 154, 0.7);
+  transition: width 1100ms 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rb-p4 .rb-bar-fill {
+  width: 100%;
+}
+
+.rb-kicker {
+  margin-top: 26px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  color: #8fa0b2;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 560ms 300ms ease, transform 640ms 300ms ease;
+}
+.rb-p4 .rb-kicker {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ====================================================================
+   FILM
+   ==================================================================== */
+
+.rb-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.5;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.028) 0px,
+    rgba(255, 255, 255, 0.028) 2px,
+    transparent 2px,
+    transparent 5px
+  );
+}
+
+.rb-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 41;
+  background: radial-gradient(74% 58% at 50% 46%, transparent 40%, rgba(0, 0, 0, 0.82) 100%);
+}
+
+/* ====================================================================
+   STATIC MODE
+   ==================================================================== */
+
+.rb.is-static *,
+.rb.is-static *::before,
+.rb.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.rb.is-static .rb-hud-g {
+  stroke-dashoffset: 0;
+}
+.rb.is-static .rb-bar-fill {
+  width: 100%;
+}
+.rb.is-static .rb-pad,
+.rb.is-static .rb-dot {
+  opacity: 1;
+}
+/* one-pass effects have no resting state — keep them off the poster */
+.rb.is-static .rb-mill,
+.rb.is-static .rb-scan {
+  opacity: 0;
+}
+/* the specular still needs to be somewhere flattering when frozen */
+.rb.is-static .rb-aniso {
+  --rb-aniso: 42deg;
+}
+.rb.is-static .rb-pulse {
+  stroke-dashoffset: 300;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb *,
+  .rb *::before,
+  .rb *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .rb .rb-hud-g {
+    stroke-dashoffset: 0;
+  }
+  .rb .rb-bar-fill {
+    width: 100%;
+  }
+  .rb .rb-mill,
+  .rb .rb-scan {
+    opacity: 0;
+  }
+  .rb .rb-aniso {
+    --rb-aniso: 42deg;
+  }
+}

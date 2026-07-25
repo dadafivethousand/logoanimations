@@ -1,84 +1,124 @@
-# logoanimations — animated logo reveals
+# logoanimations — themed logo treatments
 
-A React (Create React App) project of self-contained **animated logo reveals**.
-Each one is a full-screen composition whose single subject is a logo/mark: it
-assembles, glitches in, stamps down, unfolds, etc. Sibling project to
-`../animations` (full ad units); this one is narrower — **the logo is the ad.**
+Renders **one logo** — `src/Images/logo.png` — dressed in a **theme**. Output is
+production marketing material: Instagram posts, stories, reels, print stills.
 
-## These are social-media (Instagram) videos — vary the palette per animation
+Sibling to `../animations`, which holds full ad units. This repo is narrower and
+deeper: **the mark is the entire subject**, and the CSS should go well past
+"a gradient and a drop shadow".
 
-The workflow is: play the animation full-screen, **screen-record it, and post it
-to Instagram.** They live next to each other on one feed/grid, so if every one
-uses the same colour theme the feed looks repetitive and cheap.
+## How this repo is used
 
-**Give each new logo animation a distinct visual/colour identity.** Don't
-default to the dark-navy/graphite "cinematic" palette every time — pick a colour
-story that fits the concept (warm/sunset, neon arcade, clean daylight,
-paper/print, retro CRT, chrome, etc.). The three that ship here are deliberately
-spread apart: graphite (`LogoAssemble`), arcade violet (`LogoNeonGlitch`),
-cream paper (`LogoInkStamp`). Brand red `#e4002b` is the through-line; the
-surrounding palette changes animation to animation.
+**The user names a theme, you build it.** "Do a cyberpunk one", "make an ice
+one". One theme = one component + one stylesheet, added on demand. Don't build
+theme pickers, galleries, or infrastructure nobody asked for — the two existing
+themes are the template, copy one and go.
 
-## Safe margins (screen-recording crop)
+## The user chooses animated vs static — never assume
 
-The recording gets re-fit to the phone screen before it goes to IG, so edges
-crop more than you'd expect — especially the sides. **Keep ~40px clear
-top/bottom and ~45px left/right.** No mark, wordmark, or caption inside that
-band. In practice: **cap the mark around 64–70vw**, and keep tracked-out labels
-short enough that letter-spacing doesn't push them wide.
+Every theme takes `mode="animated" | "static"`, set in `src/App.js`:
 
-## MOBILE ONLY
+- **animated** — the phase sequence plays and loops, for screen-recording.
+- **static** — snaps to the final phase, `.is-static` kills every transition and
+  animation, and the frame is the poster.
 
-These are **only ever shown on mobile (portrait phone).** Do not build, test, or
-tune desktop or landscape layouts — no desktop breakpoints, no hover states.
-Design for ~390×844 and stop there.
+**A theme is only done when both modes look finished.** Any effect with no
+resting state (a one-pass sweep, a mill line) must be forced off in the
+`.is-static` block; anything that should persist (a specular highlight, a filled
+bar) needs a frozen value there. Same for `prefers-reduced-motion`.
 
-## Layout & structure
+## Quality bar
 
-- One animation = **one component in `src/Components/` + one stylesheet in
-  `src/Stylesheets/`** with the same name (e.g. `LogoAssemble.js` +
-  `LogoAssemble.css`).
-- Only **one animation renders at a time**, chosen in `src/App.js` — swap the
-  import and the returned component; leave the previous one commented out,
-  don't delete.
-- Logos/images go in `src/Images/`, fonts in `src/Fonts/`, shared helpers in
-  `src/Utils/`.
-- Prefix every class with a short per-animation namespace (`la-`, `ng-`, `is-`)
-  so stylesheets can't collide.
+- **Mask material through the mark's alpha.** Themes paint material on a
+  full-size layer and mask it with `var(--logo)`. The mark is never an `<img>`
+  you tint — it's a window onto lacquer, brushed aluminium, whatever.
+- **Bevels come from `drop-shadow` chains on a wrapper** around the painted
+  layers. `drop-shadow` takes its shape from alpha, so the rims trace the
+  letterforms. Putting the chain on an empty masked box casts nothing — an
+  invisible source gives an invisible shadow.
+- **Never `transform` a masked layer to move a highlight.** The mask travels
+  with it and the sweep passes outside the mark. Scroll an oversized
+  `background-position` behind a fixed mask instead.
+- **Organic shapes are inline SVG + `feTurbulence`/`feDisplacementMap`** — torn
+  edges, dry-brush strokes, crackle seams, stamped ink. A plain circle reads as
+  clip-art.
+- **Real surface behaviour.** Brushed metal needs directional grain *and* a
+  moving conic specular. Lacquer needs colour under the black. Paper needs fibre
+  noise multiplied over everything.
+- `@property` for animatable angles/percentages, so gradients interpolate
+  instead of stepping.
+- **Contrast beats fidelity.** A physically-correct near-black plate laid over
+  the red disc loses its letterforms; lift the mids until the mark reads.
 
-## The phase machine
+## Architecture
 
-`src/Utils/usePhases.js` is the shared state machine: pass cue times in ms, get
-back a `phase` integer. Put it on the root as a class (`la-p0`..`la-p3`) and key
-**all** the animation off those classes in CSS. Keep JS to phase-advancing.
-`loopAt` restarts the sequence so you get take after take while recording.
+```
+src/
+  logo.js              the one mark; swap src/Images/logo.png
+  App.js               picks the theme + MODE + CANVAS. That's the whole UI.
+  Components/Stage.js  fixed-resolution canvas, scaled to fit
+  Themes/<Name>.js     one theme = one component...
+  Stylesheets/<Name>.css   ...+ one stylesheet, classes namespaced (sm-, rb-)
+  Utils/usePhases.js   cue-driven phase machine (honours mode)
+  Utils/useLogo.js     alpha-trims the mark, measures its aspect
+  Used/                parked work, not compiled
+```
+
+**Author at true export resolution.** The Stage renders a real 1080×1920 (or
+1080×1350 / 1080×1080) box and scales it with one transform to fit the window,
+so sizes in theme CSS are **real export pixels** — a 3px bevel is 3px in the
+final file. Positions should be **% of the stage** so a theme survives all three
+canvases. Keep everything meaningful inside `--safe-x` / `--safe-y`; the
+recording crop eats the edges.
+
+`useLogo` alpha-trims whatever file is dropped in and publishes `--logo` and
+`--logo-aspect`. Size the mark box with `aspect-ratio: var(--logo-aspect)` —
+never a hard-coded ratio, or the next logo lands off-register.
+
+## Getting the logo in
+
+```bash
+npm run logo                      # newest image in ~/Downloads
+npm run logo -- ~/Downloads/x.png # a specific file
+```
+
+**The file must have a real alpha channel.** Themes mask through transparency;
+a mark flattened onto white renders as a styled rectangle. The script warns if
+the PNG has no alpha.
 
 ## Running & verifying
 
-- Dev server: `npm start` (react-scripts) on **http://localhost:3000**. Run
-  npm/build commands **from the project root**.
-- Build check: `CI=true npx react-scripts build` from the root.
-- **Verifying animation in the browser tool is unreliable**: the automation
-  Chrome tab is backgrounded, so CSS animations freeze at t=0. To check a still,
-  force the end state by hand (add the final `-p3` class). Real playback only
-  happens on an actual phone — flag timing/motion as "verify on device."
+- `npm start` → http://localhost:3000
+- Build check: `CI=true npx react-scripts build`
+- **The automation Chrome tab freezes CSS animation at t=0**, so a headless
+  screenshot only ever tells you about `mode="static"`. That is still worth
+  doing — these are visual deliverables and a masking bug is invisible in a
+  build log:
+  ```bash
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+    --headless=new --disable-gpu --hide-scrollbars --virtual-time-budget=7000 \
+    --window-size=1080,1920 --screenshot=out.png http://localhost:3000/
+  ```
+  Motion has to be checked in a real foreground window or on device — flag
+  timing as "verify on device".
 
-## Style conventions
+## Adding a theme
 
-- Portrait-first. Size off `vh`/`vw` with `clamp()`; avoid fixed px for anything
-  layout-bearing.
-- Drive each composition off **one CSS custom property** (`--mark`) so the whole
-  thing rescales from a single knob.
-- Honour `prefers-reduced-motion` (disable animations, snap to the end state).
-- The `cn-woodbridge-logo.png` wordmark has **no light-on-dark variant** and does
-  **not** include "Woodbridge" text — add a separate "WOODBRIDGE" label for the
-  full lockup, and foil it on dark with `grayscale(1) invert(1)` (a flat invert
-  flattens the ninja head to a white disc).
+1. Copy `Themes/Samurai.js` + `Stylesheets/Samurai.css`, rename, including the
+   class prefix.
+2. Give it **a palette of its own.** These sit next to each other on one IG grid
+   — if every theme is dark-navy-and-cyan the feed looks cheap. Brand red
+   `#e4002b` is the through-line; everything around it changes per theme.
+3. Set your own `CUES`, key all motion off `.xx-p0`..`.xx-pN`, keep JS to
+   phase-advancing.
+4. Fill in the `.is-static` and `prefers-reduced-motion` blocks. Not optional.
+5. Point `src/App.js` at it, commenting out the previous import.
 
 ## Copy / claims
 
-Captions and taglines here are placeholders — **confirm real wording with the
-user before treating them as final**, especially anything public-facing.
+Captions, kickers and seal glyphs default to placeholders. **Confirm real
+wording with the user before treating them as final** — this is public-facing
+marketing.
 
 ## Workflow
 
