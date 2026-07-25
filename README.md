@@ -40,9 +40,10 @@ function App() {
 
 ## Themes
 
-**Samurai** — the mark forged as a lacquered armour plate with kintsugi gold
-seams, on washi paper against a torn-edge hinomaru, with dry-brush sumi strokes
-and a hanko seal.
+**Samurai** — the mark forged in polished steel with a hamon temper line, cut
+apart by three katana slashes: the pieces slide along their cut lines, the kerf
+glows molten and cools, sparks throw off the blade. Night stage, low moon, wet
+stone reflection.
 
 **Robotics** — the mark milled from brushed aluminium with an anodized red edge,
 bolted to a mounting plate, PCB traces running current into it, HUD frame.

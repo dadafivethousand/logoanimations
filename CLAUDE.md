@@ -32,8 +32,8 @@ bar) needs a frozen value there. Same for `prefers-reduced-motion`.
 ## These are Instagram posts — vary the palette per theme
 
 Same rule as the sibling repo: the compositions sit next to each other on one
-feed, so **give each theme its own colour story.** Samurai is cream washi and
-vermilion; Robotics is graphite, steel and green. Brand red `#e4002b` is the
+feed, so **give each theme its own colour story.** Samurai is night indigo,
+cold steel and molten orange; Robotics is graphite, steel and green. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
@@ -86,8 +86,13 @@ Hard-won details, don't relearn them:
   with it and the sweep passes outside the mark. Scroll an oversized
   `background-position` behind a fixed mask instead.
 - **Organic shapes are inline SVG + `feTurbulence`/`feDisplacementMap`** — torn
-  paper edges, dry-brush strokes, crackle seams, stamped ink. A plain circle
-  reads as clip-art.
+  paper edges, dry-brush strokes, crackle seams, hamon temper lines. A plain
+  circle reads as clip-art.
+- **To cut the mark apart** (Samurai): render the whole masked stack once per
+  piece, `clip-path` each copy to the band between two cut lines, then translate
+  it along its cut. Every copy shares the mark box and the same mask, so the
+  pieces stay in register and it reads as one sliced object. Push the polygon
+  points outside 0–100% and let the element bounds clip.
 - **Real surface behaviour.** Brushed metal needs directional grain *and* a
   moving conic specular. Lacquer needs colour under the black. Paper needs fibre
   noise multiplied over everything.
