@@ -1,0 +1,167 @@
+/* LogoInkStamp — cream paper stock, ink impact, red stamp ring.
+   Portrait phone only. Safe margins: 40px top/bottom, 45px sides. */
+
+.is-stage {
+  --red: #e4002b;
+  --ink: #17181a;
+  --cream: #f4efe4;
+  --mark: 64vw;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--cream);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+}
+
+.is-paper {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 12%, #fffdf7 0%, #f1eadb 58%, #e5dcc9 100%);
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 700ms ease, transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.is-p1 .is-paper,
+.is-p2 .is-paper,
+.is-p3 .is-paper {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* paper tooth */
+.is-fibres {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/></filter><rect width='140' height='140' filter='url(%23f)' opacity='0.35'/></svg>");
+}
+
+.is-center {
+  position: relative;
+  z-index: 3;
+  width: min(var(--mark), 290px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.is-stamp {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+}
+
+/* the red ring the stamp leaves behind */
+.is-ring {
+  position: absolute;
+  inset: 2%;
+  border: 4px solid var(--red);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(1.35) rotate(-8deg);
+  /* ragged ink edge */
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='r'><feTurbulence type='fractalNoise' baseFrequency='0.06' numOctaves='3'/><feDisplacementMap in='SourceGraphic' scale='9'/></filter><rect width='200' height='200' fill='white' filter='url(%23r)'/></svg>");
+  mask-size: cover;
+  transition: none;
+}
+.is-p2 .is-ring,
+.is-p3 .is-ring {
+  animation: is-impact 420ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+}
+
+.is-logo {
+  width: 74%;
+  height: auto;
+  opacity: 0;
+  transform: scale(1.5) rotate(-8deg);
+  filter: contrast(1.15) saturate(0.9);
+}
+.is-p2 .is-logo,
+.is-p3 .is-logo {
+  animation: is-impact 380ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+}
+
+@keyframes is-impact {
+  0% {
+    opacity: 0;
+    transform: scale(1.5) rotate(-8deg);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(0.95) rotate(-3.2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-3.2deg);
+  }
+}
+
+/* puff of paper dust on impact */
+.is-dust {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(23, 24, 26, 0.16) 0%, transparent 62%);
+  opacity: 0;
+}
+.is-p2 .is-dust,
+.is-p3 .is-dust {
+  animation: is-dust 620ms 200ms ease-out forwards;
+}
+@keyframes is-dust {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+
+.is-caption {
+  margin-top: 2.4vh;
+  font-size: clamp(11px, 3.2vw, 14px);
+  font-weight: 800;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  color: #4a4f57;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 420ms ease, transform 520ms ease;
+}
+.is-p3 .is-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-stage * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .is-paper,
+  .is-caption {
+    opacity: 1;
+    transform: none;
+  }
+  .is-ring,
+  .is-logo {
+    opacity: 1;
+    transform: rotate(-3.2deg);
+  }
+  .is-dust {
+    opacity: 0;
+  }
+}

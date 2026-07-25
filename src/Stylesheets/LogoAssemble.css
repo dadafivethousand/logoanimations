@@ -1,0 +1,248 @@
+/* LogoAssemble — graphite stage, brand-red light, metallic shine sweep.
+   Portrait phone only (~390x844). Safe margins: 40px top/bottom, 45px sides. */
+
+.la-stage {
+  --red: #e4002b;
+  --red-lite: #ff2a4d;
+  --ink: #0b0d10;
+  --mark: 66vw; /* single knob: everything scales off the mark width */
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 80% at 50% 18%, #232a33 0%, #10141a 46%, var(--ink) 100%);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #f2f5f8;
+  display: grid;
+  place-items: center;
+}
+
+/* ---- backdrop -------------------------------------------------------- */
+
+.la-grid {
+  position: absolute;
+  inset: -20%;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+  transform: perspective(520px) rotateX(62deg) translateY(16%);
+  mask-image: radial-gradient(58% 46% at 50% 62%, #000 0%, transparent 78%);
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+.la-p1 .la-grid,
+.la-p2 .la-grid,
+.la-p3 .la-grid {
+  opacity: 1;
+}
+
+.la-glow {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 92vw;
+  height: 92vw;
+  transform: translate(-50%, -50%) scale(0.4);
+  background: radial-gradient(
+    circle,
+    rgba(228, 0, 43, 0.5) 0%,
+    rgba(228, 0, 43, 0.12) 38%,
+    transparent 68%
+  );
+  filter: blur(12px);
+  opacity: 0;
+  transition: opacity 700ms ease, transform 900ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+.la-p2 .la-glow,
+.la-p3 .la-glow {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ---- centre column --------------------------------------------------- */
+
+.la-center {
+  position: relative;
+  z-index: 3;
+  width: min(var(--mark), 300px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.la-mark {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+}
+
+/* shards: converge from a ring onto the mark */
+.la-shard {
+  position: absolute;
+  width: 10%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--red-lite), transparent);
+  opacity: 0;
+  transform: rotate(calc(var(--i) * (360deg / var(--n)))) translateX(78%);
+}
+.la-p1 .la-shard,
+.la-p2 .la-shard,
+.la-p3 .la-shard {
+  animation: la-converge 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--i) * 45ms);
+}
+@keyframes la-converge {
+  0% {
+    opacity: 0;
+    transform: rotate(calc(var(--i) * (360deg / var(--n)))) translateX(150%) scaleX(2.2);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(calc(var(--i) * (360deg / var(--n)))) translateX(6%) scaleX(0.3);
+  }
+}
+
+.la-logo {
+  width: 86%;
+  height: auto;
+  /* the wordmark png is dark-on-light: foil it for the dark stage */
+  filter: grayscale(1) invert(1) drop-shadow(0 0 14px rgba(228, 0, 43, 0.45));
+  opacity: 0;
+  transform: scale(0.82) translateY(10px);
+  transition:
+    opacity 420ms ease,
+    transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.la-p2 .la-logo,
+.la-p3 .la-logo {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* one-pass metallic sweep across the mark when it locks */
+.la-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 62%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  transform: translateX(-120%);
+}
+.la-p2 .la-shine,
+.la-p3 .la-shine {
+  animation: la-shine 900ms 160ms ease-out forwards;
+}
+@keyframes la-shine {
+  0% {
+    opacity: 0;
+    transform: translateX(-120%);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+}
+
+/* ---- type ------------------------------------------------------------ */
+
+.la-word {
+  margin-top: 2vh;
+  font-size: clamp(18px, 5.2vw, 26px);
+  font-weight: 900;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em; /* keep the tracking from shifting the optical centre */
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 420ms ease, transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.la-p2 .la-word,
+.la-p3 .la-word {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.la-rule {
+  margin-top: 1.4vh;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  transition: width 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.la-p3 .la-rule {
+  width: 78%;
+}
+
+.la-tag {
+  margin-top: 1.6vh;
+  font-size: clamp(11px, 3.2vw, 14px);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  color: #9fb0c0;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 460ms 120ms ease, transform 560ms 120ms ease;
+}
+.la-p3 .la-tag {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- film ------------------------------------------------------------ */
+
+.la-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='120' height='120' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+.la-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(72% 58% at 50% 46%, transparent 40%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .la-stage * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .la-grid,
+  .la-glow,
+  .la-logo,
+  .la-word,
+  .la-tag {
+    opacity: 1;
+    transform: none;
+  }
+  .la-rule {
+    width: 78%;
+  }
+  .la-shard,
+  .la-shine {
+    opacity: 0;
+  }
+}
