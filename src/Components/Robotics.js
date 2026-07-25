@@ -28,8 +28,6 @@ const TRACES = {
 export default function Robotics({
   mode = "animated",
   caption = "WOODBRIDGE",
-  kicker = "BUILD · PROGRAM · DEPLOY",
-  readout = "SYS.READY",
   loopAt = 7500,
 }) {
   const { logoVar, ready } = useLogo();
@@ -99,11 +97,6 @@ export default function Robotics({
         </g>
       </svg>
 
-      <div className="rb-readout">
-        <span className="rb-dot" aria-hidden />
-        {readout}
-      </div>
-
       {/* ---- the mark, bolted to an anodized mounting plate ---- */}
       <div className="rb-markwrap">
         <div className="rb-panel" aria-hidden>
@@ -140,13 +133,13 @@ export default function Robotics({
         <span className="rb-bolt rb-bolt-br" aria-hidden />
       </div>
 
-      {/* ---- type ---- */}
+      {/* ---- type: the logo already says CODE NINJAS, so the only word here
+             is the location ---- */}
       <div className="rb-type">
         <div className="rb-caption">{caption}</div>
         <div className="rb-bar" aria-hidden>
           <span className="rb-bar-fill" />
         </div>
-        <div className="rb-kicker">{kicker}</div>
       </div>
 
       <div className="rb-scanlines" aria-hidden />

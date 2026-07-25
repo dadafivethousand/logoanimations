@@ -122,11 +122,15 @@ Hard-won details, don't relearn them:
   ever tells you about `static`. Motion has to be checked in a real foreground
   window or on device — flag timing as "verify on device."
 
-## Copy / claims
+## Copy
 
-Captions, kickers and seal glyphs default to placeholders. **Confirm real
-wording with the user before treating them as final** — this is public-facing
-marketing.
+**The only text on screen is CODE NINJAS WOODBRIDGE**, and the logo itself
+supplies "CODE NINJAS" — so a theme renders exactly one word: WOODBRIDGE. No
+taglines, no kickers, no HUD readouts, no "CODE · BUILD · PLAY". The user asked
+for these to be gone; don't reintroduce them when adding a theme.
+
+Anything beyond that word is a claim, so **confirm the wording with the user
+before treating it as final** — this is public-facing marketing.
 
 ## Workflow
 

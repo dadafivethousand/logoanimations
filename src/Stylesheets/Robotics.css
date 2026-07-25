@@ -219,34 +219,6 @@
   }
 }
 
-.rb-readout {
-  position: absolute;
-  left: var(--safe-x);
-  top: calc(var(--safe-y) + 19.5vw);
-  z-index: 26;
-  display: flex;
-  align-items: center;
-  gap: 1.3vw;
-  font-size: 2vw;
-  font-weight: 700;
-  letter-spacing: 0.28em;
-  color: rgba(168, 255, 224, 0.9);
-  opacity: 0;
-  transform: translateX(-0.9vw);
-  transition: opacity 500ms ease, transform 600ms ease;
-}
-.rb-p4 .rb-readout {
-  opacity: 1;
-  transform: translateX(0);
-}
-.rb-dot {
-  width: 1.1vw;
-  height: 1.1vw;
-  border-radius: 50%;
-  background: var(--trace);
-  box-shadow: 0 0 12px var(--trace);
-  animation: rb-blink 1400ms ease-in-out infinite;
-}
 
 /* ====================================================================
    THE MARK
@@ -607,21 +579,6 @@
   width: 100%;
 }
 
-.rb-kicker {
-  margin-top: 2.4vw;
-  font-size: 2.2vw;
-  font-weight: 700;
-  letter-spacing: 0.32em;
-  text-indent: 0.32em;
-  color: #8fa0b2;
-  opacity: 0;
-  transform: translateY(0.9vw);
-  transition: opacity 560ms 300ms ease, transform 640ms 300ms ease;
-}
-.rb-p4 .rb-kicker {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 /* ====================================================================
    FILM
@@ -665,10 +622,6 @@
 }
 .rb.is-static .rb-bar-fill {
   width: 100%;
-}
-.rb.is-static .rb-pad,
-.rb.is-static .rb-dot {
-  opacity: 1;
 }
 /* one-pass effects have no resting state — keep them off the poster */
 .rb.is-static .rb-mill,

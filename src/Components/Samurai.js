@@ -55,7 +55,6 @@ const SPARKS = [
 export default function Samurai({
   mode = "animated",
   caption = "WOODBRIDGE",
-  kicker = "CODE · BUILD · PLAY",
   loopAt = 7500,
 }) {
   const { logoVar, ready } = useLogo();
@@ -143,11 +142,11 @@ export default function Samurai({
         ))}
       </div>
 
-      {/* ---- type ---- */}
+      {/* ---- type: the logo already says CODE NINJAS, so the only word here
+             is the location ---- */}
       <div className="sw-type">
         <div className="sw-caption">{caption}</div>
         <div className="sw-rule" aria-hidden />
-        <div className="sw-kicker">{kicker}</div>
       </div>
 
       <div className="sw-film" aria-hidden />

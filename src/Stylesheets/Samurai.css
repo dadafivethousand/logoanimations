@@ -543,21 +543,6 @@
   width: 62%;
 }
 
-.sw-kicker {
-  margin-top: 2.4vw;
-  font-size: 2.2vw;
-  font-weight: 700;
-  letter-spacing: 0.34em;
-  text-indent: 0.34em;
-  color: #8595ab;
-  opacity: 0;
-  transform: translateY(0.9vw);
-  transition: opacity 620ms 260ms ease, transform 700ms 260ms ease;
-}
-.sw-p4 .sw-kicker {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 /* ====================================================================
    FILM
