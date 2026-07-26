@@ -198,18 +198,17 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 170%;
-  height: 360%;
+  width: 152%;
+  height: 320%;
   transform: translate(-50%, -50%);
   background: radial-gradient(
     closest-side,
-    rgba(16, 3, 7, 0.94) 0%,
-    rgba(28, 5, 11, 0.7) 42%,
-    rgba(48, 10, 18, 0.3) 66%,
-    transparent 80%
+    rgba(48, 8, 16, 0.74) 0%,
+    rgba(64, 14, 22, 0.42) 46%,
+    transparent 72%
   );
   mix-blend-mode: multiply;
-  filter: blur(2.6vw);
+  filter: blur(2.4vw);
   opacity: 0;
   transition: opacity 800ms ease;
 }
@@ -269,16 +268,13 @@
     /* top-lit sheen band */
     linear-gradient(
       177deg,
-      rgba(255, 255, 255, 0.24) 0%,
-      rgba(255, 255, 255, 0.05) 16%,
-      transparent 34%
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0.14) 20%,
+      transparent 42%
     ),
-    /* red life under the black */
-      radial-gradient(70% 130% at 30% 22%, rgba(255, 42, 77, 0.42) 0%, transparent 62%),
-    radial-gradient(80% 140% at 78% 84%, rgba(139, 10, 32, 0.55) 0%, transparent 66%),
-    /* The lacquer itself. Mids sit higher than true black urushi would: laid
-       over the red disc, a genuinely black plate loses its letterforms. */
-      linear-gradient(184deg, #522329 0%, #2d1216 34%, #1a0b0d 60%, #40181d 100%);
+    /* light brushed-steel plate — reads cleanly on the red disc, and the
+       plate bevel's dark rim keeps it legible where it crosses the washi */
+      linear-gradient(184deg, #fbf7ef 0%, #e7dfd2 36%, #cec5b5 62%, #f3ede1 100%);
 }
 
 /* --- forged grain: fine anisotropic hammer texture, multiplied --- */
