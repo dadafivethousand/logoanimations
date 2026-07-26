@@ -20,7 +20,7 @@
   --safe-y: 4.7vh;
 
   /* the one knob the composition scales from */
-  --mark-w: 62vw;
+  --mark-w: 50vw;
 
   position: absolute;
   inset: 0;
@@ -36,6 +36,65 @@
   width: 0;
   height: 0;
   pointer-events: none;
+}
+
+/* ====================================================================
+   THE UNROLL
+   Everything on the sheet sits inside .pc-scroll and is clipped from the
+   bottom up; the clip opening downward is the unroll itself. The dowel rides
+   the same edge, so the two can never fall out of step.
+   ==================================================================== */
+
+.pc-scroll {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1500ms cubic-bezier(0.36, 0, 0.24, 1);
+}
+.pc-p1 .pc-scroll,
+.pc-p2 .pc-scroll,
+.pc-p3 .pc-scroll,
+.pc-p4 .pc-scroll {
+  clip-path: inset(0 0 0% 0);
+}
+
+/* the rolled-up remainder of the scroll, travelling down the frame */
+.pc-roller {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: 0;
+  height: 9vw;
+  z-index: 30;
+  transform: translateY(-50%);
+  transition: top 1500ms cubic-bezier(0.36, 0, 0.24, 1), opacity 300ms 1400ms ease;
+}
+.pc-p1 .pc-roller,
+.pc-p2 .pc-roller,
+.pc-p3 .pc-roller,
+.pc-p4 .pc-roller {
+  top: 100%;
+  opacity: 0;
+}
+
+/* a cylinder of rolled paper: light along the top face, dark underneath, with
+   its own shadow thrown onto the sheet below */
+.pc-roller-bar {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.4vw;
+  background: linear-gradient(
+    180deg,
+    #b3945f 0%,
+    #e9d6ac 18%,
+    #fbf1d6 32%,
+    #d9c095 54%,
+    #9b7c4a 78%,
+    #6a5230 100%
+  );
+  box-shadow:
+    0 1.2vw 2.4vw rgba(38, 22, 6, 0.55),
+    inset 0 -0.3vw 0.6vw rgba(60, 38, 12, 0.5);
 }
 
 /* ====================================================================
@@ -181,12 +240,6 @@
   }
 }
 
-/* the destination's own coastline: drawn a touch heavier than the incidental
-   islands, because it is the place the whole map is about */
-.pc-land {
-  stroke-width: 4;
-}
-
 .pc-hatch path {
   stroke: var(--sepia);
   stroke-width: 2;
@@ -204,96 +257,76 @@
   }
 }
 
-/* the route: dashed, in the map's red pigment, laid down from the departure
-   point toward the destination */
-.pc-route path {
+/* --- the plotted course: one dot at a time, toward the destination --- */
+.pc-course circle {
+  fill: var(--map-red);
+  opacity: 0;
+  transform: scale(0.4);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.pc-p3 .pc-course circle,
+.pc-p4 .pc-course circle {
+  /* each dot lands 42ms after the one before it, so the course reads as being
+     plotted outward rather than appearing all at once */
+  animation: pc-plot 320ms calc(var(--i) * 42ms) cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+}
+@keyframes pc-plot {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  60% {
+    opacity: 0.95;
+    transform: scale(1.25);
+  }
+  100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+/* --- the cross on the destination, drawn once the course arrives --- */
+.pc-x-in {
   stroke: var(--map-red);
-  stroke-width: 4;
+  stroke-width: 7;
   stroke-linecap: round;
-  stroke-dasharray: 16 15;
-  stroke-dashoffset: 430;
-  opacity: 0.85;
+  fill: none;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
 }
-.pc-p3 .pc-route path,
-.pc-p4 .pc-route path {
-  animation: pc-lay 1600ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.pc-p4 .pc-x-in {
+  animation: pc-cross 420ms 120ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
 }
-@keyframes pc-lay {
+@keyframes pc-cross {
+  from {
+    opacity: 0;
+    transform: scale(1.5) rotate(-8deg);
+  }
   to {
-    stroke-dashoffset: 0;
+    opacity: 0.95;
+    transform: scale(1) rotate(0deg);
   }
 }
 
 /* --- where we set out from --- */
-.pc-depart {
+.pc-start {
   stroke: var(--ink);
   stroke-width: 2.6;
   fill: var(--ink);
   opacity: 0;
-  transition: opacity 600ms ease;
+  transition: opacity 500ms ease;
 }
-.pc-p3 .pc-depart,
-.pc-p4 .pc-depart {
-  opacity: 0.9;
-}
-
-/* --- the arrowhead landing on the destination coast --- */
-.pc-arrive {
-  fill: var(--map-red);
-  opacity: 0;
-  transition: opacity 500ms 1100ms ease;
-}
-.pc-p3 .pc-arrive,
-.pc-p4 .pc-arrive {
-  opacity: 0.9;
+.pc-p3 .pc-start,
+.pc-p4 .pc-start {
+  opacity: 0.85;
 }
 
-/* --- under way: the ship rides the same path the route is drawn from, so it
-   physically cannot wander off the line. offset-rotate keeps her bow pointed
-   along the heading. --- */
-.pc-sailing {
-  stroke: var(--map-red);
-  stroke-width: 2.4;
-  fill: var(--map-red);
-  offset-path: path("M96 1018 C 152 970, 114 902, 172 862 C 226 826, 262 806, 232 762");
-  /* Deliberately NOT auto-rotated. Aligning the glyph to the heading tips a
-     bow-up ship onto its side wherever the track turns, and at this size it
-     stops reading as a ship at all. Map ships are drawn upright. */
-  offset-rotate: 0deg;
-  offset-distance: 0%;
-  opacity: 0;
-}
-.pc-p3 .pc-sailing,
-.pc-p4 .pc-sailing {
-  animation: pc-voyage 7000ms 500ms ease-in-out infinite;
-}
-@keyframes pc-voyage {
-  0% {
-    offset-distance: 0%;
-    opacity: 0;
-  }
-  8% {
-    opacity: 0.95;
-  }
-  86% {
-    opacity: 0.95;
-  }
-  100% {
-    offset-distance: 100%;
-    opacity: 0;
-  }
-}
-.pc-hull {
-  fill: var(--map-red);
-}
-.pc-sail {
-  fill: rgba(176, 32, 44, 0.35);
-}
-
-.pc-rose {
-  stroke: var(--ink-soft);
-  stroke-width: 2;
-  fill: var(--sepia);
+.pc-p3 .pc-p3 .pc-p3 .pc-rose {
+  stroke: var(--sepia);
+  stroke-width: 2.2;
+  fill: #a8874f;
   opacity: 0;
 }
 .pc-p3 .pc-rose,
@@ -302,7 +335,7 @@
 }
 @keyframes pc-rose-in {
   to {
-    opacity: 0.8;
+    opacity: 0.55;
   }
 }
 
@@ -322,10 +355,12 @@
    absolutely positioned: that is what welds it under the logo.
    ==================================================================== */
 
+/* the destination sits in the bottom-right corner, inside the safe band —
+   it is a place on the map, not the centrepiece of a poster */
 .pc-markwrap {
   position: absolute;
-  left: 50%;
-  top: 52%;
+  left: 58%;
+  top: 82%;
   width: var(--mark-w);
   transform: translate(-50%, -50%);
   z-index: 20;
@@ -336,42 +371,6 @@
   width: 100%;
 }
 
-/* X marks the spot — small, and sitting where the route ends just below the
-   mark. Drawn across the logo at full width it read as crossing the brand out. */
-.pc-x {
-  position: absolute;
-  left: 50%;
-  top: 156%;
-  width: 15%;
-  height: 34%;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: multiply;
-  opacity: 0;
-  transition: opacity 600ms ease;
-}
-.pc-p3 .pc-x,
-.pc-p4 .pc-x {
-  opacity: 1;
-}
-.pc-x svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.pc-x path {
-  stroke: var(--map-red);
-  stroke-width: 7;
-  stroke-linecap: round;
-  stroke-dasharray: 260;
-  stroke-dashoffset: 260;
-}
-.pc-p3 .pc-x path,
-.pc-p4 .pc-x path {
-  animation: pc-draw 620ms 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-.pc-x path:nth-child(2) {
-  animation-delay: 420ms;
-}
 
 .pc-mark {
   position: relative;
@@ -528,10 +527,10 @@
 
 .pc-seal {
   position: absolute;
-  right: calc(var(--safe-x) - 1vw);
+  left: calc(var(--safe-x) - 1vw);
   bottom: calc(var(--safe-y) + 1vh);
-  width: 17vw;
-  height: 17vw;
+  width: 15vw;
+  height: 15vw;
   z-index: 24;
   display: grid;
   place-items: center;
@@ -619,26 +618,33 @@
   animation: none !important;
   transition: none !important;
 }
-.pc.is-static .pc-coast path,
-.pc.is-static .pc-route path,
-.pc.is-static .pc-x path {
+.pc.is-static .pc-scroll {
+  clip-path: inset(0 0 0% 0);
+}
+.pc.is-static .pc-roller {
+  opacity: 0;
+}
+/* the coast is a stroke reveal; the dots and the start marker are opacity —
+   they need separate resets, and a single malformed selector list here silently
+   invalidated all three */
+.pc.is-static .pc-coast path {
   stroke-dashoffset: 0;
+}
+.pc.is-static .pc-course circle,
+.pc.is-static .pc-start {
+  opacity: 0.9;
+  transform: scale(1);
 }
 .pc.is-static .pc-hatch path,
 .pc.is-static .pc-marks path {
   opacity: 0.75;
 }
 .pc.is-static .pc-rose {
-  opacity: 0.8;
+  opacity: 0.55;
 }
-.pc.is-static .pc-depart,
-.pc.is-static .pc-arrive {
-  opacity: 0.9;
-}
-/* hold her mid-passage, still clearly bound for the destination */
-.pc.is-static .pc-sailing {
+.pc.is-static .pc-x-in {
   opacity: 0.95;
-  offset-distance: 56%;
+  transform: none;
 }
 .pc.is-static .pc-rule {
   width: 66%;
@@ -655,25 +661,30 @@
     animation: none !important;
     transition: none !important;
   }
-  .pc .pc-coast path,
-  .pc .pc-route path,
-  .pc .pc-x path {
+  .pc .pc-scroll {
+    clip-path: inset(0 0 0% 0);
+  }
+  .pc .pc-roller {
+    opacity: 0;
+  }
+  .pc .pc-coast path {
     stroke-dashoffset: 0;
+  }
+  .pc .pc-course circle,
+  .pc .pc-start {
+    opacity: 0.9;
+    transform: scale(1);
   }
   .pc .pc-hatch path,
   .pc .pc-marks path {
     opacity: 0.75;
   }
   .pc .pc-rose {
-    opacity: 0.8;
+    opacity: 0.55;
   }
-  .pc .pc-depart,
-  .pc .pc-arrive {
-    opacity: 0.9;
-  }
-  .pc .pc-sailing {
+  .pc .pc-x-in {
     opacity: 0.95;
-    offset-distance: 42%;
+    transform: none;
   }
   .pc .pc-rule {
     width: 66%;

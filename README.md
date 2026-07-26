@@ -48,12 +48,11 @@ stone reflection.
 **Robotics** — the mark milled from brushed aluminium with an anodized red edge,
 bolted to a mounting plate, PCB traces running current into it, HUD frame.
 
-**Pirates** — CODE NINJAS WOODBRIDGE as a destination on an old treasure map.
-The lockup sits inside a landmass, so the logo labels a place; a dashed route
-runs from a departure point at the foot of the sheet, a ship sails it, and an
-arrowhead lands on the destination's coast. Aged parchment with burnt torn edges,
-hand-drawn coastlines, soundings, a compass rose and a red wax seal. The eye band
-and "CODE" get their own pigment so the lockup still reads.
+**Pirates** — a scroll unrolls, a dotted course is plotted across it one dot at
+a time, and it ends at a cross above CODE NINJAS WOODBRIDGE in the corner: the
+final destination. Aged parchment with burnt torn edges, hand-drawn coastlines,
+soundings, a compass rose and a red wax seal. The eye band and "CODE" get their
+own pigment so the lockup still reads.
 
 ## Adding one
 
