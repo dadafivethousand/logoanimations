@@ -1,10 +1,10 @@
-// Samurai.js — the mark rendered as forged, lacquered armour plate with
-// kintsugi gold seams, standing against a washi-paper hinomaru.
+// Samurai.js — the mark rendered as a forged, lacquered armour plate standing
+// against a washi-paper hinomaru, with minor katana slashes on the forge beat.
 //
-// Everything organic (torn sun edge, brush strokes, gold seams, seal) is
-// inline SVG driven by feTurbulence displacement, so nothing is a flat circle.
-// Everything material (lacquer, gold, bevel) is CSS gradients + drop-shadow
-// chains masked through the logo's alpha.
+// Everything organic (torn sun edge, brush strokes) is inline SVG driven by
+// feTurbulence displacement, so nothing is a flat circle. Everything material
+// (lacquer, bevel) is CSS gradients + drop-shadow chains masked through the
+// logo's alpha.
 import React from "react";
 import "../Stylesheets/Samurai.css";
 import usePhases from "../Utils/usePhases";
@@ -96,28 +96,6 @@ export default function Samurai({
             <div className="sm-layer sm-grainplate" />
           </div>
 
-          {/* kintsugi: real SVG seams, clipped to the mark by the parent mask */}
-          <div className="sm-layer sm-seams" aria-hidden>
-            <svg viewBox="0 0 1000 460" preserveAspectRatio="none">
-              <g filter="url(#sm-crackle)" fill="none" strokeLinecap="round">
-                {/* main fracture across the full width */}
-                <path className="sm-seam" d="M-20 250 L 180 180 L 300 300 L 470 150 L 640 280 L 800 160 L 1020 250" />
-                {/* second run low enough to catch the wordmark, not just the
-                    ninja head — seams confined to the upper band read as a
-                    smudge on the icon instead of a repair through the mark */}
-                <path className="sm-seam" d="M-20 400 L 150 350 L 340 430 L 520 340 L 700 420 L 880 350 L 1020 400" />
-                <path className="sm-seam sm-seam-2" d="M300 300 L 340 470" />
-                <path className="sm-seam sm-seam-2" d="M470 150 L 430 -20" />
-                <path className="sm-seam sm-seam-2" d="M800 160 L 860 -10" />
-                <path className="sm-seam sm-seam-2" d="M520 340 L 560 480" />
-                <path className="sm-seam sm-seam-3" d="M180 180 L 120 40" />
-                <path className="sm-seam sm-seam-3" d="M640 280 L 700 450" />
-                <path className="sm-seam sm-seam-3" d="M150 350 L 90 470" />
-                <path className="sm-seam sm-seam-3" d="M880 350 L 930 470" />
-              </g>
-            </svg>
-          </div>
-
           {/* fixed specular — present in static mode too */}
           <div className="sm-layer sm-spec" aria-hidden />
 
@@ -170,17 +148,6 @@ function SamuraiDefs() {
             result="gm"
           />
           <feComposite in="d" in2="gm" operator="out" />
-        </filter>
-
-        {/* kintsugi seam: organic wobble + a soft molten bloom */}
-        <filter id="sm-crackle" x="-15%" y="-15%" width="130%" height="130%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="19" result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G" result="d" />
-          <feGaussianBlur in="d" stdDeviation="3" result="b" />
-          <feMerge>
-            <feMergeNode in="b" />
-            <feMergeNode in="d" />
-          </feMerge>
         </filter>
 
         <radialGradient id="sm-sunfill" cx="42%" cy="36%" r="72%">
