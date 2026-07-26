@@ -13,6 +13,12 @@ robotics." One theme = one component + one stylesheet, added on demand. That's
 the whole workflow — no registries, no switcher UI, no canvas pickers. Copy an
 existing theme and go.
 
+**Only edit the theme currently in `src/App.js`.** When a defect turns out to be
+shared by the others — the missing-eyes bug was in all three — fix it in the one
+being worked on and *say* the others have it too. Do not fan the change out
+across the siblings; the user may have another session open on one of them, and
+a wide diff buries the actual change.
+
 The logo lives at `src/Images/logo.png` and the user drops replacements into
 `~/Downloads`; `npm run logo` imports the newest one.
 
