@@ -39,8 +39,8 @@ bar) needs a frozen value there. Same for `prefers-reduced-motion`.
 
 Same rule as the sibling repo: the compositions sit next to each other on one
 feed, so **give each theme its own colour story.** Samurai is washi cream and
-vermilion; Robotics is graphite, steel and green; Pirates is deep ocean teal and
-tarnished gold. Brand red `#e4002b` is the
+vermilion; Robotics is graphite, steel and green; Pirates is aged parchment,
+sepia ink and one red pigment. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
