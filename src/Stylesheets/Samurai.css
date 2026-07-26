@@ -198,17 +198,18 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 152%;
-  height: 320%;
+  width: 170%;
+  height: 360%;
   transform: translate(-50%, -50%);
   background: radial-gradient(
     closest-side,
-    rgba(48, 8, 16, 0.74) 0%,
-    rgba(64, 14, 22, 0.42) 46%,
-    transparent 72%
+    rgba(16, 3, 7, 0.94) 0%,
+    rgba(28, 5, 11, 0.7) 42%,
+    rgba(48, 10, 18, 0.3) 66%,
+    transparent 80%
   );
   mix-blend-mode: multiply;
-  filter: blur(2.4vw);
+  filter: blur(2.6vw);
   opacity: 0;
   transition: opacity 800ms ease;
 }
