@@ -181,6 +181,12 @@
   }
 }
 
+/* the destination's own coastline: drawn a touch heavier than the incidental
+   islands, because it is the place the whole map is about */
+.pc-land {
+  stroke-width: 4;
+}
+
 .pc-hatch path {
   stroke: var(--sepia);
   stroke-width: 2;
@@ -198,23 +204,90 @@
   }
 }
 
-/* the route: dashed, in the map's red pigment */
+/* the route: dashed, in the map's red pigment, laid down from the departure
+   point toward the destination */
 .pc-route path {
   stroke: var(--map-red);
   stroke-width: 4;
   stroke-linecap: round;
   stroke-dasharray: 16 15;
-  stroke-dashoffset: 900;
+  stroke-dashoffset: 430;
   opacity: 0.85;
 }
 .pc-p3 .pc-route path,
 .pc-p4 .pc-route path {
-  animation: pc-lay 1500ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: pc-lay 1600ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 @keyframes pc-lay {
   to {
     stroke-dashoffset: 0;
   }
+}
+
+/* --- where we set out from --- */
+.pc-depart {
+  stroke: var(--ink);
+  stroke-width: 2.6;
+  fill: var(--ink);
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.pc-p3 .pc-depart,
+.pc-p4 .pc-depart {
+  opacity: 0.9;
+}
+
+/* --- the arrowhead landing on the destination coast --- */
+.pc-arrive {
+  fill: var(--map-red);
+  opacity: 0;
+  transition: opacity 500ms 1100ms ease;
+}
+.pc-p3 .pc-arrive,
+.pc-p4 .pc-arrive {
+  opacity: 0.9;
+}
+
+/* --- under way: the ship rides the same path the route is drawn from, so it
+   physically cannot wander off the line. offset-rotate keeps her bow pointed
+   along the heading. --- */
+.pc-sailing {
+  stroke: var(--map-red);
+  stroke-width: 2.4;
+  fill: var(--map-red);
+  offset-path: path("M96 1018 C 152 970, 114 902, 172 862 C 226 826, 262 806, 232 762");
+  /* Deliberately NOT auto-rotated. Aligning the glyph to the heading tips a
+     bow-up ship onto its side wherever the track turns, and at this size it
+     stops reading as a ship at all. Map ships are drawn upright. */
+  offset-rotate: 0deg;
+  offset-distance: 0%;
+  opacity: 0;
+}
+.pc-p3 .pc-sailing,
+.pc-p4 .pc-sailing {
+  animation: pc-voyage 7000ms 500ms ease-in-out infinite;
+}
+@keyframes pc-voyage {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.95;
+  }
+  86% {
+    opacity: 0.95;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+.pc-hull {
+  fill: var(--map-red);
+}
+.pc-sail {
+  fill: rgba(176, 32, 44, 0.35);
 }
 
 .pc-rose {
@@ -558,6 +631,15 @@
 .pc.is-static .pc-rose {
   opacity: 0.8;
 }
+.pc.is-static .pc-depart,
+.pc.is-static .pc-arrive {
+  opacity: 0.9;
+}
+/* hold her mid-passage, still clearly bound for the destination */
+.pc.is-static .pc-sailing {
+  opacity: 0.95;
+  offset-distance: 56%;
+}
 .pc.is-static .pc-rule {
   width: 66%;
 }
@@ -584,6 +666,14 @@
   }
   .pc .pc-rose {
     opacity: 0.8;
+  }
+  .pc .pc-depart,
+  .pc .pc-arrive {
+    opacity: 0.9;
+  }
+  .pc .pc-sailing {
+    opacity: 0.95;
+    offset-distance: 42%;
   }
   .pc .pc-rule {
     width: 66%;

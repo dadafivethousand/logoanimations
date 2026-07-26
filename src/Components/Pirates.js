@@ -27,6 +27,11 @@ import useLogo from "../Utils/useLogo";
 // p1 parchment · p2 coastlines drawn · p3 route + compass · p4 mark, seal, type
 const CUES = [200, 800, 1500, 2300];
 
+/* The voyage. One definition, used twice: as the dashed route and as the
+   `offset-path` the sailing ship rides, so the ship can never drift off the
+   line it is supposed to be following. */
+const TRACK = "M96 1018 C 152 970, 114 902, 172 862 C 226 826, 262 806, 232 762";
+
 export default function Pirates({
   mode = "animated",
   caption = "WOODBRIDGE",
@@ -60,9 +65,15 @@ export default function Pirates({
           <g className="pc-coast" fill="none">
             <path d="M-10 208 C 70 190, 118 236, 176 214 S 268 176, 322 210 S 404 250, 470 222 S 560 186, 614 214" />
             <path d="M-10 980 C 78 1002, 130 958, 196 982 S 300 1022, 366 992 S 470 950, 540 978 S 596 996, 614 986" />
-            {/* an island the route runs past */}
+            {/* a small island the route passes on the way */}
             <path d="M92 374 C 118 346, 152 356, 178 342 S 214 366, 206 392 S 222 418, 200 434 S 168 430, 148 452 S 112 446, 104 424 S 78 414, 84 396 S 74 380, 92 374 Z" />
-            <path d="M446 702 C 468 682, 498 690, 520 680 S 544 704, 536 724 S 546 748, 526 758 S 498 754, 482 770 S 452 762, 446 744 S 430 734, 436 718 S 430 706, 446 702 Z" />
+
+            {/* THE DESTINATION. The lockup sits inside this coastline, so the
+                logo labels a place on the map rather than floating over it. */}
+            <path
+              className="pc-land"
+              d="M96 660 C 84 604, 130 560, 186 546 S 258 500, 320 512 S 420 498, 462 534 S 528 566, 522 618 S 540 686, 494 716 S 430 766, 366 754 S 264 780, 206 758 S 108 726, 96 660 Z"
+            />
           </g>
 
           {/* sea hatching — short parallel strokes off each coast */}
@@ -72,9 +83,37 @@ export default function Pirates({
             ))}
           </g>
 
-          {/* the route: dashes, a bearing turn, and an X on the mark */}
+          {/* the voyage: from the departure point at the foot of the map up to
+              the destination's south coast — and it STOPS there. A route that
+              carries on across the landmass reads as passing through, not
+              arriving. */}
           <g className="pc-route" fill="none">
-            <path d="M150 470 C 108 546, 176 578, 214 620 S 268 690, 258 742 S 276 812, 298 844" />
+            <path id="pc-track" d={TRACK} />
+          </g>
+
+          {/* where we set out from */}
+          <g className="pc-depart" transform="translate(96 1052)">
+            <circle r="13" fill="none" />
+            <circle r="4" />
+            <g transform="translate(0 -40) scale(2.1)">
+              <path className="pc-hull" d="M-13 0 L13 0 L9 9 Q0 12 -9 9 Z" />
+              <path d="M0 -20 L0 0" />
+              <path className="pc-sail" d="M1 -19 Q13 -12 1 -4 Z" />
+            </g>
+          </g>
+
+          {/* arriving: an arrowhead landed on the destination coast */}
+          <g className="pc-arrive">
+            <path d="M232 740 L219 770 L232 761 L245 770 Z" />
+          </g>
+
+          {/* under way — this ship rides the track itself */}
+          <g className="pc-sailing">
+            <g transform="translate(0 -12) scale(2)">
+              <path className="pc-hull" d="M-13 0 L13 0 L9 9 Q0 12 -9 9 Z" />
+              <path d="M0 -20 L0 0" />
+              <path className="pc-sail" d="M1 -19 Q13 -12 1 -4 Z" />
+            </g>
           </g>
 
           {/* compass rose */}
@@ -167,9 +206,9 @@ const HATCH = [
 
 const SOUNDINGS = [
   [96, 296], [188, 306], [268, 288], [352, 300], [438, 286], [520, 300],
-  [72, 470], [268, 470], [356, 456], [560, 470],
+  [72, 470], [356, 456], [560, 470],
   [88, 852], [176, 866], [264, 852], [352, 866], [440, 852], [528, 866],
-  [130, 640], [470, 660],
+  [560, 620], [40, 640],
 ];
 
 function PiratesDefs() {
