@@ -1,41 +1,42 @@
-/* Samurai — polished steel mark, cut apart by three katana slashes.
+/* Samurai — forged lacquer plate + kintsugi, on washi with a torn hinomaru.
    Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
-   px is reserved for hairlines that must stay hairlines (bevels, kerf rims). */
+   px is reserved for hairlines that must stay hairlines (bevels, rules). */
 
-@property --sw-aniso {
+@property --sm-sheen {
   syntax: "<angle>";
-  initial-value: 18deg;
+  initial-value: 108deg;
   inherits: false;
 }
 
-.sw {
-  /* palette — cold night steel, hot cut, brand red only as an accent */
-  --night: #05070c;
-  --steel-hi: #ffffff;
-  --steel: #c3ccd8;
-  --steel-lo: #262d38;
-  --hot: #ffd39a;
-  --hot-core: #fff6e6;
-  --ember: #ff5a1f;
-  --red: #e4002b;
+.sm {
+  /* palette */
+  --washi: #efe7d6;
+  --washi-deep: #ddd2ba;
+  --sumi: #16130f;
+  --vermilion: #c8102e;
+  --vermilion-lo: #8b0a20;
+  --gold: #d4a13c;
+  --gold-hi: #f7e2a0;
+  --gold-lo: #7d5417;
 
   /* screen-recording crop: nothing meaningful inside this band */
   --safe-x: 11.5vw;
   --safe-y: 4.7vh;
 
   /* the one knob the composition scales from */
-  --mark-w: 72vw;
+  --mark-w: 69.3vw;
 
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: var(--night);
+  background: var(--washi);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  color: #dbe3ee;
+  color: var(--sumi);
+  /* new stacking + filter context so nothing bleeds outside the canvas */
   isolation: isolate;
 }
 
-.sw-defs {
+.sm-defs {
   position: absolute;
   width: 0;
   height: 0;
@@ -43,173 +44,202 @@
 }
 
 /* ====================================================================
-   STAGE
+   GROUND — washi paper
    ==================================================================== */
 
-.sw-bg {
+.sm-paper {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(76% 42% at 50% 32%, #22314c 0%, #131c2e 42%, var(--night) 100%),
-    linear-gradient(180deg, #0a1120 0%, #04060a 100%);
+    radial-gradient(88% 62% at 50% 34%, #fbf6ea 0%, var(--washi) 46%, var(--washi-deep) 100%),
+    linear-gradient(180deg, rgba(255, 252, 244, 0.9), rgba(206, 194, 170, 0.55));
   opacity: 0;
-  transform: scale(1.04);
-  transition: opacity 900ms ease, transform 1600ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(1.035);
+  transition: opacity 900ms ease, transform 1400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.sw-p1 .sw-bg,
-.sw-p2 .sw-bg,
-.sw-p3 .sw-bg,
-.sw-p4 .sw-bg {
+.sm-p1 .sm-paper,
+.sm-p2 .sm-paper,
+.sm-p3 .sm-paper,
+.sm-p4 .sm-paper {
   opacity: 1;
   transform: scale(1);
 }
 
-/* a low moon behind the mark — gives the steel something to catch */
-.sw-moon {
+/* a single soft crease down the sheet. The stops have to be far apart — a
+   tight ramp reads as a hard printing artefact, not a fold in paper. */
+.sm-fold {
   position: absolute;
-  left: 50%;
-  top: 22%;
-  width: 30vw;
-  height: 30vw;
-  transform: translate(-50%, -50%) scale(0.92);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 46% 42%,
-    rgba(255, 250, 236, 0.72) 0%,
-    rgba(214, 226, 244, 0.3) 30%,
-    rgba(140, 168, 210, 0.1) 54%,
-    transparent 70%
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    92deg,
+    transparent 0 30%,
+    rgba(120, 104, 74, 0.05) 44%,
+    rgba(255, 253, 246, 0.28) 50%,
+    rgba(120, 104, 74, 0.04) 56%,
+    transparent 70% 100%
   );
-  filter: blur(0.7vw);
-  opacity: 0;
-  transition: opacity 1200ms ease, transform 1800ms cubic-bezier(0.16, 1, 0.3, 1);
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+  filter: blur(3px);
 }
-.sw-p1 .sw-moon,
-.sw-p2 .sw-moon,
-.sw-p3 .sw-moon,
-.sw-p4 .sw-moon {
+
+/* paper tooth: fine fibre noise, multiplied over everything */
+.sm-fibre {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.42;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23f)' opacity='0.42'/></svg>");
+  background-size: 200px 200px;
+}
+
+.sm-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 41;
+  background: radial-gradient(78% 62% at 50% 44%, transparent 44%, rgba(86, 70, 44, 0.34) 100%);
+  mix-blend-mode: multiply;
+}
+
+/* ====================================================================
+   HINOMARU
+   ==================================================================== */
+
+.sm-sun {
+  position: absolute;
+  /* concentric with the mark: an off-centre disc leaves the wordmark hanging
+     half-on, half-off and the whole composition reads as a misalignment */
+  left: 50%;
+  top: 50%;
+  width: 61vw;
+  height: 61vw;
+  transform: translate(-50%, -50%) scale(0.86);
+  opacity: 0;
+  filter: drop-shadow(0 1.7vw 4vw rgba(139, 10, 32, 0.22));
+  transition:
+    opacity 900ms ease,
+    transform 1500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sm-p1 .sm-sun,
+.sm-p2 .sm-sun,
+.sm-p3 .sm-sun,
+.sm-p4 .sm-sun {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
 
-.sw-mist {
+/* ====================================================================
+   SUMI-E STROKES — drawn on with a clip-path wipe
+   ==================================================================== */
+
+/* Kept clear of the disc's middle — a stroke crossing the sun turns muddy
+   maroon and reads as a mistake rather than brushwork. */
+.sm-ink {
   position: absolute;
-  left: -10%;
-  right: -10%;
-  top: 44%;
+  left: -4%;
+  width: 108%;
+  height: 28vw;
+  opacity: 0.85;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1100ms cubic-bezier(0.5, 0, 0.2, 1);
+}
+.sm-ink-a {
+  top: 4%;
+  transform: scaleY(0.7);
+}
+.sm-ink-b {
+  top: 80%;
+  transform: scaleY(0.62);
+}
+.sm-p2 .sm-ink-a,
+.sm-p3 .sm-ink-a,
+.sm-p4 .sm-ink-a {
+  clip-path: inset(0 0 0 0);
+}
+.sm-p2 .sm-ink-b,
+.sm-p3 .sm-ink-b,
+.sm-p4 .sm-ink-b {
+  clip-path: inset(0 0 0 0);
+  transition-delay: 220ms;
+}
+
+.sm-mist {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46%;
   height: 34%;
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(126, 154, 196, 0) 0%,
-    rgba(126, 154, 196, 0.13) 44%,
-    rgba(96, 122, 162, 0.09) 70%,
-    transparent 100%
+    rgba(239, 231, 214, 0) 0%,
+    rgba(239, 231, 214, 0.72) 42%,
+    rgba(239, 231, 214, 0.92) 68%,
+    rgba(239, 231, 214, 0) 100%
   );
-  filter: blur(1.4vw);
-}
-
-/* wet stone floor for the reflection to sit on */
-.sw-floor {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 62%;
-  bottom: 0;
-  background:
-    linear-gradient(180deg, rgba(140, 170, 214, 0.09) 0%, transparent 26%),
-    linear-gradient(180deg, #070b13 0%, #04060b 100%);
+  filter: blur(6px);
 }
 
 /* ====================================================================
    THE MARK
    ==================================================================== */
 
-.sw-markwrap {
+.sm-markwrap {
   position: absolute;
   left: 50%;
-  top: 47%;
+  top: 50%;
   width: var(--mark-w);
   transform: translate(-50%, -50%);
   z-index: 20;
 }
 
-.sw-cast {
+.sm-halo {
   position: absolute;
   left: 50%;
-  bottom: -7vw;
-  width: 88%;
-  height: 5vw;
-  transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.85), transparent 76%);
-  filter: blur(1.4vw);
+  top: 50%;
+  width: 152%;
+  height: 320%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    closest-side,
+    rgba(48, 8, 16, 0.74) 0%,
+    rgba(64, 14, 22, 0.42) 46%,
+    transparent 72%
+  );
+  mix-blend-mode: multiply;
+  filter: blur(2.4vw);
   opacity: 0;
-  transition: opacity 700ms ease;
+  transition: opacity 800ms ease;
 }
-.sw-p1 .sw-cast,
-.sw-p2 .sw-cast,
-.sw-p3 .sw-cast,
-.sw-p4 .sw-cast {
+.sm-p3 .sm-halo,
+.sm-p4 .sm-halo {
   opacity: 1;
 }
 
-.sw-mark {
+.sm-mark {
   position: relative;
   width: 100%;
-  /* measured from the trimmed mark at load — every piece and every masked
-     layer shares this box, which is what keeps the cuts in register */
+  /* measured from the trimmed mark at load — keeps every masked layer in
+     register no matter what file is dropped in */
   aspect-ratio: var(--logo-aspect, 2.17);
   opacity: 0;
-  transform: translateY(1.6vw) scale(0.98);
+  transform: translateY(2.4vw) scale(0.955);
   transition:
     opacity 620ms ease,
     transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.sw-p1 .sw-mark,
-.sw-p2 .sw-mark,
-.sw-p3 .sw-mark,
-.sw-p4 .sw-mark {
+.sm-p3 .sm-mark,
+.sm-p4 .sm-mark {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
 
-/* --- one slice --- */
-.sw-piece {
-  position: absolute;
-  inset: 0;
-  transform: translate(0, 0);
-  transition: transform 700ms cubic-bezier(0.16, 1, 0.28, 1);
-}
-.sw-p2 .sw-piece,
-.sw-p3 .sw-piece,
-.sw-p4 .sw-piece {
-  transform: translate(var(--dx), var(--dy));
-}
-/* staggered so the three cuts land one after another, not as one shrug */
-.sw-piece:nth-child(2) {
-  transition-delay: 90ms;
-}
-.sw-piece:nth-child(3) {
-  transition-delay: 190ms;
-}
-.sw-piece:nth-child(4) {
-  transition-delay: 290ms;
-}
-
-/* --- chamfer: drop-shadow reads alpha, so these rims trace the letterforms --- */
-.sw-plate {
-  position: absolute;
-  inset: 0;
-  filter:
-    drop-shadow(0 -1.5px 0 rgba(255, 255, 255, 0.75))
-    drop-shadow(0 2px 0 rgba(0, 0, 0, 0.95))
-    drop-shadow(-1px 0 0 rgba(215, 232, 255, 0.4))
-    drop-shadow(1.5px 0 0 rgba(0, 0, 0, 0.8))
-    drop-shadow(0 0.5vw 0.9vw rgba(0, 0, 0, 0.6));
-}
-
 /* every material layer is the same box, masked to the mark's alpha */
-.sw-layer {
+.sm-layer {
   position: absolute;
   inset: 0;
   -webkit-mask-image: var(--logo);
@@ -222,274 +252,171 @@
   mask-position: center;
 }
 
-/* --- polished steel. The alternating light/dark bands are what sell forged
-   metal: a single smooth gradient always reads as grey plastic. --- */
-.sw-steel {
-  background: linear-gradient(
-    179deg,
-    #f4f8fd 0%,
-    #cdd7e4 9%,
-    #8c98a8 22%,
-    #4a5361 34%,
-    #2b323d 44%,
-    #59636f 52%,
-    #a8b4c2 61%,
-    #e8eef6 68%,
-    #98a4b3 76%,
-    #4d5665 86%,
-    #222831 94%,
-    #6a7482 100%
-  );
+/* --- cast shadow: the plate sits above the paper --- */
+.sm-cast {
+  background: rgba(60, 44, 22, 0.5);
+  filter: blur(1.7vw);
+  transform: translateY(2vw) scale(1.008);
+  opacity: 0;
+  transition: opacity 700ms ease;
 }
-
-/* --- hamon: the temper line along the edge of a differentially hardened
-   blade. Turbulence-displaced and blurred, screened over the steel. --- */
-.sw-hamon {
-  mix-blend-mode: screen;
+.sm-p3 .sm-cast,
+.sm-p4 .sm-cast {
   opacity: 0.55;
 }
-.sw-hamon svg {
+
+/* --- base lacquer (urushi): near-black cherry with a red core glow --- */
+.sm-lacquer {
+  background:
+    /* top-lit sheen band */
+    linear-gradient(
+      177deg,
+      rgba(255, 255, 255, 0.24) 0%,
+      rgba(255, 255, 255, 0.05) 16%,
+      transparent 34%
+    ),
+    /* red life under the black */
+      radial-gradient(70% 130% at 30% 22%, rgba(255, 42, 77, 0.42) 0%, transparent 62%),
+    radial-gradient(80% 140% at 78% 84%, rgba(139, 10, 32, 0.55) 0%, transparent 66%),
+    /* The lacquer itself. Mids sit higher than true black urushi would: laid
+       over the red disc, a genuinely black plate loses its letterforms. */
+      linear-gradient(184deg, #522329 0%, #2d1216 34%, #1a0b0d 60%, #40181d 100%);
+}
+
+/* --- forged grain: fine anisotropic hammer texture, multiplied --- */
+.sm-grainplate {
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(
+      98deg,
+      rgba(255, 255, 255, 0.07) 0px,
+      rgba(255, 255, 255, 0.07) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='h'><feTurbulence type='fractalNoise' baseFrequency='0.35 0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23h)' opacity='0.55'/></svg>");
+  background-size: auto, 180px 180px;
+}
+
+/* --- bevel ---
+   The chain sits on a WRAPPER around the painted layers, not on an empty
+   masked box: drop-shadow derives its shape from the alpha of what it
+   wraps, so an invisible source would cast an invisible shadow. Wrapping the
+   lacquer means each shadow peeks out a hairline past the letterform edge —
+   warm rim above, hard black below — which reads as a machined chamfer.
+   Order matters: later shadows are cast by the result of the earlier ones. */
+.sm-plate {
+  position: absolute;
+  inset: 0;
+  filter:
+    drop-shadow(0 -2px 0 rgba(255, 236, 200, 0.55))
+    drop-shadow(0 2px 0 rgba(0, 0, 0, 0.9))
+    drop-shadow(-1.5px 0 0 rgba(255, 214, 160, 0.28))
+    drop-shadow(1.5px 0 0 rgba(0, 0, 0, 0.6))
+    drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+}
+
+/* --- kintsugi seams --- */
+.sm-seams {
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.sm-p4 .sm-seams {
+  opacity: 1;
+}
+.sm-seams svg {
   width: 100%;
   height: 100%;
   display: block;
 }
-
-/* --- rolled grain, very fine and directional --- */
-.sw-grain {
-  mix-blend-mode: overlay;
-  opacity: 0.4;
-  background-image:
-    repeating-linear-gradient(
-      92deg,
-      rgba(255, 255, 255, 0.1) 0px,
-      rgba(255, 255, 255, 0.1) 1px,
-      transparent 1px,
-      transparent 3px
-    ),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.03 1.3' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23g)' opacity='0.5'/></svg>");
-  background-size: auto, 220px 220px;
+.sm-seam {
+  stroke: var(--gold);
+  stroke-width: 7;
+  /* molten glow, brightest at the centre of the run */
+  filter: drop-shadow(0 0 6px rgba(247, 226, 160, 0.75));
 }
-
-/* --- anisotropic specular: polished steel throws a highlight that moves --- */
-.sw-aniso {
-  mix-blend-mode: screen;
-  opacity: 0.5;
-  background: conic-gradient(
-    from var(--sw-aniso) at 48% 40%,
-    transparent 0deg,
-    rgba(255, 255, 255, 0.7) 22deg,
-    transparent 54deg,
-    transparent 168deg,
-    rgba(198, 224, 255, 0.55) 198deg,
-    transparent 236deg,
-    transparent 360deg
-  );
+.sm-seam-2 {
+  stroke: var(--gold-hi);
+  stroke-width: 4.5;
+  opacity: 0.85;
 }
-.sw-p3 .sw-aniso,
-.sw-p4 .sw-aniso {
-  animation: sw-rake 9000ms linear infinite;
+.sm-seam-3 {
+  stroke: var(--gold-lo);
+  stroke-width: 3.5;
+  opacity: 0.7;
 }
-@keyframes sw-rake {
+/* seams draw themselves on, then sit still */
+.sm-p4 .sm-seam {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: sm-draw 1100ms 120ms cubic-bezier(0.5, 0, 0.2, 1) forwards;
+}
+@keyframes sm-draw {
   to {
-    --sw-aniso: 378deg;
+    stroke-dashoffset: 0;
   }
 }
 
-/* ====================================================================
-   HOT CUT FACES
-   The gradient axis sits perpendicular to the cuts (156deg), so each thin
-   stop is a line running parallel to a slash. Masked to the mark, screened,
-   then cooled at p4.
-   ==================================================================== */
-
-.sw-heat {
-  position: absolute;
-  inset: 0;
-  -webkit-mask-image: var(--logo);
-  mask-image: var(--logo);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  mix-blend-mode: screen;
+/* --- fixed specular: a soft raking highlight that survives static mode --- */
+.sm-spec {
   background: linear-gradient(
-    156deg,
-    transparent 27.6%,
-    rgba(255, 90, 31, 0.75) 28.6%,
-    var(--hot) 29.4%,
-    var(--hot-core) 29.9%,
-    var(--hot) 30.4%,
-    rgba(255, 90, 31, 0.75) 31.2%,
-    transparent 32.2%,
-    transparent 49.6%,
-    rgba(255, 90, 31, 0.75) 50.6%,
-    var(--hot) 51.4%,
-    var(--hot-core) 51.9%,
-    var(--hot) 52.4%,
-    rgba(255, 90, 31, 0.75) 53.2%,
-    transparent 54.2%,
-    transparent 71.6%,
-    rgba(255, 90, 31, 0.75) 72.6%,
-    var(--hot) 73.4%,
-    var(--hot-core) 73.9%,
-    var(--hot) 74.4%,
-    rgba(255, 90, 31, 0.75) 75.2%,
-    transparent 76.2%
+    var(--sm-sheen),
+    transparent 30%,
+    rgba(255, 255, 255, 0.16) 42%,
+    rgba(255, 255, 255, 0.32) 48%,
+    rgba(255, 255, 255, 0.1) 55%,
+    transparent 68%
   );
-  opacity: 0;
-  transition: opacity 500ms ease;
-}
-.sw-p2 .sw-heat,
-.sw-p3 .sw-heat {
-  opacity: 1;
-}
-.sw-p4 .sw-heat {
-  opacity: 0.55; /* cooled, but the kerf still glows */
-  transition: opacity 1600ms ease;
-}
-
-/* a wider, blurred copy for the bloom around the kerf */
-.sw-heat-bloom {
-  filter: blur(0.9vw);
-  opacity: 0;
-}
-.sw-p2 .sw-heat-bloom,
-.sw-p3 .sw-heat-bloom {
+  mix-blend-mode: screen;
   opacity: 0.9;
 }
-.sw-p4 .sw-heat-bloom {
-  opacity: 0.3;
-  transition: opacity 1600ms ease;
+/* @property makes the gradient angle interpolatable — a slow rake, not a jump */
+.sm-p4 .sm-spec {
+  animation: sm-rake 6000ms ease-in-out infinite alternate;
+}
+@keyframes sm-rake {
+  from {
+    --sm-sheen: 98deg;
+  }
+  to {
+    --sm-sheen: 128deg;
+  }
 }
 
-/* ====================================================================
-   REFLECTION — nested masks: fade on the outside, mark on the inside
-   ==================================================================== */
-
-.sw-reflect {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 104%;
-  height: 100%;
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 62%);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 62%);
-  opacity: 0;
-  transition: opacity 900ms ease;
-}
-.sw-p1 .sw-reflect,
-.sw-p2 .sw-reflect,
-.sw-p3 .sw-reflect,
-.sw-p4 .sw-reflect {
-  opacity: 1;
-}
-.sw-reflect-in {
-  position: absolute;
-  inset: 0;
-  transform: scaleY(-1);
-  -webkit-mask-image: var(--logo);
-  mask-image: var(--logo);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  background: linear-gradient(179deg, #8f9aa8 0%, #39424f 60%, #1a1f27 100%);
-  filter: blur(0.5vw);
-}
-
-/* ====================================================================
-   BLADE ARCS + SPARKS — animated only, no resting state
-   ==================================================================== */
-
-.sw-arcs {
-  position: absolute;
-  inset: 0;
-  z-index: 24;
-  pointer-events: none;
-}
-.sw-arc {
-  position: absolute;
-  left: -30%;
-  width: 160%;
-  height: 0.5vw;
+/* --- polish sweep: one bright pass as the plate lands (animated only).
+   Slides the BACKGROUND, not the element: transforming a masked layer drags
+   its mask along with it, so the highlight would travel outside the mark
+   instead of through it. An oversized gradient scrolled behind a fixed mask
+   is what actually reads as light moving across a surface. --- */
+.sm-sweep {
   background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.06) 18%,
-    rgba(255, 255, 255, 0.95) 48%,
-    rgba(190, 224, 255, 0.6) 62%,
-    transparent 88%
+    104deg,
+    transparent 42%,
+    rgba(255, 244, 220, 0.9) 50%,
+    transparent 58%
   );
-  filter: blur(0.25vw) drop-shadow(0 0 1.2vw rgba(200, 228, 255, 0.75));
-  transform: rotate(-24deg) translateX(-120%);
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  background-position: 100% 0;
+  mix-blend-mode: screen;
   opacity: 0;
 }
-.sw-arc-1 {
-  top: 33%;
+.sm-p3 .sm-sweep,
+.sm-p4 .sm-sweep {
+  animation: sm-sweep 1000ms 240ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-.sw-arc-2 {
-  top: 46%;
-}
-.sw-arc-3 {
-  top: 59%;
-}
-.sw-p2 .sw-arc {
-  animation: sw-slash 420ms cubic-bezier(0.3, 0, 0.1, 1) forwards;
-}
-.sw-p2 .sw-arc-2 {
-  animation-delay: 110ms;
-}
-.sw-p2 .sw-arc-3 {
-  animation-delay: 220ms;
-}
-@keyframes sw-slash {
+@keyframes sm-sweep {
   0% {
     opacity: 0;
-    transform: rotate(-24deg) translateX(-120%) scaleX(0.6);
+    background-position: 100% 0;
   }
   18% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: rotate(-24deg) translateX(120%) scaleX(1.15);
-  }
-}
-
-.sw-sparks {
-  position: absolute;
-  inset: 0;
-  z-index: 25;
-  pointer-events: none;
-}
-.sw-spark {
-  position: absolute;
-  width: 0.42vw;
-  height: 0.42vw;
-  border-radius: 50%;
-  background: var(--hot-core);
-  box-shadow: 0 0 0.7vw var(--hot), 0 0 1.6vw var(--ember);
-  opacity: 0;
-}
-.sw-p3 .sw-spark {
-  animation: sw-spark 900ms var(--sd) ease-out forwards;
-}
-@keyframes sw-spark {
-  0% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1.15);
-  }
-  70% {
-    opacity: 0.85;
-  }
-  100% {
-    opacity: 0;
-    /* drift out along the cut, then start to fall */
-    transform: translate(var(--sx), calc(var(--sy) * -0.35)) scale(0.35);
+    background-position: 0% 0;
   }
 }
 
@@ -497,126 +424,143 @@
    TYPE
    ==================================================================== */
 
-.sw-type {
+.sm-type {
   position: absolute;
   left: 50%;
-  top: 71%;
+  top: 68%;
   width: calc(100% - 2 * var(--safe-x));
   transform: translateX(-50%);
   text-align: center;
-  z-index: 26;
+  z-index: 21;
 }
 
-.sw-caption {
+.sm-caption {
   font-size: 4.3vw;
   font-weight: 900;
   letter-spacing: 0.42em;
   text-indent: 0.42em;
-  color: #eef4fc;
-  text-shadow: 0 0.2vw 0.6vw rgba(0, 0, 0, 0.8);
+  color: #1b1712;
   opacity: 0;
   transform: translateY(1.3vw);
   transition: opacity 620ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.sw-p4 .sw-caption {
+.sm-p4 .sm-caption {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* the rule is itself a cut: it opens from the centre like a blade stroke */
-.sw-rule {
+.sm-rule {
   width: 0;
-  height: 2px;
+  height: 3px;
   margin: 2.4vw auto 0;
+  background: linear-gradient(90deg, transparent, var(--vermilion) 22%, var(--vermilion) 78%, transparent);
+  transition: width 900ms 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sm-p4 .sm-rule {
+  width: 62%;
+}
+
+/* ====================================================================
+   MINOR KATANA SLASHES
+   Two quick light-streaks cross the composition on the forge beat, and one
+   faint residual cut is left across the hinomaru. Kept thin and brief — a
+   blade glint, not the mark broken into pieces.
+   ==================================================================== */
+
+.sm-slashes {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  overflow: hidden;
+}
+.sm-slash {
+  position: absolute;
+  left: -30%;
+  width: 160%;
+  height: 0.5vw;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 24%,
+    rgba(255, 246, 230, 0.95) 50%,
+    rgba(255, 255, 255, 0) 76%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 0.7vw rgba(255, 200, 150, 0.85));
+  transform: rotate(-24deg) translateX(-72%);
+}
+.sm-slash-1 { top: 40%; }
+.sm-slash-2 { top: 57%; }
+.sm-p2 .sm-slash-1 { animation: sm-slash 300ms 40ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.sm-p2 .sm-slash-2 { animation: sm-slash 300ms 200ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+@keyframes sm-slash {
+  0% { opacity: 0; transform: rotate(-24deg) translateX(-72%); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(-24deg) translateX(72%); }
+}
+
+/* faint residual cut across the sun — appears on the forge beat, holds on the
+   poster. Sits above the disc but below the mark, so the hinomaru reads as cut
+   while the logo stays whole. */
+.sm-cut {
+  position: absolute;
+  left: 50%;
+  top: 49%;
+  width: 46vw;
+  height: 0.22vw;
+  z-index: 12;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-24deg);
   background: linear-gradient(
     90deg,
     transparent,
-    var(--red) 20%,
-    var(--hot) 50%,
-    var(--red) 80%,
+    rgba(255, 244, 226, 0.6) 30%,
+    rgba(255, 244, 226, 0.6) 70%,
     transparent
   );
-  box-shadow: 0 0 1vw rgba(255, 90, 31, 0.5);
-  transition: width 900ms 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 0 0.4vw rgba(255, 200, 150, 0.5));
+  opacity: 0;
+  transition: opacity 600ms 260ms ease;
 }
-.sw-p4 .sw-rule {
-  width: 62%;
-}
-
-
-/* ====================================================================
-   FILM
-   ==================================================================== */
-
-.sw-film {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 40;
-  opacity: 0.07;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
-  background-size: 160px 160px;
-}
-
-.sw-vignette {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 41;
-  background: radial-gradient(72% 56% at 50% 44%, transparent 38%, rgba(0, 0, 0, 0.88) 100%);
+.sm-p2 .sm-cut,
+.sm-p3 .sm-cut,
+.sm-p4 .sm-cut {
+  opacity: 0.5;
 }
 
 /* ====================================================================
-   STATIC MODE — the poster: cut, parted, kerf still warm
+   STATIC MODE — freeze on the fully-resolved poster frame
    ==================================================================== */
 
-.sw.is-static *,
-.sw.is-static *::before,
-.sw.is-static *::after {
+.sm.is-static *,
+.sm.is-static *::before,
+.sm.is-static *::after {
   animation: none !important;
   transition: none !important;
 }
-.sw.is-static .sw-piece {
-  transform: translate(var(--dx), var(--dy));
+.sm.is-static .sm-seam {
+  stroke-dashoffset: 0;
+  stroke-dasharray: none;
 }
-.sw.is-static .sw-heat {
-  opacity: 0.72;
-}
-.sw.is-static .sw-heat-bloom {
-  opacity: 0.42;
-}
-.sw.is-static .sw-rule {
-  width: 62%;
-}
-/* arcs and sparks are transient by definition — a still that shows them frozen
-   mid-flight reads as a dropped frame, not a photograph */
-.sw.is-static .sw-arc,
-.sw.is-static .sw-spark {
+/* the one-pass sweep has no resting state — it must not linger on the poster */
+.sm.is-static .sm-sweep {
   opacity: 0;
-}
-.sw.is-static .sw-aniso {
-  --sw-aniso: 18deg;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sw *,
-  .sw *::before,
-  .sw *::after {
+  .sm *,
+  .sm *::before,
+  .sm *::after {
     animation: none !important;
     transition: none !important;
   }
-  .sw .sw-piece {
-    transform: translate(var(--dx), var(--dy));
-  }
-  .sw .sw-rule {
-    width: 62%;
-  }
-  .sw .sw-arc,
-  .sw .sw-spark {
+  .sm .sm-sweep {
     opacity: 0;
   }
-  .sw .sw-aniso {
-    --sw-aniso: 18deg;
+  .sm .sm-seam {
+    stroke-dashoffset: 0;
+    stroke-dasharray: none;
   }
 }

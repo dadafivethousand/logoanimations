@@ -1,56 +1,17 @@
-// Samurai.js — the mark forged in polished steel and cut apart by three katana
-// slashes. The pieces slide along their cut lines, the cut faces glow hot, then
-// cool.
+// Samurai.js — the mark rendered as forged, lacquered armour plate with
+// kintsugi gold seams, standing against a washi-paper hinomaru.
 //
-// How the cuts work: the mark is rendered four times, each copy clipped to the
-// band between two cut lines, then translated ALONG its cut. Because every copy
-// carries the same masked material stack, the pieces stay in register and the
-// gaps read as one continuous object that has been sliced — not four shapes
-// arranged to look like one.
+// Everything organic (torn sun edge, brush strokes, gold seams, seal) is
+// inline SVG driven by feTurbulence displacement, so nothing is a flat circle.
+// Everything material (lacquer, gold, bevel) is CSS gradients + drop-shadow
+// chains masked through the logo's alpha.
 import React from "react";
 import "../Stylesheets/Samurai.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
-// p1 stage + whole mark · p2 slashes land, pieces part · p3 sparks, peak heat
-// · p4 steel cools, type
-const CUES = [200, 900, 1500, 2300];
-
-/* Three parallel cuts running up to the right at ~24°, in the mark box's
-   percentage space. Points are deliberately pushed outside 0–100 so each band's
-   polygon closes well beyond the element and the element bounds do the final
-   clipping — that avoids solving the corner cases where a cut exits through the
-   top edge instead of the side. */
-const BANDS = [
-  "polygon(-20% -120%, 120% -120%, 120% -55.9%, -20% 79.3%)",
-  "polygon(-20% 79.3%, 120% -55.9%, 120% -5.9%, -20% 129.3%)",
-  "polygon(-20% 129.3%, 120% -5.9%, 120% 44.1%, -20% 179.3%)",
-  "polygon(-20% 179.3%, 120% 44.1%, 120% 220%, -20% 220%)",
-];
-
-// Slide distance along the cut direction (0.91, -0.41), plus a little
-// perpendicular separation so each kerf actually opens.
-const SHIFTS = [
-  { dx: "-2.0vw", dy: "0.5vw" },
-  { dx: "1.5vw", dy: "-0.2vw" },
-  { dx: "-1.7vw", dy: "0.35vw" },
-  { dx: "2.3vw", dy: "-0.6vw" },
-];
-
-/* Hand-placed on the cut lines. No Math.random — every render must compose
-   identically or two takes of the same ad won't match. */
-const SPARKS = [
-  { l: "22%", t: "38%", x: "-3.2vw", y: "-2.4vw", d: "0ms" },
-  { l: "30%", t: "33%", x: "2.6vw", y: "-3.1vw", d: "40ms" },
-  { l: "38%", t: "47%", x: "3.4vw", y: "-1.6vw", d: "110ms" },
-  { l: "47%", t: "55%", x: "-2.8vw", y: "-3.4vw", d: "70ms" },
-  { l: "55%", t: "50%", x: "3.9vw", y: "-2.2vw", d: "150ms" },
-  { l: "63%", t: "62%", x: "-3.6vw", y: "-2.8vw", d: "20ms" },
-  { l: "71%", t: "58%", x: "2.2vw", y: "-3.8vw", d: "190ms" },
-  { l: "78%", t: "70%", x: "3.1vw", y: "-1.9vw", d: "95ms" },
-  { l: "44%", t: "40%", x: "-4.1vw", y: "-1.4vw", d: "130ms" },
-  { l: "60%", t: "44%", x: "1.8vw", y: "-4.2vw", d: "165ms" },
-];
+// p1 paper + sun · p2 ink strokes · p3 plate forges in · p4 gold + seal + type
+const CUES = [180, 700, 1350, 2250];
 
 export default function Samurai({
   mode = "animated",
@@ -60,126 +21,180 @@ export default function Samurai({
   const { logoVar, ready } = useLogo();
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt, enabled: ready });
 
-  if (!ready) return <div className="sw sw-p0" aria-hidden />;
+  // hold the first frame until the mark is measured — otherwise the plate
+  // pops in at the wrong aspect for one frame
+  if (!ready) return <div className="sm sm-p0" aria-hidden />;
 
   return (
     <div
-      className={`sw sw-p${phase} ${isStatic ? "is-static" : ""}`}
+      className={`sm sm-p${phase} ${isStatic ? "is-static" : ""}`}
       style={logoVar}
       key={run}
     >
       <SamuraiDefs />
 
-      {/* ---- stage ---- */}
-      <div className="sw-bg" aria-hidden />
-      <div className="sw-moon" aria-hidden />
-      <div className="sw-mist" aria-hidden />
-      <div className="sw-floor" aria-hidden />
+      {/* ---- ground ---- */}
+      <div className="sm-paper" aria-hidden />
+      <div className="sm-fold" aria-hidden />
+
+      {/* ---- hinomaru: torn-edge sun ---- */}
+      <svg className="sm-sun" viewBox="0 0 600 600" aria-hidden>
+        <circle cx="300" cy="300" r="252" filter="url(#sm-tear)" fill="url(#sm-sunfill)" />
+        <circle
+          cx="300"
+          cy="300"
+          r="252"
+          filter="url(#sm-tear)"
+          fill="none"
+          stroke="#5e0713"
+          strokeWidth="3"
+          opacity="0.35"
+        />
+      </svg>
+
+      {/* ---- sumi-e brush strokes ---- */}
+      <svg className="sm-ink sm-ink-a" viewBox="0 0 1000 300" aria-hidden>
+        <path
+          d="M20 190 C 210 96, 430 232, 640 150 S 900 74, 980 122"
+          filter="url(#sm-brush)"
+          stroke="url(#sm-inkfill)"
+          strokeWidth="46"
+          strokeLinecap="round"
+          fill="none"
+        />
+      </svg>
+      <svg className="sm-ink sm-ink-b" viewBox="0 0 1000 300" aria-hidden>
+        <path
+          d="M980 120 C 800 210, 560 84, 340 176 S 90 236, 24 190"
+          filter="url(#sm-brush)"
+          stroke="url(#sm-inkfill)"
+          strokeWidth="28"
+          strokeLinecap="round"
+          fill="none"
+        />
+      </svg>
+
+      <div className="sm-mist" aria-hidden />
 
       {/* ---- the mark ---- */}
-      <div className="sw-markwrap">
-        <div className="sw-cast" aria-hidden />
+      <div className="sm-markwrap">
+        {/* soft darkening behind the plate — a near-black mark laid straight
+            onto the red disc has almost no separation without it */}
+        <div className="sm-halo" aria-hidden />
 
-        <div className="sw-mark">
-          {BANDS.map((clip, i) => (
-            <div
-              className="sw-piece"
-              key={i}
-              style={{
-                clipPath: clip,
-                WebkitClipPath: clip,
-                "--dx": SHIFTS[i].dx,
-                "--dy": SHIFTS[i].dy,
-              }}
-              aria-hidden
-            >
-              {/* the chamfer chain wraps the painted layers, so its rims follow
-                  the letterforms rather than the piece's bounding box */}
-              <div className="sw-plate">
-                <div className="sw-layer sw-steel" />
-                <div className="sw-layer sw-hamon">
-                  <svg viewBox="0 0 1000 460" preserveAspectRatio="none">
-                    <path
-                      d="M-20 330 C 120 268, 200 372, 330 306 S 560 250, 690 320 S 900 366, 1020 292"
-                      filter="url(#sw-temper)"
-                      stroke="rgba(255,255,255,0.5)"
-                      strokeWidth="54"
-                      fill="none"
-                    />
-                  </svg>
-                </div>
-                <div className="sw-layer sw-grain" />
-                <div className="sw-layer sw-aniso" />
-              </div>
-            </div>
-          ))}
+        <div className="sm-mark">
+          {/* cast shadow, offset and blurred, follows the alpha */}
+          <div className="sm-layer sm-cast" aria-hidden />
 
-          {/* hot cut faces: thin lines parallel to the cuts, masked to the mark
-              so heat only ever exists on metal */}
-          <div className="sw-heat" aria-hidden />
-          <div className="sw-heat sw-heat-bloom" aria-hidden />
+          {/* The bevel wrapper carries a chain of hairline drop-shadows. Because
+              drop-shadow reads the *alpha* of what it wraps, the rims trace the
+              letterforms exactly — a machined chamfer, not a rectangle. */}
+          <div className="sm-plate" aria-hidden>
+            {/* base lacquer: black-cherry urushi with a red undertone */}
+            <div className="sm-layer sm-lacquer" />
+            {/* forged surface grain, multiplied over the lacquer */}
+            <div className="sm-layer sm-grainplate" />
+          </div>
+
+          {/* kintsugi: real SVG seams, clipped to the mark by the parent mask */}
+          <div className="sm-layer sm-seams" aria-hidden>
+            <svg viewBox="0 0 1000 460" preserveAspectRatio="none">
+              <g filter="url(#sm-crackle)" fill="none" strokeLinecap="round">
+                {/* main fracture across the full width */}
+                <path className="sm-seam" d="M-20 250 L 180 180 L 300 300 L 470 150 L 640 280 L 800 160 L 1020 250" />
+                {/* second run low enough to catch the wordmark, not just the
+                    ninja head — seams confined to the upper band read as a
+                    smudge on the icon instead of a repair through the mark */}
+                <path className="sm-seam" d="M-20 400 L 150 350 L 340 430 L 520 340 L 700 420 L 880 350 L 1020 400" />
+                <path className="sm-seam sm-seam-2" d="M300 300 L 340 470" />
+                <path className="sm-seam sm-seam-2" d="M470 150 L 430 -20" />
+                <path className="sm-seam sm-seam-2" d="M800 160 L 860 -10" />
+                <path className="sm-seam sm-seam-2" d="M520 340 L 560 480" />
+                <path className="sm-seam sm-seam-3" d="M180 180 L 120 40" />
+                <path className="sm-seam sm-seam-3" d="M640 280 L 700 450" />
+                <path className="sm-seam sm-seam-3" d="M150 350 L 90 470" />
+                <path className="sm-seam sm-seam-3" d="M880 350 L 930 470" />
+              </g>
+            </svg>
+          </div>
+
+          {/* fixed specular — present in static mode too */}
+          <div className="sm-layer sm-spec" aria-hidden />
+
+          {/* one-pass polish sweep — animated mode only */}
+          <div className="sm-layer sm-sweep" aria-hidden />
         </div>
-
-        {/* floor reflection — nested masks: fade on the outside, mark inside */}
-        <div className="sw-reflect" aria-hidden>
-          <div className="sw-reflect-in" />
-        </div>
       </div>
 
-      {/* ---- blade arcs + sparks (animated only) ---- */}
-      <div className="sw-arcs" aria-hidden>
-        <span className="sw-arc sw-arc-1" />
-        <span className="sw-arc sw-arc-2" />
-        <span className="sw-arc sw-arc-3" />
-      </div>
-      <div className="sw-sparks" aria-hidden>
-        {SPARKS.map((s, i) => (
-          <span
-            className="sw-spark"
-            key={i}
-            style={{ left: s.l, top: s.t, "--sx": s.x, "--sy": s.y, "--sd": s.d }}
-          />
-        ))}
+      {/* ---- minor katana slashes: two quick light-streaks cross on the forge
+             beat, plus one faint residual cut across the hinomaru ---- */}
+      <div className="sm-cut" aria-hidden />
+      <div className="sm-slashes" aria-hidden>
+        <span className="sm-slash sm-slash-1" />
+        <span className="sm-slash sm-slash-2" />
       </div>
 
-      {/* ---- type: the logo already says CODE NINJAS, so the only word here
-             is the location ---- */}
-      <div className="sw-type">
-        <div className="sw-caption">{caption}</div>
-        <div className="sw-rule" aria-hidden />
+      {/* ---- type ---- */}
+      <div className="sm-type">
+        <div className="sm-caption">{caption}</div>
+        <div className="sm-rule" aria-hidden />
       </div>
 
-      <div className="sw-film" aria-hidden />
-      <div className="sw-vignette" aria-hidden />
+      <div className="sm-fibre" aria-hidden />
+      <div className="sm-vignette" aria-hidden />
     </div>
   );
 }
 
+/* Filter/gradient defs. Kept in one zero-size <svg> so the theme stays a
+   single self-contained component. */
 function SamuraiDefs() {
   return (
-    <svg className="sw-defs" aria-hidden focusable="false">
+    <svg className="sm-defs" aria-hidden focusable="false">
       <defs>
-        {/* hamon: the temper line. Displace a fat soft stroke into clouds, then
-            blur, so it reads as crystalline structure in the steel rather than
-            a painted squiggle. */}
-        <filter id="sw-temper" x="-20%" y="-60%" width="140%" height="220%">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.021 0.05"
-            numOctaves="4"
-            seed="13"
-            result="n"
-          />
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="n"
-            scale="46"
-            xChannelSelector="R"
-            yChannelSelector="G"
-            result="d"
-          />
-          <feGaussianBlur in="d" stdDeviation="5" />
+        {/* torn washi / stamped-ink edge */}
+        <filter id="sm-tear" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="4" seed="7" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="17" xChannelSelector="R" yChannelSelector="G" />
         </filter>
+
+        {/* dry-brush: displace hard, then chew holes in the stroke */}
+        <filter id="sm-brush" x="-15%" y="-40%" width="130%" height="180%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.014 0.05" numOctaves="4" seed="3" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="26" xChannelSelector="R" yChannelSelector="G" result="d" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" seed="11" result="g" />
+          <feColorMatrix
+            in="g"
+            type="matrix"
+            values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.9 0 0 0 -0.12"
+            result="gm"
+          />
+          <feComposite in="d" in2="gm" operator="out" />
+        </filter>
+
+        {/* kintsugi seam: organic wobble + a soft molten bloom */}
+        <filter id="sm-crackle" x="-15%" y="-15%" width="130%" height="130%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="19" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G" result="d" />
+          <feGaussianBlur in="d" stdDeviation="3" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="d" />
+          </feMerge>
+        </filter>
+
+        <radialGradient id="sm-sunfill" cx="42%" cy="36%" r="72%">
+          <stop offset="0%" stopColor="#e2213f" />
+          <stop offset="52%" stopColor="#c8102e" />
+          <stop offset="100%" stopColor="#8b0a20" />
+        </radialGradient>
+
+        <linearGradient id="sm-inkfill" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#0a0908" stopOpacity="0.04" />
+          <stop offset="16%" stopColor="#0a0908" stopOpacity="0.95" />
+          <stop offset="58%" stopColor="#14110f" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#14110f" stopOpacity="0.03" />
+        </linearGradient>
       </defs>
     </svg>
   );
