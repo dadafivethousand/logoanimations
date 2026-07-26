@@ -48,9 +48,10 @@ stone reflection.
 **Robotics** — the mark milled from brushed aluminium with an anodized red edge,
 bolted to a mounting plate, PCB traces running current into it, HUD frame.
 
-**Pirates** — treasure gold against a blood-red storm, with a square-rigged
-galleon under crimson sail crossing the moon. The eye band and "CODE" get their
-own metal so the lockup still reads.
+**Pirates** — the mark inked onto an old treasure map: aged parchment with burnt
+torn edges, hand-drawn coastlines and soundings, a compass rose, a dashed route
+to the X, and a red wax seal. The eye band and "CODE" get their own pigment so
+the lockup still reads.
 
 ## Adding one
 

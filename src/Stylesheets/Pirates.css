@@ -1,42 +1,33 @@
-/* Pirates — treasure gold against a blood-red storm, galleon under crimson sail.
+/* Pirates — the mark inked onto an old treasure map.
    Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
-   px is reserved for hairlines that must stay hairlines (bevels, rules). */
-
-@property --pc-sheen {
-  syntax: "<angle>";
-  initial-value: 24deg;
-  inherits: false;
-}
+   px is reserved for hairlines that must stay hairlines. */
 
 .pc {
-  /* palette — crimson / black / gold. The teal grade this started with read as
-     generic night sea; red is what the genre is actually remembered for, and it
-     puts brand red #e4002b in the frame without it looking pasted on. */
-  --night: #0a0406;
-  --blood: #4a0a12;
-  --blood-hi: #8c1420;
-  --ember: #d8342c;
+  /* palette — aged parchment, sepia ink, one red pigment for the route and wax.
+     Brand red #e4002b lives in the seal and the route, where a real map would
+     genuinely carry a second colour. */
+  --paper: #e3cfa4;
+  --paper-hi: #f4e6c6;
+  --paper-lo: #b99f6f;
+  --ink: #4a3316;
+  --ink-soft: #6b4f28;
+  --sepia: #8a6a3a;
+  --map-red: #b0202c;
   --brand-red: #e4002b;
-  --moon: #ffe6bd;
-  --sea: #1a0a10;
-  --gold-hi: #ffeebb;
-  --gold: #d6a82f;
-  --gold-lo: #7a5514;
-  --verdigris: #2f8f7a;
 
   /* screen-recording crop: nothing meaningful inside this band */
   --safe-x: 11.5vw;
   --safe-y: 4.7vh;
 
   /* the one knob the composition scales from */
-  --mark-w: 72vw;
+  --mark-w: 62vw;
 
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: var(--night);
+  background: #1a1206;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  color: #f2e2d4;
+  color: var(--ink);
   isolation: isolate;
 }
 
@@ -48,261 +39,220 @@
 }
 
 /* ====================================================================
-   BLOOD-RED STORM
+   THE SHEET
    ==================================================================== */
 
-.pc-sky {
+.pc-page {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 76%;
+  inset: 0;
   background:
-    /* the moon burns a hole in the cloud */
-    radial-gradient(34% 22% at 67% 15%, rgba(255, 226, 178, 0.5) 0%, transparent 64%),
-    /* the red sits in the upper mass and falls off to black at the horizon */
-      radial-gradient(96% 62% at 58% 8%, var(--blood-hi) 0%, var(--blood) 38%, transparent 78%),
-    linear-gradient(180deg, #2a060d 0%, #150409 46%, var(--night) 100%);
+    /* light pools in the middle of a sheet and dies at the edges */
+    radial-gradient(78% 56% at 46% 40%, var(--paper-hi) 0%, var(--paper) 46%, var(--paper-lo) 100%),
+    linear-gradient(168deg, #f0e0bd 0%, #d9c193 52%, #b89b68 100%);
+  /* burnt, ragged edge: a displaced rect as the mask, so no two sides match */
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='800' viewBox='0 0 400 800'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='4' seed='23' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='26' xChannelSelector='R' yChannelSelector='G'/></filter><rect x='12' y='12' width='376' height='776' rx='6' fill='white' filter='url(%23b)'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='800' viewBox='0 0 400 800'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='4' seed='23' result='n'/><feDisplacementMap in='SourceGraphic' in2='n' scale='26' xChannelSelector='R' yChannelSelector='G'/></filter><rect x='12' y='12' width='376' height='776' rx='6' fill='white' filter='url(%23b)'/></svg>");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  /* painted before the mask, so it follows the ragged edge and reads as
+     scorching rather than a rectangular border */
+  box-shadow:
+    inset 0 0 3vw rgba(74, 44, 16, 0.5),
+    inset 0 0 0.7vw rgba(52, 28, 8, 0.75);
   opacity: 0;
-  transform: scale(1.03);
-  transition: opacity 1000ms ease, transform 1800ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(1.02);
+  transition: opacity 900ms ease, transform 1600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.pc-p1 .pc-sky,
-.pc-p2 .pc-sky,
-.pc-p3 .pc-sky,
-.pc-p4 .pc-sky {
+.pc-p1 .pc-page,
+.pc-p2 .pc-page,
+.pc-p3 .pc-page,
+.pc-p4 .pc-page {
   opacity: 1;
   transform: scale(1);
 }
 
-.pc-moon {
+.pc-page > span {
   position: absolute;
-  left: 67%;
-  top: 15%;
-  width: 21vw;
-  height: 21vw;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 44% 40%,
-    var(--moon) 0%,
-    rgba(255, 214, 158, 0.8) 40%,
-    rgba(226, 138, 92, 0.24) 66%,
-    transparent 76%
-  );
-  filter: blur(0.4vw);
-  opacity: 0;
-  transition: opacity 1400ms ease;
-}
-.pc-p1 .pc-moon,
-.pc-p2 .pc-moon,
-.pc-p3 .pc-moon,
-.pc-p4 .pc-moon {
-  opacity: 1;
-}
-
-/* cloud mass, tinted by the sky it sits in */
-.pc-clouds {
-  position: absolute;
-  left: -30%;
-  right: -30%;
-  top: 0;
-  height: 64%;
-  opacity: 0;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='300'><filter id='c'><feTurbulence type='fractalNoise' baseFrequency='0.004 0.016' numOctaves='5' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='600' height='300' filter='url(%23c)' opacity='0.85'/></svg>");
-  background-size: 140vw 48vh;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 66%, transparent 100%);
-  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 66%, transparent 100%);
-  transition: opacity 1400ms ease;
-}
-.pc-p1 .pc-clouds,
-.pc-p2 .pc-clouds,
-.pc-p3 .pc-clouds,
-.pc-p4 .pc-clouds {
-  opacity: 0.55;
-  animation: pc-drift 60000ms linear infinite;
-}
-@keyframes pc-drift {
-  to {
-    background-position: 140vw 0;
-  }
-}
-
-/* faint embers riding the wind — sells "something is burning off frame" */
-.pc-embers {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 70%;
+  inset: 0;
   pointer-events: none;
-  opacity: 0;
-  mix-blend-mode: screen;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='e'><feTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0 0 0 0 1'/></feComponentTransfer></filter><rect width='300' height='300' filter='url(%23e)' fill='%23ff8a4a'/></svg>");
+}
+
+/* paper tooth */
+.pc-fibre {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23f)' opacity='0.5'/></svg>");
   background-size: 34vw 34vw;
-  transition: opacity 1200ms ease;
 }
-.pc-p3 .pc-embers,
-.pc-p4 .pc-embers {
-  opacity: 0.4;
-  animation: pc-rise 22000ms linear infinite;
+
+/* age blotches — big soft stains, not noise */
+.pc-stains {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='s'><feTurbulence type='fractalNoise' baseFrequency='0.008' numOctaves='5' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0.42  0 0 0 0 0.30  0 0 0 0 0.12  0 0 0 0.75 0'/></filter><rect width='300' height='300' filter='url(%23s)'/></svg>");
+  background-size: 130vw 130vw;
 }
-@keyframes pc-rise {
-  to {
-    background-position: 6vw -34vw;
-  }
+
+/* creases from a sheet that has been folded for two hundred years */
+.pc-folds {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image:
+    linear-gradient(
+      91deg,
+      transparent 0 31%,
+      rgba(120, 92, 48, 0.16) 33%,
+      rgba(255, 248, 226, 0.4) 34%,
+      transparent 36% 64%,
+      rgba(120, 92, 48, 0.14) 66%,
+      rgba(255, 248, 226, 0.36) 67%,
+      transparent 69% 100%
+    ),
+    linear-gradient(
+      181deg,
+      transparent 0 22%,
+      rgba(120, 92, 48, 0.13) 24%,
+      rgba(255, 248, 226, 0.34) 25%,
+      transparent 27% 73%,
+      rgba(120, 92, 48, 0.13) 75%,
+      rgba(255, 248, 226, 0.32) 76%,
+      transparent 78% 100%
+    );
+  filter: blur(0.12vw);
+}
+
+/* scorching creeping in from the burnt edge */
+.pc-scorch {
+  background:
+    radial-gradient(120% 70% at 50% -8%, rgba(96, 54, 14, 0.5) 0%, transparent 32%),
+    radial-gradient(120% 70% at 50% 108%, rgba(96, 54, 14, 0.5) 0%, transparent 32%),
+    radial-gradient(60% 120% at -8% 50%, rgba(96, 54, 14, 0.45) 0%, transparent 30%),
+    radial-gradient(60% 120% at 108% 50%, rgba(96, 54, 14, 0.45) 0%, transparent 30%);
+  mix-blend-mode: multiply;
 }
 
 /* ====================================================================
-   THE SHIP — hull on the waterline, canvas lit from behind
+   WHAT'S DRAWN ON IT
    ==================================================================== */
 
-.pc-ship {
-  position: absolute;
-  left: 52%;
-  top: 32%;
-  width: 70vw;
-  height: 48vw;
-  transform: translate(-50%, -50%);
-  filter:
-    /* rim light off the moon, then she settles into the haze */
-    drop-shadow(0.25vw -0.2vw 0 rgba(255, 214, 158, 0.28))
-    drop-shadow(0 0 1.4vw rgba(255, 120, 80, 0.16))
-    drop-shadow(0 0 1.8vw rgba(0, 0, 0, 0.85));
-  opacity: 0;
-  transition: opacity 1200ms ease;
-}
-.pc-p2 .pc-ship,
-.pc-p3 .pc-ship,
-.pc-p4 .pc-ship {
-  opacity: 1;
-}
-/* a long, slow roll — the sea is moving under her */
-.pc-p3 .pc-ship,
-.pc-p4 .pc-ship {
-  animation: pc-roll 9000ms ease-in-out infinite alternate;
-}
-@keyframes pc-roll {
-  from {
-    transform: translate(-50%, -50%) rotate(-1.1deg) translateY(-0.4vw);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(1.1deg) translateY(0.4vw);
-  }
-}
-
-/* ====================================================================
-   RUNNING SEA
-   ==================================================================== */
-
-.pc-sea {
-  position: absolute;
-  left: -6%;
-  right: -6%;
-  top: 40%;
-  height: 48%;
-  background: linear-gradient(180deg, #2b1018 0%, #120711 40%, #050206 100%);
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 100%);
-  mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 100%);
-  opacity: 0;
-  transition: opacity 1100ms ease;
-}
-.pc-p1 .pc-sea,
-.pc-p2 .pc-sea,
-.pc-p3 .pc-sea,
-.pc-p4 .pc-sea {
-  opacity: 1;
-}
-.pc-sea svg {
+.pc-map {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  z-index: 10;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transition: opacity 700ms ease;
 }
-/* crests catch the moon warm; the nearer ones stay dim so depth reads */
-.pc-wave {
-  stroke: rgba(255, 224, 188, 0.5);
-  stroke-width: 2.4;
-}
-.pc-wave-mid {
-  stroke: rgba(246, 186, 152, 0.34);
-  stroke-width: 2;
-}
-.pc-wave-lo {
-  stroke: rgba(214, 132, 112, 0.22);
-  stroke-width: 1.8;
+.pc-p2 .pc-map,
+.pc-p3 .pc-map,
+.pc-p4 .pc-map {
+  opacity: 1;
 }
 
-/* the moon's road on the water, straight down from the moon */
-.pc-moonpath {
-  position: absolute;
-  left: 66%;
-  top: 0;
-  bottom: 0;
-  width: 26vw;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 224, 176, 0.5) 0%,
-    rgba(255, 186, 130, 0.22) 34%,
-    transparent 82%
-  );
-  -webkit-mask-image: radial-gradient(60% 90% at 50% 0%, #000 0%, transparent 76%);
-  mask-image: radial-gradient(60% 90% at 50% 0%, #000 0%, transparent 76%);
-  mix-blend-mode: screen;
-  filter: blur(0.6vw);
+/* coastlines draw themselves on */
+.pc-coast path {
+  stroke: var(--ink);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-dasharray: 2200;
+  stroke-dashoffset: 2200;
 }
-
-/* broken specular on the water inside the moon's road */
-.pc-glitter {
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='s'><feTurbulence type='fractalNoise' baseFrequency='0.42 0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0 0 1'/></feComponentTransfer></filter><rect width='200' height='200' filter='url(%23s)' fill='%23ffdda8'/></svg>");
-  background-size: 26vw 10vw;
-  mix-blend-mode: screen;
-  opacity: 0.55;
-  -webkit-mask-image: radial-gradient(34% 90% at 66% 0%, #000 0%, transparent 72%);
-  mask-image: radial-gradient(34% 90% at 66% 0%, #000 0%, transparent 72%);
+.pc-p2 .pc-coast path,
+.pc-p3 .pc-coast path,
+.pc-p4 .pc-coast path {
+  animation: pc-draw 1400ms cubic-bezier(0.5, 0, 0.2, 1) forwards;
 }
-.pc-p3 .pc-glitter,
-.pc-p4 .pc-glitter {
-  animation: pc-shimmer 5200ms steps(6) infinite;
+.pc-coast path:nth-child(2) {
+  animation-delay: 120ms;
 }
-@keyframes pc-shimmer {
+.pc-coast path:nth-child(3) {
+  animation-delay: 260ms;
+}
+.pc-coast path:nth-child(4) {
+  animation-delay: 380ms;
+}
+@keyframes pc-draw {
   to {
-    background-position: 26vw 0;
+    stroke-dashoffset: 0;
   }
 }
 
-/* haze at the horizon, so the sea never meets the sky on a hard line */
-.pc-haze {
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  top: 36%;
-  height: 16%;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 176, 140, 0) 0%,
-    rgba(255, 168, 130, 0.16) 46%,
-    transparent 100%
-  );
-  filter: blur(1.6vw);
+.pc-hatch path {
+  stroke: var(--sepia);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.pc-p2 .pc-hatch path,
+.pc-p3 .pc-hatch path,
+.pc-p4 .pc-hatch path {
+  animation: pc-fade 700ms 700ms ease forwards;
+}
+@keyframes pc-fade {
+  to {
+    opacity: 0.75;
+  }
+}
+
+/* the route: dashed, in the map's red pigment */
+.pc-route path {
+  stroke: var(--map-red);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 16 15;
+  stroke-dashoffset: 900;
+  opacity: 0.85;
+}
+.pc-p3 .pc-route path,
+.pc-p4 .pc-route path {
+  animation: pc-lay 1500ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes pc-lay {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.pc-rose {
+  stroke: var(--ink-soft);
+  stroke-width: 2;
+  fill: var(--sepia);
+  opacity: 0;
+}
+.pc-p3 .pc-rose,
+.pc-p4 .pc-rose {
+  animation: pc-rose-in 900ms 200ms ease forwards;
+}
+@keyframes pc-rose-in {
+  to {
+    opacity: 0.8;
+  }
+}
+
+.pc-marks path {
+  stroke: var(--sepia);
+  stroke-width: 1.8;
+  opacity: 0;
+}
+.pc-p3 .pc-marks path,
+.pc-p4 .pc-marks path {
+  animation: pc-fade 800ms 400ms ease forwards;
 }
 
 /* ====================================================================
-   THE LOCKUP — mark + WOODBRIDGE as one unit
+   THE LOCKUP — mark + WOODBRIDGE as one unit.
    The caption is a FLOW sibling of the mark inside this wrapper, never
-   absolutely positioned: that is what guarantees it sits directly under the
-   logo instead of drifting down the frame, and the pair centre together.
+   absolutely positioned: that is what welds it under the logo.
    ==================================================================== */
 
 .pc-markwrap {
   position: absolute;
   left: 50%;
-  top: 58%;
+  top: 52%;
   width: var(--mark-w);
   transform: translate(-50%, -50%);
   z-index: 20;
@@ -313,28 +263,41 @@
   width: 100%;
 }
 
-/* warm bounce — gold this big throws light into the air around it */
-.pc-bloom {
+/* X marks the spot — small, and sitting where the route ends just below the
+   mark. Drawn across the logo at full width it read as crossing the brand out. */
+.pc-x {
   position: absolute;
   left: 50%;
-  top: 50%;
-  width: 152%;
-  height: 300%;
+  top: 156%;
+  width: 15%;
+  height: 34%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(
-    closest-side,
-    rgba(255, 190, 96, 0.34) 0%,
-    rgba(224, 108, 60, 0.14) 44%,
-    transparent 74%
-  );
-  filter: blur(2vw);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
   opacity: 0;
-  transition: opacity 1000ms ease;
+  transition: opacity 600ms ease;
 }
-.pc-p3 .pc-bloom,
-.pc-p4 .pc-bloom {
+.pc-p3 .pc-x,
+.pc-p4 .pc-x {
   opacity: 1;
+}
+.pc-x svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.pc-x path {
+  stroke: var(--map-red);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+}
+.pc-p3 .pc-x path,
+.pc-p4 .pc-x path {
+  animation: pc-draw 620ms 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.pc-x path:nth-child(2) {
+  animation-delay: 420ms;
 }
 
 .pc-mark {
@@ -343,21 +306,18 @@
   /* measured from the trimmed mark at load, so any logo lands on register */
   aspect-ratio: var(--logo-aspect, 2.17);
   opacity: 0;
-  transform: translateY(2.4vw) scale(0.97);
-  transition:
-    opacity 700ms ease,
-    transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.985);
+  transition: opacity 700ms ease, transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.pc-p3 .pc-mark,
 .pc-p4 .pc-mark {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: scale(1);
 }
 
 /* --- masks ---
    .pc-layer covers the whole lockup. .pc-region variants use the per-region
    masks useLogo derives from the artwork's own tones, which is how the eye band
-   and "CODE" survive being turned into metal. */
+   and "CODE" survive being turned into ink. */
 .pc-layer,
 .pc-region {
   position: absolute;
@@ -373,6 +333,10 @@
   -webkit-mask-image: var(--logo);
   mask-image: var(--logo);
 }
+.pc-ink {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+}
 .pc-face {
   -webkit-mask-image: var(--logo-light, none);
   mask-image: var(--logo-light, none);
@@ -382,113 +346,62 @@
   mask-image: var(--logo-accent, none);
 }
 
-/* chamfer: drop-shadow reads alpha, so the rims trace the letterforms */
-.pc-plate {
-  position: absolute;
-  inset: 0;
-  filter:
-    drop-shadow(0 -1.5px 0 rgba(255, 238, 187, 0.85))
-    drop-shadow(0 2px 0 rgba(24, 10, 4, 0.95))
-    drop-shadow(-1px 0 0 rgba(255, 220, 150, 0.45))
-    drop-shadow(1.5px 0 0 rgba(18, 8, 4, 0.9))
-    drop-shadow(0 0.5vw 0.9vw rgba(0, 0, 0, 0.8));
-}
-
-/* --- bullion. Gold needs a dark band between highlights or it flattens into
-   yellow plastic; the warm bottom stop is bounce off the red below. --- */
-.pc-gold {
+/* --- sepia ink. Multiplied, so the paper's fibre and stains read straight
+   through the letterforms — the single thing that stops the mark looking
+   pasted on top of the parchment. --- */
+.pc-ink {
+  mix-blend-mode: multiply;
   background: linear-gradient(
-    178deg,
-    #fff4cf 0%,
-    #f0d180 8%,
-    #d9a832 20%,
-    #9c6f18 33%,
-    #5d3d07 43%,
-    #a8781d 52%,
-    #e8bf58 61%,
-    #fff2c4 68%,
-    #cf9c2c 77%,
-    #7d5411 88%,
-    #4a2408 95%,
-    #c98a28 100%
+    174deg,
+    #59401d 0%,
+    #43300f 32%,
+    #5b431c 58%,
+    #372608 82%,
+    #4e3814 100%
   );
 }
 
-/* --- the eye band: pale silvered gold, so it reads against the hood --- */
+/* ink bleeding a hair into the fibres */
+.pc-bleed {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+  background: #4a3316;
+  filter: blur(0.28vw);
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+}
+
+/* --- the eye band: a pale wash, barely more than damp paper, so the slits
+   inside it stay legible --- */
 .pc-face {
+  mix-blend-mode: multiply;
   background: linear-gradient(
     176deg,
-    #ffffff 0%,
-    #f6f1e2 26%,
-    #d9cdb0 52%,
-    #ab9c78 74%,
-    #f2e8cf 100%
+    rgba(226, 206, 168, 0.5) 0%,
+    rgba(204, 182, 140, 0.66) 54%,
+    rgba(226, 208, 170, 0.46) 100%
   );
 }
 
-/* --- "CODE": cooler and brighter, holding the two-tone lockup --- */
+/* --- "CODE" in the map's red pigment, faded --- */
 .pc-code {
-  background: linear-gradient(
-    177deg,
-    #fffdf4 0%,
-    #ffe9a8 22%,
-    #e8c25c 44%,
-    #a67d1c 64%,
-    #f4dd94 86%,
-    #c99a2c 100%
-  );
-}
-
-/* --- verdigris: double-masked. Logo mask outside, turbulence blotches inside,
-   so the patina lands in irregular pools rather than a wash. --- */
-.pc-patina {
-  mix-blend-mode: color-burn;
-  opacity: 0.38;
-}
-.pc-patina-in {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(60% 80% at 22% 70%, var(--verdigris) 0%, transparent 62%),
-    radial-gradient(50% 70% at 74% 30%, #3fa38c 0%, transparent 58%),
-    radial-gradient(70% 60% at 48% 92%, #23705f 0%, transparent 66%);
-  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.018' numOctaves='4' seed='9'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0.4 1 1'/></feComponentTransfer></filter><rect width='260' height='260' filter='url(%23p)'/></svg>");
-  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.018' numOctaves='4' seed='9'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0.4 1 1'/></feComponentTransfer></filter><rect width='260' height='260' filter='url(%23p)'/></svg>");
-  -webkit-mask-size: 44vw 44vw;
-  mask-size: 44vw 44vw;
-}
-
-/* --- corrosion pitting, multiplied into the metal --- */
-.pc-pit {
   mix-blend-mode: multiply;
-  opacity: 0.32;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='k'><feTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0 1'/></feComponentTransfer></filter><rect width='180' height='180' filter='url(%23k)'/></svg>");
-  background-size: 26vw 26vw;
-}
-
-/* --- gold's specular: tight, warm, moving --- */
-.pc-sheen {
-  mix-blend-mode: screen;
-  opacity: 0.44;
-  background: conic-gradient(
-    from var(--pc-sheen) at 42% 38%,
-    transparent 0deg,
-    rgba(255, 246, 214, 0.75) 18deg,
-    transparent 46deg,
-    transparent 172deg,
-    rgba(255, 206, 140, 0.5) 200deg,
-    transparent 232deg,
-    transparent 360deg
+  background: linear-gradient(
+    175deg,
+    #b6303a 0%,
+    #94141f 34%,
+    #b03340 62%,
+    #7c0d18 88%,
+    #a52b34 100%
   );
 }
-.pc-p3 .pc-sheen,
-.pc-p4 .pc-sheen {
-  animation: pc-rake 10000ms linear infinite;
-}
-@keyframes pc-rake {
-  to {
-    --pc-sheen: 384deg;
-  }
+
+/* --- the lockup pressed very slightly into the sheet --- */
+.pc-press {
+  background: transparent;
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 246, 222, 0.5))
+    drop-shadow(0 -1px 0 rgba(74, 44, 16, 0.25));
 }
 
 /* ====================================================================
@@ -497,21 +410,19 @@
 
 .pc-type {
   position: relative;
-  margin-top: 3.4vw;
+  margin-top: 3.2vw;
   text-align: center;
+  mix-blend-mode: multiply;
 }
 
 .pc-caption {
-  font-size: 4.3vw;
+  font-size: 4vw;
   font-weight: 900;
   letter-spacing: 0.42em;
   text-indent: 0.42em;
-  color: #ffe8c6;
-  text-shadow:
-    0 0.15vw 0 rgba(30, 8, 8, 0.95),
-    0 0.4vw 1vw rgba(0, 0, 0, 0.9);
+  color: #43300f;
   opacity: 0;
-  transform: translateY(1.3vw);
+  transform: translateY(1vw);
   transition: opacity 620ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .pc-p4 .pc-caption {
@@ -519,39 +430,102 @@
   transform: translateY(0);
 }
 
-/* gold rule with brand red at the shoulders */
+/* a ruled line in the red pigment */
 .pc-rule {
   width: 0;
   height: 2px;
-  margin: 2.2vw auto 0;
+  margin: 2vw auto 0;
   background: linear-gradient(
     90deg,
     transparent,
-    var(--brand-red) 16%,
-    var(--gold-hi) 50%,
-    var(--brand-red) 84%,
+    var(--map-red) 22%,
+    var(--brand-red) 50%,
+    var(--map-red) 78%,
     transparent
   );
-  box-shadow: 0 0 0.8vw rgba(255, 150, 90, 0.5);
   transition: width 900ms 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .pc-p4 .pc-rule {
-  width: 62%;
+  width: 66%;
 }
 
 /* ====================================================================
-   FILM
+   WAX SEAL
    ==================================================================== */
 
-.pc-film {
+.pc-seal {
+  position: absolute;
+  right: calc(var(--safe-x) - 1vw);
+  bottom: calc(var(--safe-y) + 1vh);
+  width: 17vw;
+  height: 17vw;
+  z-index: 24;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 0.5vw 0.7vw rgba(60, 20, 12, 0.5));
+  opacity: 0;
+  transform: rotate(-9deg) scale(1.5);
+}
+.pc-p4 .pc-seal {
+  animation: pc-stamp 460ms 620ms cubic-bezier(0.2, 1.7, 0.4, 1) forwards;
+}
+@keyframes pc-stamp {
+  0% {
+    opacity: 0;
+    transform: rotate(-14deg) scale(1.5);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(-7deg) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-7deg) scale(1);
+  }
+}
+.pc-seal svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* the impression pressed into the wax */
+.pc-seal-star {
+  position: relative;
+  width: 42%;
+  height: 42%;
+  background: rgba(70, 8, 16, 0.55);
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+
+/* ====================================================================
+   EDGE + GRADE
+   ==================================================================== */
+
+/* charred rim just inside the torn edge */
+.pc-burn {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 40;
-  opacity: 0.08;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
-  background-size: 160px 160px;
+  background: radial-gradient(
+    130% 80% at 50% 50%,
+    transparent 62%,
+    rgba(74, 44, 16, 0.38) 88%,
+    rgba(30, 16, 4, 0.68) 100%
+  );
+  mix-blend-mode: multiply;
 }
 
 .pc-vignette {
@@ -559,14 +533,11 @@
   inset: 0;
   pointer-events: none;
   z-index: 41;
-  background:
-    radial-gradient(78% 58% at 54% 36%, transparent 32%, rgba(0, 0, 0, 0.9) 100%),
-    /* a little red bleeding in from the corners */
-      radial-gradient(120% 80% at 50% 0%, rgba(140, 20, 32, 0.2) 0%, transparent 60%);
+  background: radial-gradient(84% 62% at 48% 42%, transparent 44%, rgba(26, 14, 2, 0.45) 100%);
 }
 
 /* ====================================================================
-   STATIC MODE — the poster: ship on the moon, gold up, nothing mid-flight
+   STATIC MODE — the poster: everything drawn, seal stamped
    ==================================================================== */
 
 .pc.is-static *,
@@ -575,15 +546,24 @@
   animation: none !important;
   transition: none !important;
 }
+.pc.is-static .pc-coast path,
+.pc.is-static .pc-route path,
+.pc.is-static .pc-x path {
+  stroke-dashoffset: 0;
+}
+.pc.is-static .pc-hatch path,
+.pc.is-static .pc-marks path {
+  opacity: 0.75;
+}
+.pc.is-static .pc-rose {
+  opacity: 0.8;
+}
 .pc.is-static .pc-rule {
-  width: 62%;
+  width: 66%;
 }
-.pc.is-static .pc-embers {
-  opacity: 0.4;
-}
-/* park the moving highlight somewhere flattering */
-.pc.is-static .pc-sheen {
-  --pc-sheen: 24deg;
+.pc.is-static .pc-seal {
+  opacity: 1;
+  transform: rotate(-7deg) scale(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -593,13 +573,23 @@
     animation: none !important;
     transition: none !important;
   }
+  .pc .pc-coast path,
+  .pc .pc-route path,
+  .pc .pc-x path {
+    stroke-dashoffset: 0;
+  }
+  .pc .pc-hatch path,
+  .pc .pc-marks path {
+    opacity: 0.75;
+  }
+  .pc .pc-rose {
+    opacity: 0.8;
+  }
   .pc .pc-rule {
-    width: 62%;
+    width: 66%;
   }
-  .pc .pc-embers {
-    opacity: 0.4;
-  }
-  .pc .pc-sheen {
-    --pc-sheen: 24deg;
+  .pc .pc-seal {
+    opacity: 1;
+    transform: rotate(-7deg) scale(1);
   }
 }
