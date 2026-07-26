@@ -277,6 +277,31 @@
       linear-gradient(184deg, #fbf7ef 0%, #e7dfd2 36%, #cec5b5 62%, #f3ede1 100%);
 }
 
+/* --- the dark region: hood, "NINJAS", and the eye slits. Graphite rather than
+   black, so the mark still separates from the crimson disc behind it. --- */
+.sm-region {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+.sm-hood {
+  -webkit-mask-image: var(--logo-dark, none);
+  mask-image: var(--logo-dark, none);
+  background: linear-gradient(
+    178deg,
+    #6b6f76 0%,
+    #43474e 24%,
+    #24262b 48%,
+    #3c4046 70%,
+    #171a1e 100%
+  );
+}
+
 /* --- forged grain: fine anisotropic hammer texture, multiplied --- */
 .sm-grainplate {
   mix-blend-mode: overlay;
@@ -377,12 +402,16 @@
    TYPE
    ==================================================================== */
 
+.sm-markbox {
+  position: relative;
+  width: 100%;
+}
+
+/* In flow, directly under the mark. Absolute placement lets the caption drift
+   away from the logo; as a flow sibling the pair centre together as one lockup. */
 .sm-type {
-  position: absolute;
-  left: 50%;
-  top: 60%;
-  width: calc(100% - 2 * var(--safe-x));
-  transform: translateX(-50%);
+  position: relative;
+  margin-top: 3.4vw;
   text-align: center;
   z-index: 21;
 }

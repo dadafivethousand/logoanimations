@@ -99,6 +99,7 @@ export default function Robotics({
 
       {/* ---- the mark, bolted to an anodized mounting plate ---- */}
       <div className="rb-markwrap">
+        <div className="rb-markbox">
         <div className="rb-panel" aria-hidden>
           <span className="rb-panel-face" />
           <span className="rb-panel-edge" />
@@ -116,6 +117,13 @@ export default function Robotics({
           <div className="rb-plate" aria-hidden>
             <div className="rb-layer rb-alu" />
             <div className="rb-layer rb-brush" />
+
+            {/* The hood, "NINJAS" and the EYE SLITS are the artwork's dark
+                region. Painting them as dark anodized metal is what gives the
+                ninja his eyes back — masking the whole lockup with --logo alone
+                renders the head as one blank disc. */}
+            <div className="rb-region rb-hood" />
+
             <div className="rb-layer rb-aniso" />
           </div>
 
@@ -131,14 +139,15 @@ export default function Robotics({
         <span className="rb-bolt rb-bolt-tr" aria-hidden />
         <span className="rb-bolt rb-bolt-bl" aria-hidden />
         <span className="rb-bolt rb-bolt-br" aria-hidden />
-      </div>
+        </div>
 
-      {/* ---- type: the logo already says CODE NINJAS, so the only word here
-             is the location ---- */}
-      <div className="rb-type">
-        <div className="rb-caption">{caption}</div>
-        <div className="rb-bar" aria-hidden>
-          <span className="rb-bar-fill" />
+        {/* WOODBRIDGE sits in flow directly under the mark, never positioned
+            independently — that is what keeps it welded to the logo */}
+        <div className="rb-type">
+          <div className="rb-caption">{caption}</div>
+          <div className="rb-bar" aria-hidden>
+            <span className="rb-bar-fill" />
+          </div>
         </div>
       </div>
 

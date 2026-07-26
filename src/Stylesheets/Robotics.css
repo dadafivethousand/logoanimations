@@ -362,6 +362,31 @@
     );
 }
 
+/* --- the dark region: hood, "NINJAS", and the eye slits, as dark anodized
+   metal so the face band reads against it --- */
+.rb-region {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+.rb-hood {
+  -webkit-mask-image: var(--logo-dark, none);
+  mask-image: var(--logo-dark, none);
+  background: linear-gradient(
+    178deg,
+    #5b6672 0%,
+    #333c47 26%,
+    #1a2028 52%,
+    #2d353f 74%,
+    #10141a 100%
+  );
+}
+
 /* --- brushing: fine directional grain, the thing that makes it read as metal
        rather than a grey gradient. Two frequencies so it isn't a moiré. --- */
 .rb-brush {
@@ -532,12 +557,16 @@
    TYPE
    ==================================================================== */
 
+.rb-markbox {
+  position: relative;
+  width: 100%;
+}
+
+/* In flow, directly under the mark. Absolute placement lets the caption drift
+   away from the logo; as a flow sibling the pair centre together as one lockup. */
 .rb-type {
-  position: absolute;
-  left: 50%;
-  top: 66%;
-  width: calc(100% - 2 * var(--safe-x));
-  transform: translateX(-50%);
+  position: relative;
+  margin-top: 7vw;
   text-align: center;
   z-index: 26;
 }

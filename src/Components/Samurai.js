@@ -78,6 +78,7 @@ export default function Samurai({
 
       {/* ---- the mark ---- */}
       <div className="sm-markwrap">
+        <div className="sm-markbox">
         {/* soft darkening behind the plate — a near-black mark laid straight
             onto the red disc has almost no separation without it */}
         <div className="sm-halo" aria-hidden />
@@ -94,6 +95,12 @@ export default function Samurai({
             <div className="sm-layer sm-lacquer" />
             {/* forged surface grain, multiplied over the lacquer */}
             <div className="sm-layer sm-grainplate" />
+
+            {/* The hood, "NINJAS" and the EYE SLITS are the artwork's dark
+                region. Painting them darker than the face band is what gives
+                the ninja his eyes back — masking the whole lockup with --logo
+                alone renders the head as one blank disc. */}
+            <div className="sm-region sm-hood" />
           </div>
 
           {/* fixed specular — present in static mode too */}
@@ -101,6 +108,14 @@ export default function Samurai({
 
           {/* one-pass polish sweep — animated mode only */}
           <div className="sm-layer sm-sweep" aria-hidden />
+        </div>
+        </div>
+
+        {/* WOODBRIDGE sits in flow directly under the mark, never positioned
+            independently — that is what keeps it welded to the logo */}
+        <div className="sm-type">
+          <div className="sm-caption">{caption}</div>
+          <div className="sm-rule" aria-hidden />
         </div>
       </div>
 
@@ -110,12 +125,6 @@ export default function Samurai({
       <div className="sm-slashes" aria-hidden>
         <span className="sm-slash sm-slash-1" />
         <span className="sm-slash sm-slash-2" />
-      </div>
-
-      {/* ---- type ---- */}
-      <div className="sm-type">
-        <div className="sm-caption">{caption}</div>
-        <div className="sm-rule" aria-hidden />
       </div>
 
       <div className="sm-fibre" aria-hidden />

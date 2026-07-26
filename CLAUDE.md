@@ -75,8 +75,10 @@ of that distinction — it says only "ink here":
 the ninja loses his eyes.** That shipped once and the user caught it immediately.
 `useLogo` segments the opaque pixels by tone and publishes a mask per region, so
 give the eye band and "CODE" their own value — that's what keeps the lockup
-reading as the logo after it's been turned into gold or steel. Pirates does this
-(`.pc-face`, `.pc-code`); Samurai and Robotics still mask by alpha alone.
+reading as the logo after it's been turned into gold or steel. All three themes do this: Pirates gives the eye band pale silvered gold
+(`.pc-face`) and "CODE" a cooler metal (`.pc-code`); Samurai and Robotics paint
+the dark region — hood, "NINJAS" and the eye slits — with `.sm-hood` / `.rb-hood`
+masked by `--logo-dark`.
 
 ## How the logo gets its material — the core technique
 
@@ -144,6 +146,25 @@ Hard-won details, don't relearn them:
 - The automation Chrome tab freezes CSS animation at t=0, so a screenshot only
   ever tells you about `static`. Motion has to be checked in a real foreground
   window or on device — flag timing as "verify on device."
+
+## WOODBRIDGE is always welded under the mark
+
+The caption is a **flow sibling of the mark inside the mark wrapper** — never
+positioned independently:
+
+```jsx
+<div className="xx-markwrap">     {/* absolute, centres the whole lockup */}
+  <div className="xx-markbox">    {/* relative: holds the mark + its glows   */}
+    <div className="xx-mark"> …material layers… </div>
+  </div>
+  <div className="xx-type">WOODBRIDGE</div>   {/* in flow, margin-top only */}
+</div>
+```
+
+Absolutely positioning the caption at some `top: %` drifts it halfway down the
+frame the moment anything else moves — which shipped, and the user asked for it
+to be fixed. As a flow sibling it cannot separate from the logo, and the pair
+centre together as one lockup. All three themes do it this way.
 
 ## Copy
 
