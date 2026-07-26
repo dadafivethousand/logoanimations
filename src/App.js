@@ -1,10 +1,11 @@
 import React from "react";
 import "./Stylesheets/App.css";
+// import Samurai from "./Components/Samurai";
 // import Robotics from "./Components/Robotics";
-import Samurai from "./Components/Samurai";
+import Pirates from "./Components/Pirates";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Samurai mode="animated" />;
+  return <Pirates mode="animated" />;
 }
 export default App;

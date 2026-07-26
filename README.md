@@ -48,6 +48,10 @@ stone reflection.
 **Robotics** — the mark milled from brushed aluminium with an anodized red edge,
 bolted to a mounting plate, PCB traces running current into it, HUD frame.
 
+**Pirates** — the mark as sunken treasure: tarnished bullion with verdigris
+pools and corrosion pitting, resting on the seabed under shafts of surface
+light, caustics dancing across the metal, silt drifting through the beams.
+
 ## Adding one
 
 One theme = one component in `src/Components/` + one stylesheet in

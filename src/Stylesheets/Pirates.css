@@ -1,0 +1,561 @@
+/* Pirates — sunken treasure: tarnished gold on the seabed under a light shaft.
+   Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
+   px is reserved for hairlines that must stay hairlines (bevels, rules). */
+
+@property --pc-sheen {
+  syntax: "<angle>";
+  initial-value: 24deg;
+  inherits: false;
+}
+
+.pc {
+  /* palette — deep ocean teal + tarnished bullion. Warm metal in a cold volume,
+     so it doesn't sit next to Samurai and Robotics as a third grey theme. */
+  --deep: #03100f;
+  --water: #0b2b2c;
+  --water-hi: #1d5a58;
+  --shallow: #3a8a80;
+  --gold-hi: #ffeebb;
+  --gold: #d6a82f;
+  --gold-lo: #7a5514;
+  --verdigris: #2f8f7a;
+  --silt: #2a3a34;
+
+  /* screen-recording crop: nothing meaningful inside this band */
+  --safe-x: 11.5vw;
+  --safe-y: 4.7vh;
+
+  /* the one knob the composition scales from */
+  --mark-w: 70vw;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--deep);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #d8e6e0;
+  isolation: isolate;
+}
+
+.pc-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   THE WATER — one volume, lit from the top. No horizon, no seams.
+   ==================================================================== */
+
+.pc-water {
+  position: absolute;
+  inset: 0;
+  background:
+    /* the column of light the shafts live inside */
+    radial-gradient(60% 46% at 46% 6%, rgba(120, 214, 200, 0.34) 0%, transparent 64%),
+    /* depth: light falls off fast underwater */
+      linear-gradient(
+        180deg,
+        var(--shallow) 0%,
+        var(--water-hi) 14%,
+        var(--water) 38%,
+        #061a1a 66%,
+        var(--deep) 100%
+      );
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 1000ms ease, transform 1800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pc-p1 .pc-water,
+.pc-p2 .pc-water,
+.pc-p3 .pc-water,
+.pc-p4 .pc-water {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* the underside of the surface, rippling */
+.pc-surface {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 0;
+  height: 16%;
+  background: repeating-linear-gradient(
+    96deg,
+    transparent 0 1.6vw,
+    rgba(206, 255, 244, 0.4) 1.6vw 2vw,
+    transparent 2vw 4.4vw
+  );
+  filter: blur(0.4vw);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.4) 52%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.4) 52%, transparent 100%);
+  opacity: 0;
+  transition: opacity 1200ms ease;
+}
+.pc-p1 .pc-surface,
+.pc-p2 .pc-surface,
+.pc-p3 .pc-surface,
+.pc-p4 .pc-surface {
+  opacity: 0.55;
+  animation: pc-surface 11000ms linear infinite;
+}
+@keyframes pc-surface {
+  to {
+    background-position: 18vw 0;
+  }
+}
+
+/* --- god rays. Scaled from a point at the top so they splay, blurred hard,
+   screened. Three at different widths beats one wide cone. --- */
+.pc-shafts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.pc-shaft {
+  position: absolute;
+  top: -8%;
+  height: 108%;
+  transform-origin: 50% 0;
+  background: linear-gradient(
+    180deg,
+    rgba(190, 255, 240, 0.42) 0%,
+    rgba(150, 232, 216, 0.2) 34%,
+    rgba(110, 200, 186, 0.06) 66%,
+    transparent 100%
+  );
+  filter: blur(1.2vw);
+  opacity: 0;
+  transition: opacity 1200ms ease;
+}
+.pc-shaft-1 {
+  left: 22%;
+  width: 15vw;
+  transform: rotate(9deg) scaleX(1);
+}
+.pc-shaft-2 {
+  left: 44%;
+  width: 26vw;
+  transform: rotate(-5deg);
+}
+.pc-shaft-3 {
+  left: 68%;
+  width: 11vw;
+  transform: rotate(15deg);
+}
+.pc-p2 .pc-shaft,
+.pc-p3 .pc-shaft,
+.pc-p4 .pc-shaft {
+  opacity: 1;
+}
+/* slow breathing, so the water feels alive without anything moving visibly */
+.pc-p3 .pc-shaft,
+.pc-p4 .pc-shaft {
+  animation: pc-breathe 7000ms ease-in-out infinite alternate;
+}
+.pc-shaft-2 {
+  animation-delay: -2400ms;
+}
+.pc-shaft-3 {
+  animation-delay: -4200ms;
+}
+@keyframes pc-breathe {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- seabed: a mound that fades out, so there's no give-away edge --- */
+.pc-silt {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: -14%;
+  height: 46%;
+  background:
+    radial-gradient(60% 100% at 50% 100%, rgba(84, 104, 92, 0.6) 0%, transparent 72%),
+    radial-gradient(90% 80% at 50% 116%, var(--silt) 0%, transparent 70%);
+  filter: blur(1.6vw);
+  opacity: 0;
+  transition: opacity 1100ms ease;
+}
+.pc-p1 .pc-silt,
+.pc-p2 .pc-silt,
+.pc-p3 .pc-silt,
+.pc-p4 .pc-silt {
+  opacity: 1;
+}
+
+/* ====================================================================
+   THE MARK
+   ==================================================================== */
+
+.pc-markwrap {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: var(--mark-w);
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+/* contact shadow into the silt */
+.pc-cast {
+  position: absolute;
+  left: 50%;
+  bottom: -5vw;
+  width: 94%;
+  height: 4vw;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.8), transparent 74%);
+  filter: blur(1.2vw);
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.pc-p2 .pc-cast,
+.pc-p3 .pc-cast,
+.pc-p4 .pc-cast {
+  opacity: 1;
+}
+
+/* warm bounce — gold this big would throw light into the water around it */
+.pc-bloom {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150%;
+  height: 260%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 196, 96, 0.28) 0%,
+    rgba(255, 170, 70, 0.1) 44%,
+    transparent 72%
+  );
+  filter: blur(2vw);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 1000ms ease;
+}
+.pc-p3 .pc-bloom,
+.pc-p4 .pc-bloom {
+  opacity: 1;
+}
+
+.pc-mark {
+  position: relative;
+  width: 100%;
+  /* measured from the trimmed mark at load, so any logo lands on register */
+  aspect-ratio: var(--logo-aspect, 2.17);
+  opacity: 0;
+  transform: translateY(2.4vw) scale(0.97);
+  transition:
+    opacity 700ms ease,
+    transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pc-p2 .pc-mark,
+.pc-p3 .pc-mark,
+.pc-p4 .pc-mark {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* every material layer is the same box, masked to the mark's alpha */
+.pc-layer {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: var(--logo);
+  mask-image: var(--logo);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+/* chamfer: drop-shadow reads alpha, so the rims trace the letterforms */
+.pc-plate {
+  position: absolute;
+  inset: 0;
+  filter:
+    drop-shadow(0 -1.5px 0 rgba(255, 238, 187, 0.8))
+    drop-shadow(0 2px 0 rgba(28, 16, 2, 0.95))
+    drop-shadow(-1px 0 0 rgba(255, 220, 150, 0.4))
+    drop-shadow(1.5px 0 0 rgba(20, 12, 2, 0.85))
+    drop-shadow(0 0.5vw 0.8vw rgba(0, 0, 0, 0.65));
+}
+
+/* --- bullion. Gold needs a dark band between highlights or it flattens into
+   yellow plastic; the bottom stop is the warm bounce off the seabed. --- */
+.pc-gold {
+  background: linear-gradient(
+    178deg,
+    #fff4cf 0%,
+    #f0d180 8%,
+    #d9a832 20%,
+    #9c6f18 33%,
+    #5d3d07 43%,
+    #a8781d 52%,
+    #e8bf58 61%,
+    #fff2c4 68%,
+    #cf9c2c 77%,
+    #7d5411 88%,
+    #3f2a08 95%,
+    #b98a28 100%
+  );
+}
+
+/* --- verdigris: double-masked. Logo mask outside, turbulence blotches inside,
+   so the patina lands in irregular pools rather than a wash. --- */
+.pc-patina {
+  mix-blend-mode: color-burn;
+  opacity: 0.5;
+}
+.pc-patina-in {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 80% at 22% 70%, var(--verdigris) 0%, transparent 62%),
+    radial-gradient(50% 70% at 74% 30%, #3fa38c 0%, transparent 58%),
+    radial-gradient(70% 60% at 48% 92%, #23705f 0%, transparent 66%);
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.018' numOctaves='4' seed='9'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0.4 1 1'/></feComponentTransfer></filter><rect width='260' height='260' filter='url(%23p)'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.018' numOctaves='4' seed='9'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0.4 1 1'/></feComponentTransfer></filter><rect width='260' height='260' filter='url(%23p)'/></svg>");
+  -webkit-mask-size: 44vw 44vw;
+  mask-size: 44vw 44vw;
+}
+
+/* --- corrosion pitting, multiplied into the metal --- */
+.pc-pit {
+  mix-blend-mode: multiply;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='k'><feTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0 1'/></feComponentTransfer></filter><rect width='180' height='180' filter='url(%23k)'/></svg>");
+  background-size: 26vw 26vw;
+}
+
+/* --- caustics: surface light dancing across the metal. Two skewed stacks
+   scrolled at different rates. Scrolls the BACKGROUND, not the layer — a
+   transform would drag the mask with it and the ripples would slide off the
+   mark instead of across it. --- */
+.pc-caustic {
+  mix-blend-mode: screen;
+  opacity: 0.32;
+  background-image:
+    repeating-linear-gradient(
+      74deg,
+      transparent 0 2.4vw,
+      rgba(255, 244, 210, 0.5) 2.4vw 3vw,
+      transparent 3vw 5.6vw
+    ),
+    repeating-linear-gradient(
+      98deg,
+      transparent 0 3.2vw,
+      rgba(200, 250, 244, 0.42) 3.2vw 3.7vw,
+      transparent 3.7vw 7.4vw
+    );
+  filter: blur(0.35vw);
+}
+.pc-p3 .pc-caustic,
+.pc-p4 .pc-caustic {
+  animation: pc-ripple 9000ms linear infinite;
+}
+@keyframes pc-ripple {
+  to {
+    background-position: 22vw -6vw, -18vw 5vw;
+  }
+}
+
+/* --- gold's specular: tight, warm, moving --- */
+.pc-sheen {
+  mix-blend-mode: screen;
+  opacity: 0.48;
+  background: conic-gradient(
+    from var(--pc-sheen) at 42% 38%,
+    transparent 0deg,
+    rgba(255, 246, 214, 0.75) 18deg,
+    transparent 46deg,
+    transparent 172deg,
+    rgba(255, 214, 140, 0.5) 200deg,
+    transparent 232deg,
+    transparent 360deg
+  );
+}
+.pc-p3 .pc-sheen,
+.pc-p4 .pc-sheen {
+  animation: pc-rake 10000ms linear infinite;
+}
+@keyframes pc-rake {
+  to {
+    --pc-sheen: 384deg;
+  }
+}
+
+/* ====================================================================
+   TYPE
+   ==================================================================== */
+
+.pc-type {
+  position: absolute;
+  left: 50%;
+  top: 72%;
+  width: calc(100% - 2 * var(--safe-x));
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 26;
+}
+
+.pc-caption {
+  font-size: 4.3vw;
+  font-weight: 900;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: #ffeec4;
+  text-shadow:
+    0 0.15vw 0 rgba(20, 34, 30, 0.9),
+    0 0.4vw 1vw rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transform: translateY(1.3vw);
+  transition: opacity 620ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pc-p4 .pc-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pc-rule {
+  width: 0;
+  height: 2px;
+  margin: 2.4vw auto 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold-lo) 18%,
+    var(--gold-hi) 50%,
+    var(--gold-lo) 82%,
+    transparent
+  );
+  box-shadow: 0 0 0.8vw rgba(255, 200, 110, 0.45);
+  transition: width 900ms 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pc-p4 .pc-rule {
+  width: 58%;
+}
+
+/* ====================================================================
+   DRIFT — silt in the light. Slow and endless, so it survives static as a
+   scatter of specks rather than needing to be switched off.
+   ==================================================================== */
+
+.pc-motes {
+  position: absolute;
+  inset: 0;
+  z-index: 24;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.pc-mote {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(226, 250, 240, 0.85);
+  box-shadow: 0 0 0.6vw rgba(200, 240, 232, 0.6);
+  opacity: 0;
+}
+.pc-p3 .pc-mote,
+.pc-p4 .pc-mote {
+  animation: pc-drift 9000ms var(--md) linear infinite;
+}
+@keyframes pc-drift {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  22% {
+    opacity: 0.75;
+  }
+  70% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--mx), -16vw);
+  }
+}
+
+/* ====================================================================
+   FILM
+   ==================================================================== */
+
+.pc-film {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
+  background-size: 160px 160px;
+}
+
+.pc-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 41;
+  background: radial-gradient(72% 56% at 48% 40%, transparent 34%, rgba(0, 0, 0, 0.88) 100%);
+}
+
+/* ====================================================================
+   STATIC MODE — the poster: gold lit, caustics parked, motes hanging
+   ==================================================================== */
+
+.pc.is-static *,
+.pc.is-static *::before,
+.pc.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.pc.is-static .pc-rule {
+  width: 58%;
+}
+.pc.is-static .pc-shaft {
+  opacity: 0.9;
+}
+/* park the moving highlights somewhere flattering */
+.pc.is-static .pc-sheen {
+  --pc-sheen: 24deg;
+}
+.pc.is-static .pc-caustic {
+  background-position: 6vw -2vw, -5vw 2vw;
+}
+/* motes hang suspended rather than vanish — silt in still water is plausible,
+   and it keeps the light shafts from looking empty */
+.pc.is-static .pc-mote {
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc *,
+  .pc *::before,
+  .pc *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .pc .pc-rule {
+    width: 58%;
+  }
+  .pc .pc-shaft {
+    opacity: 0.9;
+  }
+  .pc .pc-sheen {
+    --pc-sheen: 24deg;
+  }
+  .pc .pc-mote {
+    opacity: 0.6;
+  }
+}

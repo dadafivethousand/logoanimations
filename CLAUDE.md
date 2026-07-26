@@ -32,8 +32,9 @@ bar) needs a frozen value there. Same for `prefers-reduced-motion`.
 ## These are Instagram posts — vary the palette per theme
 
 Same rule as the sibling repo: the compositions sit next to each other on one
-feed, so **give each theme its own colour story.** Samurai is night indigo,
-cold steel and molten orange; Robotics is graphite, steel and green. Brand red `#e4002b` is the
+feed, so **give each theme its own colour story.** Samurai is washi cream and
+vermilion; Robotics is graphite, steel and green; Pirates is deep ocean teal and
+tarnished gold. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
@@ -98,6 +99,10 @@ Hard-won details, don't relearn them:
   noise multiplied over everything.
 - `@property` for animatable angles/percentages so gradients interpolate
   instead of stepping.
+- **Build one space, not a diorama.** The first Pirates pass stacked sky / sea /
+  deck as three bands and every seam read as a hard edge straight through the
+  composition. A single volume — water with light falling through it — has depth
+  for free. If a theme needs a horizon, hide it behind fog or a gradient falloff.
 - **Contrast beats fidelity.** A physically-correct near-black plate laid over
   the red hinomaru loses its letterforms; lift the mids until the mark reads.
 - The logo file **must have a real alpha channel** — a mark flattened onto white
