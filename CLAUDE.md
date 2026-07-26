@@ -60,6 +60,24 @@ hairlines (bevel rims, rules). Keep everything meaningful inside `--safe-x` /
   `aspect-ratio: var(--logo-aspect)` — never a hard-coded ratio, or the next
   logo lands off-register.
 
+## The mark is NOT one shape — read this before masking anything
+
+`src/Images/logo.png` is a three-tone lockup, and the alpha channel carries none
+of that distinction — it says only "ink here":
+
+| region | colour in the artwork | mask |
+|---|---|---|
+| hood + "NINJAS" | black `#000` | `--logo-dark` |
+| the band across the **eyes** | skin `#d7c19b` | `--logo-light` |
+| "CODE" | blue `#3490bf` | `--logo-accent` |
+
+**A theme that masks only by `--logo` flattens all three into one material and
+the ninja loses his eyes.** That shipped once and the user caught it immediately.
+`useLogo` segments the opaque pixels by tone and publishes a mask per region, so
+give the eye band and "CODE" their own value — that's what keeps the lockup
+reading as the logo after it's been turned into gold or steel. Pirates does this
+(`.pc-face`, `.pc-code`); Samurai and Robotics still mask by alpha alone.
+
 ## How the logo gets its material — the core technique
 
 The mark is **never an `<img>` you tint.** Each theme paints its material on a
