@@ -1,10 +1,16 @@
-/* Pirates — the mark inked onto an old treasure map.
+/* Pirates — an already-drawn chart; a dotted course plots itself to the corner.
    Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
-   px is reserved for hairlines that must stay hairlines. */
+   px is reserved for hairlines that must stay hairlines.
+
+   EVERYTHING EXCEPT THE COURSE AND THE CROSS IS VISIBLE AT PHASE 0. The chart is
+   already populated — no unroll, no ink-on reveal. So those rules carry no
+   `.pc-pN` gating, and the only phase-dependent rules in this file are
+   `.pc-course circle` and `.pc-x-in`. Keep it that way: gating a base element
+   is what previously left the whole map blank when one selector broke. */
 
 .pc {
-  /* palette — aged parchment, sepia ink, one red pigment for the route and wax.
-     Brand red #e4002b lives in the seal and the route, where a real map would
+  /* palette — aged parchment, sepia ink, one red pigment for the course and wax.
+     Brand red #e4002b sits in the rule and the seal, where a real chart would
      genuinely carry a second colour. */
   --paper: #e3cfa4;
   --paper-hi: #f4e6c6;
@@ -39,65 +45,6 @@
 }
 
 /* ====================================================================
-   THE UNROLL
-   Everything on the sheet sits inside .pc-scroll and is clipped from the
-   bottom up; the clip opening downward is the unroll itself. The dowel rides
-   the same edge, so the two can never fall out of step.
-   ==================================================================== */
-
-.pc-scroll {
-  position: absolute;
-  inset: 0;
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 1500ms cubic-bezier(0.36, 0, 0.24, 1);
-}
-.pc-p1 .pc-scroll,
-.pc-p2 .pc-scroll,
-.pc-p3 .pc-scroll,
-.pc-p4 .pc-scroll {
-  clip-path: inset(0 0 0% 0);
-}
-
-/* the rolled-up remainder of the scroll, travelling down the frame */
-.pc-roller {
-  position: absolute;
-  left: -4%;
-  right: -4%;
-  top: 0;
-  height: 9vw;
-  z-index: 30;
-  transform: translateY(-50%);
-  transition: top 1500ms cubic-bezier(0.36, 0, 0.24, 1), opacity 300ms 1400ms ease;
-}
-.pc-p1 .pc-roller,
-.pc-p2 .pc-roller,
-.pc-p3 .pc-roller,
-.pc-p4 .pc-roller {
-  top: 100%;
-  opacity: 0;
-}
-
-/* a cylinder of rolled paper: light along the top face, dark underneath, with
-   its own shadow thrown onto the sheet below */
-.pc-roller-bar {
-  position: absolute;
-  inset: 0;
-  border-radius: 1.4vw;
-  background: linear-gradient(
-    180deg,
-    #b3945f 0%,
-    #e9d6ac 18%,
-    #fbf1d6 32%,
-    #d9c095 54%,
-    #9b7c4a 78%,
-    #6a5230 100%
-  );
-  box-shadow:
-    0 1.2vw 2.4vw rgba(38, 22, 6, 0.55),
-    inset 0 -0.3vw 0.6vw rgba(60, 38, 12, 0.5);
-}
-
-/* ====================================================================
    THE SHEET
    ==================================================================== */
 
@@ -120,16 +67,6 @@
   box-shadow:
     inset 0 0 3vw rgba(74, 44, 16, 0.5),
     inset 0 0 0.7vw rgba(52, 28, 8, 0.75);
-  opacity: 0;
-  transform: scale(1.02);
-  transition: opacity 900ms ease, transform 1600ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.pc-p1 .pc-page,
-.pc-p2 .pc-page,
-.pc-p3 .pc-page,
-.pc-p4 .pc-page {
-  opacity: 1;
-  transform: scale(1);
 }
 
 .pc-page > span {
@@ -193,7 +130,7 @@
 }
 
 /* ====================================================================
-   WHAT'S DRAWN ON IT
+   WHAT IS ALREADY DRAWN ON IT — no reveals, no phase gating
    ==================================================================== */
 
 .pc-map {
@@ -203,61 +140,47 @@
   height: 100%;
   z-index: 10;
   mix-blend-mode: multiply;
-  opacity: 0;
-  transition: opacity 700ms ease;
-}
-.pc-p2 .pc-map,
-.pc-p3 .pc-map,
-.pc-p4 .pc-map {
-  opacity: 1;
 }
 
-/* coastlines draw themselves on */
 .pc-coast path {
   stroke: var(--ink);
   stroke-width: 3.2;
   stroke-linecap: round;
-  stroke-dasharray: 2200;
-  stroke-dashoffset: 2200;
-}
-.pc-p2 .pc-coast path,
-.pc-p3 .pc-coast path,
-.pc-p4 .pc-coast path {
-  animation: pc-draw 1400ms cubic-bezier(0.5, 0, 0.2, 1) forwards;
-}
-.pc-coast path:nth-child(2) {
-  animation-delay: 120ms;
-}
-.pc-coast path:nth-child(3) {
-  animation-delay: 260ms;
-}
-.pc-coast path:nth-child(4) {
-  animation-delay: 380ms;
-}
-@keyframes pc-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
 }
 
 .pc-hatch path {
   stroke: var(--sepia);
   stroke-width: 2;
   stroke-linecap: round;
-  opacity: 0;
-}
-.pc-p2 .pc-hatch path,
-.pc-p3 .pc-hatch path,
-.pc-p4 .pc-hatch path {
-  animation: pc-fade 700ms 700ms ease forwards;
-}
-@keyframes pc-fade {
-  to {
-    opacity: 0.75;
-  }
+  opacity: 0.75;
 }
 
-/* --- the plotted course: one dot at a time, toward the destination --- */
+.pc-marks path {
+  stroke: var(--sepia);
+  stroke-width: 1.8;
+  opacity: 0.75;
+}
+
+/* a compass rose reads as drawn in ink, not stamped in black */
+.pc-rose {
+  stroke: var(--sepia);
+  stroke-width: 2.2;
+  fill: #a8874f;
+  opacity: 0.55;
+}
+
+/* where we set out from */
+.pc-start {
+  stroke: var(--ink);
+  stroke-width: 2.6;
+  fill: var(--ink);
+  opacity: 0.85;
+}
+
+/* ====================================================================
+   THE COURSE — the only thing that draws itself
+   ==================================================================== */
+
 .pc-course circle {
   fill: var(--map-red);
   opacity: 0;
@@ -265,11 +188,11 @@
   transform-box: fill-box;
   transform-origin: center;
 }
-.pc-p3 .pc-course circle,
-.pc-p4 .pc-course circle {
-  /* each dot lands 42ms after the one before it, so the course reads as being
+.pc-p1 .pc-course circle,
+.pc-p2 .pc-course circle {
+  /* each dot lands 46ms after the one before it, so the course reads as being
      plotted outward rather than appearing all at once */
-  animation: pc-plot 320ms calc(var(--i) * 42ms) cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+  animation: pc-plot 340ms calc(var(--i) * 46ms) cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
 }
 @keyframes pc-plot {
   0% {
@@ -286,7 +209,7 @@
   }
 }
 
-/* --- the cross on the destination, drawn once the course arrives --- */
+/* the cross, landing once the course arrives */
 .pc-x-in {
   stroke: var(--map-red);
   stroke-width: 7;
@@ -296,8 +219,8 @@
   transform-box: fill-box;
   transform-origin: center;
 }
-.pc-p4 .pc-x-in {
-  animation: pc-cross 420ms 120ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+.pc-p2 .pc-x-in {
+  animation: pc-cross 420ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
 }
 @keyframes pc-cross {
   from {
@@ -310,53 +233,12 @@
   }
 }
 
-/* --- where we set out from --- */
-.pc-start {
-  stroke: var(--ink);
-  stroke-width: 2.6;
-  fill: var(--ink);
-  opacity: 0;
-  transition: opacity 500ms ease;
-}
-.pc-p3 .pc-start,
-.pc-p4 .pc-start {
-  opacity: 0.85;
-}
-
-.pc-p3 .pc-p3 .pc-p3 .pc-rose {
-  stroke: var(--sepia);
-  stroke-width: 2.2;
-  fill: #a8874f;
-  opacity: 0;
-}
-.pc-p3 .pc-rose,
-.pc-p4 .pc-rose {
-  animation: pc-rose-in 900ms 200ms ease forwards;
-}
-@keyframes pc-rose-in {
-  to {
-    opacity: 0.55;
-  }
-}
-
-.pc-marks path {
-  stroke: var(--sepia);
-  stroke-width: 1.8;
-  opacity: 0;
-}
-.pc-p3 .pc-marks path,
-.pc-p4 .pc-marks path {
-  animation: pc-fade 800ms 400ms ease forwards;
-}
-
 /* ====================================================================
-   THE LOCKUP — mark + WOODBRIDGE as one unit.
+   THE DESTINATION — mark + WOODBRIDGE as one unit, in the corner.
    The caption is a FLOW sibling of the mark inside this wrapper, never
    absolutely positioned: that is what welds it under the logo.
    ==================================================================== */
 
-/* the destination sits in the bottom-right corner, inside the safe band —
-   it is a place on the map, not the centrepiece of a poster */
 .pc-markwrap {
   position: absolute;
   left: 58%;
@@ -371,19 +253,11 @@
   width: 100%;
 }
 
-
 .pc-mark {
   position: relative;
   width: 100%;
   /* measured from the trimmed mark at load, so any logo lands on register */
   aspect-ratio: var(--logo-aspect, 2.17);
-  opacity: 0;
-  transform: scale(0.985);
-  transition: opacity 700ms ease, transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.pc-p4 .pc-mark {
-  opacity: 1;
-  transform: scale(1);
 }
 
 /* --- masks ---
@@ -455,7 +329,7 @@
   );
 }
 
-/* --- "CODE" in the map's red pigment, faded --- */
+/* --- "CODE" in the chart's red pigment, faded --- */
 .pc-code {
   mix-blend-mode: multiply;
   background: linear-gradient(
@@ -477,36 +351,31 @@
 }
 
 /* ====================================================================
-   TYPE — in flow, directly under the mark
+   TYPE — small, and tight under CODE NINJAS
    ==================================================================== */
 
 .pc-type {
   position: relative;
-  margin-top: 3.2vw;
+  /* deliberately tight: WOODBRIDGE is the lockup's second line, not a separate
+     caption sitting below it */
+  margin-top: 0.9vw;
   text-align: center;
   mix-blend-mode: multiply;
 }
 
 .pc-caption {
-  font-size: 4vw;
+  font-size: 2.7vw;
   font-weight: 900;
-  letter-spacing: 0.42em;
-  text-indent: 0.42em;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
   color: #43300f;
-  opacity: 0;
-  transform: translateY(1vw);
-  transition: opacity 620ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.pc-p4 .pc-caption {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* a ruled line in the red pigment */
 .pc-rule {
-  width: 0;
+  width: 46%;
   height: 2px;
-  margin: 2vw auto 0;
+  margin: 1.1vw auto 0;
   background: linear-gradient(
     90deg,
     transparent,
@@ -515,10 +384,6 @@
     var(--map-red) 78%,
     transparent
   );
-  transition: width 900ms 160ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.pc-p4 .pc-rule {
-  width: 66%;
 }
 
 /* ====================================================================
@@ -535,25 +400,7 @@
   display: grid;
   place-items: center;
   filter: drop-shadow(0 0.5vw 0.7vw rgba(60, 20, 12, 0.5));
-  opacity: 0;
-  transform: rotate(-9deg) scale(1.5);
-}
-.pc-p4 .pc-seal {
-  animation: pc-stamp 460ms 620ms cubic-bezier(0.2, 1.7, 0.4, 1) forwards;
-}
-@keyframes pc-stamp {
-  0% {
-    opacity: 0;
-    transform: rotate(-14deg) scale(1.5);
-  }
-  60% {
-    opacity: 1;
-    transform: rotate(-7deg) scale(0.94);
-  }
-  100% {
-    opacity: 1;
-    transform: rotate(-7deg) scale(1);
-  }
+  transform: rotate(-7deg);
 }
 .pc-seal svg {
   position: absolute;
@@ -609,7 +456,8 @@
 }
 
 /* ====================================================================
-   STATIC MODE — the poster: everything drawn, seal stamped
+   STATIC MODE — the poster: course fully plotted, cross landed.
+   Only two things need freezing, because only two things move.
    ==================================================================== */
 
 .pc.is-static *,
@@ -618,40 +466,13 @@
   animation: none !important;
   transition: none !important;
 }
-.pc.is-static .pc-scroll {
-  clip-path: inset(0 0 0% 0);
-}
-.pc.is-static .pc-roller {
-  opacity: 0;
-}
-/* the coast is a stroke reveal; the dots and the start marker are opacity —
-   they need separate resets, and a single malformed selector list here silently
-   invalidated all three */
-.pc.is-static .pc-coast path {
-  stroke-dashoffset: 0;
-}
-.pc.is-static .pc-course circle,
-.pc.is-static .pc-start {
+.pc.is-static .pc-course circle {
   opacity: 0.9;
   transform: scale(1);
-}
-.pc.is-static .pc-hatch path,
-.pc.is-static .pc-marks path {
-  opacity: 0.75;
-}
-.pc.is-static .pc-rose {
-  opacity: 0.55;
 }
 .pc.is-static .pc-x-in {
   opacity: 0.95;
   transform: none;
-}
-.pc.is-static .pc-rule {
-  width: 66%;
-}
-.pc.is-static .pc-seal {
-  opacity: 1;
-  transform: rotate(-7deg) scale(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -661,36 +482,12 @@
     animation: none !important;
     transition: none !important;
   }
-  .pc .pc-scroll {
-    clip-path: inset(0 0 0% 0);
-  }
-  .pc .pc-roller {
-    opacity: 0;
-  }
-  .pc .pc-coast path {
-    stroke-dashoffset: 0;
-  }
-  .pc .pc-course circle,
-  .pc .pc-start {
+  .pc .pc-course circle {
     opacity: 0.9;
     transform: scale(1);
-  }
-  .pc .pc-hatch path,
-  .pc .pc-marks path {
-    opacity: 0.75;
-  }
-  .pc .pc-rose {
-    opacity: 0.55;
   }
   .pc .pc-x-in {
     opacity: 0.95;
     transform: none;
-  }
-  .pc .pc-rule {
-    width: 66%;
-  }
-  .pc .pc-seal {
-    opacity: 1;
-    transform: rotate(-7deg) scale(1);
   }
 }

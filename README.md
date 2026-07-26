@@ -48,11 +48,12 @@ stone reflection.
 **Robotics** — the mark milled from brushed aluminium with an anodized red edge,
 bolted to a mounting plate, PCB traces running current into it, HUD frame.
 
-**Pirates** — a scroll unrolls, a dotted course is plotted across it one dot at
-a time, and it ends at a cross above CODE NINJAS WOODBRIDGE in the corner: the
-final destination. Aged parchment with burnt torn edges, hand-drawn coastlines,
-soundings, a compass rose and a red wax seal. The eye band and "CODE" get their
-own pigment so the lockup still reads.
+**Pirates** — an already-drawn chart: aged parchment with burnt torn edges,
+coastlines, soundings, a compass rose and a red wax seal, all there from the
+first frame. The only thing that animates is a dotted course plotting itself out
+one dot at a time to a cross above CODE NINJAS WOODBRIDGE in the corner — the
+final destination. The eye band and "CODE" get their own pigment so the lockup
+still reads.
 
 ## Adding one
 
