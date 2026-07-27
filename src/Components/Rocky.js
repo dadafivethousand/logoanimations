@@ -1,36 +1,42 @@
-// Rocky.js — a glove punches the camera, the impact becomes the ninja's face,
-// and the wordmark lands after it. Flag and arena spot behind.
+// Rocky.js — a boxing glove punches the camera and MORPHS into the ninja's
+// head; the wordmark lands after it. Flag and arena spot behind.
 //
 // Genre, not franchise: no film logo, no title typeface, no likeness.
 //
-// THE MARK KEEPS ITS OWN COLOURS. It is drawn as itself — an <img>, unmasked and
-// unrecoloured — so "CODE" stays brand blue and the hood stays black.
+// WHY THE HEAD IS DRAWN FROM SCRATCH HERE. A raster logo cannot morph — the
+// best you get is a cross-fade between two pictures, which is what the previous
+// pass did and it looked like a cut. So the glove and the head are one SVG path
+// with an IDENTICAL command structure (8 cubic segments, same order), and CSS
+// interpolates `d` between them. That only works if both paths have the same
+// number and type of commands, which is why they are generated from one set of
+// eight anchors rather than drawn by hand:
 //
-// HOW THE FACE ARRIVES BEFORE THE WRITING. The logo is one image, so the same
-// file is rendered twice and each copy is clipped: one to the head box, one to
-// everything below it. Both sit in the same mark box, so they stay in perfect
-// register and the head can appear a beat before the wordmark without any
-// second asset.
+//     head   every radius 78
+//     glove  same anchors, radii pushed out at the knuckles and the thumb
 //
-// GEOMETRY IS MEASURED, NOT EYEBALLED — percentages of the mark box, read off
-// the artwork's own pixels:
-//
-//     head      left 32.7%  top 0%     w 29.3%  h 46.3%
-//     eye band  left 39.5%  top 22.1%  w 21.1%  h 10.7%
-//
-// The headband sits on the FOREHEAD, above the eye band; over it he'd be blind.
-// If the logo file is ever replaced, re-measure HEAD and the two clips below.
+// The detail on each side (knuckles, seam, cuff / eyes, band, knot) cross-fades
+// across the morph. The wordmark below is still the real logo file — the brand's
+// own type, clipped out of the artwork.
 import React from "react";
 import "../Stylesheets/Rocky.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
-// p1 flag + spot · p2 the glove comes in and lands · p3 it becomes the face
+// p1 flag + spot · p2 the glove comes in and lands · p3 it morphs into the head
 // · p4 the writing
-const CUES = [200, 850, 1600, 2300];
+const CUES = [200, 850, 1600, 2350];
 
-// measured off the artwork — see the note at the top
-const HEAD = { left: "32.7%", top: "0%", width: "29.3%", height: "46.3%" };
+/* Generated: one ring of eight anchors, two sets of radii, Catmull-Rom to
+   cubics. Same structure both sides, so `d` interpolates. */
+const GLOVE_D =
+  "M180.0 104.0 C178.6 121.9 162.8 143.5 149.5 153.5 C136.2 163.5 117.2 163.3 100.0 164.0 " +
+  "C82.8 164.7 61.9 167.7 46.3 157.7 C30.6 147.7 6.7 122.6 6.0 104.0 C5.3 85.4 26.4 60.4 42.0 46.0 " +
+  "C57.7 31.7 80.7 18.0 100.0 18.0 C119.3 18.0 144.6 31.7 158.0 46.0 C171.3 60.4 181.4 86.1 180.0 104.0 Z";
+
+const HEAD_D =
+  "M178.0 104.0 C178.0 122.4 168.2 146.2 155.2 159.2 C142.2 172.2 118.4 182.0 100.0 182.0 " +
+  "C81.6 182.0 57.8 172.2 44.8 159.2 C31.8 146.2 22.0 122.4 22.0 104.0 C22.0 85.6 31.8 61.8 44.8 48.8 " +
+  "C57.8 35.8 81.6 26.0 100.0 26.0 C118.4 26.0 142.2 35.8 155.2 48.8 C168.2 61.8 178.0 85.6 178.0 104.0 Z";
 
 /* 50 stars, 9 rows of 6 and 5 — laid out rather than guessed at. */
 const STARS = (() => {
@@ -61,7 +67,7 @@ export default function Rocky({
   return (
     <div
       className={`rk rk-p${phase} ${isStatic ? "is-static" : ""}`}
-      style={logoVar}
+      style={{ ...logoVar, "--glove-d": `path("${GLOVE_D}")`, "--head-d": `path("${HEAD_D}")` }}
       key={run}
     >
       <RockyDefs />
@@ -87,7 +93,6 @@ export default function Rocky({
           </g>
         </g>
       </svg>
-      {/* cloth: the folds are shading, laid over the flag rather than drawn into it */}
       <div className="rk-cloth" aria-hidden />
       <div className="rk-flagdim" aria-hidden />
 
@@ -95,80 +100,72 @@ export default function Rocky({
       <div className="rk-spot" aria-hidden />
       <div className="rk-beam" aria-hidden />
 
-      {/* Everything the punch is supposed to rattle lives inside .rk-shake.
-          The flag stays outside it — a room doesn't move when you hit the
-          camera, only the camera does, and shaking the backdrop too reads as
-          the whole set wobbling. */}
+      {/* The camera takes the hit, so the shake goes on everything in the ring —
+          not on the flag. Shaking the backdrop reads as the whole set wobbling. */}
       <div className="rk-shake">
-        {/* ---- the punch ---- */}
-        <div className="rk-punch" aria-hidden>
-          <svg viewBox="0 0 200 210">
-            {/* a fist coming AT the camera: knuckles forward, cuff foreshortened
-                behind it, thumb to one side */}
-            <path
-              className="rk-cuff"
-              d="M62 158 h76 a12 12 0 0 1 12 12 v18 a12 12 0 0 1 -12 12 h-76 a12 12 0 0 1 -12 -12 v-18 a12 12 0 0 1 12 -12 z"
-            />
-            <g className="rk-leather">
-              <path d="M100 22 C 150 22, 180 56, 180 104 C 180 148, 146 176, 100 176 C 54 176, 20 148, 20 104 C 20 56, 50 22, 100 22 Z" />
-              <path className="rk-thumb" d="M26 116 C 4 114, -4 140, 10 156 C 22 170, 44 164, 46 148 Z" />
-            </g>
-            <g className="rk-knuckle">
-              <circle cx="56" cy="86" r="16" />
-              <circle cx="86" cy="78" r="17" />
-              <circle cx="118" cy="78" r="17" />
-              <circle cx="148" cy="88" r="15" />
-            </g>
-            <path className="rk-seam" d="M34 124 C 70 142, 130 142, 168 122" />
-          </svg>
-        </div>
-
         {/* impact */}
         <div className="rk-flash" aria-hidden />
         <div className="rk-ring" aria-hidden />
 
-        {/* ---- the champion ---- */}
+        {/* ---- the writing ---- */}
         <div className="rk-markwrap">
           <div className="rk-markbox">
             <div className="rk-shadow" aria-hidden />
 
-            <div className="rk-mark">
-              {/* same file twice, clipped — see the note at the top */}
-              <img className="rk-logo rk-logo-head" src={src} alt="Code Ninjas" />
-              <img className="rk-logo rk-logo-word" src={src} alt="" aria-hidden />
+        <div className="rk-morph" aria-hidden>
+          <svg viewBox="0 0 200 208">
+            {/* the cuff belongs to the glove and goes with it */}
+            <path
+              className="rk-cuff"
+              d="M62 160 h76 a12 12 0 0 1 12 12 v18 a12 12 0 0 1 -12 12 h-76 a12 12 0 0 1 -12 -12 v-18 a12 12 0 0 1 12 -12 z"
+            />
 
-              {/* --- headband, across the FOREHEAD --- */}
-              <div className="rk-band" style={HEAD} aria-hidden>
-                <svg viewBox="0 0 293 463" preserveAspectRatio="none">
-                  <g className="rk-band-g">
-                    <path
-                      className="rk-band-red"
-                      d="M6 128 C 70 92, 224 92, 288 128 L 288 172 C 224 136, 70 136, 6 172 Z"
-                    />
-                    <path
-                      className="rk-band-white"
-                      d="M6 143 C 70 107, 224 107, 288 143 L 288 158 C 224 122, 70 122, 6 158 Z"
-                    />
-                    <path
-                      className="rk-band-blue"
-                      d="M6 128 C 34 112, 68 102, 96 98 L 96 146 C 68 150, 34 158, 6 172 Z"
-                    />
-                    <g className="rk-band-stars">
-                      <path d={STAR_PATH} transform="translate(30 140) scale(0.7)" />
-                      <path d={STAR_PATH} transform="translate(62 128) scale(0.7)" />
-                      <path d={STAR_PATH} transform="translate(30 168) rotate(-8) scale(0.6)" />
-                    </g>
-                    <path
-                      className="rk-band-red"
-                      d="M2 150 C -16 168, -26 196, -18 214 C -8 200, 2 186, 10 176 Z"
-                    />
-                  </g>
-                </svg>
-              </div>
+            {/* the shape that actually morphs */}
+            <path className="rk-body" d={GLOVE_D} />
+
+            {/* glove detail — fades out as the shape changes */}
+            <g className="rk-gdetail">
+              <circle cx="58" cy="72" r="16" />
+              <circle cx="88" cy="62" r="17" />
+              <circle cx="120" cy="62" r="17" />
+              <circle cx="150" cy="72" r="15" />
+              <path className="rk-seam" d="M32 118 C 70 138, 132 138, 170 116" />
+            </g>
+
+            {/* head detail — fades in behind the same silhouette */}
+            <g className="rk-hdetail">
+              {/* the knot and tails, off to the side, as on the mark */}
+              <path
+                className="rk-knot"
+                d="M30 96 C 10 88, -4 96, 2 110 C 8 124, 26 124, 34 116 Z"
+              />
+              {/* the band across the eyes */}
+              <path className="rk-eyeband" d="M26 96 L174 96 L174 130 L26 130 Z" />
+              {/* two eyes, angled in */}
+              <path className="rk-eye" d="M52 106 L92 114 L92 122 L52 120 Z" />
+              <path className="rk-eye" d="M148 106 L108 114 L108 122 L148 120 Z" />
+            </g>
+
+            {/* the stars-and-stripes headband, on the forehead */}
+            <g className="rk-band">
+              <path className="rk-band-red" d="M28 62 C 66 40, 134 40, 172 62 L 172 86 C 134 64, 66 64, 28 86 Z" />
+              <path className="rk-band-white" d="M28 70 C 66 48, 134 48, 172 70 L 172 78 C 134 56, 66 56, 28 78 Z" />
+              <path className="rk-band-blue" d="M28 62 C 44 53, 62 47, 78 44 L 78 68 C 62 71, 44 77, 28 86 Z" />
+              <g className="rk-band-stars">
+                <path d={STAR_PATH} transform="translate(42 66) scale(0.5)" />
+                <path d={STAR_PATH} transform="translate(64 58) scale(0.5)" />
+              </g>
+              <path className="rk-band-red" d="M26 72 C 8 84, 0 104, 6 118 C 14 106, 24 94, 30 88 Z" />
+            </g>
+          </svg>
+        </div>
+
+            <div className="rk-mark">
+              {/* the brand's own type, clipped out of the logo file */}
+              <img className="rk-logo rk-logo-word" src={src} alt="Code Ninjas" />
             </div>
           </div>
 
-          {/* WOODBRIDGE, then the title belt */}
           <div className="rk-type">
             <div className="rk-caption">{caption}</div>
             <div className="rk-belt" aria-hidden>

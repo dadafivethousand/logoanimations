@@ -148,18 +148,18 @@
 }
 
 /* ====================================================================
-   THE PUNCH
+   THE PUNCH, AND THE MORPH
    ==================================================================== */
 
 /* The camera takes the hit, so the shake goes on everything in the ring —
-   not on the flag. Shaking the backdrop too reads as the whole set wobbling. */
+   not on the flag. Shaking the backdrop reads as the whole set wobbling. */
 .rk-shake {
   position: absolute;
   inset: 0;
   z-index: 15;
 }
 .rk-p2 .rk-shake {
-  animation: rk-shake 420ms 430ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: rk-shake 420ms 470ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 @keyframes rk-shake {
   0% { transform: translate(0, 0); }
@@ -171,29 +171,44 @@
   100% { transform: translate(0, 0); }
 }
 
-/* the glove, coming out of the frame at the viewer */
-.rk-punch {
+/* Sits exactly on the measured head box, so when the morph finishes the head is
+   already where the mark's head belongs and the wordmark lines up under it. The
+   punch is the same element scaled way up. */
+/* Anchored to the MARK box, not the screen: at scale 1 the head lands exactly
+   where the lockup's head belongs, directly above the wordmark. 21% of the mark
+   width puts its height at ~47% of the mark's, which is the head's own share of
+   the artwork. The punch is this same element scaled up. */
+.rk-morph {
   position: absolute;
-  left: 50%;
-  top: 46%;
-  width: 54vw;
-  transform: translate(-50%, -50%) scale(0.16);
-  opacity: 0;
+  left: 47.35%;
+  top: -2%;
+  width: 24%;
+  aspect-ratio: 200 / 208;
   z-index: 22;
+  opacity: 0;
+  transform: translateX(-50%) scale(0.3);
+  transform-origin: 50% 50%;
 }
-.rk-punch svg {
+.rk-morph svg {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
+  overflow: visible;
+  filter: drop-shadow(0 1vw 1.6vw rgba(0, 0, 0, 0.75));
 }
-.rk-leather path {
+
+/* the shape that actually changes. `d` only interpolates when both paths share
+   a command structure — see the note at the top of the component. */
+.rk-body {
+  d: var(--glove-d);
   fill: var(--leather);
 }
-.rk-thumb {
-  fill: var(--leather-lo);
+.rk-cuff {
+  fill: var(--bone);
+  opacity: 0.92;
 }
-.rk-knuckle circle {
-  fill: rgba(255, 255, 255, 0.09);
+.rk-gdetail circle {
+  fill: rgba(255, 255, 255, 0.1);
 }
 .rk-seam {
   stroke: rgba(0, 0, 0, 0.42);
@@ -201,43 +216,104 @@
   fill: none;
   stroke-linecap: round;
 }
-.rk-cuff {
+.rk-hdetail,
+.rk-band {
+  opacity: 0;
+}
+.rk-knot {
+  fill: #14120f;
+}
+.rk-eyeband {
+  fill: #efe6d2;
+}
+.rk-eye {
+  fill: #14120f;
+}
+.rk-band-red {
+  fill: var(--flag-red-hi);
+}
+.rk-band-white {
   fill: var(--bone);
-  opacity: 0.92;
 }
-.rk-p2 .rk-punch {
-  animation: rk-fly 520ms cubic-bezier(0.5, 0, 0.85, 0.4) forwards;
+.rk-band-blue {
+  fill: var(--navy);
 }
-/* the blur is the speed: it comes in fast and unfocused, and only resolves at
-   the moment it lands */
+.rk-band-stars {
+  fill: var(--bone);
+}
+
+/* --- p2: the glove comes out of the frame at the viewer --- */
+.rk-p2 .rk-morph {
+  animation: rk-fly 560ms cubic-bezier(0.5, 0, 0.85, 0.4) forwards;
+}
+/* the blur is the speed: it arrives unfocused and only resolves as it lands */
 @keyframes rk-fly {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.16) rotate(-10deg);
-    filter: blur(2.4vw);
+    transform: translateX(-50%) scale(0.3) rotate(-10deg);
+    filter: blur(2.2vw);
   }
   18% {
     opacity: 1;
   }
-  76% {
-    transform: translate(-50%, -50%) scale(1.22) rotate(2deg);
+  78% {
+    transform: translateX(-50%) scale(3.4) rotate(3deg);
     filter: blur(0.5vw);
   }
   100% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.05) rotate(0deg);
+    transform: translateX(-50%) scale(3) rotate(0deg);
     filter: blur(0);
   }
 }
-/* it hands off to the face on the next beat */
-.rk-p3 .rk-punch,
-.rk-p4 .rk-punch {
-  animation: rk-punch-out 260ms cubic-bezier(0.4, 0, 1, 1) forwards;
+
+/* --- p3: it becomes the head --- */
+.rk-p3 .rk-morph,
+.rk-p4 .rk-morph {
+  opacity: 1;
+  animation: rk-settle 640ms cubic-bezier(0.3, 1.2, 0.3, 1) forwards;
 }
-@keyframes rk-punch-out {
+@keyframes rk-settle {
+  from {
+    transform: translateX(-50%) scale(3);
+  }
+  to {
+    transform: translateX(-50%) scale(1);
+  }
+}
+.rk-p3 .rk-body,
+.rk-p4 .rk-body {
+  animation: rk-tohead 640ms cubic-bezier(0.3, 1.1, 0.3, 1) forwards;
+}
+@keyframes rk-tohead {
+  to {
+    d: var(--head-d);
+    fill: #14120f;
+  }
+}
+/* the detail cross-fades across the shape change, so neither side pops */
+.rk-p3 .rk-gdetail,
+.rk-p4 .rk-gdetail,
+.rk-p3 .rk-cuff,
+.rk-p4 .rk-cuff {
+  animation: rk-fade-out 300ms ease forwards;
+}
+@keyframes rk-fade-out {
   to {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.72);
+  }
+}
+.rk-p3 .rk-hdetail,
+.rk-p4 .rk-hdetail {
+  animation: rk-fade-in 340ms 260ms ease forwards;
+}
+.rk-p3 .rk-band,
+.rk-p4 .rk-band {
+  animation: rk-fade-in 320ms 420ms ease forwards;
+}
+@keyframes rk-fade-in {
+  to {
+    opacity: 1;
   }
 }
 
@@ -247,12 +323,12 @@
   inset: 0;
   z-index: 30;
   pointer-events: none;
-  background: radial-gradient(40% 30% at 50% 46%, rgba(255, 248, 230, 0.95), transparent 70%);
+  background: radial-gradient(40% 30% at 50% 44%, rgba(255, 248, 230, 0.95), transparent 70%);
   opacity: 0;
   mix-blend-mode: screen;
 }
 .rk-p2 .rk-flash {
-  animation: rk-flash 300ms 430ms ease-out forwards;
+  animation: rk-flash 300ms 470ms ease-out forwards;
 }
 @keyframes rk-flash {
   0% { opacity: 0; }
@@ -263,7 +339,7 @@
 .rk-ring {
   position: absolute;
   left: 50%;
-  top: 46%;
+  top: 44%;
   width: 40vw;
   height: 40vw;
   z-index: 21;
@@ -274,7 +350,7 @@
   opacity: 0;
 }
 .rk-p2 .rk-ring {
-  animation: rk-ring 620ms 430ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+  animation: rk-ring 620ms 470ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
 }
 @keyframes rk-ring {
   0% {
@@ -290,7 +366,7 @@
 }
 
 /* ====================================================================
-   THE CHAMPION
+   THE WRITING
    ==================================================================== */
 
 .rk-markwrap {
@@ -330,10 +406,7 @@
   aspect-ratio: var(--logo-aspect, 2.17);
 }
 
-/* The logo, unmodified, rendered twice and clipped so the face can arrive a
-   beat before the writing. Both copies fill the same box, so they cannot drift
-   out of register. On a dark stage the mark needs lifting off the background,
-   which is a light rim rather than any change to its colour. */
+/* the brand's own type, clipped out of the logo file below the head box */
 .rk-logo {
   position: absolute;
   inset: 0;
@@ -345,39 +418,11 @@
     drop-shadow(0 1px 0 rgba(255, 236, 200, 0.28))
     drop-shadow(0 0.8vw 1.4vw rgba(0, 0, 0, 0.75));
 }
-
-/* head only: the measured head box */
-.rk-logo-head {
-  clip-path: inset(0% 38% 53.7% 32.7%);
-  opacity: 0;
-  /* scale about the head's own centre, not the mark box's, or it grows in from
-     the wrong point */
-  transform-origin: 47.35% 23.15%;
-  transform: scale(1.75);
-}
-.rk-p3 .rk-logo-head,
-.rk-p4 .rk-logo-head {
-  animation: rk-become 420ms cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
-}
-/* the glove was here a moment ago and roughly this size — the face grows down
-   out of it rather than cutting in */
-@keyframes rk-become {
-  0% {
-    opacity: 0;
-    transform: scale(1.75);
-  }
-  40% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* everything below the head */
 .rk-logo-word {
-  clip-path: inset(46.3% 0 0 0);
+  /* 56%, well below the head's own 46.3%. Clipping at the measured edge still
+     left a crescent of the artwork's head showing above the type, next to the
+     drawn one — the extra margin is what actually removes it. */
+  clip-path: inset(56% 0 0 0);
   opacity: 0;
   transform: translateY(2.4vw) scale(0.94);
   transform-origin: 50% 30%;
@@ -389,44 +434,6 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-}
-
-/* --- the headband, on the forehead, above the eye band --- */
-.rk-band {
-  position: absolute;
-  opacity: 0;
-  transform: scale(0.86);
-  transform-origin: 50% 30%;
-}
-.rk-band svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.rk-band-red {
-  fill: var(--flag-red-hi);
-}
-.rk-band-white {
-  fill: var(--bone);
-}
-.rk-band-blue {
-  fill: var(--navy);
-}
-.rk-band-stars {
-  fill: var(--bone);
-}
-.rk-band-g {
-  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.6));
-}
-.rk-p3 .rk-band,
-.rk-p4 .rk-band {
-  animation: rk-snap 380ms 260ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
-}
-@keyframes rk-snap {
-  to {
-    opacity: 1;
-    transform: scale(1);
   }
 }
 
@@ -570,22 +577,30 @@
   transition: none !important;
 }
 /* the punch is transient by definition — the poster is the frame after it */
-.rk.is-static .rk-punch,
 .rk.is-static .rk-flash,
-.rk.is-static .rk-ring {
+.rk.is-static .rk-ring,
+.rk.is-static .rk-gdetail,
+.rk.is-static .rk-cuff {
   opacity: 0;
 }
-.rk.is-static .rk-logo-head,
+.rk.is-static .rk-morph {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+.rk.is-static .rk-body {
+  d: var(--head-d);
+  fill: #14120f;
+}
+.rk.is-static .rk-hdetail,
+.rk.is-static .rk-band {
+  opacity: 1;
+}
 .rk.is-static .rk-logo-word {
   opacity: 1;
   transform: none;
 }
 .rk.is-static .rk-shadow {
   opacity: 1;
-}
-.rk.is-static .rk-band {
-  opacity: 1;
-  transform: scale(1);
 }
 .rk.is-static .rk-belt {
   opacity: 1;
@@ -602,22 +617,30 @@
     animation: none !important;
     transition: none !important;
   }
-  .rk .rk-punch,
   .rk .rk-flash,
-  .rk .rk-ring {
+  .rk .rk-ring,
+  .rk .rk-gdetail,
+  .rk .rk-cuff {
     opacity: 0;
   }
-  .rk .rk-logo-head,
+  .rk .rk-morph {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  .rk .rk-body {
+    d: var(--head-d);
+    fill: #14120f;
+  }
+  .rk .rk-hdetail,
+  .rk .rk-band {
+    opacity: 1;
+  }
   .rk .rk-logo-word {
     opacity: 1;
     transform: none;
   }
   .rk .rk-shadow {
     opacity: 1;
-  }
-  .rk .rk-band {
-    opacity: 1;
-    transform: scale(1);
   }
   .rk .rk-belt {
     opacity: 1;

@@ -136,6 +136,11 @@ Hard-won details, don't relearn them:
   "CODE" and black hood, ask whether the background can carry the theme instead.
 - **Black gear on a black hood is invisible.** Anything worn on the mark needs a
   rim light or a lighter tone to separate it (see `.pc-patch`, `.pc-strap`).
+- **A raster logo cannot morph.** If a theme needs one shape to *become*
+  another, draw both from scratch as one SVG path with an IDENTICAL command
+  structure and let CSS interpolate `d` (Rocky's glove → head: eight anchors,
+  two sets of radii, Catmull-Rom to cubics — generate them, don't hand-draw two
+  paths and hope they match). Cross-fading two images instead reads as a cut.
 - **Dressing the mark: measure, don't eyeball.** Pirates hangs a tricorn,
   eyepatch and earring on the ninja. Their positions are percentages of the mark
   box read off the artwork's pixels (head `left 32.7% top 0% w 29.3% h 46.3%`,
