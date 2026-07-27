@@ -54,10 +54,10 @@ a lit stage, so all the attention is on the mark, which keeps its own colours
 (blue CODE, black hood). The gear is placed off head bounds measured from the
 artwork's own pixels, so it lands on the head rather than near it.
 
-**Rocky** — a boxing glove punches the camera, the impact becomes the ninja's
-face, and the wordmark lands after it. Stars-and-stripes headband, a title belt
-under the lockup, all under an arena spot against a hung flag held back and out
-of focus.
+**Patriot** — a starred roundel with the ninja in it over a flag field, in Old
+Glory red, white and blue. The one theme that uses **no logo file at all**: the
+ninja is drawn and the name is set as type, so it survives the logo being
+missing or replaced. (The earlier boxing version is parked in `src/Used/`.)
 
 ## Adding one
 

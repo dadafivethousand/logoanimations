@@ -40,7 +40,7 @@ bar) needs a frozen value there. Same for `prefers-reduced-motion`.
 Same rule as the sibling repo: the compositions sit next to each other on one
 feed, so **give each theme its own colour story.** Samurai is washi cream and
 vermilion; Robotics is graphite, steel and green; Pirates is a light stage with
-the brand's own colours; Rocky is flag red, bone and navy under a warm spot. Brand red `#e4002b` is the
+the brand's own colours; Patriot is Old Glory red, white and blue. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
@@ -136,6 +136,11 @@ Hard-won details, don't relearn them:
   "CODE" and black hood, ask whether the background can carry the theme instead.
 - **Black gear on a black hood is invisible.** Anything worn on the mark needs a
   rim light or a lighter tone to separate it (see `.pc-patch`, `.pc-strap`).
+- **A CSS transform REPLACES an SVG `transform` attribute.** Animating
+  `transform` on an element that carries `transform="translate(...)"` throws it
+  to the origin. Put the placement on an outer `<g>` and the animation on an
+  inner one. This has now bitten twice — the pirate cross and Patriot's star
+  ring, where all 13 stars collapsed into a pile.
 - **A raster logo cannot morph.** If a theme needs one shape to *become*
   another, draw both from scratch as one SVG path with an IDENTICAL command
   structure and let CSS interpolate `d` (Rocky's glove → head: eight anchors,

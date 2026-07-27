@@ -18,7 +18,7 @@
 // across the morph. The wordmark below is still the real logo file — the brand's
 // own type, clipped out of the artwork.
 import React from "react";
-import "../Stylesheets/Rocky.css";
+import "./Rocky.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 

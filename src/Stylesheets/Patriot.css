@@ -1,0 +1,461 @@
+/* Patriot — a starred roundel with the ninja in it, over a flag field.
+   Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
+   px is reserved for hairlines that must stay hairlines.
+
+   No logo file is used anywhere in this theme: the ninja is drawn and the name
+   is set as type. */
+
+.us {
+  /* the flag's real colours, not approximations */
+  --red: #b22234;
+  --red-hi: #d32b40;
+  --white: #ffffff;
+  --blue: #3c3b6e;
+  --blue-hi: #4f4d8e;
+  --blue-deep: #14142c;
+  --night: #0a0a18;
+
+  /* screen-recording crop: nothing meaningful inside this band */
+  --safe-x: 11.5vw;
+  --safe-y: 4.7vh;
+
+  /* the one knob the composition scales from */
+  --emblem: 62vw;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--night);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--white);
+  isolation: isolate;
+}
+
+.us-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   THE FIELD
+   ==================================================================== */
+
+.us-sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(72% 46% at 50% 34%, var(--blue-hi) 0%, var(--blue) 34%, var(--blue-deep) 72%, var(--night) 100%);
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 900ms ease, transform 1600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.us-p1 .us-sky,
+.us-p2 .us-sky,
+.us-p3 .us-sky,
+.us-p4 .us-sky {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* a slow burst behind the roundel — the one thing that says "emblem" before
+   anything else has arrived */
+.us-rays {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 180vw;
+  height: 180vw;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255, 255, 255, 0.07) 0deg 6deg,
+    transparent 6deg 18deg
+  );
+  -webkit-mask-image: radial-gradient(closest-side, #000 8%, rgba(0, 0, 0, 0.5) 34%, transparent 68%);
+  mask-image: radial-gradient(closest-side, #000 8%, rgba(0, 0, 0, 0.5) 34%, transparent 68%);
+  opacity: 0;
+  transition: opacity 1200ms ease;
+}
+.us-p2 .us-rays,
+.us-p3 .us-rays,
+.us-p4 .us-rays {
+  opacity: 1;
+  animation: us-turn 120s linear infinite;
+}
+@keyframes us-turn {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* stars scattered through the upper field */
+.us-field {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 44%;
+  z-index: 2;
+}
+.us-fieldstar {
+  fill: var(--white);
+  opacity: 0;
+}
+.us-p1 .us-fieldstar,
+.us-p2 .us-fieldstar,
+.us-p3 .us-fieldstar,
+.us-p4 .us-fieldstar {
+  animation: us-twinkle 500ms calc(var(--i) * 45ms) ease forwards;
+}
+@keyframes us-twinkle {
+  to {
+    opacity: var(--o);
+  }
+}
+
+/* stripes across the lower half */
+.us-stripes {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: 0;
+  height: 46%;
+  z-index: 2;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 26%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 26%, #000 82%, transparent 100%);
+  opacity: 0.72;
+}
+.us-stripe {
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+.us-p1 .us-stripe,
+.us-p2 .us-stripe,
+.us-p3 .us-stripe,
+.us-p4 .us-stripe {
+  /* they run out one after another, like a flag unfurling sideways */
+  animation: us-run 620ms calc(var(--i) * 70ms) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes us-run {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ====================================================================
+   THE ROUNDEL
+   ==================================================================== */
+
+.us-emblem {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: var(--emblem);
+  height: var(--emblem);
+  transform: translate(-50%, -50%) scale(0.7);
+  z-index: 20;
+  opacity: 0;
+  filter: drop-shadow(0 1.2vw 2vw rgba(0, 0, 0, 0.6));
+  transition:
+    opacity 500ms ease,
+    transform 700ms cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+.us-p2 .us-emblem,
+.us-p3 .us-emblem,
+.us-p4 .us-emblem {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.us-emblem svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.us-rim {
+  fill: var(--red);
+}
+.us-rim-in {
+  fill: var(--white);
+}
+.us-disc {
+  fill: var(--blue);
+}
+.us-inner {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 7;
+  opacity: 0.9;
+}
+
+.us-ring path {
+  fill: var(--white);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.us-inner {
+  display: none;
+}
+.us-p2 .us-ring path,
+.us-p3 .us-ring path,
+.us-p4 .us-ring path {
+  /* the stars set one at a time around the ring */
+  animation: us-set 300ms calc(220ms + var(--i) * 45ms) cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+}
+@keyframes us-set {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+/* ====================================================================
+   THE NINJA — drawn, not an image
+   ==================================================================== */
+
+.us-ninja {
+  opacity: 0;
+  transform: scale(0.86);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.us-p3 .us-ninja,
+.us-p4 .us-ninja {
+  animation: us-arrive 460ms cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+}
+@keyframes us-arrive {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.us-hood {
+  fill: #14141c;
+}
+.us-eyeband {
+  fill: #f2ead6;
+}
+.us-eye {
+  fill: #14141c;
+}
+.us-hb-red {
+  fill: var(--red-hi);
+}
+.us-hb-white {
+  fill: var(--white);
+}
+.us-hb-blue {
+  fill: var(--blue);
+}
+.us-hb-stars {
+  fill: var(--white);
+}
+.us-headband {
+  opacity: 0;
+}
+.us-p3 .us-headband,
+.us-p4 .us-headband {
+  animation: us-fade 320ms 260ms ease forwards;
+}
+@keyframes us-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ====================================================================
+   THE NAME — set as type, no logo file
+   ==================================================================== */
+
+.us-type {
+  position: absolute;
+  left: 50%;
+  top: 76%;
+  /* the stripes run pale right where the name sits; without this the white
+     reads as grey */
+  padding: 3vw 0 3.4vw;
+  background: radial-gradient(62% 100% at 50% 50%, rgba(8, 8, 24, 0.55) 0%, transparent 80%);
+  width: calc(100% - 2 * var(--safe-x));
+  transform: translateX(-50%);
+  text-align: center;
+  /* above the grain and the vignette: at 41 the vignette was darkening the
+     white type to grey */
+  z-index: 44;
+}
+
+.us-brand {
+  font-size: 8.6vw;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  text-shadow:
+    0 0.2vw 0 rgba(20, 20, 44, 0.9),
+    0 0.6vw 1.4vw rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transform: translateY(1.2vw);
+  transition: opacity 560ms ease, transform 740ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.us-p4 .us-brand {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* the rule is a little flag: three bars rather than a line */
+.us-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0.5vw;
+  margin: 1.6vw auto 0;
+  width: 46%;
+  opacity: 0;
+  transform: scaleX(0.6);
+  transform-origin: 50% 50%;
+  transition: opacity 460ms 180ms ease, transform 640ms 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.us-p4 .us-bar {
+  opacity: 1;
+  transform: scaleX(1);
+}
+.us-bar span {
+  height: 0.8vw;
+  border-radius: 0.4vw;
+  flex: 1;
+}
+.us-bar-red {
+  background: var(--red);
+}
+.us-bar-white {
+  background: var(--white);
+}
+.us-bar-blue {
+  background: var(--blue-hi);
+}
+
+.us-caption {
+  margin-top: 1.6vw;
+  font-size: 2.7vw;
+  font-weight: 900;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: #c9cbe4;
+  opacity: 0;
+  transform: translateY(0.8vw);
+  transition: opacity 520ms 300ms ease, transform 640ms 300ms ease;
+}
+.us-p4 .us-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ====================================================================
+   GRADE
+   ==================================================================== */
+
+.us-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
+  background-size: 160px 160px;
+}
+
+.us-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 41;
+  background: radial-gradient(74% 56% at 50% 42%, transparent 36%, rgba(0, 0, 8, 0.86) 100%);
+}
+
+/* ====================================================================
+   STATIC MODE — the poster: everything set
+   ==================================================================== */
+
+.us.is-static *,
+.us.is-static *::before,
+.us.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.us.is-static .us-fieldstar {
+  opacity: var(--o);
+}
+.us.is-static .us-stripe {
+  transform: scaleX(1);
+}
+.us.is-static .us-emblem {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.us.is-static .us-rays {
+  opacity: 1;
+}
+.us.is-static .us-ring path {
+  opacity: 1;
+  transform: scale(1.15);
+}
+.us.is-static .us-ninja,
+.us.is-static .us-headband {
+  opacity: 1;
+  transform: scale(1);
+}
+.us.is-static .us-brand,
+.us.is-static .us-caption {
+  opacity: 1;
+  transform: none;
+}
+.us.is-static .us-bar {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .us *,
+  .us *::before,
+  .us *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .us .us-fieldstar {
+    opacity: var(--o);
+  }
+  .us .us-stripe {
+    transform: scaleX(1);
+  }
+  .us .us-emblem {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .us .us-rays {
+    opacity: 1;
+  }
+  .us .us-ring path {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  .us .us-ninja,
+  .us .us-headband {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .us .us-brand,
+  .us .us-caption {
+    opacity: 1;
+    transform: none;
+  }
+  .us .us-bar {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
