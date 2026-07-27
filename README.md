@@ -54,6 +54,10 @@ a lit stage, so all the attention is on the mark, which keeps its own colours
 (blue CODE, black hood). The gear is placed off head bounds measured from the
 artwork's own pixels, so it lands on the head rather than near it.
 
+**Rocky** — the mark as the champion: a stars-and-stripes headband on the
+forehead, gloves hanging in the dark, a title belt under the lockup, all under a
+single arena spot against a hung flag held well back and out of focus.
+
 ## Adding one
 
 One theme = one component in `src/Components/` + one stylesheet in

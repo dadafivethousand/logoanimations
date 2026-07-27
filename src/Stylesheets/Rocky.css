@@ -1,0 +1,509 @@
+/* Rocky — the mark as the champion, under an arena spot against a hung flag.
+   Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
+   px is reserved for hairlines that must stay hairlines. */
+
+.rk {
+  /* palette — flag red / bone / navy, plus the warm arena spot. The mark keeps
+     its own colours; the theme is carried entirely by the background and gear. */
+  --flag-red: #9c1526;
+  --flag-red-hi: #c4192f;
+  --bone: #e8e2d6;
+  --navy: #16244a;
+  --leather: #b21b2c;
+  --leather-lo: #6d0f1c;
+  --brass: #d4a13c;
+  --brass-hi: #ffe6a6;
+  --spot: #fff4dd;
+  --dark: #0a0908;
+  --ink: #17140f;
+
+  /* screen-recording crop: nothing meaningful inside this band */
+  --safe-x: 11.5vw;
+  --safe-y: 4.7vh;
+
+  /* the one knob the composition scales from */
+  --mark-w: 74vw;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--dark);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--bone);
+  isolation: isolate;
+}
+
+.rk-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   THE FLAG
+   ==================================================================== */
+
+.rk-flag {
+  position: absolute;
+  inset: -6%;
+  width: 112%;
+  height: 112%;
+  opacity: 0;
+  transform: scale(1.04);
+  filter: blur(0.8vw);
+  transition: opacity 1000ms ease, transform 1800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rk-p1 .rk-flag,
+.rk-p2 .rk-flag,
+.rk-p3 .rk-flag,
+.rk-p4 .rk-flag {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* cloth folds: broad soft light and shade running down the hang, multiplied
+   over the flag. Painting folds into the flag itself would move with the
+   stripes; as a separate layer they read as light on a surface. */
+.rk-cloth {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+  background: repeating-linear-gradient(
+    97deg,
+    rgba(0, 0, 0, 0.42) 0 3vw,
+    rgba(255, 255, 255, 0.1) 7vw,
+    rgba(0, 0, 0, 0.38) 13vw,
+    rgba(255, 255, 255, 0.07) 18vw,
+    rgba(0, 0, 0, 0.44) 24vw
+  );
+  filter: blur(1.4vw);
+}
+
+/* the flag is scenery, not the subject: hold it well back */
+.rk-flagdim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(8, 8, 10, 0.72);
+}
+
+/* ====================================================================
+   THE ARENA SPOT
+   ==================================================================== */
+
+.rk-spot {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  width: 116vw;
+  height: 116vw;
+  transform: translate(-50%, -50%) scale(0.88);
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 244, 221, 0.5) 0%,
+    rgba(255, 232, 190, 0.22) 34%,
+    rgba(255, 214, 150, 0.06) 58%,
+    transparent 74%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 1100ms ease, transform 1600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rk-p1 .rk-spot,
+.rk-p2 .rk-spot,
+.rk-p3 .rk-spot,
+.rk-p4 .rk-spot {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* the cone coming down from the rig */
+.rk-beam {
+  position: absolute;
+  left: 50%;
+  top: -18%;
+  width: 60vw;
+  height: 90%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 240, 210, 0.2) 0%,
+    rgba(255, 236, 200, 0.08) 44%,
+    transparent 82%
+  );
+  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0% 100%);
+  filter: blur(1.2vw);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 1200ms ease;
+}
+.rk-p1 .rk-beam,
+.rk-p2 .rk-beam,
+.rk-p3 .rk-beam,
+.rk-p4 .rk-beam {
+  opacity: 1;
+}
+
+/* ====================================================================
+   GLOVES
+   ==================================================================== */
+
+.rk-gloves {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+.rk-glove {
+  position: absolute;
+  top: 0;
+  width: 17vw;
+  height: auto;
+  transform-origin: 50% 0;
+  opacity: 0;
+  filter: drop-shadow(0 1vw 1.2vw rgba(0, 0, 0, 0.7));
+}
+.rk-glove-l {
+  left: 15%;
+}
+.rk-glove-r {
+  right: 15%;
+}
+.rk-leather path {
+  fill: var(--leather);
+}
+.rk-thumb {
+  fill: var(--leather-lo);
+}
+.rk-seam {
+  stroke: rgba(0, 0, 0, 0.45);
+  stroke-width: 4;
+  fill: none;
+  stroke-linecap: round;
+}
+.rk-cuff {
+  fill: var(--bone);
+  opacity: 0.9;
+}
+.rk-lace {
+  stroke: rgba(232, 226, 214, 0.55);
+  stroke-width: 4;
+}
+.rk-p3 .rk-glove,
+.rk-p4 .rk-glove {
+  opacity: 1;
+  /* they hang, so they swing — from the lace, not the middle */
+  animation:
+    rk-hang 620ms cubic-bezier(0.2, 1.4, 0.4, 1) forwards,
+    rk-swing 4200ms 620ms ease-in-out infinite alternate;
+}
+.rk-glove-r {
+  animation-delay: 120ms, 740ms;
+}
+@keyframes rk-hang {
+  from {
+    opacity: 0;
+    transform: translateY(-40%) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(-4deg);
+  }
+}
+@keyframes rk-swing {
+  from {
+    transform: rotate(-4deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+
+/* ====================================================================
+   THE CHAMPION
+   ==================================================================== */
+
+.rk-markwrap {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: var(--mark-w);
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.rk-markbox {
+  position: relative;
+  width: 100%;
+}
+
+.rk-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -8%;
+  width: 86%;
+  height: 14%;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.75), transparent 74%);
+  filter: blur(2vw);
+  opacity: 0;
+  transition: opacity 800ms ease;
+}
+.rk-p2 .rk-shadow,
+.rk-p3 .rk-shadow,
+.rk-p4 .rk-shadow {
+  opacity: 1;
+}
+
+.rk-mark {
+  position: relative;
+  width: 100%;
+  /* measured from the trimmed mark at load, so any logo lands on register */
+  aspect-ratio: var(--logo-aspect, 2.17);
+  opacity: 0;
+  transform: translateY(1.6vw) scale(0.96);
+  transition: opacity 620ms ease, transform 950ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rk-p2 .rk-mark,
+.rk-p3 .rk-mark,
+.rk-p4 .rk-mark {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* The logo, unmodified. On a dark stage it needs lifting off the background,
+   which is a light rim rather than any change to its colour. */
+.rk-logo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 -1px 0 rgba(255, 240, 210, 0.5))
+    drop-shadow(0 1px 0 rgba(255, 236, 200, 0.28))
+    drop-shadow(0 0.8vw 1.4vw rgba(0, 0, 0, 0.75));
+}
+
+/* --- the headband, on the forehead, above the eye band --- */
+.rk-band {
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.86);
+  transform-origin: 50% 30%;
+}
+.rk-band svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.rk-band-red {
+  fill: var(--flag-red-hi);
+}
+.rk-band-white {
+  fill: var(--bone);
+}
+.rk-band-blue {
+  fill: var(--navy);
+}
+.rk-band-stars {
+  fill: var(--bone);
+}
+.rk-band-g {
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.6));
+}
+.rk-p3 .rk-band,
+.rk-p4 .rk-band {
+  animation: rk-snap 420ms 140ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+}
+@keyframes rk-snap {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ====================================================================
+   TYPE + TITLE BELT
+   ==================================================================== */
+
+.rk-type {
+  position: relative;
+  /* WOODBRIDGE is the lockup's second line, not a caption below it */
+  margin-top: 0.9vw;
+  text-align: center;
+}
+
+.rk-caption {
+  font-size: 2.7vw;
+  font-weight: 900;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--bone);
+  text-shadow: 0 0.2vw 0.5vw rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transform: translateY(0.8vw);
+  transition: opacity 600ms ease, transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rk-p4 .rk-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* the rule is a title belt: two straps and a plate, in place of a plain line */
+.rk-belt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5vw;
+  margin: 1.3vw auto 0;
+  opacity: 0;
+  transform: scaleX(0.7);
+  transition: opacity 500ms 200ms ease, transform 700ms 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rk-p4 .rk-belt {
+  opacity: 1;
+  transform: scaleX(1);
+}
+.rk-strap {
+  width: 17%;
+  height: 1.5vw;
+  border-radius: 0.3vw;
+  background: linear-gradient(180deg, #5a1420 0%, #3a0c14 60%, #1e0509 100%);
+  box-shadow: inset 0 0.1vw 0 rgba(255, 190, 170, 0.25);
+}
+.rk-plate {
+  position: relative;
+  width: 7.4vw;
+  height: 4.4vw;
+  border-radius: 50% 50% 46% 46% / 46% 46% 54% 54%;
+  background: linear-gradient(170deg, var(--brass-hi) 0%, var(--brass) 34%, #7d5714 72%, #d8ae4e 100%);
+  box-shadow:
+    0 0.2vw 0.5vw rgba(0, 0, 0, 0.7),
+    inset 0 -0.15vw 0.3vw rgba(90, 60, 10, 0.7);
+  display: grid;
+  place-items: center;
+}
+.rk-plate-star {
+  width: 42%;
+  height: 42%;
+  background: #4a3208;
+  opacity: 0.55;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+
+/* ====================================================================
+   GRADE
+   ==================================================================== */
+
+/* dust hanging in the beam — the thing that makes a spotlight look like air */
+.rk-dust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='d'><feTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0 0 0 0 1'/></feComponentTransfer></filter><rect width='300' height='300' filter='url(%23d)' fill='%23fff0cc'/></svg>");
+  background-size: 40vw 40vw;
+  -webkit-mask-image: radial-gradient(46% 40% at 50% 46%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(46% 40% at 50% 46%, #000 0%, transparent 78%);
+  transition: opacity 1200ms ease;
+}
+.rk-p2 .rk-dust,
+.rk-p3 .rk-dust,
+.rk-p4 .rk-dust {
+  opacity: 0.35;
+  animation: rk-float 26000ms linear infinite;
+}
+@keyframes rk-float {
+  to {
+    background-position: 4vw -40vw;
+  }
+}
+
+.rk-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
+  background-size: 160px 160px;
+}
+
+.rk-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 41;
+  background: radial-gradient(72% 54% at 50% 46%, transparent 34%, rgba(0, 0, 0, 0.9) 100%);
+}
+
+/* ====================================================================
+   STATIC MODE — the poster: gear on, gloves hanging still
+   ==================================================================== */
+
+.rk.is-static *,
+.rk.is-static *::before,
+.rk.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.rk.is-static .rk-glove {
+  opacity: 1;
+  transform: rotate(-4deg);
+}
+.rk.is-static .rk-glove-r {
+  transform: rotate(3deg);
+}
+.rk.is-static .rk-band {
+  opacity: 1;
+  transform: scale(1);
+}
+.rk.is-static .rk-belt {
+  opacity: 1;
+  transform: scaleX(1);
+}
+.rk.is-static .rk-dust {
+  opacity: 0.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rk *,
+  .rk *::before,
+  .rk *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .rk .rk-glove {
+    opacity: 1;
+    transform: rotate(-4deg);
+  }
+  .rk .rk-band {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .rk .rk-belt {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  .rk .rk-dust {
+    opacity: 0.35;
+  }
+}
