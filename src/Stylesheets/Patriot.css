@@ -19,8 +19,9 @@
   --safe-x: 11.5vw;
   --safe-y: 4.7vh;
 
-  /* the one knob the composition scales from */
-  --emblem: 58vw;
+  /* the one knob the composition scales from. The badge now carries the name
+     too, so it runs bigger. */
+  --emblem: 70vw;
 
   position: absolute;
   inset: 0;
@@ -176,7 +177,7 @@
 .us-lockup {
   position: absolute;
   left: 50%;
-  top: 47%;
+  top: 46%;
   width: var(--emblem);
   transform: translate(-50%, -50%);
   z-index: 24;
@@ -329,88 +330,33 @@
 }
 
 /* ====================================================================
-   THE NAME — in flow, directly under the badge
+   THE NAME — SVG text, set INSIDE the disc
    ==================================================================== */
 
-.us-type {
-  position: relative;
-  margin-top: 2.6vw;
-  /* wider than the badge it sits under, or "CODE NINJAS" wraps to two lines —
-     the lockup's width is the emblem's, not the name's */
-  width: 132%;
-  margin-left: -16%;
-  text-align: center;
-  /* above the grain and the vignette: at 41 the vignette darkened the white
-     type to grey */
-  z-index: 44;
+.us-word {
+  opacity: 0;
+}
+.us-p4 .us-word {
+  animation: us-fade 520ms ease forwards;
 }
 
+/* Sized so the line clears the star ring: at 34 units "CODE NINJAS" spans about
+   232 of the 400 box, and the two stars that sit level with it are at x 60 and
+   340. Any bigger and the type runs into them. */
 .us-brand {
-  font-size: 8vw;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 34px;
   font-weight: 900;
-  letter-spacing: 0.03em;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--white);
-  text-shadow:
-    0 0.2vw 0 rgba(16, 16, 40, 0.95),
-    0 0.7vw 1.6vw rgba(0, 0, 10, 0.75);
-  opacity: 0;
-  transform: translateY(1.2vw);
-  transition: opacity 560ms ease, transform 740ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.us-p4 .us-brand {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* the rule is a little flag: three bars rather than a line */
-.us-bar {
-  display: flex;
-  justify-content: center;
-  gap: 0.6vw;
-  margin: 1.4vw auto 0;
-  width: 34%;
-  opacity: 0;
-  transform: scaleX(0.6);
-  transform-origin: 50% 50%;
-  transition: opacity 460ms 180ms ease, transform 640ms 180ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.us-p4 .us-bar {
-  opacity: 1;
-  transform: scaleX(1);
-}
-.us-bar span {
-  height: 0.85vw;
-  border-radius: 0.45vw;
-  flex: 1;
-  box-shadow: 0 0.15vw 0.3vw rgba(0, 0, 10, 0.5);
-}
-.us-bar-red {
-  background: var(--red-hi);
-}
-.us-bar-white {
-  background: var(--white);
-}
-.us-bar-blue {
-  background: var(--blue-hi);
+  letter-spacing: 1px;
+  fill: var(--white);
 }
 
 .us-caption {
-  margin-top: 1.4vw;
-  font-size: 2.7vw;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px;
   font-weight: 900;
-  letter-spacing: 0.34em;
-  text-indent: 0.34em;
-  color: #d6d8ee;
-  text-shadow: 0 0.2vw 0.6vw rgba(0, 0, 10, 0.7);
-  opacity: 0;
-  transform: translateY(0.8vw);
-  transition: opacity 520ms 300ms ease, transform 640ms 300ms ease;
-}
-.us-p4 .us-caption {
-  opacity: 1;
-  transform: translateY(0);
+  letter-spacing: 5px;
+  fill: #c3c6e6;
 }
 
 /* ====================================================================
@@ -469,14 +415,8 @@
   opacity: 1;
   transform: scale(1);
 }
-.us.is-static .us-brand,
-.us.is-static .us-caption {
+.us.is-static .us-word {
   opacity: 1;
-  transform: none;
-}
-.us.is-static .us-bar {
-  opacity: 1;
-  transform: scaleX(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -509,13 +449,7 @@
     opacity: 1;
     transform: scale(1);
   }
-  .us .us-brand,
-  .us .us-caption {
+  .us .us-word {
     opacity: 1;
-    transform: none;
-  }
-  .us .us-bar {
-    opacity: 1;
-    transform: scaleX(1);
   }
 }

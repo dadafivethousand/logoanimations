@@ -118,7 +118,13 @@ export default function Patriot({
               ))}
             </g>
 
-            {/* ---- the ninja, drawn here ---- */}
+            {/* ---- the ninja, drawn here ----
+                The placement transform lives on the OUTER <g> and the animation
+                on the inner one: a CSS transform replaces an SVG transform
+                attribute, and putting both on one element throws it to the
+                origin. Scaled to 0.7 and lifted, so the name fits under it
+                inside the disc. */}
+            <g transform="translate(59.6 7.4) scale(0.702)">
             <g className="us-ninja">
               <circle className="us-hood" cx="200" cy="206" r="94" />
               <path className="us-hood" d="M120 188 C 86 178, 64 192, 72 216 C 80 240, 112 240, 126 226 Z" />
@@ -136,6 +142,17 @@ export default function Patriot({
                 <path className="us-hb-red" d="M114 163 C 92 177, 82 200, 90 216 C 100 202, 112 189, 120 181 Z" />
               </g>
             </g>
+            </g>
+
+            {/* ---- the name, INSIDE the disc ---- */}
+            <g className="us-word">
+              <text className="us-brand" x="200" y="258" textAnchor="middle">
+                {brand}
+              </text>
+              <text className="us-caption" x="200" y="296" textAnchor="middle">
+                {caption}
+              </text>
+            </g>
 
             {/* gloss: one soft sweep across the upper third of the badge */}
             <path
@@ -145,16 +162,6 @@ export default function Patriot({
           </svg>
         </div>
 
-        {/* ---- the name, in flow directly under the badge ---- */}
-        <div className="us-type">
-          <div className="us-brand">{brand}</div>
-          <div className="us-bar" aria-hidden>
-            <span className="us-bar-red" />
-            <span className="us-bar-white" />
-            <span className="us-bar-blue" />
-          </div>
-          <div className="us-caption">{caption}</div>
-        </div>
       </div>
 
       <div className="us-grain" aria-hidden />

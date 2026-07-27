@@ -54,10 +54,11 @@ a lit stage, so all the attention is on the mark, which keeps its own colours
 (blue CODE, black hood). The gear is placed off head bounds measured from the
 artwork's own pixels, so it lands on the head rather than near it.
 
-**Patriot** — a starred roundel with the ninja in it over a flag field, in Old
-Glory red, white and blue. The one theme that uses **no logo file at all**: the
-ninja is drawn and the name is set as type, so it survives the logo being
-missing or replaced. (The earlier boxing version is parked in `src/Used/`.)
+**Patriot** — a starred seal over a flag field, in Old Glory red, white and
+blue: the ninja above, CODE NINJAS WOODBRIDGE set inside the disc under him.
+The one theme that uses **no logo file at all** — the ninja is drawn and the
+name is SVG text, so it survives the logo being missing or replaced. (The
+earlier boxing version is parked in `src/Used/`.)
 
 ## Adding one
 
