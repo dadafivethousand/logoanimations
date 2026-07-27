@@ -1,29 +1,33 @@
-// Rocky.js — the mark as the champion: stars-and-stripes headband, a pair of
-// gloves hanging in the dark, a title belt under the lockup, all lit by a single
-// arena spot against a hanging flag.
+// Rocky.js — a glove punches the camera, the impact becomes the ninja's face,
+// and the wordmark lands after it. Flag and arena spot behind.
 //
-// Genre, not franchise: no film logo, no title typeface, no likeness. Boxing and
-// Americana are the vocabulary; the read comes from the gear and the light.
+// Genre, not franchise: no film logo, no title typeface, no likeness.
 //
 // THE MARK KEEPS ITS OWN COLOURS. It is drawn as itself — an <img>, unmasked and
-// unrecoloured — so "CODE" stays brand blue and the hood stays black. The theme
-// is carried by the background and the gear, never by repainting the logo.
+// unrecoloured — so "CODE" stays brand blue and the hood stays black.
 //
-// THE GEAR IS MEASURED, NOT EYEBALLED. Positions are percentages of the mark box
-// taken off the artwork's own pixels:
+// HOW THE FACE ARRIVES BEFORE THE WRITING. The logo is one image, so the same
+// file is rendered twice and each copy is clipped: one to the head box, one to
+// everything below it. Both sit in the same mark box, so they stay in perfect
+// register and the head can appear a beat before the wordmark without any
+// second asset.
+//
+// GEOMETRY IS MEASURED, NOT EYEBALLED — percentages of the mark box, read off
+// the artwork's own pixels:
 //
 //     head      left 32.7%  top 0%     w 29.3%  h 46.3%
 //     eye band  left 39.5%  top 22.1%  w 21.1%  h 10.7%
 //
-// The headband sits on the FOREHEAD — above the eye band, not over it. Covering
-// the band would blind him. If the logo file is ever replaced, re-measure.
+// The headband sits on the FOREHEAD, above the eye band; over it he'd be blind.
+// If the logo file is ever replaced, re-measure HEAD and the two clips below.
 import React from "react";
 import "../Stylesheets/Rocky.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
-// p1 flag + spot · p2 the mark lands · p3 headband and gloves · p4 belt + name
-const CUES = [200, 700, 1400, 2200];
+// p1 flag + spot · p2 the glove comes in and lands · p3 it becomes the face
+// · p4 the writing
+const CUES = [200, 850, 1600, 2300];
 
 // measured off the artwork — see the note at the top
 const HEAD = { left: "32.7%", top: "0%", width: "29.3%", height: "46.3%" };
@@ -47,7 +51,7 @@ const STAR_PATH =
 export default function Rocky({
   mode = "animated",
   caption = "WOODBRIDGE",
-  loopAt = 7000,
+  loopAt = 7500,
 }) {
   const { src, logoVar, ready } = useLogo();
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt, enabled: ready });
@@ -65,7 +69,6 @@ export default function Rocky({
       {/* ---- the flag hanging behind ---- */}
       <svg className="rk-flag" viewBox="0 0 760 400" preserveAspectRatio="xMidYMid slice" aria-hidden>
         <g filter="url(#rk-wave)">
-          {/* 13 stripes */}
           {Array.from({ length: 13 }, (_, i) => (
             <rect
               key={i}
@@ -76,7 +79,6 @@ export default function Rocky({
               fill={i % 2 === 0 ? "#9c1526" : "#e8e2d6"}
             />
           ))}
-          {/* canton */}
           <rect x="0" y="0" width="304" height={(400 / 13) * 7} fill="#16244a" />
           <g fill="#e8e2d6">
             {STARS.map(([x, y], i) => (
@@ -93,82 +95,89 @@ export default function Rocky({
       <div className="rk-spot" aria-hidden />
       <div className="rk-beam" aria-hidden />
 
-      {/* ---- gloves hanging in the dark ---- */}
-      <div className="rk-gloves" aria-hidden>
-        {/* A glove is a mitt WITH A THUMB and a cuff. An oval on a string is a
-            speed bag — the thumb is what makes it read. */}
-        <svg className="rk-glove rk-glove-l" viewBox="0 0 120 260">
-          <path className="rk-lace" d="M60 0 L60 72" />
-          <path className="rk-cuff" d="M36 68 h48 a6 6 0 0 1 6 6 v26 h-60 v-26 a6 6 0 0 1 6 -6 z" />
-          <g className="rk-leather">
-            <path d="M60 96 C 96 96, 110 118, 110 150 C 110 194, 90 222, 60 222 C 40 222, 26 208, 20 188 C 18 178, 18 166, 20 156 C 20 122, 34 96, 60 96 Z" />
-            <path className="rk-thumb" d="M22 152 C 8 150, 2 164, 8 176 C 13 186, 24 186, 27 176 Z" />
-          </g>
-          <path className="rk-seam" d="M30 148 C 58 138, 88 140, 106 150" />
-        </svg>
-        <svg className="rk-glove rk-glove-r" viewBox="0 0 120 260">
-          <path className="rk-lace" d="M60 0 L60 72" />
-          <path className="rk-cuff" d="M36 68 h48 a6 6 0 0 1 6 6 v26 h-60 v-26 a6 6 0 0 1 6 -6 z" />
-          <g className="rk-leather">
-            <path d="M60 96 C 24 96, 10 118, 10 150 C 10 194, 30 222, 60 222 C 80 222, 94 208, 100 188 C 102 178, 102 166, 100 156 C 100 122, 86 96, 60 96 Z" />
-            <path className="rk-thumb" d="M98 152 C 112 150, 118 164, 112 176 C 107 186, 96 186, 93 176 Z" />
-          </g>
-          <path className="rk-seam" d="M90 148 C 62 138, 32 140, 14 150" />
-        </svg>
-      </div>
-
-      {/* ---- the champion ---- */}
-      <div className="rk-markwrap">
-        <div className="rk-markbox">
-          <div className="rk-shadow" aria-hidden />
-
-          <div className="rk-mark">
-            {/* drawn as itself — see the note at the top */}
-            <img className="rk-logo" src={src} alt="Code Ninjas" />
-
-            {/* --- the headband, across the FOREHEAD, above the eye band --- */}
-            <div className="rk-band" style={HEAD} aria-hidden>
-              <svg viewBox="0 0 293 463" preserveAspectRatio="none">
-                <g className="rk-band-g">
-                  {/* the strip itself, following the curve of the crown */}
-                  <path
-                    className="rk-band-red"
-                    d="M6 128 C 70 92, 224 92, 288 128 L 288 172 C 224 136, 70 136, 6 172 Z"
-                  />
-                  <path
-                    className="rk-band-white"
-                    d="M6 143 C 70 107, 224 107, 288 143 L 288 158 C 224 122, 70 122, 6 158 Z"
-                  />
-                  {/* the blue field sits at the left, where a real one is knotted */}
-                  <path
-                    className="rk-band-blue"
-                    d="M6 128 C 34 112, 68 102, 96 98 L 96 146 C 68 150, 34 158, 6 172 Z"
-                  />
-                  <g className="rk-band-stars">
-                    <path d={STAR_PATH} transform="translate(30 140) scale(0.7)" />
-                    <path d={STAR_PATH} transform="translate(62 128) scale(0.7)" />
-                    <path d={STAR_PATH} transform="translate(30 168) rotate(-8) scale(0.6)" />
-                  </g>
-                  {/* the tail, knotted off to the side */}
-                  <path
-                    className="rk-band-red"
-                    d="M2 150 C -16 168, -26 196, -18 214 C -8 200, 2 186, 10 176 Z"
-                  />
-                </g>
-              </svg>
-            </div>
-          </div>
+      {/* Everything the punch is supposed to rattle lives inside .rk-shake.
+          The flag stays outside it — a room doesn't move when you hit the
+          camera, only the camera does, and shaking the backdrop too reads as
+          the whole set wobbling. */}
+      <div className="rk-shake">
+        {/* ---- the punch ---- */}
+        <div className="rk-punch" aria-hidden>
+          <svg viewBox="0 0 200 210">
+            {/* a fist coming AT the camera: knuckles forward, cuff foreshortened
+                behind it, thumb to one side */}
+            <path
+              className="rk-cuff"
+              d="M62 158 h76 a12 12 0 0 1 12 12 v18 a12 12 0 0 1 -12 12 h-76 a12 12 0 0 1 -12 -12 v-18 a12 12 0 0 1 12 -12 z"
+            />
+            <g className="rk-leather">
+              <path d="M100 22 C 150 22, 180 56, 180 104 C 180 148, 146 176, 100 176 C 54 176, 20 148, 20 104 C 20 56, 50 22, 100 22 Z" />
+              <path className="rk-thumb" d="M26 116 C 4 114, -4 140, 10 156 C 22 170, 44 164, 46 148 Z" />
+            </g>
+            <g className="rk-knuckle">
+              <circle cx="56" cy="86" r="16" />
+              <circle cx="86" cy="78" r="17" />
+              <circle cx="118" cy="78" r="17" />
+              <circle cx="148" cy="88" r="15" />
+            </g>
+            <path className="rk-seam" d="M34 124 C 70 142, 130 142, 168 122" />
+          </svg>
         </div>
 
-        {/* WOODBRIDGE, then the title belt */}
-        <div className="rk-type">
-          <div className="rk-caption">{caption}</div>
-          <div className="rk-belt" aria-hidden>
-            <span className="rk-strap rk-strap-l" />
-            <span className="rk-plate">
-              <span className="rk-plate-star" />
-            </span>
-            <span className="rk-strap rk-strap-r" />
+        {/* impact */}
+        <div className="rk-flash" aria-hidden />
+        <div className="rk-ring" aria-hidden />
+
+        {/* ---- the champion ---- */}
+        <div className="rk-markwrap">
+          <div className="rk-markbox">
+            <div className="rk-shadow" aria-hidden />
+
+            <div className="rk-mark">
+              {/* same file twice, clipped — see the note at the top */}
+              <img className="rk-logo rk-logo-head" src={src} alt="Code Ninjas" />
+              <img className="rk-logo rk-logo-word" src={src} alt="" aria-hidden />
+
+              {/* --- headband, across the FOREHEAD --- */}
+              <div className="rk-band" style={HEAD} aria-hidden>
+                <svg viewBox="0 0 293 463" preserveAspectRatio="none">
+                  <g className="rk-band-g">
+                    <path
+                      className="rk-band-red"
+                      d="M6 128 C 70 92, 224 92, 288 128 L 288 172 C 224 136, 70 136, 6 172 Z"
+                    />
+                    <path
+                      className="rk-band-white"
+                      d="M6 143 C 70 107, 224 107, 288 143 L 288 158 C 224 122, 70 122, 6 158 Z"
+                    />
+                    <path
+                      className="rk-band-blue"
+                      d="M6 128 C 34 112, 68 102, 96 98 L 96 146 C 68 150, 34 158, 6 172 Z"
+                    />
+                    <g className="rk-band-stars">
+                      <path d={STAR_PATH} transform="translate(30 140) scale(0.7)" />
+                      <path d={STAR_PATH} transform="translate(62 128) scale(0.7)" />
+                      <path d={STAR_PATH} transform="translate(30 168) rotate(-8) scale(0.6)" />
+                    </g>
+                    <path
+                      className="rk-band-red"
+                      d="M2 150 C -16 168, -26 196, -18 214 C -8 200, 2 186, 10 176 Z"
+                    />
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* WOODBRIDGE, then the title belt */}
+          <div className="rk-type">
+            <div className="rk-caption">{caption}</div>
+            <div className="rk-belt" aria-hidden>
+              <span className="rk-strap rk-strap-l" />
+              <span className="rk-plate">
+                <span className="rk-plate-star" />
+              </span>
+              <span className="rk-strap rk-strap-r" />
+            </div>
           </div>
         </div>
       </div>

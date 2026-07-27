@@ -148,29 +148,43 @@
 }
 
 /* ====================================================================
-   GLOVES
+   THE PUNCH
    ==================================================================== */
 
-.rk-gloves {
+/* The camera takes the hit, so the shake goes on everything in the ring —
+   not on the flag. Shaking the backdrop too reads as the whole set wobbling. */
+.rk-shake {
   position: absolute;
   inset: 0;
-  pointer-events: none;
   z-index: 15;
 }
-.rk-glove {
+.rk-p2 .rk-shake {
+  animation: rk-shake 420ms 430ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+@keyframes rk-shake {
+  0% { transform: translate(0, 0); }
+  12% { transform: translate(-1.6vw, 0.9vw) rotate(-0.5deg); }
+  26% { transform: translate(1.3vw, -0.7vw) rotate(0.4deg); }
+  42% { transform: translate(-0.9vw, -0.5vw) rotate(-0.3deg); }
+  58% { transform: translate(0.6vw, 0.5vw) rotate(0.2deg); }
+  76% { transform: translate(-0.3vw, 0.2vw); }
+  100% { transform: translate(0, 0); }
+}
+
+/* the glove, coming out of the frame at the viewer */
+.rk-punch {
   position: absolute;
-  top: 0;
-  width: 17vw;
-  height: auto;
-  transform-origin: 50% 0;
+  left: 50%;
+  top: 46%;
+  width: 54vw;
+  transform: translate(-50%, -50%) scale(0.16);
   opacity: 0;
-  filter: drop-shadow(0 1vw 1.2vw rgba(0, 0, 0, 0.7));
+  z-index: 22;
 }
-.rk-glove-l {
-  left: 15%;
-}
-.rk-glove-r {
-  right: 15%;
+.rk-punch svg {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 .rk-leather path {
   fill: var(--leather);
@@ -178,47 +192,100 @@
 .rk-thumb {
   fill: var(--leather-lo);
 }
+.rk-knuckle circle {
+  fill: rgba(255, 255, 255, 0.09);
+}
 .rk-seam {
-  stroke: rgba(0, 0, 0, 0.45);
-  stroke-width: 4;
+  stroke: rgba(0, 0, 0, 0.42);
+  stroke-width: 5;
   fill: none;
   stroke-linecap: round;
 }
 .rk-cuff {
   fill: var(--bone);
-  opacity: 0.9;
+  opacity: 0.92;
 }
-.rk-lace {
-  stroke: rgba(232, 226, 214, 0.55);
-  stroke-width: 4;
+.rk-p2 .rk-punch {
+  animation: rk-fly 520ms cubic-bezier(0.5, 0, 0.85, 0.4) forwards;
 }
-.rk-p3 .rk-glove,
-.rk-p4 .rk-glove {
-  opacity: 1;
-  /* they hang, so they swing — from the lace, not the middle */
-  animation:
-    rk-hang 620ms cubic-bezier(0.2, 1.4, 0.4, 1) forwards,
-    rk-swing 4200ms 620ms ease-in-out infinite alternate;
-}
-.rk-glove-r {
-  animation-delay: 120ms, 740ms;
-}
-@keyframes rk-hang {
-  from {
+/* the blur is the speed: it comes in fast and unfocused, and only resolves at
+   the moment it lands */
+@keyframes rk-fly {
+  0% {
     opacity: 0;
-    transform: translateY(-40%) rotate(-10deg);
+    transform: translate(-50%, -50%) scale(0.16) rotate(-10deg);
+    filter: blur(2.4vw);
   }
-  to {
+  18% {
     opacity: 1;
-    transform: translateY(0) rotate(-4deg);
+  }
+  76% {
+    transform: translate(-50%, -50%) scale(1.22) rotate(2deg);
+    filter: blur(0.5vw);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05) rotate(0deg);
+    filter: blur(0);
   }
 }
-@keyframes rk-swing {
-  from {
-    transform: rotate(-4deg);
-  }
+/* it hands off to the face on the next beat */
+.rk-p3 .rk-punch,
+.rk-p4 .rk-punch {
+  animation: rk-punch-out 260ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+@keyframes rk-punch-out {
   to {
-    transform: rotate(4deg);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.72);
+  }
+}
+
+/* impact: one frame of white, and a ring thrown off the point of contact */
+.rk-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background: radial-gradient(40% 30% at 50% 46%, rgba(255, 248, 230, 0.95), transparent 70%);
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.rk-p2 .rk-flash {
+  animation: rk-flash 300ms 430ms ease-out forwards;
+}
+@keyframes rk-flash {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.rk-ring {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 40vw;
+  height: 40vw;
+  z-index: 21;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.2);
+  border: 0.7vw solid rgba(255, 240, 210, 0.85);
+  border-radius: 50%;
+  opacity: 0;
+}
+.rk-p2 .rk-ring {
+  animation: rk-ring 620ms 430ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+@keyframes rk-ring {
+  0% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0.2);
+    border-width: 0.9vw;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.4);
+    border-width: 0.05vw;
   }
 }
 
@@ -252,8 +319,6 @@
   opacity: 0;
   transition: opacity 800ms ease;
 }
-.rk-p2 .rk-shadow,
-.rk-p3 .rk-shadow,
 .rk-p4 .rk-shadow {
   opacity: 1;
 }
@@ -263,18 +328,11 @@
   width: 100%;
   /* measured from the trimmed mark at load, so any logo lands on register */
   aspect-ratio: var(--logo-aspect, 2.17);
-  opacity: 0;
-  transform: translateY(1.6vw) scale(0.96);
-  transition: opacity 620ms ease, transform 950ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.rk-p2 .rk-mark,
-.rk-p3 .rk-mark,
-.rk-p4 .rk-mark {
-  opacity: 1;
-  transform: translateY(0) scale(1);
 }
 
-/* The logo, unmodified. On a dark stage it needs lifting off the background,
+/* The logo, unmodified, rendered twice and clipped so the face can arrive a
+   beat before the writing. Both copies fill the same box, so they cannot drift
+   out of register. On a dark stage the mark needs lifting off the background,
    which is a light rim rather than any change to its colour. */
 .rk-logo {
   position: absolute;
@@ -286,6 +344,52 @@
     drop-shadow(0 -1px 0 rgba(255, 240, 210, 0.5))
     drop-shadow(0 1px 0 rgba(255, 236, 200, 0.28))
     drop-shadow(0 0.8vw 1.4vw rgba(0, 0, 0, 0.75));
+}
+
+/* head only: the measured head box */
+.rk-logo-head {
+  clip-path: inset(0% 38% 53.7% 32.7%);
+  opacity: 0;
+  /* scale about the head's own centre, not the mark box's, or it grows in from
+     the wrong point */
+  transform-origin: 47.35% 23.15%;
+  transform: scale(1.75);
+}
+.rk-p3 .rk-logo-head,
+.rk-p4 .rk-logo-head {
+  animation: rk-become 420ms cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+}
+/* the glove was here a moment ago and roughly this size — the face grows down
+   out of it rather than cutting in */
+@keyframes rk-become {
+  0% {
+    opacity: 0;
+    transform: scale(1.75);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* everything below the head */
+.rk-logo-word {
+  clip-path: inset(46.3% 0 0 0);
+  opacity: 0;
+  transform: translateY(2.4vw) scale(0.94);
+  transform-origin: 50% 30%;
+}
+.rk-p4 .rk-logo-word {
+  animation: rk-land 420ms cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+}
+@keyframes rk-land {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* --- the headband, on the forehead, above the eye band --- */
@@ -317,7 +421,7 @@
 }
 .rk-p3 .rk-band,
 .rk-p4 .rk-band {
-  animation: rk-snap 420ms 140ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+  animation: rk-snap 380ms 260ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
 }
 @keyframes rk-snap {
   to {
@@ -465,12 +569,19 @@
   animation: none !important;
   transition: none !important;
 }
-.rk.is-static .rk-glove {
-  opacity: 1;
-  transform: rotate(-4deg);
+/* the punch is transient by definition — the poster is the frame after it */
+.rk.is-static .rk-punch,
+.rk.is-static .rk-flash,
+.rk.is-static .rk-ring {
+  opacity: 0;
 }
-.rk.is-static .rk-glove-r {
-  transform: rotate(3deg);
+.rk.is-static .rk-logo-head,
+.rk.is-static .rk-logo-word {
+  opacity: 1;
+  transform: none;
+}
+.rk.is-static .rk-shadow {
+  opacity: 1;
 }
 .rk.is-static .rk-band {
   opacity: 1;
@@ -491,9 +602,18 @@
     animation: none !important;
     transition: none !important;
   }
-  .rk .rk-glove {
+  .rk .rk-punch,
+  .rk .rk-flash,
+  .rk .rk-ring {
+    opacity: 0;
+  }
+  .rk .rk-logo-head,
+  .rk .rk-logo-word {
     opacity: 1;
-    transform: rotate(-4deg);
+    transform: none;
+  }
+  .rk .rk-shadow {
+    opacity: 1;
   }
   .rk .rk-band {
     opacity: 1;
