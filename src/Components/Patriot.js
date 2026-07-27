@@ -1,10 +1,13 @@
-// Patriot.js — a simple patriotic emblem: a starred roundel with the ninja in
-// it, over a flag field. Everything in Old Glory colours.
+// Patriot.js — a patriotic emblem: a starred roundel with the ninja in it, the
+// name welded underneath, over a flag field. Everything in Old Glory colours.
 //
-// Genre, not franchise. No boxing, and NO LOGO FILE — the ninja and the type are
-// both drawn/set here from scratch, which is why this theme does not call
-// useLogo at all. That also means it is the one theme that survives the logo
-// file being missing or replaced.
+// Genre, not franchise. No boxing, and NO LOGO FILE — the ninja is drawn and the
+// name is set as type, which is why this theme never calls useLogo. It is the
+// one theme that survives the logo file being missing or replaced.
+//
+// The name is a FLOW SIBLING of the badge inside .us-lockup, never positioned
+// independently: that is what keeps it directly under the emblem instead of
+// drifting down the frame, and the pair centre together as one unit.
 //
 // Colours are the flag's real ones rather than approximations:
 //   Old Glory Red  #b22234
@@ -21,12 +24,12 @@ const STAR_PATH =
   "M0 -10 L2.9 -3.1 L10 -3.1 L4.2 1.3 L6.5 8.5 L0 4 L-6.5 8.5 L-4.2 1.3 L-10 -3.1 L-2.9 -3.1 Z";
 
 /* 13 stars ringing the roundel — one per original colony, and it happens to
-   space evenly. Positions computed once, not guessed. */
+   space evenly. Computed once, not guessed. */
 const RING = Array.from({ length: 13 }, (_, i) => {
   const a = (i / 13) * Math.PI * 2 - Math.PI / 2;
   return [
-    +(200 + 152 * Math.cos(a)).toFixed(1),
-    +(200 + 152 * Math.sin(a)).toFixed(1),
+    +(200 + 150 * Math.cos(a)).toFixed(1),
+    +(200 + 150 * Math.sin(a)).toFixed(1),
     +((a * 180) / Math.PI + 90).toFixed(1),
   ];
 });
@@ -73,72 +76,85 @@ export default function Patriot({
           {Array.from({ length: 7 }, (_, i) => (
             <rect
               key={i}
+              className="us-stripe"
               x="-6"
               y={i * 8.6}
               width="112"
               height="8.6"
               fill={i % 2 === 0 ? "#b22234" : "#ffffff"}
               style={{ "--i": i }}
-              className="us-stripe"
             />
           ))}
         </g>
       </svg>
+      {/* light across the cloth, so the stripes read as fabric and not bars */}
+      <div className="us-cloth" aria-hidden />
 
-      {/* ---- the roundel ---- */}
-      <div className="us-emblem">
-        <svg viewBox="0 0 400 400">
-          {/* rim */}
-          <circle className="us-rim" cx="200" cy="200" r="188" />
-          <circle className="us-rim-in" cx="200" cy="200" r="176" />
-          {/* navy field */}
-          <circle className="us-disc" cx="200" cy="200" r="170" />
-          {/* ring of stars */}
-          {/* The placement lives on the outer <g> and the animation on the
-              inner <path>: a CSS transform REPLACES an SVG transform attribute,
-              so animating scale on the placed element collapses every star onto
-              the origin. */}
-          <g className="us-ring">
-            {RING.map(([x, y, r], i) => (
-              <g transform={`translate(${x} ${y}) rotate(${r})`} key={i}>
-                <path d={STAR_PATH} transform="scale(1.15)" style={{ "--i": i }} />
-              </g>
-            ))}
-          </g>
+      {/* ---- badge + name, welded ---- */}
+      <div className="us-lockup">
+        <div className="us-glow" aria-hidden />
 
-          {/* ---- the ninja, drawn here ---- */}
-          <g className="us-ninja">
-            <circle className="us-hood" cx="200" cy="204" r="96" />
-            {/* the knot, off to the side */}
-            <path className="us-hood" d="M118 186 C 84 176, 62 190, 70 214 C 78 238, 110 238, 124 224 Z" />
-            {/* band across the eyes */}
-            <path className="us-eyeband" d="M112 188 L288 188 L288 232 L112 232 Z" />
-            <path className="us-eye" d="M142 200 L192 210 L192 220 L142 218 Z" />
-            <path className="us-eye" d="M258 200 L208 210 L208 220 L258 218 Z" />
-            {/* stars-and-stripes headband on the forehead */}
-            <g className="us-headband">
-              <path className="us-hb-red" d="M114 148 C 158 122, 242 122, 286 148 L 286 178 C 242 152, 158 152, 114 178 Z" />
-              <path className="us-hb-white" d="M114 158 C 158 132, 242 132, 286 158 L 286 168 C 242 142, 158 142, 114 168 Z" />
-              <path className="us-hb-blue" d="M114 148 C 132 137, 154 130, 174 126 L 174 156 C 154 160, 132 167, 114 178 Z" />
-              <g className="us-hb-stars">
-                <path d={STAR_PATH} transform="translate(132 154) scale(0.45)" />
-                <path d={STAR_PATH} transform="translate(158 144) scale(0.45)" />
-              </g>
-              <path className="us-hb-red" d="M112 160 C 90 174, 80 198, 88 214 C 98 200, 110 186, 118 178 Z" />
+        <div className="us-emblem">
+          <svg viewBox="0 0 400 400">
+            {/* rim: red ring with a bevel, then a white ring */}
+            <circle className="us-rim" cx="200" cy="200" r="192" />
+            <circle className="us-rim-bevel" cx="200" cy="200" r="192" />
+            <circle className="us-rim-white" cx="200" cy="200" r="176" />
+
+            {/* navy field, lit from the upper left */}
+            <circle className="us-disc" cx="200" cy="200" r="168" />
+            {/* the disc is dished: darker where it meets the ring */}
+            <circle className="us-disc-shade" cx="200" cy="200" r="168" />
+
+            <g className="us-ring">
+              {RING.map(([x, y, r], i) => (
+                <g transform={`translate(${x} ${y}) rotate(${r})`} key={i}>
+                  {/* placement on the outer <g>, animation on the inner path —
+                      a CSS transform REPLACES an SVG transform attribute, and
+                      animating the placed element collapses every star onto the
+                      origin */}
+                  <path d={STAR_PATH} style={{ "--i": i }} />
+                </g>
+              ))}
             </g>
-          </g>
-        </svg>
-      </div>
 
-      {/* ---- the name ---- */}
-      <div className="us-type">
-        <div className="us-brand">{brand}</div>
-        <div className="us-bar" aria-hidden>
-          <span className="us-bar-red" />
-          <span className="us-bar-white" />
-          <span className="us-bar-blue" />
+            {/* ---- the ninja, drawn here ---- */}
+            <g className="us-ninja">
+              <circle className="us-hood" cx="200" cy="206" r="94" />
+              <path className="us-hood" d="M120 188 C 86 178, 64 192, 72 216 C 80 240, 112 240, 126 226 Z" />
+              <path className="us-eyeband" d="M114 190 L286 190 L286 232 L114 232 Z" />
+              <path className="us-eye" d="M144 202 L192 211 L192 221 L144 219 Z" />
+              <path className="us-eye" d="M256 202 L208 211 L208 221 L256 219 Z" />
+              <g className="us-headband">
+                <path className="us-hb-red" d="M116 152 C 158 126, 242 126, 284 152 L 284 180 C 242 154, 158 154, 116 180 Z" />
+                <path className="us-hb-white" d="M116 161 C 158 135, 242 135, 284 161 L 284 171 C 242 145, 158 145, 116 171 Z" />
+                <path className="us-hb-blue" d="M116 152 C 133 141, 154 134, 174 130 L 174 158 C 154 162, 133 169, 116 180 Z" />
+                <g className="us-hb-stars">
+                  <path d={STAR_PATH} transform="translate(134 157) scale(0.42)" />
+                  <path d={STAR_PATH} transform="translate(159 148) scale(0.42)" />
+                </g>
+                <path className="us-hb-red" d="M114 163 C 92 177, 82 200, 90 216 C 100 202, 112 189, 120 181 Z" />
+              </g>
+            </g>
+
+            {/* gloss: one soft sweep across the upper third of the badge */}
+            <path
+              className="us-gloss"
+              d="M32 168 C 60 74, 132 20, 200 20 C 268 20, 340 74, 368 168 C 300 108, 100 108, 32 168 Z"
+            />
+          </svg>
         </div>
-        <div className="us-caption">{caption}</div>
+
+        {/* ---- the name, in flow directly under the badge ---- */}
+        <div className="us-type">
+          <div className="us-brand">{brand}</div>
+          <div className="us-bar" aria-hidden>
+            <span className="us-bar-red" />
+            <span className="us-bar-white" />
+            <span className="us-bar-blue" />
+          </div>
+          <div className="us-caption">{caption}</div>
+        </div>
       </div>
 
       <div className="us-grain" aria-hidden />
@@ -163,6 +179,38 @@ function PatriotDefs() {
             yChannelSelector="G"
           />
         </filter>
+
+        {/* the ninja sits IN the badge, so he casts onto it */}
+        <filter id="us-drop" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="6" stdDeviation="9" floodColor="#080816" floodOpacity="0.55" />
+        </filter>
+
+        {/* navy lit from the upper left rather than flat */}
+        <radialGradient id="us-discfill" cx="34%" cy="28%" r="82%">
+          <stop offset="0%" stopColor="#565493" />
+          <stop offset="52%" stopColor="#3c3b6e" />
+          <stop offset="100%" stopColor="#22214a" />
+        </radialGradient>
+
+        {/* dish: transparent in the middle, dark at the rim */}
+        <radialGradient id="us-dishfill" cx="50%" cy="50%" r="50%">
+          <stop offset="72%" stopColor="#000018" stopOpacity="0" />
+          <stop offset="100%" stopColor="#000018" stopOpacity="0.55" />
+        </radialGradient>
+
+        {/* bevel: light along the top edge, gone by halfway down */}
+        <linearGradient id="us-bevel" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
+          <stop offset="42%" stopColor="#ffffff" stopOpacity="0.08" />
+          <stop offset="60%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="100%" stopColor="#000010" stopOpacity="0.35" />
+        </linearGradient>
+
+        <linearGradient id="us-rimfill" x1="0.2" y1="0" x2="0.8" y2="1">
+          <stop offset="0%" stopColor="#d8394d" />
+          <stop offset="46%" stopColor="#b22234" />
+          <stop offset="100%" stopColor="#7c1424" />
+        </linearGradient>
       </defs>
     </svg>
   );

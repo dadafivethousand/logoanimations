@@ -1,4 +1,4 @@
-/* Patriot — a starred roundel with the ninja in it, over a flag field.
+/* Patriot — a starred roundel with the ninja in it, name welded underneath.
    Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
    px is reserved for hairlines that must stay hairlines.
 
@@ -20,7 +20,7 @@
   --safe-y: 4.7vh;
 
   /* the one knob the composition scales from */
-  --emblem: 62vw;
+  --emblem: 58vw;
 
   position: absolute;
   inset: 0;
@@ -45,8 +45,13 @@
 .us-sky {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(72% 46% at 50% 34%, var(--blue-hi) 0%, var(--blue) 34%, var(--blue-deep) 72%, var(--night) 100%);
+  background: radial-gradient(
+    72% 46% at 50% 32%,
+    var(--blue-hi) 0%,
+    var(--blue) 34%,
+    var(--blue-deep) 72%,
+    var(--night) 100%
+  );
   opacity: 0;
   transform: scale(1.03);
   transition: opacity 900ms ease, transform 1600ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -59,18 +64,18 @@
   transform: scale(1);
 }
 
-/* a slow burst behind the roundel — the one thing that says "emblem" before
+/* a slow burst behind the roundel — the thing that says "emblem" before
    anything else has arrived */
 .us-rays {
   position: absolute;
   left: 50%;
-  top: 38%;
+  top: 36%;
   width: 180vw;
   height: 180vw;
   transform: translate(-50%, -50%) rotate(0deg);
   background: repeating-conic-gradient(
     from 0deg at 50% 50%,
-    rgba(255, 255, 255, 0.07) 0deg 6deg,
+    rgba(255, 255, 255, 0.075) 0deg 6deg,
     transparent 6deg 18deg
   );
   -webkit-mask-image: radial-gradient(closest-side, #000 8%, rgba(0, 0, 0, 0.5) 34%, transparent 68%);
@@ -90,7 +95,6 @@
   }
 }
 
-/* stars scattered through the upper field */
 .us-field {
   position: absolute;
   left: 0;
@@ -115,7 +119,6 @@
   }
 }
 
-/* stripes across the lower half */
 .us-stripes {
   position: absolute;
   left: -6%;
@@ -144,20 +147,67 @@
   }
 }
 
+/* broad light and shade across the cloth, as a separate layer: painted into the
+   stripes it would move with them, and they would stop reading as one surface */
+.us-cloth {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 46%;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    96deg,
+    rgba(0, 0, 0, 0.34) 0 6vw,
+    rgba(255, 255, 255, 0.1) 14vw,
+    rgba(0, 0, 0, 0.3) 24vw,
+    rgba(255, 255, 255, 0.06) 34vw,
+    rgba(0, 0, 0, 0.36) 46vw
+  );
+  mix-blend-mode: multiply;
+  filter: blur(1.6vw);
+}
+
 /* ====================================================================
-   THE ROUNDEL
+   THE LOCKUP — badge + name, welded together
    ==================================================================== */
 
-.us-emblem {
+.us-lockup {
   position: absolute;
   left: 50%;
-  top: 38%;
+  top: 47%;
   width: var(--emblem);
-  height: var(--emblem);
-  transform: translate(-50%, -50%) scale(0.7);
-  z-index: 20;
+  transform: translate(-50%, -50%);
+  z-index: 24;
+}
+
+/* a soft halo so the badge separates from the field behind it */
+.us-glow {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  width: 150%;
+  height: 150%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(120, 140, 255, 0.28), transparent 70%);
+  filter: blur(3vw);
   opacity: 0;
-  filter: drop-shadow(0 1.2vw 2vw rgba(0, 0, 0, 0.6));
+  transition: opacity 900ms ease;
+}
+.us-p2 .us-glow,
+.us-p3 .us-glow,
+.us-p4 .us-glow {
+  opacity: 1;
+}
+
+.us-emblem {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  transform: scale(0.7);
+  opacity: 0;
+  filter: drop-shadow(0 1.4vw 2.2vw rgba(0, 0, 10, 0.7));
   transition:
     opacity 500ms ease,
     transform 700ms cubic-bezier(0.2, 1.5, 0.4, 1);
@@ -166,7 +216,7 @@
 .us-p3 .us-emblem,
 .us-p4 .us-emblem {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: scale(1);
 }
 .us-emblem svg {
   width: 100%;
@@ -174,30 +224,33 @@
   display: block;
 }
 
+/* --- the badge itself --- */
 .us-rim {
-  fill: var(--red);
+  fill: url(#us-rimfill);
 }
-.us-rim-in {
+/* a hairline of light along the top edge of the rim: this is what makes it read
+   as a struck badge rather than a flat disc */
+.us-rim-bevel {
+  fill: none;
+  stroke: url(#us-bevel);
+  stroke-width: 4;
+}
+.us-rim-white {
   fill: var(--white);
 }
 .us-disc {
-  fill: var(--blue);
+  fill: url(#us-discfill);
 }
-.us-inner {
-  fill: none;
-  stroke: var(--red);
-  stroke-width: 7;
-  opacity: 0.9;
+.us-disc-shade {
+  fill: url(#us-dishfill);
 }
 
 .us-ring path {
   fill: var(--white);
   opacity: 0;
+  transform: scale(0.3);
   transform-box: fill-box;
   transform-origin: center;
-}
-.us-inner {
-  display: none;
 }
 .us-p2 .us-ring path,
 .us-p3 .us-ring path,
@@ -206,14 +259,17 @@
   animation: us-set 300ms calc(220ms + var(--i) * 45ms) cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
 }
 @keyframes us-set {
-  from {
-    opacity: 0;
-    transform: scale(0.3);
-  }
   to {
     opacity: 1;
-    transform: scale(1.15);
+    transform: scale(1.05);
   }
+}
+
+/* one soft sweep across the upper third — a badge catches light in a band, not
+   evenly */
+.us-gloss {
+  fill: rgba(255, 255, 255, 0.09);
+  pointer-events: none;
 }
 
 /* ====================================================================
@@ -225,6 +281,7 @@
   transform: scale(0.86);
   transform-box: fill-box;
   transform-origin: center;
+  filter: url(#us-drop);
 }
 .us-p3 .us-ninja,
 .us-p4 .us-ninja {
@@ -241,7 +298,7 @@
   fill: #14141c;
 }
 .us-eyeband {
-  fill: #f2ead6;
+  fill: #f4ecd9;
 }
 .us-eye {
   fill: #14141c;
@@ -272,33 +329,32 @@
 }
 
 /* ====================================================================
-   THE NAME — set as type, no logo file
+   THE NAME — in flow, directly under the badge
    ==================================================================== */
 
 .us-type {
-  position: absolute;
-  left: 50%;
-  top: 76%;
-  /* the stripes run pale right where the name sits; without this the white
-     reads as grey */
-  padding: 3vw 0 3.4vw;
-  background: radial-gradient(62% 100% at 50% 50%, rgba(8, 8, 24, 0.55) 0%, transparent 80%);
-  width: calc(100% - 2 * var(--safe-x));
-  transform: translateX(-50%);
+  position: relative;
+  margin-top: 2.6vw;
+  /* wider than the badge it sits under, or "CODE NINJAS" wraps to two lines —
+     the lockup's width is the emblem's, not the name's */
+  width: 132%;
+  margin-left: -16%;
   text-align: center;
-  /* above the grain and the vignette: at 41 the vignette was darkening the
-     white type to grey */
+  /* above the grain and the vignette: at 41 the vignette darkened the white
+     type to grey */
   z-index: 44;
 }
 
 .us-brand {
-  font-size: 8.6vw;
+  font-size: 8vw;
   font-weight: 900;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  white-space: nowrap;
   color: var(--white);
   text-shadow:
-    0 0.2vw 0 rgba(20, 20, 44, 0.9),
-    0 0.6vw 1.4vw rgba(0, 0, 0, 0.7);
+    0 0.2vw 0 rgba(16, 16, 40, 0.95),
+    0 0.7vw 1.6vw rgba(0, 0, 10, 0.75);
   opacity: 0;
   transform: translateY(1.2vw);
   transition: opacity 560ms ease, transform 740ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -312,9 +368,9 @@
 .us-bar {
   display: flex;
   justify-content: center;
-  gap: 0.5vw;
-  margin: 1.6vw auto 0;
-  width: 46%;
+  gap: 0.6vw;
+  margin: 1.4vw auto 0;
+  width: 34%;
   opacity: 0;
   transform: scaleX(0.6);
   transform-origin: 50% 50%;
@@ -325,12 +381,13 @@
   transform: scaleX(1);
 }
 .us-bar span {
-  height: 0.8vw;
-  border-radius: 0.4vw;
+  height: 0.85vw;
+  border-radius: 0.45vw;
   flex: 1;
+  box-shadow: 0 0.15vw 0.3vw rgba(0, 0, 10, 0.5);
 }
 .us-bar-red {
-  background: var(--red);
+  background: var(--red-hi);
 }
 .us-bar-white {
   background: var(--white);
@@ -340,12 +397,13 @@
 }
 
 .us-caption {
-  margin-top: 1.6vw;
+  margin-top: 1.4vw;
   font-size: 2.7vw;
   font-weight: 900;
   letter-spacing: 0.34em;
   text-indent: 0.34em;
-  color: #c9cbe4;
+  color: #d6d8ee;
+  text-shadow: 0 0.2vw 0.6vw rgba(0, 0, 10, 0.7);
   opacity: 0;
   transform: translateY(0.8vw);
   transition: opacity 520ms 300ms ease, transform 640ms 300ms ease;
@@ -375,7 +433,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 41;
-  background: radial-gradient(74% 56% at 50% 42%, transparent 36%, rgba(0, 0, 8, 0.86) 100%);
+  background: radial-gradient(74% 56% at 50% 44%, transparent 36%, rgba(0, 0, 8, 0.88) 100%);
 }
 
 /* ====================================================================
@@ -394,16 +452,17 @@
 .us.is-static .us-stripe {
   transform: scaleX(1);
 }
-.us.is-static .us-emblem {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
+.us.is-static .us-glow,
 .us.is-static .us-rays {
   opacity: 1;
 }
+.us.is-static .us-emblem {
+  opacity: 1;
+  transform: scale(1);
+}
 .us.is-static .us-ring path {
   opacity: 1;
-  transform: scale(1.15);
+  transform: scale(1.05);
 }
 .us.is-static .us-ninja,
 .us.is-static .us-headband {
@@ -433,16 +492,17 @@
   .us .us-stripe {
     transform: scaleX(1);
   }
-  .us .us-emblem {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+  .us .us-glow,
   .us .us-rays {
     opacity: 1;
   }
+  .us .us-emblem {
+    opacity: 1;
+    transform: scale(1);
+  }
   .us .us-ring path {
     opacity: 1;
-    transform: scale(1.15);
+    transform: scale(1.05);
   }
   .us .us-ninja,
   .us .us-headband {
