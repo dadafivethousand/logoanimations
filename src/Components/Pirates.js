@@ -1,19 +1,18 @@
-// Pirates.js — an old chart, already drawn, on which a dotted course plots
-// itself out to CODE NINJAS WOODBRIDGE: the final destination, in the corner.
+// Pirates.js — the ninja turned pirate: tricorn, eyepatch and gold hoop worn on
+// the mark itself, against a moonlit sea with a galleon on the horizon.
 //
 // Genre, not franchise: no studio marks, no character likenesses, no film
-// typeface.
+// typeface. The read comes from the silhouette and the grade.
 //
-// The map is POPULATED FROM THE FIRST FRAME. Nothing unrolls, nothing inks
-// itself on: the parchment, coastlines, soundings, compass, wax seal and the
-// destination are all simply there, the way a chart you have just unfolded
-// would be. The only thing that animates is the course being plotted, and the
-// cross that lands at the end of it.
+// THE GEAR IS MEASURED, NOT EYEBALLED. Everything worn on the head is placed in
+// percentages of the mark box taken off the artwork's own pixels:
 //
-// The mark is INK, not metal. It's masked in sepia and multiplied over the paper
-// so the fibre and stains read straight through the letterforms, with a blurred
-// copy underneath for the bleed. Metal would sit on top of the parchment and
-// look pasted on.
+//     head      left 32.7%  top 0%     w 29.3%  h 46.3%
+//     eye band  left 39.5%  top 22.1%  w 21.1%  h 10.7%
+//
+// The face gear sits in a box pinned to exactly those head bounds and draws in
+// head-local coordinates, so the patch lands on an eye instead of near one. If
+// the logo file is ever replaced, re-measure and update HEAD/BAND below.
 //
 // TWO STRUCTURAL RULES:
 //
@@ -29,27 +28,16 @@ import "../Stylesheets/Pirates.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
-// p1 the course plots itself out · p2 the cross lands on the destination
-const CUES = [450, 2000];
+// p1 sea + moon · p2 the galleon · p3 the mark surfaces · p4 he goes pirate
+const CUES = [200, 800, 1500, 2300];
 
-/* The course, as discrete dots rather than a dashed stroke.
-   Animating stroke-dashoffset on a dotted dasharray makes the dots MARCH along
-   the line; it never reads as the line being plotted. Individual dots with
-   staggered delays do — each lands a beat after the last, travelling toward the
-   destination.
-   Sampled off a Catmull-Rom spline through the waypoints, then hardcoded: no
-   runtime maths, and every take composes identically. */
-const DOTS = [
-  [108.0, 252.0], [127.0, 268.2], [155.1, 291.2], [181.6, 317.7], [196.0, 344.0], [189.5, 370.2],
-  [169.9, 397.8], [150.8, 425.5], [146.0, 452.0], [165.1, 476.4], [198.8, 499.5], [232.5, 522.9],
-  [252.0, 548.0], [247.9, 576.5], [229.8, 607.1], [211.2, 637.2], [206.0, 664.0], [222.2, 685.8],
-  [251.0, 704.5], [280.8, 722.4], [300.0, 742.0], [302.2, 765.4], [294.8, 790.8], [288.4, 810.8],
-];
+// measured off the artwork — see the note at the top
+const HEAD = { left: "32.7%", top: "0%", width: "29.3%", height: "46.3%" };
 
 export default function Pirates({
   mode = "animated",
   caption = "WOODBRIDGE",
-  loopAt = 7000,
+  loopAt = 8000,
 }) {
   const { logoVar, ready } = useLogo();
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt, enabled: ready });
@@ -64,84 +52,111 @@ export default function Pirates({
     >
       <PiratesDefs />
 
-      {/* ---- the sheet ---- */}
-      <div className="pc-page" aria-hidden>
-        <span className="pc-fibre" />
-        <span className="pc-stains" />
-        <span className="pc-folds" />
-        <span className="pc-scorch" />
-      </div>
+      {/* ---- the night ---- */}
+      <div className="pc-sky" aria-hidden />
+      <div className="pc-moon" aria-hidden />
+      <div className="pc-clouds" aria-hidden />
 
-      {/* ---- what is already drawn on it ---- */}
-      <svg className="pc-map" viewBox="0 0 600 1200" preserveAspectRatio="none" aria-hidden>
-        <g filter="url(#pc-quill)">
-          <g className="pc-coast" fill="none">
-            {/* the far shore we're leaving */}
-            <path d="M-10 178 C 70 160, 118 206, 176 184 S 268 146, 322 180 S 404 216, 470 192 S 560 158, 614 184" />
-            {/* an island passed on the way */}
-            <path d="M92 374 C 118 346, 152 356, 178 342 S 214 366, 206 392 S 222 418, 200 434 S 168 430, 148 452 S 112 446, 104 424 S 78 414, 84 396 S 74 380, 92 374 Z" />
-          </g>
-
-          <g className="pc-hatch" fill="none">
-            {HATCH.map((d, i) => (
-              <path d={d} key={i} />
-            ))}
-          </g>
-
-          {/* the course — the one thing that draws itself */}
-          <g className="pc-course">
-            {DOTS.map(([x, y], i) => (
-              <circle cx={x} cy={y} r="5" style={{ "--i": i }} key={i} />
-            ))}
-          </g>
-
-          {/* where we set out from */}
-          <g className="pc-start" transform="translate(108 252)">
-            <circle r="14" fill="none" />
-            <circle r="4.5" />
-          </g>
-
-          <g className="pc-rose" transform="translate(470 330)">
-            <circle r="52" fill="none" />
-            <circle r="34" fill="none" />
-            <path d="M0 -70 L11 -12 L0 0 L-11 -12 Z" />
-            <path d="M0 70 L11 12 L0 0 L-11 12 Z" />
-            <path d="M70 0 L12 11 L0 0 L12 -11 Z" />
-            <path d="M-70 0 L-12 11 L0 0 L-12 -11 Z" />
-            <path d="M40 -40 L8 -8 L14 -22 Z" />
-            <path d="M-40 40 L-8 8 L-14 22 Z" />
-            <path d="M40 40 L8 8 L22 14 Z" />
-            <path d="M-40 -40 L-8 -8 L-22 -14 Z" />
-          </g>
-
-          {/* the cross, on the course's final point. The translate lives on the
-              outer group and the animation on the inner one — a CSS transform on
-              the same element would replace the translate and fling the cross to
-              the origin. */}
-          <g transform="translate(286 834)">
-            <g className="pc-x-in">
-              <path d="M-26 -26 L26 26" />
-              <path d="M26 -26 L-26 26" />
-            </g>
-          </g>
-
-          <g className="pc-marks" fill="none">
-            {SOUNDINGS.map(([x, y], i) => (
-              <path d={`M${x - 7} ${y} L${x + 7} ${y} M${x} ${y - 7} L${x} ${y + 7}`} key={i} />
-            ))}
-          </g>
+      {/* ---- galleon on the horizon, black against the moon ---- */}
+      <svg className="pc-ship" viewBox="0 0 600 420" aria-hidden>
+        <g filter="url(#pc-tatter)" fill="#05070a">
+          <path d="M92 300 L516 300 L472 352 Q300 380 128 352 Z" />
+          <path d="M96 300 L96 258 L168 258 L168 300 Z" />
+          <path d="M508 302 L590 268 L594 280 L512 312 Z" />
+          <rect x="196" y="76" width="11" height="228" />
+          <rect x="300" y="40" width="12" height="264" />
+          <rect x="404" y="96" width="10" height="208" />
+          <rect x="150" y="118" width="104" height="7" />
+          <rect x="246" y="86" width="120" height="8" />
+          <rect x="358" y="136" width="100" height="7" />
+          <path d="M154 124 Q200 150 250 124 L246 196 Q200 224 158 196 Z" />
+          <path d="M250 92 Q306 122 362 92 L356 178 Q306 210 254 178 Z" />
+          <path d="M360 142 Q406 166 456 142 L452 206 Q406 232 364 206 Z" />
+          <path d="M158 210 Q200 236 246 210 L242 262 Q200 286 162 262 Z" />
+          <path d="M256 194 Q306 224 356 194 L350 258 Q306 286 260 258 Z" />
+          <path d="M312 44 L372 56 L336 68 L372 80 L312 78 Z" />
+        </g>
+        <g stroke="#05070a" strokeWidth="2.2" fill="none" opacity="0.95">
+          <path d="M202 80 L120 296" />
+          <path d="M202 80 L286 296" />
+          <path d="M306 44 L212 300" />
+          <path d="M306 44 L400 300" />
+          <path d="M409 100 L330 300" />
+          <path d="M409 100 L492 298" />
+          <path d="M590 270 L306 48" />
         </g>
       </svg>
 
-      {/* ---- the destination, in the corner ---- */}
+      {/* ---- the sea ---- */}
+      <div className="pc-sea" aria-hidden>
+        <svg viewBox="0 0 1000 360" preserveAspectRatio="none">
+          <g filter="url(#pc-swell)" fill="none" strokeLinecap="round">
+            <path className="pc-wave" d="M-20 40 C 170 26, 330 56, 520 38 S 860 18, 1020 44" />
+            <path className="pc-wave" d="M-20 76 C 220 58, 380 90, 560 70 S 880 50, 1020 78" />
+            <path className="pc-wave pc-wave-mid" d="M-20 120 C 180 100, 340 134, 530 110 S 870 92, 1020 122" />
+            <path className="pc-wave pc-wave-mid" d="M-20 172 C 210 150, 370 186, 550 162 S 890 142, 1020 174" />
+            <path className="pc-wave pc-wave-lo" d="M-20 232 C 170 208, 350 246, 530 220 S 880 200, 1020 234" />
+            <path className="pc-wave pc-wave-lo" d="M-20 296 C 220 270, 390 310, 570 282 S 900 262, 1020 300" />
+          </g>
+        </svg>
+        <span className="pc-moonpath" />
+      </div>
+      <div className="pc-haze" aria-hidden />
+
+      {/* ---- the pirate ninja ---- */}
       <div className="pc-markwrap">
         <div className="pc-markbox">
+          <div className="pc-bloom" aria-hidden />
+
           <div className="pc-mark">
-            <div className="pc-layer pc-bleed" aria-hidden />
-            <div className="pc-region pc-ink" aria-hidden />
-            <div className="pc-region pc-face" aria-hidden />
-            <div className="pc-region pc-code" aria-hidden />
-            <div className="pc-layer pc-press" aria-hidden />
+            <div className="pc-plate" aria-hidden>
+              <div className="pc-layer pc-gold" />
+              {/* the eye band, so he keeps his eyes */}
+              <div className="pc-region pc-face" />
+              {/* "CODE" in a cooler, brighter metal */}
+              <div className="pc-region pc-code" />
+              <div className="pc-layer pc-pit" />
+            </div>
+            <div className="pc-layer pc-sheen" aria-hidden />
+
+            {/* --- the tricorn, dropped onto the crown --- */}
+            <div className="pc-hat" aria-hidden>
+              <svg viewBox="0 0 400 190">
+                {/* A tricorn, not a mortarboard: the brim sweeps UP at both
+                    corners and the crown rises between them. A flat wide arc
+                    reads as a graduation cap every time. */}
+                <g className="pc-hat-felt">
+                  <path d="M10 146 C 26 104, 62 72, 108 58 C 132 22, 174 6, 200 6 C 226 6, 268 22, 292 58 C 338 72, 374 104, 390 146 C 344 124, 292 112, 200 112 C 108 112, 56 124, 10 146 Z" />
+                </g>
+                <path className="pc-hat-band" d="M104 84 C 140 62, 260 62, 296 84 C 258 74, 142 74, 104 84 Z" />
+                {/* cockade */}
+                <circle className="pc-hat-band" cx="300" cy="78" r="13" />
+              </svg>
+            </div>
+
+            {/* --- eyepatch + strap, drawn in head-local coordinates --- */}
+            <div className="pc-facegear" style={HEAD} aria-hidden>
+              <svg viewBox="0 0 293 463" preserveAspectRatio="none">
+                {/* the strap crosses the whole head; it only really reads where
+                    it passes over the light eye band, which is correct */}
+                {/* Two straps running off the patch to the sides of the head,
+                    rather than one bar across the face — a single band would
+                    cross his good eye and read as a stick through his head. */}
+                <path className="pc-strap" d="M112 262 L -8 230" />
+                <path className="pc-strap" d="M150 250 L 268 176" />
+                {/* patch over his left eye — the band runs x 68–279, y 221–328,
+                    so the left eye sits around x 118 */}
+                <ellipse className="pc-patch" cx="118" cy="270" rx="62" ry="54" />
+                <ellipse className="pc-patch-hi" cx="100" cy="252" rx="22" ry="15" />
+              </svg>
+            </div>
+
+            {/* --- gold hoop, at the jaw --- */}
+            <div className="pc-earring" aria-hidden>
+              <svg viewBox="0 0 60 60">
+                <circle cx="30" cy="30" r="20" />
+              </svg>
+            </div>
           </div>
         </div>
 
@@ -152,76 +167,39 @@ export default function Pirates({
         </div>
       </div>
 
-      <div className="pc-seal" aria-hidden>
-        <svg viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="76" filter="url(#pc-wax)" fill="url(#pc-waxfill)" />
-        </svg>
-        <span className="pc-seal-star" />
-      </div>
-
-      <div className="pc-burn" aria-hidden />
+      <div className="pc-film" aria-hidden />
       <div className="pc-vignette" aria-hidden />
     </div>
   );
 }
 
-/* Hand-placed. No Math.random, or two takes of the same ad won't match. */
-const HATCH = [
-  "M14 196 L8 220", "M54 188 L48 214", "M96 202 L92 228", "M140 192 L136 218",
-  "M186 184 L182 210", "M232 166 L230 192", "M278 160 L278 186", "M324 182 L324 208",
-  "M370 202 L372 228", "M416 210 L418 236", "M462 196 L464 222", "M508 176 L510 202",
-  "M554 168 L556 194",
-];
-
-const SOUNDINGS = [
-  [96, 266], [188, 276], [268, 258], [352, 270], [438, 256], [520, 270],
-  [72, 470], [356, 456], [560, 470],
-  [64, 700], [396, 700], [520, 690], [92, 880], [128, 1010], [62, 1130],
-];
-
 function PiratesDefs() {
   return (
     <svg className="pc-defs" aria-hidden focusable="false">
       <defs>
-        {/* quill: a hand-drawn line wobbles and the ink pools unevenly */}
-        <filter id="pc-quill" x="-12%" y="-12%" width="124%" height="124%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="3" seed="11" result="n" />
+        {/* tatter: chew the sail edges so they read as canvas, not geometry */}
+        <filter id="pc-tatter" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="4" seed="7" result="n" />
           <feDisplacementMap
             in="SourceGraphic"
             in2="n"
-            scale="6"
-            xChannelSelector="R"
-            yChannelSelector="G"
-            result="d"
-          />
-          {/* chew tiny gaps into the stroke, the way a dry nib skips */}
-          <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="3" result="g" />
-          <feColorMatrix
-            in="g"
-            type="matrix"
-            values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.7 0 0 0 -0.06"
-            result="gm"
-          />
-          <feComposite in="d" in2="gm" operator="out" />
-        </filter>
-
-        {/* wax: a poured blob has a ragged rim, never a clean circle */}
-        <filter id="pc-wax" x="-25%" y="-25%" width="150%" height="150%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="4" seed="19" result="n" />
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="n"
-            scale="18"
+            scale="9"
             xChannelSelector="R"
             yChannelSelector="G"
           />
         </filter>
 
-        <radialGradient id="pc-waxfill" cx="40%" cy="34%" r="74%">
-          <stop offset="0%" stopColor="#e83a4a" />
-          <stop offset="46%" stopColor="#c0182c" />
-          <stop offset="100%" stopColor="#710a18" />
-        </radialGradient>
+        {/* swell: shove the wave lines around so they stop reading as arcs */}
+        <filter id="pc-swell" x="-15%" y="-40%" width="130%" height="180%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.016 0.05" numOctaves="3" seed="5" result="n" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="11"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
       </defs>
     </svg>
   );

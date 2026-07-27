@@ -39,8 +39,8 @@ bar) needs a frozen value there. Same for `prefers-reduced-motion`.
 
 Same rule as the sibling repo: the compositions sit next to each other on one
 feed, so **give each theme its own colour story.** Samurai is washi cream and
-vermilion; Robotics is graphite, steel and green; Pirates is aged parchment,
-sepia ink and one red pigment. Brand red `#e4002b` is the
+vermilion; Robotics is graphite, steel and green; Pirates is teal night, amber
+moon and gold. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
@@ -129,6 +129,12 @@ Hard-won details, don't relearn them:
   deck as three bands and every seam read as a hard edge straight through the
   composition. A single volume — water with light falling through it — has depth
   for free. If a theme needs a horizon, hide it behind fog or a gradient falloff.
+- **Dressing the mark: measure, don't eyeball.** Pirates hangs a tricorn,
+  eyepatch and earring on the ninja. Their positions are percentages of the mark
+  box read off the artwork's pixels (head `left 32.7% top 0% w 29.3% h 46.3%`,
+  eye band `left 39.5% top 22.1% w 21.1% h 10.7%`), and the face gear draws in
+  head-local coordinates inside a box pinned to those bounds. Eyeballing puts the
+  patch *near* an eye. Re-measure if the logo file is ever replaced.
 - **Contrast beats fidelity.** A physically-correct near-black plate laid over
   the red hinomaru loses its letterforms; lift the mids until the mark reads.
 - The logo file **must have a real alpha channel** — a mark flattened onto white

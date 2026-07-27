@@ -48,12 +48,11 @@ stone reflection.
 **Robotics** — the mark milled from brushed aluminium with an anodized red edge,
 bolted to a mounting plate, PCB traces running current into it, HUD frame.
 
-**Pirates** — an already-drawn chart: aged parchment with burnt torn edges,
-coastlines, soundings, a compass rose and a red wax seal, all there from the
-first frame. The only thing that animates is a dotted course plotting itself out
-one dot at a time to a cross above CODE NINJAS WOODBRIDGE in the corner — the
-final destination. The eye band and "CODE" get their own pigment so the lockup
-still reads.
+**Pirates** — the ninja turned pirate: a tricorn drops onto the crown, an
+eyepatch snaps over one eye and a gold hoop lands at his jaw, the mark itself in
+salvaged gold. Behind him, a moonlit sea with a black galleon crossing the moon.
+The gear is placed off head bounds measured from the artwork's own pixels, so it
+lands on the head rather than near it.
 
 ## Adding one
 
