@@ -119,28 +119,53 @@ export default function Patriot({
             </g>
 
             {/* ---- the ninja, drawn here ----
+                Redrawn: the first pass was a flat black circle with a rectangle
+                across it and two blocky eyes, which read as a sticker. What
+                fixes it is (a) the hood taking a gradient so it has a lit side,
+                (b) the face band following the head's curve instead of being a
+                rectangle, (c) eyes as angled almonds rather than boxes, and
+                (d) a real tied knot with two tails.
+
                 The placement transform lives on the OUTER <g> and the animation
                 on the inner one: a CSS transform replaces an SVG transform
-                attribute, and putting both on one element throws it to the
-                origin. Scaled to 0.7 and lifted, so the name fits under it
-                inside the disc. */}
-            <g transform="translate(59.6 7.4) scale(0.702)">
+                attribute, and one element cannot carry both. Drawn at r=104
+                about (200,200), then scaled to sit above the name. */}
+            <g transform="translate(72 24) scale(0.64)">
             <g className="us-ninja">
-              <circle className="us-hood" cx="200" cy="206" r="94" />
-              <path className="us-hood" d="M120 188 C 86 178, 64 192, 72 216 C 80 240, 112 240, 126 226 Z" />
-              <path className="us-eyeband" d="M114 190 L286 190 L286 232 L114 232 Z" />
-              <path className="us-eye" d="M144 202 L192 211 L192 221 L144 219 Z" />
-              <path className="us-eye" d="M256 202 L208 211 L208 221 L256 219 Z" />
-              <g className="us-headband">
-                <path className="us-hb-red" d="M116 152 C 158 126, 242 126, 284 152 L 284 180 C 242 154, 158 154, 116 180 Z" />
-                <path className="us-hb-white" d="M116 161 C 158 135, 242 135, 284 161 L 284 171 C 242 145, 158 145, 116 171 Z" />
-                <path className="us-hb-blue" d="M116 152 C 133 141, 154 134, 174 130 L 174 158 C 154 162, 133 169, 116 180 Z" />
-                <g className="us-hb-stars">
-                  <path d={STAR_PATH} transform="translate(134 157) scale(0.42)" />
-                  <path d={STAR_PATH} transform="translate(159 148) scale(0.42)" />
-                </g>
-                <path className="us-hb-red" d="M114 163 C 92 177, 82 200, 90 216 C 100 202, 112 189, 120 181 Z" />
+              {/* hood, lit from the upper left */}
+              <circle className="us-hood" cx="200" cy="200" r="104" />
+
+              {/* the knot and its two tails, tied off to the left */}
+              <g className="us-knotgrp">
+                <path className="us-knot" d="M112 176 C 88 178, 72 192, 74 212 C 88 200, 100 190, 114 186 Z" />
+                <path className="us-knot" d="M110 192 C 90 206, 80 230, 88 248 C 96 232, 108 216, 118 206 Z" />
+                <path className="us-knot-hi" d="M112 176 C 96 180, 84 188, 78 198 C 90 190, 102 184, 114 182 Z" />
               </g>
+
+              {/* the face band follows the curve of the head — a straight
+                  rectangle is what made the first version look pasted on */}
+              <path
+                className="us-eyeband"
+                d="M100 198 C 134 190, 266 190, 300 198 C 298 218, 296 232, 292 244 C 250 252, 150 252, 108 244 C 104 232, 102 218, 100 198 Z"
+              />
+
+              {/* eyes: angled almonds, glaring inward */}
+              <path className="us-eye" d="M128 208 C 148 210, 172 216, 188 224 C 172 232, 146 232, 126 228 C 125 220, 126 213, 128 208 Z" />
+              <path className="us-eye" d="M272 208 C 252 210, 228 216, 212 224 C 228 232, 254 232, 274 228 C 275 220, 274 213, 272 208 Z" />
+
+              {/* stars-and-stripes headband across the brow */}
+              <g className="us-headband">
+                <path className="us-hb-red" d="M100 190 C 134 160, 266 160, 300 190 L 300 202 C 266 174, 134 174, 100 202 Z" />
+                <path className="us-hb-white" d="M101 184 C 134 156, 266 156, 299 184 L 299 191 C 266 164, 134 164, 101 191 Z" />
+                <path className="us-hb-blue" d="M100 190 C 116 178, 136 170, 158 165 L 158 180 C 136 186, 116 194, 100 202 Z" />
+                <g className="us-hb-stars">
+                  <path d={STAR_PATH} transform="translate(118 186) scale(0.4)" />
+                  <path d={STAR_PATH} transform="translate(142 176) scale(0.4)" />
+                </g>
+              </g>
+
+              {/* a hairline of light along the top of the hood */}
+              <path className="us-hood-hi" d="M120 138 C 150 112, 250 112, 280 138 C 246 122, 154 122, 120 138 Z" />
             </g>
             </g>
 
@@ -206,6 +231,13 @@ function PatriotDefs() {
         </radialGradient>
 
         {/* bevel: light along the top edge, gone by halfway down */}
+        {/* the hood is not flat black: it has a lit side */}
+        <radialGradient id="us-hoodfill" cx="34%" cy="26%" r="86%">
+          <stop offset="0%" stopColor="#333349" />
+          <stop offset="46%" stopColor="#1b1b28" />
+          <stop offset="100%" stopColor="#0b0b12" />
+        </radialGradient>
+
         <linearGradient id="us-bevel" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
           <stop offset="42%" stopColor="#ffffff" stopOpacity="0.08" />
