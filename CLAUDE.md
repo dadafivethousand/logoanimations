@@ -39,8 +39,8 @@ bar) needs a frozen value there. Same for `prefers-reduced-motion`.
 
 Same rule as the sibling repo: the compositions sit next to each other on one
 feed, so **give each theme its own colour story.** Samurai is washi cream and
-vermilion; Robotics is graphite, steel and green; Pirates is teal night, amber
-moon and gold. Brand red `#e4002b` is the
+vermilion; Robotics is graphite, steel and green; Pirates is a light stage with
+the brand's own colours. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
@@ -129,6 +129,13 @@ Hard-won details, don't relearn them:
   deck as three bands and every seam read as a hard edge straight through the
   composition. A single volume — water with light falling through it — has depth
   for free. If a theme needs a horizon, hide it behind fog or a gradient falloff.
+- **Don't recolour the mark without a reason.** Pirates spent several passes
+  rendering the lockup in gold, carried over from a discarded treasure concept —
+  the user's question was simply "why are you using golden?". Gold is not a Code
+  Ninjas colour. If a theme's material would overwrite the brand's own blue
+  "CODE" and black hood, ask whether the background can carry the theme instead.
+- **Black gear on a black hood is invisible.** Anything worn on the mark needs a
+  rim light or a lighter tone to separate it (see `.pc-patch`, `.pc-strap`).
 - **Dressing the mark: measure, don't eyeball.** Pirates hangs a tricorn,
   eyepatch and earring on the ninja. Their positions are percentages of the mark
   box read off the artwork's pixels (head `left 32.7% top 0% w 29.3% h 46.3%`,

@@ -48,11 +48,11 @@ stone reflection.
 **Robotics** — the mark milled from brushed aluminium with an anodized red edge,
 bolted to a mounting plate, PCB traces running current into it, HUD frame.
 
-**Pirates** — the ninja turned pirate: a tricorn drops onto the crown, an
-eyepatch snaps over one eye and a gold hoop lands at his jaw, the mark itself in
-salvaged gold. Behind him, a moonlit sea with a black galleon crossing the moon.
-The gear is placed off head bounds measured from the artwork's own pixels, so it
-lands on the head rather than near it.
+**Pirates** — the logo as a pirate ninja and nothing else: a tricorn drops onto
+the crown, an eyepatch snaps over one eye, a hoop lands at his jaw. No scene —
+a lit stage, so all the attention is on the mark, which keeps its own colours
+(blue CODE, black hood). The gear is placed off head bounds measured from the
+artwork's own pixels, so it lands on the head rather than near it.
 
 ## Adding one
 
