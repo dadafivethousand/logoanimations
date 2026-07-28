@@ -58,12 +58,30 @@ export default function Bjj({
 
         <div className="bj-patch">
           <svg className="bj-patchsvg" viewBox="0 0 600 430" aria-hidden>
+            <defs>
+              <clipPath id="bj-faceclip">
+                <rect x="16" y="16" width="568" height="398" rx="30" />
+              </clipPath>
+            </defs>
+
+            {/* the side wall: a patch is a few millimetres thick, and the sliver
+                of edge showing beneath it is what gives it that thickness */}
+            <rect className="bj-edge" x="16" y="22" width="568" height="398" rx="30" />
+
             {/* the backing, and its twill */}
             <rect className="bj-face" x="16" y="16" width="568" height="398" rx="30" />
             <rect className="bj-twill" x="16" y="16" width="568" height="398" rx="30" />
 
+            {/* the raised border throws a shadow onto the face inside it */}
+            <g clipPath="url(#bj-faceclip)">
+              <rect className="bj-inner" x="16" y="16" width="568" height="398" rx="30" />
+            </g>
+
             {/* merrowed border: satin stitch worked around the rim */}
             <rect className="bj-merrow" x="16" y="16" width="568" height="398" rx="30" />
+            {/* and the roll of it: lit along the top, shaded underneath, which is
+                what turns a flat band into a bead of thread */}
+            <rect className="bj-merrow-round" x="16" y="16" width="568" height="398" rx="30" />
 
             {/* the running stitch that holds it to the gi */}
             <rect className="bj-tack" x="46" y="46" width="508" height="338" rx="18" />
@@ -106,7 +124,9 @@ function BjjDefs() {
         </pattern>
 
         {/* ...and for the merrowed border, which is the same stitch worked
-            around the rim, in brand red */}
+            around the rim. Charcoal thread rather than red — a dark merrow is
+            what most academy patches actually use, and it stops the border
+            competing with the artwork. */}
         <pattern
           id="bj-merrowfill"
           patternUnits="userSpaceOnUse"
@@ -114,10 +134,18 @@ function BjjDefs() {
           height="7"
           patternTransform="rotate(38)"
         >
-          <rect width="7" height="7" fill="#a80020" />
-          <rect width="3" height="7" fill="#e4002b" />
-          <rect x="3" width="1" height="7" fill="#780016" />
+          <rect width="7" height="7" fill="#26262b" />
+          <rect width="3" height="7" fill="#3b3b43" />
+          <rect x="3" width="1" height="7" fill="#101013" />
         </pattern>
+
+        {/* the cross-section of the rolled edge: lit on top, shaded beneath */}
+        <linearGradient id="bj-round" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.42" />
+          <stop offset="34%" stopColor="#ffffff" stopOpacity="0.06" />
+          <stop offset="62%" stopColor="#000000" stopOpacity="0.14" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0.5" />
+        </linearGradient>
 
         {/* the patch's backing cloth, woven on the diagonal */}
         <pattern
