@@ -147,6 +147,11 @@ Hard-won details, don't relearn them:
   structure and let CSS interpolate `d` (Rocky's glove → head: eight anchors,
   two sets of radii, Catmull-Rom to cubics — generate them, don't hand-draw two
   paths and hope they match). Cross-fading two images instead reads as a cut.
+- **Embroidery = ridges + fur + a dent.** Filling type with a flat colour reads
+  as printed ink. Satin stitch is threads laid side by side across each stroke,
+  so fill the text with a rotated line `<pattern>`, displace the edges a little
+  (~2 units) so they are not razor-straight, and give it a shadow below plus a
+  lit top edge so it sits proud of the cloth (Bjj's `#bj-satin` / `#bj-thread`).
 - **Dressing the mark: measure, don't eyeball.** Pirates hangs a tricorn,
   eyepatch and earring on the ninja. Their positions are percentages of the mark
   box read off the artwork's pixels (head `left 32.7% top 0% w 29.3% h 46.3%`,

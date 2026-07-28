@@ -17,7 +17,7 @@
   --safe-y: 4.7vh;
 
   /* the one knob the composition scales from */
-  --mark-w: 52vw;
+  --mark-w: 64vw;
 
   position: absolute;
   inset: 0;
@@ -68,7 +68,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.55;
+  opacity: 0.7;
   mix-blend-mode: multiply;
   background-image:
     repeating-linear-gradient(
@@ -96,7 +96,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.5;
   mix-blend-mode: multiply;
   background: repeating-linear-gradient(
     99deg,
@@ -110,60 +110,13 @@
 }
 
 /* ====================================================================
-   THE JACKET — two lapels down to the waist
-   ==================================================================== */
-
-.bj-jacket {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 100%;
-  z-index: 5;
-}
-.bj-lapel-face {
-  fill: url(#bj-lapelfill);
-}
-.bj-lapel-stitch {
-  stroke: var(--thread);
-  stroke-width: 0.45;
-  stroke-dasharray: 1.6 1.4;
-  fill: none;
-  opacity: 0.85;
-}
-.bj-lapel {
-  opacity: 0;
-  filter: drop-shadow(0 0 1.2vw rgba(90, 80, 62, 0.45));
-}
-.bj-lapel-l {
-  transform: translateX(-8%);
-}
-.bj-lapel-r {
-  transform: translateX(8%);
-}
-.bj-p2 .bj-lapel,
-.bj-p3 .bj-lapel,
-.bj-p4 .bj-lapel {
-  animation: bj-cross 760ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-.bj-lapel-r {
-  animation-delay: 90ms;
-}
-@keyframes bj-cross {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* ====================================================================
    THE MARK — on the chest, inside the V
    ==================================================================== */
 
 .bj-markwrap {
   position: absolute;
   left: 50%;
-  top: 38%;
+  top: 46%;
   width: var(--mark-w);
   transform: translate(-50%, -50%);
   z-index: 20;
@@ -183,6 +136,8 @@
   transform: translateY(1.2vw) scale(0.97);
   transition: opacity 620ms ease, transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+.bj-p2 .bj-mark,
+.bj-p3 .bj-mark,
 .bj-p4 .bj-mark {
   opacity: 1;
   transform: translateY(0) scale(1);
@@ -202,103 +157,43 @@
     drop-shadow(0 0.3vw 0.5vw rgba(90, 80, 62, 0.35));
 }
 
-.bj-type {
-  position: relative;
-  /* WOODBRIDGE is the lockup's second line, not a caption below it */
-  margin-top: 0.9vw;
-  text-align: center;
-}
-
-.bj-caption {
-  font-size: 2.6vw;
-  font-weight: 900;
-  letter-spacing: 0.34em;
-  text-indent: 0.34em;
-  color: #4a4438;
-  opacity: 0;
-  transform: translateY(0.7vw);
-  transition: opacity 600ms 160ms ease, transform 720ms 160ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.bj-p4 .bj-caption {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 /* ====================================================================
-   THE BELT — cinched across the waist
+   WOODBRIDGE — embroidered into the cloth
    ==================================================================== */
 
-.bj-belt {
-  position: absolute;
-  left: -4%;
-  right: -4%;
-  top: 60%;
-  height: 34%;
-  z-index: 24;
-}
-.bj-belt svg {
-  width: 100%;
-  height: 100%;
+.bj-type {
+  position: relative;
   display: block;
-  filter: drop-shadow(0 0.5vw 0.9vw rgba(70, 60, 44, 0.55));
+  /* WOODBRIDGE is the lockup's second line, not a caption below it */
+  margin-top: 1.2vw;
+  width: 100%;
+  height: auto;
+  overflow: visible;
 }
 
-.bj-leather {
-  fill: url(#bj-belt);
-}
-.bj-leather-hi {
-  fill: url(#bj-belt-hi);
-}
-.bj-stitch {
-  stroke: rgba(226, 226, 236, 0.26);
-  stroke-width: 2;
-  stroke-dasharray: 7 6;
-  fill: none;
-}
-.bj-bar {
-  fill: url(#bj-barfill);
-}
-/* the knot sits proud of the tails, so it casts onto them */
-.bj-knot-shade {
-  fill: rgba(0, 4, 8, 0.4);
-  filter: blur(3px);
-}
-.bj-tails {
-  filter: drop-shadow(0 4px 5px rgba(60, 52, 38, 0.5));
+.bj-embroidery {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 46px;
+  font-weight: 900;
+  letter-spacing: 9px;
+  /* the ridges of the satin stitch, not a flat colour */
+  fill: url(#bj-satin);
+  filter: url(#bj-thread);
 }
 
-/* the straps draw in from both sides, so the belt reads as being cinched */
-.bj-strap {
-  opacity: 0;
-  transform: scaleX(0.12);
-  transform-box: fill-box;
-  transform-origin: center;
+/* it is SEWN on, so it appears a stitch at a time rather than fading up. steps()
+   is doing the work here: a smooth wipe reads as a reveal, a stepped one reads
+   as a needle working across the cloth. */
+.bj-type {
+  clip-path: inset(0 100% 0 0);
 }
-.bj-p3 .bj-strap,
-.bj-p4 .bj-strap {
-  animation: bj-cinch 620ms cubic-bezier(0.16, 1, 0.28, 1) forwards;
+.bj-p3 .bj-type,
+.bj-p4 .bj-type {
+  animation: bj-sew 1100ms steps(16) forwards;
 }
-@keyframes bj-cinch {
+@keyframes bj-sew {
   to {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-}
-
-.bj-knot {
-  opacity: 0;
-  transform: scale(0.7);
-  transform-box: fill-box;
-  transform-origin: center top;
-}
-.bj-p3 .bj-knot,
-.bj-p4 .bj-knot {
-  animation: bj-tie 420ms 380ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
-}
-@keyframes bj-tie {
-  to {
-    opacity: 1;
-    transform: scale(1);
+    clip-path: inset(0 0 0 0);
   }
 }
 
@@ -336,13 +231,12 @@
   animation: none !important;
   transition: none !important;
 }
-.bj.is-static .bj-lapel,
-.bj.is-static .bj-strap,
-.bj.is-static .bj-knot,
-.bj.is-static .bj-mark,
-.bj.is-static .bj-caption {
+.bj.is-static .bj-mark {
   opacity: 1;
   transform: none;
+}
+.bj.is-static .bj-type {
+  clip-path: inset(0 0 0 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -352,12 +246,11 @@
     animation: none !important;
     transition: none !important;
   }
-  .bj .bj-lapel,
-  .bj .bj-strap,
-  .bj .bj-knot,
-  .bj .bj-mark,
-  .bj .bj-caption {
+  .bj .bj-mark {
     opacity: 1;
     transform: none;
+  }
+  .bj .bj-type {
+    clip-path: inset(0 0 0 0);
   }
 }

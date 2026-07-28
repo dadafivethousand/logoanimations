@@ -60,8 +60,9 @@ The one theme that uses **no logo file at all** — the ninja is drawn and the
 name is SVG text, so it survives the logo being missing or replaced. (The
 earlier boxing version is parked in `src/Used/`.)
 
-**BJJ** — the frame is a gi: heavy pearl-weave cotton, the two lapels crossing
-down to the waist, a black belt cinched across them, and the mark on the chest.
+**BJJ** — heavy pearl-weave gi cotton, the mark on it, and WOODBRIDGE actually
+embroidered: satin stitch with diagonal thread ridges, furred edges and a dent
+in the cloth, sewn on a stitch at a time.
 
 ## Adding one
 

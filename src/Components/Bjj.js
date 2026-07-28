@@ -1,8 +1,7 @@
-// Bjj.js — the frame IS a gi. Heavy cotton weave, the two lapels crossing down
-// to the waist, a black belt cinched across them, and the mark on the chest.
+// Bjj.js — gi cloth, the mark on it, and WOODBRIDGE embroidered underneath.
 //
-// Genre, not franchise: cotton, lapels and a belt — no academy crest, no
-// federation marks.
+// Genre, not franchise: it is the cloth that carries the theme — no academy
+// crest, no federation marks.
 //
 // THE MARK KEEPS ITS OWN COLOURS. It is drawn as itself — an <img>, unmasked and
 // unrecoloured — so "CODE" stays brand blue and the hood stays black. On bone
@@ -15,8 +14,8 @@ import "../Stylesheets/Bjj.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
-// p1 the cloth · p2 the lapels cross · p3 the belt cinches · p4 the chest mark
-const CUES = [200, 750, 1350, 2050];
+// p1 the cloth · p2 the mark · p3 WOODBRIDGE is sewn on
+const CUES = [200, 800, 1600];
 
 export default function Bjj({
   mode = "animated",
@@ -37,19 +36,6 @@ export default function Bjj({
       <div className="bj-weave" aria-hidden />
       <div className="bj-folds" aria-hidden />
 
-      {/* ---- the jacket: two lapels running from the shoulders down to the
-             waist, where they cross ---- */}
-      <svg className="bj-jacket" viewBox="0 0 100 178" preserveAspectRatio="none" aria-hidden>
-        <g className="bj-lapel bj-lapel-l">
-          <path className="bj-lapel-face" d="M8 -4 L30 -4 L60 118 L44 126 Z" />
-          <path className="bj-lapel-stitch" d="M13 -4 L46 120 M26 -4 L57 116" />
-        </g>
-        <g className="bj-lapel bj-lapel-r">
-          <path className="bj-lapel-face" d="M92 -4 L70 -4 L40 118 L56 126 Z" />
-          <path className="bj-lapel-stitch" d="M87 -4 L54 120 M74 -4 L43 116" />
-        </g>
-      </svg>
-
       {/* ---- the mark, on the chest ---- */}
       <div className="bj-markwrap">
         <div className="bj-markbox">
@@ -57,38 +43,19 @@ export default function Bjj({
             <img className="bj-logo" src={src} alt="Code Ninjas" />
           </div>
         </div>
-        <div className="bj-type">
-          <div className="bj-caption">{caption}</div>
-        </div>
-      </div>
-
-      {/* ---- the belt, cinched across the waist ---- */}
-      <div className="bj-belt" aria-hidden>
-        <svg viewBox="0 0 600 260" preserveAspectRatio="none">
-          <g className="bj-strap">
-            <path className="bj-leather" d="M-20 46 H262 V112 H-20 Z" />
-            <path className="bj-leather" d="M338 46 H620 V112 H338 Z" />
-            <path className="bj-stitch" d="M-20 58 H262 M-20 100 H262 M338 58 H620 M338 100 H620" />
-          </g>
-
-          <g className="bj-knot">
-            {/* the tails hang from UNDER the knot: drawn first, with the knot
-                lapping over where they leave it */}
-            <g className="bj-tails">
-              <path className="bj-leather" d="M262 110 L298 110 L288 244 L246 244 Z" />
-              <path className="bj-stitch" d="M270 118 L258 236 M292 118 L282 236" />
-              <path className="bj-leather" d="M302 110 L338 110 L352 244 L312 244 Z" />
-              {/* the red bar a black belt carries, without the rank stripes */}
-              <path className="bj-bar" d="M308 180 L344 180 L352 244 L316 244 Z" />
-            </g>
-
-            <path
-              className="bj-leather-hi"
-              d="M250 30 h100 a14 14 0 0 1 14 14 v68 a14 14 0 0 1 -14 14 h-100 a14 14 0 0 1 -14 -14 v-68 a14 14 0 0 1 14 -14 z"
-            />
-            <path className="bj-stitch" d="M252 44 V112 M348 44 V112" />
-            <path className="bj-knot-shade" d="M246 126 H354 V142 H246 Z" />
-          </g>
+        {/* WOODBRIDGE is embroidered, not set: satin stitch is a solid thread
+            fill with fine diagonal ridges running across it, so the letters are
+            filled with a rotated line pattern rather than a flat colour, sat in
+            a dent in the cloth and lit along their top edge. */}
+        <svg className="bj-type" viewBox="0 0 600 90" aria-label={caption}>
+          <text
+            className="bj-embroidery"
+            x="300"
+            y="58"
+            textAnchor="middle"
+          >
+            {caption}
+          </text>
         </svg>
       </div>
 
@@ -102,30 +69,39 @@ function BjjDefs() {
   return (
     <svg className="bj-defs" aria-hidden focusable="false">
       <defs>
-        {/* belt cotton is not flat: it takes light along the top edge */}
-        <linearGradient id="bj-belt" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#33333f" />
-          <stop offset="34%" stopColor="#1a1a22" />
-          <stop offset="72%" stopColor="#101016" />
-          <stop offset="100%" stopColor="#24242e" />
-        </linearGradient>
-        <linearGradient id="bj-belt-hi" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#3d3d4a" />
-          <stop offset="40%" stopColor="#20202a" />
-          <stop offset="100%" stopColor="#141419" />
-        </linearGradient>
-        <linearGradient id="bj-barfill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#c02234" />
-          <stop offset="60%" stopColor="#8f101f" />
-          <stop offset="100%" stopColor="#6d0b17" />
-        </linearGradient>
-        {/* the lapel is a doubled-over strip, so it is a shade darker than the
-            body of the jacket and lit along its inner edge */}
-        <linearGradient id="bj-lapelfill" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#ddd7c8" />
-          <stop offset="40%" stopColor="#f2eee3" />
-          <stop offset="100%" stopColor="#d2cbba" />
-        </linearGradient>
+        {/* Satin stitch: individual threads laid side by side across the width
+            of each stroke. The ridges are what make it read as embroidery — a
+            flat fill just looks like printed ink on cloth. */}
+        <pattern
+          id="bj-satin"
+          patternUnits="userSpaceOnUse"
+          width="5"
+          height="5"
+          patternTransform="rotate(62)"
+        >
+          <rect width="5" height="5" fill="#1e3f63" />
+          <rect width="2.1" height="5" fill="#2f5c8c" />
+          <rect x="2.1" width="0.7" height="5" fill="#12283f" />
+        </pattern>
+
+        {/* the thread sits proud of the cloth: a dent under it, a lit top edge,
+            and the cloth's own shadow pooling at its foot */}
+        <filter id="bj-thread" x="-20%" y="-40%" width="140%" height="200%">
+          {/* thread edges are never razor-straight: a small displacement gives
+              the letters the slight fur of laid floss. Any more than ~2 and it
+              stops being embroidery and starts being illegible. */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="5" result="n" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="1.8"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="d"
+          />
+          <feDropShadow in="d" dx="0" dy="1.6" stdDeviation="1.1" floodColor="#5a5140" floodOpacity="0.75" result="s" />
+          <feDropShadow in="s" dx="0" dy="-0.8" stdDeviation="0.4" floodColor="#ffffff" floodOpacity="0.5" />
+        </filter>
       </defs>
     </svg>
   );
