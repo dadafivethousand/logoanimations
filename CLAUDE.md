@@ -41,7 +41,7 @@ Same rule as the sibling repo: the compositions sit next to each other on one
 feed, so **give each theme its own colour story.** Samurai is washi cream and
 vermilion; Robotics is graphite, steel and green; Pirates is a light stage with
 the brand's own colours; Patriot is Old Glory red, white and blue; BJJ is
-bleached gi cotton. Brand red `#e4002b` is the
+bleached gi cotton; Hulk is cold concrete and gamma green. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
@@ -152,6 +152,10 @@ Hard-won details, don't relearn them:
   so fill the text with a rotated line `<pattern>`, displace the edges a little
   (~2 units) so they are not razor-straight, and give it a shadow below plus a
   lit top edge so it sits proud of the cloth (Bjj's `#bj-satin` / `#bj-thread`).
+- **`pathLength="100"` normalises a set of paths.** When many paths of
+  different lengths have to draw on together (Hulk's cracks), set pathLength on
+  each and one `stroke-dasharray: 100` rule drives them all at the same rate —
+  no measuring, no per-path dash values.
 - **Dressing the mark: measure, don't eyeball.** Pirates hangs a tricorn,
   eyepatch and earring on the ninja. Their positions are percentages of the mark
   box read off the artwork's pixels (head `left 32.7% top 0% w 29.3% h 46.3%`,

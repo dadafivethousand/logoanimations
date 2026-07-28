@@ -65,6 +65,10 @@ merrowed border rolled and lit like a bead of thread, twill face, tack stitching
 round the inside, embroidered artwork and satin-stitched lettering, with the
 cloth puckering where it is tacked down.
 
+**Hulk** — the mark has come through a concrete wall: eleven cracks blast out
+from the point of impact with gamma green pouring up through them, a shake, a
+flash, and dust still hanging in the air.
+
 ## Adding one
 
 One theme = one component in `src/Components/` + one stylesheet in
