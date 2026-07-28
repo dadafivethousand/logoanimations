@@ -41,7 +41,7 @@ Same rule as the sibling repo: the compositions sit next to each other on one
 feed, so **give each theme its own colour story.** Samurai is washi cream and
 vermilion; Robotics is graphite, steel and green; Pirates is a light stage with
 the brand's own colours; Patriot is Old Glory red, white and blue; BJJ is
-tatami slate and gi cotton. Brand red `#e4002b` is the
+bleached gi cotton. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY

@@ -1,22 +1,22 @@
-// Bjj.js — the mark on the mat, with a black belt cinched under it.
+// Bjj.js — the frame IS a gi. Heavy cotton weave, the two lapels crossing down
+// to the waist, a black belt cinched across them, and the mark on the chest.
 //
-// Genre, not franchise: the vocabulary is a tatami mat, gi cotton and a belt —
-// no academy's crest, no federation marks.
+// Genre, not franchise: cotton, lapels and a belt — no academy crest, no
+// federation marks.
 //
 // THE MARK KEEPS ITS OWN COLOURS. It is drawn as itself — an <img>, unmasked and
-// unrecoloured — so "CODE" stays brand blue and the hood stays black. The theme
-// is carried by the mat and the belt.
+// unrecoloured — so "CODE" stays brand blue and the hood stays black. On bone
+// cotton both read without any help.
 //
-// WOODBRIDGE lives INSIDE the mark wrapper, directly after the mark, and the
-// belt follows both: all three are flow siblings, so the name cannot drift away
-// from the logo and the belt always sits under the pair.
+// WOODBRIDGE lives INSIDE the mark wrapper, directly after the mark, so the name
+// cannot drift away from the logo.
 import React from "react";
 import "../Stylesheets/Bjj.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
-// p1 the mat · p2 the mark lands · p3 the belt cinches · p4 the stripes
-const CUES = [200, 750, 1400, 2100];
+// p1 the cloth · p2 the lapels cross · p3 the belt cinches · p4 the chest mark
+const CUES = [200, 750, 1350, 2050];
 
 export default function Bjj({
   mode = "animated",
@@ -32,63 +32,64 @@ export default function Bjj({
     <div className={`bj bj-p${phase} ${isStatic ? "is-static" : ""}`} style={logoVar} key={run}>
       <BjjDefs />
 
-      {/* ---- the mat ---- */}
-      <div className="bj-mat" aria-hidden />
+      {/* ---- the cloth ---- */}
+      <div className="bj-cloth" aria-hidden />
       <div className="bj-weave" aria-hidden />
-      <div className="bj-seams" aria-hidden />
-      <div className="bj-light" aria-hidden />
+      <div className="bj-folds" aria-hidden />
 
-      {/* ---- mark, name, belt: one lockup ---- */}
+      {/* ---- the jacket: two lapels running from the shoulders down to the
+             waist, where they cross ---- */}
+      <svg className="bj-jacket" viewBox="0 0 100 178" preserveAspectRatio="none" aria-hidden>
+        <g className="bj-lapel bj-lapel-l">
+          <path className="bj-lapel-face" d="M8 -4 L30 -4 L60 118 L44 126 Z" />
+          <path className="bj-lapel-stitch" d="M13 -4 L46 120 M26 -4 L57 116" />
+        </g>
+        <g className="bj-lapel bj-lapel-r">
+          <path className="bj-lapel-face" d="M92 -4 L70 -4 L40 118 L56 126 Z" />
+          <path className="bj-lapel-stitch" d="M87 -4 L54 120 M74 -4 L43 116" />
+        </g>
+      </svg>
+
+      {/* ---- the mark, on the chest ---- */}
       <div className="bj-markwrap">
         <div className="bj-markbox">
-          <div className="bj-shadow" aria-hidden />
           <div className="bj-mark">
             <img className="bj-logo" src={src} alt="Code Ninjas" />
           </div>
         </div>
-
         <div className="bj-type">
           <div className="bj-caption">{caption}</div>
         </div>
+      </div>
 
-        {/* the belt is the rule: it cinches shut from both sides */}
-        <div className="bj-belt" aria-hidden>
-          <svg viewBox="0 0 600 230" preserveAspectRatio="xMidYMid meet">
-            {/* the two straps, running off the frame */}
-            <g className="bj-strap">
-              <path className="bj-leather" d="M-20 40 H262 V98 H-20 Z" />
-              <path className="bj-leather" d="M338 40 H620 V98 H338 Z" />
-              <path className="bj-stitch" d="M-20 51 H262 M-20 87 H262 M338 51 H620 M338 87 H620" />
+      {/* ---- the belt, cinched across the waist ---- */}
+      <div className="bj-belt" aria-hidden>
+        <svg viewBox="0 0 600 260" preserveAspectRatio="none">
+          <g className="bj-strap">
+            <path className="bj-leather" d="M-20 46 H262 V112 H-20 Z" />
+            <path className="bj-leather" d="M338 46 H620 V112 H338 Z" />
+            <path className="bj-stitch" d="M-20 58 H262 M-20 100 H262 M338 58 H620 M338 100 H620" />
+          </g>
+
+          <g className="bj-knot">
+            {/* the tails hang from UNDER the knot: drawn first, with the knot
+                lapping over where they leave it */}
+            <g className="bj-tails">
+              <path className="bj-leather" d="M262 110 L298 110 L288 244 L246 244 Z" />
+              <path className="bj-stitch" d="M270 118 L258 236 M292 118 L282 236" />
+              <path className="bj-leather" d="M302 110 L338 110 L352 244 L312 244 Z" />
+              {/* the red bar a black belt carries, without the rank stripes */}
+              <path className="bj-bar" d="M308 180 L344 180 L352 244 L316 244 Z" />
             </g>
 
-            <g className="bj-knot">
-              {/* the tails hang from UNDER the knot, so they are drawn first
-                  and the knot laps over where they leave it */}
-              <g className="bj-tails">
-                {/* near tail, plain */}
-                <path className="bj-leather" d="M262 96 L298 96 L288 214 L246 214 Z" />
-                <path className="bj-stitch" d="M270 104 L258 206 M292 104 L282 206" />
-                {/* far tail, carrying the bar */}
-                <path className="bj-leather" d="M302 96 L338 96 L352 214 L312 214 Z" />
-                <path className="bj-bar" d="M309 156 L344 156 L352 214 L316 214 Z" />
-                <g className="bj-stripes">
-                  <rect x="316" y="166" width="7" height="38" style={{ "--i": 0 }} />
-                  <rect x="327" y="166" width="7" height="38" style={{ "--i": 1 }} />
-                  <rect x="338" y="166" width="7" height="38" style={{ "--i": 2 }} />
-                </g>
-              </g>
-
-              {/* the knot itself, lapping over the tails */}
-              <path
-                className="bj-leather-hi"
-                d="M250 26 h100 a14 14 0 0 1 14 14 v58 a14 14 0 0 1 -14 14 h-100 a14 14 0 0 1 -14 -14 v-58 a14 14 0 0 1 14 -14 z"
-              />
-              <path className="bj-stitch" d="M252 40 V98 M348 40 V98" />
-              {/* the shadow the knot throws onto the tails */}
-              <path className="bj-knot-shade" d="M246 112 H354 V126 H246 Z" />
-            </g>
-          </svg>
-        </div>
+            <path
+              className="bj-leather-hi"
+              d="M250 30 h100 a14 14 0 0 1 14 14 v68 a14 14 0 0 1 -14 14 h-100 a14 14 0 0 1 -14 -14 v-68 a14 14 0 0 1 14 -14 z"
+            />
+            <path className="bj-stitch" d="M252 44 V112 M348 44 V112" />
+            <path className="bj-knot-shade" d="M246 126 H354 V142 H246 Z" />
+          </g>
+        </svg>
       </div>
 
       <div className="bj-grain" aria-hidden />
@@ -117,6 +118,13 @@ function BjjDefs() {
           <stop offset="0%" stopColor="#c02234" />
           <stop offset="60%" stopColor="#8f101f" />
           <stop offset="100%" stopColor="#6d0b17" />
+        </linearGradient>
+        {/* the lapel is a doubled-over strip, so it is a shade darker than the
+            body of the jacket and lit along its inner edge */}
+        <linearGradient id="bj-lapelfill" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#ddd7c8" />
+          <stop offset="40%" stopColor="#f2eee3" />
+          <stop offset="100%" stopColor="#d2cbba" />
         </linearGradient>
       </defs>
     </svg>

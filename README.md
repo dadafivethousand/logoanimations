@@ -60,9 +60,8 @@ The one theme that uses **no logo file at all** — the ninja is drawn and the
 name is SVG text, so it survives the logo being missing or replaced. (The
 earlier boxing version is parked in `src/Used/`.)
 
-**BJJ** — the mark on a tatami mat under a single overhead light, with a black
-belt cinched underneath it: the straps draw in from both sides, the knot ties,
-and the rank stripes go on one at a time.
+**BJJ** — the frame is a gi: heavy pearl-weave cotton, the two lapels crossing
+down to the waist, a black belt cinched across them, and the mark on the chest.
 
 ## Adding one
 
