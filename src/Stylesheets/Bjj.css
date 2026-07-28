@@ -1,0 +1,380 @@
+/* Bjj — the mark on the mat, with a black belt cinched under it.
+   Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
+   px is reserved for hairlines that must stay hairlines. */
+
+.bj {
+  /* palette — tatami slate and gi cotton, with the belt's red bar as the only
+     other colour. The mark keeps its own. */
+  --mat: #3f5a68;
+  --mat-hi: #587886;
+  --mat-lo: #22333d;
+  --bone: #e8e6de;
+  --bar: #8f101f;
+  --night: #0a1014;
+
+  /* screen-recording crop: nothing meaningful inside this band */
+  --safe-x: 11.5vw;
+  --safe-y: 4.7vh;
+
+  /* the one knob the composition scales from */
+  --mark-w: 74vw;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--night);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--bone);
+  isolation: isolate;
+}
+
+.bj-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   THE MAT
+   ==================================================================== */
+
+.bj-mat {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    76% 48% at 50% 40%,
+    var(--mat-hi) 0%,
+    var(--mat) 40%,
+    var(--mat-lo) 78%,
+    var(--night) 100%
+  );
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 900ms ease, transform 1600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bj-p1 .bj-mat,
+.bj-p2 .bj-mat,
+.bj-p3 .bj-mat,
+.bj-p4 .bj-mat {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* tatami is woven, so the texture runs BOTH ways at a fine pitch. One direction
+   only reads as corduroy. */
+.bj-weave {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.11) 0 1px,
+      transparent 1px 5px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.16) 0 1px,
+      transparent 1px 5px
+    ),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23w)' opacity='0.5'/></svg>");
+  background-size: auto, auto, 26vw 26vw;
+}
+
+/* the seams between mat panels */
+.bj-seams {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(90deg, transparent 0 49.6%, rgba(0, 0, 0, 0.5) 50%, transparent 50.4% 100%),
+    linear-gradient(0deg, transparent 0 27.6%, rgba(0, 0, 0, 0.45) 28%, transparent 28.4% 100%),
+    linear-gradient(0deg, transparent 0 77.6%, rgba(0, 0, 0, 0.45) 78%, transparent 78.4% 100%);
+  filter: blur(0.06vw);
+}
+
+/* one light over the mat */
+.bj-light {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  width: 130vw;
+  height: 130vw;
+  transform: translate(-50%, -50%) scale(0.92);
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 250, 232, 0.3) 0%,
+    rgba(255, 244, 214, 0.12) 38%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 1100ms ease, transform 1600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bj-p1 .bj-light,
+.bj-p2 .bj-light,
+.bj-p3 .bj-light,
+.bj-p4 .bj-light {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ====================================================================
+   THE LOCKUP — mark, name and belt, welded in flow
+   ==================================================================== */
+
+.bj-markwrap {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: var(--mark-w);
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.bj-markbox {
+  position: relative;
+  width: 100%;
+}
+
+.bj-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -8%;
+  width: 84%;
+  height: 14%;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(0, 10, 16, 0.6), transparent 74%);
+  filter: blur(2vw);
+  opacity: 0;
+  transition: opacity 800ms ease;
+}
+.bj-p2 .bj-shadow,
+.bj-p3 .bj-shadow,
+.bj-p4 .bj-shadow {
+  opacity: 1;
+}
+
+.bj-mark {
+  position: relative;
+  width: 100%;
+  /* measured from the trimmed mark at load, so any logo lands on register */
+  aspect-ratio: var(--logo-aspect, 2.17);
+  opacity: 0;
+  transform: translateY(1.6vw) scale(0.965);
+  transition: opacity 620ms ease, transform 950ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bj-p2 .bj-mark,
+.bj-p3 .bj-mark,
+.bj-p4 .bj-mark {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* the logo, unmodified — lifted off the mat with light rather than recoloured */
+.bj-logo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 -1px 0 rgba(255, 252, 240, 0.55))
+    drop-shadow(0 0.7vw 1.2vw rgba(0, 8, 14, 0.7));
+}
+
+/* ====================================================================
+   THE NAME
+   ==================================================================== */
+
+.bj-type {
+  position: relative;
+  /* WOODBRIDGE is the lockup's second line, not a caption below it */
+  margin-top: 0.9vw;
+  text-align: center;
+}
+
+.bj-caption {
+  font-size: 2.7vw;
+  font-weight: 900;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--bone);
+  text-shadow: 0 0.2vw 0.6vw rgba(0, 8, 14, 0.8);
+  opacity: 0;
+  transform: translateY(0.8vw);
+  transition: opacity 600ms ease, transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bj-p3 .bj-caption,
+.bj-p4 .bj-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ====================================================================
+   THE BELT — the rule under the lockup
+   ==================================================================== */
+
+.bj-belt {
+  position: relative;
+  width: 124%;
+  margin: 2.4vw -12% 0;
+}
+.bj-belt svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0.6vw 0.9vw rgba(0, 8, 14, 0.7));
+}
+
+.bj-leather {
+  fill: url(#bj-belt);
+}
+.bj-leather-hi {
+  fill: url(#bj-belt-hi);
+}
+.bj-stitch {
+  stroke: rgba(226, 226, 236, 0.28);
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+  fill: none;
+}
+.bj-bar {
+  fill: url(#bj-barfill);
+}
+/* the knot sits proud of the tails, so it casts onto them */
+.bj-knot-shade {
+  fill: rgba(0, 4, 8, 0.45);
+  filter: blur(3px);
+}
+.bj-tails {
+  filter: drop-shadow(0 4px 5px rgba(0, 6, 10, 0.6));
+}
+
+/* the straps draw in from both sides, so the belt reads as being cinched */
+.bj-strap {
+  opacity: 0;
+  transform: scaleX(0.12);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.bj-p3 .bj-strap,
+.bj-p4 .bj-strap {
+  animation: bj-cinch 620ms cubic-bezier(0.16, 1, 0.28, 1) forwards;
+}
+@keyframes bj-cinch {
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+.bj-knot {
+  opacity: 0;
+  transform: scale(0.7);
+  transform-box: fill-box;
+  transform-origin: center top;
+}
+.bj-p3 .bj-knot,
+.bj-p4 .bj-knot {
+  animation: bj-tie 420ms 380ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+}
+@keyframes bj-tie {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* the rank stripes go on one at a time, last */
+.bj-stripes rect {
+  fill: var(--bone);
+  opacity: 0;
+}
+.bj-p4 .bj-stripes rect {
+  animation: bj-rank 260ms calc(140ms + var(--i) * 130ms) ease forwards;
+}
+@keyframes bj-rank {
+  to {
+    opacity: 0.95;
+  }
+}
+
+/* ====================================================================
+   GRADE
+   ==================================================================== */
+
+.bj-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
+  background-size: 160px 160px;
+}
+
+.bj-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 41;
+  background: radial-gradient(74% 56% at 50% 42%, transparent 36%, rgba(0, 8, 12, 0.9) 100%);
+}
+
+/* ====================================================================
+   STATIC MODE — the poster: belt tied, stripes on
+   ==================================================================== */
+
+.bj.is-static *,
+.bj.is-static *::before,
+.bj.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.bj.is-static .bj-mark,
+.bj.is-static .bj-caption {
+  opacity: 1;
+  transform: none;
+}
+.bj.is-static .bj-shadow {
+  opacity: 1;
+}
+.bj.is-static .bj-strap,
+.bj.is-static .bj-knot {
+  opacity: 1;
+  transform: none;
+}
+.bj.is-static .bj-stripes rect {
+  opacity: 0.95;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bj *,
+  .bj *::before,
+  .bj *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .bj .bj-mark,
+  .bj .bj-caption {
+    opacity: 1;
+    transform: none;
+  }
+  .bj .bj-shadow {
+    opacity: 1;
+  }
+  .bj .bj-strap,
+  .bj .bj-knot {
+    opacity: 1;
+    transform: none;
+  }
+  .bj .bj-stripes rect {
+    opacity: 0.95;
+  }
+}

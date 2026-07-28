@@ -60,6 +60,10 @@ The one theme that uses **no logo file at all** — the ninja is drawn and the
 name is SVG text, so it survives the logo being missing or replaced. (The
 earlier boxing version is parked in `src/Used/`.)
 
+**BJJ** — the mark on a tatami mat under a single overhead light, with a black
+belt cinched underneath it: the straps draw in from both sides, the knot ties,
+and the rank stripes go on one at a time.
+
 ## Adding one
 
 One theme = one component in `src/Components/` + one stylesheet in
