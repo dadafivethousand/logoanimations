@@ -41,7 +41,7 @@ Same rule as the sibling repo: the compositions sit next to each other on one
 feed, so **give each theme its own colour story.** Samurai is washi cream and
 vermilion; Robotics is graphite, steel and green; Pirates is a light stage with
 the brand's own colours; Patriot is Old Glory red, white and blue; BJJ is
-bleached gi cotton; Hulk is cold concrete and gamma green. Brand red `#e4002b` is the
+bleached gi cotton; Hulk is cold cement and gamma green. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
@@ -130,6 +130,14 @@ Hard-won details, don't relearn them:
   deck as three bands and every seam read as a hard edge straight through the
   composition. A single volume — water with light falling through it — has depth
   for free. If a theme needs a horizon, hide it behind fog or a gradient falloff.
+- **When a theme IS the mark, recolour it BY REGION.** Hulk is the exception to
+  the rule below: "the ninja is a hulk" cannot live on the background, so the
+  lockup is repainted — but through the three region masks, not as one flat
+  tint. The eye band is his skin and takes the brightest green; the hood and
+  "NINJAS" go deep green-black; "CODE" goes mid. One flat green over `--logo`
+  collapses his face into his hood. And **lift the dark region well clear of
+  black** — the first pass ran the hood gradient down to `#081408` and "NINJAS"
+  vanished into the cement behind it.
 - **Don't recolour the mark without a reason.** Pirates spent several passes
   rendering the lockup in gold, carried over from a discarded treasure concept —
   the user's question was simply "why are you using golden?". Gold is not a Code

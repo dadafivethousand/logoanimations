@@ -65,9 +65,10 @@ merrowed border rolled and lit like a bead of thread, twill face, tack stitching
 round the inside, embroidered artwork and satin-stitched lettering, with the
 cloth puckering where it is tacked down.
 
-**Hulk** — the mark has come through a concrete wall: eleven cracks blast out
-from the point of impact with gamma green pouring up through them, a shake, a
-flash, and dust still hanging in the air.
+**Hulk** — a cement slab with the mark cut into it is dropped, and the floor
+splits where it lands: dark fissures running out from the base, rubble, dust and
+a shake. The one theme that recolours the mark, because *the ninja being the
+hulk* is the brief — repainted region by region, brightest green on his skin.
 
 ## Adding one
 
