@@ -65,10 +65,11 @@ merrowed border rolled and lit like a bead of thread, twill face, tack stitching
 round the inside, embroidered artwork and satin-stitched lettering, with the
 cloth puckering where it is tacked down.
 
-**Hulk** — a cement slab with the mark cut into it is dropped, and the floor
-splits where it lands: dark fissures running out from the base, rubble, dust and
-a shake. The one theme that recolours the mark, because *the ninja being the
-hulk* is the brief — repainted region by region, brightest green on his skin.
+**Hulk** — the mark hulks out. It starts small and desaturated, a double-thump
+heartbeat swells it while veins draw up over his skin and a brow ridge comes
+down over his eyes, then it slams to full size and throws a shockwave. Gamma
+green against violet key light. The one theme that recolours the mark, because
+*the ninja being the hulk* is the brief — repainted region by region.
 
 ## Adding one
 

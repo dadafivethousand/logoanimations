@@ -1,51 +1,41 @@
-/* Hulk — a cement slab with the mark cut into it, dropped onto the floor.
+/* Hulk — the mark hulks out, and the screen takes the hit.
    Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
    px is reserved for hairlines that must stay hairlines. */
 
+/* the beams behind him sweep, so the angle has to interpolate rather than
+   step — a bare custom property would jump frame to frame */
+@property --hk-spin {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 .hk {
-  /* palette — cold cement and gamma green. Two greens, not one: the skin is
-     bright and yellow-leaning, the hood is a deep green-black, and it is the
-     gap between them that keeps his face separate from his hood. */
-  --gamma: #8dff3a;
-  --gamma-mid: #4fb31c;
-  --gamma-deep: #235f0e;
-  --skin: #b6f159;
-  --hood: #1d4a24;
-  --hood-lo: #12301a;
-
-  --cement: #56534c;
-  --cement-hi: #6f6b62;
-  --cement-lo: #322f2b;
-  --cement-edge: #211f1c;
-  --room: #101211;
-
-  /* the slab is CAST, not cut: every edge is chipped. One outline shared by the
-     face, the side wall and the grit so they stay one object. */
-  --chip: polygon(
-    3.6% 0.6%, 18% 0.3%, 34% 0.9%, 52% 0.2%, 70% 0.7%, 86% 0.2%, 99.4% 1.4%,
-    99.7% 22%, 99.2% 46%, 99.8% 70%, 99.3% 88%, 95.5% 99.2%, 82% 99.4%,
-    64% 98.8%, 46% 99.5%, 28% 99%, 10% 99.4%, 0.6% 98.6%, 0.3% 74%, 0.9% 50%,
-    0.2% 26%, 0.5% 4.2%
-  );
+  /* palette — gamma green against torn violet. Green and purple IS the Hulk
+     colour story, and no other theme in this repo is using violet, so the two
+     sit apart on the feed. */
+  --gamma: #7dff2e;
+  --gamma-hot: #eaffcb;
+  --gamma-mid: #3d9c22;
+  --gamma-deep: #12500e;
+  --violet: #7a37e0;
+  --violet-deep: #2c0f5c;
+  --void: #06070a;
 
   /* screen-recording crop: nothing meaningful inside this band */
   --safe-x: 11.5vw;
   --safe-y: 4.7vh;
 
-  /* the composition scales from these */
-  --slab-w: 90vw;
-  --slab-top: 35vh;
-  --slab-h: 29vh;
-  /* where the slab meets the floor — the crack origin, and the one number the
-     cracks, the dust, the rubble and the shockwave all share */
-  --impact: 64vh;
+  /* the composition scales from these two */
+  --mark-w: 92vw;
+  --mark-y: 46vh;
 
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: var(--room);
+  background: var(--void);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  color: #e8f3dd;
+  color: var(--gamma-hot);
   isolation: isolate;
 }
 
@@ -57,250 +47,257 @@
 }
 
 /* ====================================================================
-   THE ROOM
+   THE SPACE — violet key from the upper left, gamma bounce from below
    ==================================================================== */
 
-/* back wall, falling off into the dark */
-.hk-room {
+.hk-void {
   position: absolute;
-  inset: 0 0 55% 0;
-  background: radial-gradient(70% 90% at 50% 100%, #2b2f2b 0%, #191c1a 52%, var(--room) 100%);
-}
-
-/* the floor: a plane, not a band. The light pools where the slab lands, which
-   is what tells you the two things are in the same space. */
-.hk-floor {
-  position: absolute;
-  inset: 45% 0 0 0;
+  inset: 0;
   background:
-    radial-gradient(58% 46% at 50% 34%, rgba(190, 200, 180, 0.16) 0%, transparent 74%),
-    linear-gradient(180deg, #35362f 0%, #4a4a42 22%, #3a3a34 62%, #1e1f1c 100%);
+    radial-gradient(56% 36% at 18% 16%, rgba(122, 55, 224, 0.5) 0%, transparent 72%),
+    radial-gradient(46% 26% at 88% 62%, rgba(122, 55, 224, 0.32) 0%, transparent 74%),
+    radial-gradient(64% 40% at 64% 90%, rgba(61, 156, 34, 0.26) 0%, transparent 74%),
+    radial-gradient(90% 60% at 50% 46%, #12161c 0%, #090b10 52%, var(--void) 100%);
 }
 
-/* aggregate — cement is stone in paste, so the floor has to be speckled. Flat
-   grey reads as cardboard. */
-.hk-aggregate {
+/* gamma raking past him. Sized well beyond the frame so the beams read as
+   parallel shafts near the middle rather than as a pinwheel. */
+.hk-rays {
   position: absolute;
-  inset: 45% 0 0 0;
+  left: 50%;
+  top: var(--mark-y);
+  width: 320vw;
+  height: 320vw;
+  margin: -160vw 0 0 -160vw;
+  background: repeating-conic-gradient(
+    from var(--hk-spin),
+    rgba(125, 255, 46, 0.075) 0deg 2.2deg,
+    transparent 2.4deg 13deg
+  );
+  -webkit-mask-image: radial-gradient(closest-side, transparent 6%, #000 26%, transparent 62%);
+  mask-image: radial-gradient(closest-side, transparent 6%, #000 26%, transparent 62%);
+  opacity: 0;
+  transition: opacity 900ms ease;
+  animation: hk-spin 52s linear infinite;
   pointer-events: none;
-  opacity: 0.55;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='a'><feTurbulence type='fractalNoise' baseFrequency='0.42' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23a)'/></svg>");
-  background-size: 34vw 34vw;
+}
+@keyframes hk-spin {
+  to { --hk-spin: 360deg; }
+}
+.hk-p2 .hk-rays { opacity: 0.35; }
+.hk-p3 .hk-rays,
+.hk-p4 .hk-rays { opacity: 0.7; }
+
+/* the gamma building up behind him */
+.hk-bloom {
+  position: absolute;
+  left: 50%;
+  top: var(--mark-y);
+  width: 150vw;
+  height: 150vw;
+  margin: -75vw 0 0 -75vw;
+  background: radial-gradient(
+    closest-side,
+    rgba(125, 255, 46, 0.42) 0%,
+    rgba(61, 156, 34, 0.2) 34%,
+    rgba(44, 15, 92, 0.22) 58%,
+    transparent 76%
+  );
+  opacity: 0;
+  transform: scale(0.5);
+  pointer-events: none;
+}
+.hk-p2 .hk-bloom {
+  animation: hk-bloom-beat 600ms cubic-bezier(0.3, 0, 0.2, 1) 2 forwards;
+}
+@keyframes hk-bloom-beat {
+  0% { opacity: 0.16; transform: scale(0.52); }
+  22% { opacity: 0.5; transform: scale(0.74); }
+  44% { opacity: 0.24; transform: scale(0.62); }
+  62% { opacity: 0.62; transform: scale(0.84); }
+  100% { opacity: 0.34; transform: scale(0.72); }
+}
+.hk-p3 .hk-bloom {
+  animation: hk-bloom-burst 900ms cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
+}
+@keyframes hk-bloom-burst {
+  0% { opacity: 0.34; transform: scale(0.72); }
+  18% { opacity: 1; transform: scale(1.12); }
+  100% { opacity: 0.6; transform: scale(1); }
+}
+.hk-p4 .hk-bloom {
+  opacity: 0.6;
+  transform: scale(1);
+  animation: hk-bloom-breathe 3400ms ease-in-out infinite;
+}
+@keyframes hk-bloom-breathe {
+  0%, 100% { opacity: 0.54; transform: scale(0.98); }
+  50% { opacity: 0.68; transform: scale(1.03); }
 }
 
-/* everything the landing rattles sits in here, so one animation shakes the
-   slab, the cracks and the dust together rather than three that can drift */
+/* gamma pooling below him — without it the lockup floats in an empty frame
+   and the bottom third of the composition is dead */
+.hk-pool {
+  position: absolute;
+  left: 50%;
+  top: 74vh;
+  width: 170vw;
+  height: 46vh;
+  margin-left: -85vw;
+  background: radial-gradient(
+    closest-side,
+    rgba(125, 255, 46, 0.3) 0%,
+    rgba(61, 156, 34, 0.14) 42%,
+    transparent 74%
+  );
+  opacity: 0;
+  transition: opacity 900ms ease;
+  pointer-events: none;
+}
+.hk-p2 .hk-pool { opacity: 0.5; }
+.hk-p3 .hk-pool,
+.hk-p4 .hk-pool { opacity: 1; }
+
+/* dust hanging in the light */
+.hk-motes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1200ms ease;
+  pointer-events: none;
+}
+.hk-p2 .hk-motes { opacity: 0.5; }
+.hk-p3 .hk-motes,
+.hk-p4 .hk-motes { opacity: 1; }
+.hk-motes span {
+  position: absolute;
+  bottom: -4vw;
+  width: calc(var(--sc) * 1.1vw);
+  height: calc(var(--sc) * 1.1vw);
+  border-radius: 50%;
+  background: rgba(190, 255, 140, 0.75);
+  filter: blur(0.22vw);
+  animation: hk-mote var(--du) linear var(--dl) infinite;
+}
+@keyframes hk-mote {
+  0% { transform: translate(0, 0); opacity: 0; }
+  12% { opacity: 0.7; }
+  80% { opacity: 0.5; }
+  100% { transform: translate(var(--dx), -104vh); opacity: 0; }
+}
+
+/* ====================================================================
+   THE HIT — the scene rattles inside here
+   ==================================================================== */
+
 .hk-shake {
   position: absolute;
   inset: 0;
-  /* the slab is lying on a floor we are looking slightly down at, so it needs
-     real perspective — face-on it reads as a sign hung on a wall */
-  perspective: 150vh;
-  perspective-origin: 50% 22%;
 }
 .hk-p3 .hk-shake {
-  animation: hk-shake 420ms cubic-bezier(0.3, 0, 0.2, 1) 1;
+  animation: hk-shake 460ms cubic-bezier(0.3, 0, 0.2, 1) 1;
 }
 @keyframes hk-shake {
   0% { transform: translate3d(0, 0, 0); }
-  8% { transform: translate3d(-1.6vw, 1.1vw, 0); }
-  18% { transform: translate3d(1.4vw, -0.8vw, 0); }
-  30% { transform: translate3d(-1vw, 0.6vw, 0); }
-  44% { transform: translate3d(0.7vw, -0.4vw, 0); }
-  60% { transform: translate3d(-0.4vw, 0.3vw, 0); }
-  78% { transform: translate3d(0.2vw, -0.15vw, 0); }
+  6% { transform: translate3d(-2.2vw, 1.4vw, 0); }
+  16% { transform: translate3d(1.9vw, -1.1vw, 0); }
+  28% { transform: translate3d(-1.4vw, 0.8vw, 0); }
+  42% { transform: translate3d(1vw, -0.6vw, 0); }
+  58% { transform: translate3d(-0.6vw, 0.4vw, 0); }
+  76% { transform: translate3d(0.3vw, -0.2vw, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
 
 /* ====================================================================
-   THE FLOOR SPLITS — and the cracks are NOT green
+   THE TRANSFORMATION
    ==================================================================== */
 
-.hk-cracks {
+/* ONE property carries the change: everything below is painted at full gamma
+   from the start, and p1 simply holds the colour out of it. Cross-fading two
+   colourways instead reads as a dissolve rather than something happening
+   to him. */
+.hk-stage {
   position: absolute;
-  left: 50%;
-  top: var(--impact);
-  width: 170vw;
-  height: 170vw;
-  /* squashed, so the cracks lie flat ON the floor instead of standing up
-     against it like a decal */
-  transform: translate(-50%, -50%) scaleY(0.42);
-  overflow: visible;
-  filter: url(#hk-chip);
-  pointer-events: none;
+  inset: 0;
+  transform-origin: 50% var(--mark-y);
+  transform: scale(0.82);
+  filter: saturate(0.1) brightness(0.5) contrast(1.1);
+  transition: filter 1000ms ease;
+}
+.hk-p2 .hk-stage {
+  filter: saturate(1) brightness(1) contrast(1);
+  animation: hk-swell 1200ms cubic-bezier(0.4, 0, 0.3, 1) forwards;
+}
+/* a real heartbeat is a double thump, not a sine — lub, dub, and a bigger one
+   each time as it gets away from him */
+@keyframes hk-swell {
+  0% { transform: scale(0.82); }
+  12% { transform: scale(0.89); }
+  20% { transform: scale(0.855); }
+  30% { transform: scale(0.925); }
+  40% { transform: scale(0.875); }
+  56% { transform: scale(0.955); }
+  68% { transform: scale(0.905); }
+  84% { transform: scale(0.985); }
+  100% { transform: scale(0.95); }
 }
 
-/* the fissure itself: a dark line, because that is what a split in cement is */
-.hk-fissure path {
-  fill: none;
-  stroke: #14150f;
-  stroke-width: 3.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.92;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
+.hk-p3 .hk-stage,
+.hk-p4 .hk-stage {
+  filter: none;
+  transform: scale(1);
 }
-
-/* freshly broken cement is PALE inside — the weathered surface is grey, the
-   exposed core is nearly white. A pale edge alongside the dark line is what
-   makes it read as broken rather than drawn on. */
-.hk-fresh path {
-  fill: none;
-  stroke: #cfcbbc;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  opacity: 0.5;
-  transform: translate(1.6px, 2.4px);
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
+.hk-p3 .hk-stage {
+  animation: hk-slam 560ms cubic-bezier(0.15, 1.3, 0.35, 1) 1;
 }
-
-/* pathLength="100" on every path means one rule blasts them all outward at the
-   same rate, whatever their real lengths */
-.hk-p3 .hk-fissure path,
-.hk-p4 .hk-fissure path,
-.hk-p3 .hk-fresh path,
-.hk-p4 .hk-fresh path {
-  animation: hk-split 460ms cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-  animation-delay: calc(var(--i) * 22ms);
+@keyframes hk-slam {
+  0% { transform: scale(0.95); }
+  22% { transform: scale(1.13); }
+  100% { transform: scale(1); }
 }
-@keyframes hk-split {
-  to { stroke-dashoffset: 0; }
+/* he does not go still afterwards */
+.hk-p4 .hk-stage {
+  animation: hk-breathe 3400ms ease-in-out infinite;
+}
+@keyframes hk-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.016); }
 }
 
 /* ====================================================================
-   THE SLAB
+   THE MARK
    ==================================================================== */
 
-.hk-slab {
+/* WOODBRIDGE is a flow sibling of the mark in here — never positioned on its
+   own, or it drifts down the frame the moment anything else moves */
+.hk-markwrap {
   position: absolute;
   left: 50%;
-  top: var(--slab-top);
-  width: var(--slab-w);
-  height: var(--slab-h);
-  margin-left: calc(var(--slab-w) / -2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2vw;
-  padding: 4vw 5vw;
-  /* the slab is a mass: it sits in its own shadow on the floor */
-  filter:
-    drop-shadow(0 1.4vw 0.8vw rgba(0, 0, 0, 0.7))
-    drop-shadow(0 5vw 6vw rgba(0, 0, 0, 0.6));
-  /* --rest is the transform it settles into: leaned back on the floor plane.
-     Every keyframe composes on top of it, so the tilt can never be dropped by
-     an animation that only means to move the slab. */
-  --rest: rotateX(11deg) rotateZ(-0.8deg);
-  transform: translate3d(0, -130vh, 0) rotate(-2.5deg);
-  transform-style: preserve-3d;
+  top: var(--mark-y);
+  width: var(--mark-w);
+  transform: translate(-50%, -50%);
 }
-
-/* the fall. A hard ease-IN: it has to accelerate, because a slab that arrives
-   at constant speed reads as a slide rather than a drop. */
-.hk-p2 .hk-slab {
-  animation: hk-drop 520ms cubic-bezier(0.55, 0, 0.85, 0.35) forwards;
-}
-@keyframes hk-drop {
-  from { transform: translate3d(0, -130vh, 0) rotate(-2.5deg); }
-  to { transform: translate3d(0, 0, 0) var(--rest); }
-}
-
-.hk-p3 .hk-slab,
-.hk-p4 .hk-slab {
-  transform: var(--rest);
-}
-/* it lands hard enough to bed in and rock back — without this the slab stops
-   dead and the impact belongs to nothing */
-.hk-p3 .hk-slab {
-  animation: hk-land 460ms cubic-bezier(0.2, 1.1, 0.35, 1) 1;
-}
-@keyframes hk-land {
-  0% { transform: translate3d(0, -2.5vw, 0) rotateX(3deg) scale(1.03, 0.9); }
-  40% { transform: translate3d(0, 1.1vw, 0) rotateX(15deg) scale(1.02, 0.96); }
-  70% { transform: translate3d(0, -0.4vw, 0) rotateX(9deg) scale(0.995, 1.01); }
-  100% { transform: var(--rest); }
-}
-
-/* the slab's thickness. A block of cement is DEEP — a hairline of edge reads as
-   card stock, so the side wall is a substantial band below the face and it is
-   the darkest thing in the frame. */
-.hk-slab-edge {
-  position: absolute;
-  inset: 3vw -1.4vw -6vw;
-  clip-path: var(--chip);
-  background:
-    linear-gradient(180deg, #47443e 0%, var(--cement-lo) 40%, var(--cement-edge) 100%);
-  z-index: 0;
-}
-/* the cast texture carries round onto the side wall too */
-.hk-slab-edge::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><filter id='e'><feTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='150' height='150' filter='url(%23e)'/></svg>");
-  background-size: 26vw 26vw;
-}
-
-/* the face, lit from above left and dished slightly at the edges */
-.hk-slab-face {
-  position: absolute;
-  inset: 0;
-  clip-path: var(--chip);
-  background:
-    radial-gradient(120% 90% at 26% 8%, rgba(255, 255, 255, 0.13) 0%, transparent 58%),
-    radial-gradient(140% 120% at 50% 50%, transparent 52%, rgba(0, 0, 0, 0.42) 100%),
-    linear-gradient(168deg, var(--cement-hi) 0%, var(--cement) 44%, #55534c 100%);
-  box-shadow:
-    inset 0 0.25vw 0 rgba(255, 255, 255, 0.35),
-    inset 0 -0.4vw 0.6vw rgba(0, 0, 0, 0.45);
-  z-index: 1;
-}
-
-/* aggregate again at slab scale, plus the pitting a cast face always has */
-.hk-slab-grit {
-  position: absolute;
-  inset: 0;
-  clip-path: var(--chip);
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0.6;
-  mix-blend-mode: overlay;
-  background-image:
-    radial-gradient(circle at 18% 62%, rgba(0, 0, 0, 0.5) 0 0.5vw, transparent 0.6vw),
-    radial-gradient(circle at 71% 26%, rgba(0, 0, 0, 0.42) 0 0.35vw, transparent 0.45vw),
-    radial-gradient(circle at 88% 74%, rgba(0, 0, 0, 0.45) 0 0.42vw, transparent 0.52vw),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='150' height='150' filter='url(%23g)'/></svg>");
-  background-size: auto, auto, auto, 30vw 30vw;
-}
-
-/* ====================================================================
-   THE MARK — the ninja IS the hulk, repainted region by region
-   ==================================================================== */
 
 .hk-markbox {
   position: relative;
-  z-index: 3;
-  width: 86%;
+  width: 100%;
 }
 
 .hk-mark {
   position: relative;
   width: 100%;
   aspect-ratio: var(--logo-aspect);
-  /* cut into the slab: a shadow along the top edge and a lit lower lip, which
-     is what an engraved edge does. The chain lives on the WRAPPER — a
+  /* three-point lighting, and the reason the mark reads as a solid body:
+     violet key off the upper left, gamma bounce off the lower right, then the
+     glow and the shadow it sits in. The chain lives on the WRAPPER — a
      drop-shadow on an empty masked box casts nothing. */
   filter:
-    drop-shadow(0 -0.12vw 0 rgba(0, 0, 0, 0.85))
-    drop-shadow(0 0.16vw 0 rgba(255, 255, 255, 0.3))
-    drop-shadow(0 0.5vw 0.7vw rgba(0, 0, 0, 0.5))
-    drop-shadow(0 0 1.2vw rgba(141, 255, 58, 0.26));
+    drop-shadow(-0.12vw -0.14vw 0 rgba(150, 92, 255, 0.55))
+    drop-shadow(0.14vw 0.2vw 0 rgba(88, 200, 32, 0.55))
+    drop-shadow(0 0 2.4vw rgba(125, 255, 46, 0.4))
+    drop-shadow(0 0 3.4vw rgba(122, 55, 224, 0.5))
+    drop-shadow(0 1.4vw 1.8vw rgba(0, 0, 0, 0.8));
 }
 
 .hk-layer,
@@ -315,179 +312,292 @@
   mask-position: center;
 }
 
-/* the recess the mark is cut into, offset down-right so the groove has a side */
-.hk-cut {
+/* gamma coming out from behind him, in his own shape rather than as a disc */
+.hk-halo {
   -webkit-mask-image: var(--logo);
   mask-image: var(--logo);
-  background: #0a0c08;
-  transform: translate(0.35vw, 0.45vw);
-  opacity: 0.55;
-  filter: blur(0.25vw);
+  background: var(--gamma);
+  filter: blur(1.4vw);
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 800ms ease;
 }
+.hk-p2 .hk-halo { opacity: 0.22; }
+.hk-p3 .hk-halo,
+.hk-p4 .hk-halo { opacity: 0.38; }
 
-/* hood and "NINJAS": deep green-black, lit from the upper left */
-.hk-hood {
+/* hood and "NINJAS" — his skin, and the surface the veins run over */
+.hk-skin {
   -webkit-mask-image: var(--logo-dark);
   mask-image: var(--logo-dark);
-  background: linear-gradient(158deg, #4b8c42 0%, #2c6330 34%, var(--hood) 74%, var(--hood-lo) 100%);
+  background:
+    radial-gradient(86% 150% at 28% 12%, #a2ff5c 0%, #6ad235 34%, #43a827 66%, #2c7a1a 100%);
 }
 
-/* "CODE": mid gamma green, so the wordmark is hulk too and not left blue */
+/* "CODE" — deeper and cooler, so the lockup has three values instead of one
+   flat green */
 .hk-code {
   -webkit-mask-image: var(--logo-accent);
   mask-image: var(--logo-accent);
-  background: linear-gradient(178deg, var(--gamma) 0%, var(--gamma-mid) 52%, var(--gamma-deep) 100%);
+  background: linear-gradient(172deg, #5ce07d 0%, #2aa851 52%, #17743a 100%);
 }
 
-/* the band across his eyes is his SKIN — the brightest green in the frame, and
-   the whole reason the ninja reads as the hulk rather than as a green logo */
-.hk-skin {
+/* the band at his eyes: blown out. It is the brightest thing in the frame and
+   the only part that is nearly white — that is where the rage reads. */
+.hk-eyes {
   -webkit-mask-image: var(--logo-light);
   mask-image: var(--logo-light);
-  background: radial-gradient(60% 160% at 34% 20%, #d6ff8c 0%, var(--skin) 48%, #63a825 100%);
+  background: radial-gradient(60% 150% at 40% 26%, #ffffff 0%, var(--gamma-hot) 42%, #a5f065 100%);
 }
 
-/* mottling over the whole mark: gamma skin is blotched, and flat green is the
-   thing that makes it look like a colour swap instead of a transformation */
+/* the head is a BALL. The skin gradient runs across the whole lockup, so the
+   roundness has to come from a layer aimed at the head alone — measured off
+   the artwork's pixels (head: left 32.7%, top 0%, w 29.3%, h 46.3%), not
+   eyeballed. */
+.hk-form {
+  -webkit-mask-image: var(--logo-dark);
+  mask-image: var(--logo-dark);
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+  background:
+    radial-gradient(16% 30% at 41% 14%, rgba(255, 255, 255, 0.55) 0%, transparent 60%),
+    radial-gradient(20% 38% at 53% 34%, rgba(10, 46, 6, 0.75) 0%, transparent 72%);
+}
+
+/* the brow ridge, sitting over the band at his eyes */
+.hk-brow {
+  position: absolute;
+  left: 38%;
+  top: 7.5%;
+  width: 24%;
+  height: 14%;
+  overflow: visible;
+  pointer-events: none;
+}
+.hk-brow path {
+  fill: #0f3d0a;
+  opacity: 0;
+  filter: blur(0.24vw);
+  transition: opacity 500ms ease;
+}
+/* it comes down as he changes — the brow arriving IS the scowl arriving */
+.hk-p2 .hk-brow path { opacity: 0.5; }
+.hk-p3 .hk-brow path,
+.hk-p4 .hk-brow path { opacity: 0.85; }
+
+/* --- veins --- */
 .hk-veins {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  /* masked to his SKIN, not to the whole mark: veins across "CODE" or across
+     the band at his eyes would be veins on things that are not skin */
+  -webkit-mask-image: var(--logo-dark);
+  mask-image: var(--logo-dark);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  filter: url(#hk-vein) blur(0.12vw);
+}
+
+.hk-vein-deep path {
+  fill: none;
+  stroke: #14520d;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  opacity: 0.32;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+/* a vein standing proud of the skin catches light along its top — the dark
+   line alone reads as a crack, the lit edge is what makes it a vessel */
+.hk-vein-lit path {
+  fill: none;
+  stroke: #c8ff8e;
+  stroke-width: 0.8;
+  stroke-linecap: round;
+  opacity: 0.28;
+  transform: translate(0, -1.3px);
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+
+/* pathLength="100" on every path: one dash rule drives thirty-odd veins of
+   completely different lengths at the same rate */
+.hk-p2 .hk-vein-deep path,
+.hk-p3 .hk-vein-deep path,
+.hk-p4 .hk-vein-deep path,
+.hk-p2 .hk-vein-lit path,
+.hk-p3 .hk-vein-lit path,
+.hk-p4 .hk-vein-lit path {
+  animation: hk-draw 620ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  animation-delay: calc(var(--i) * 17ms);
+}
+@keyframes hk-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.hk-p4 .hk-veins {
+  animation: hk-vein-pulse 3400ms ease-in-out infinite;
+}
+@keyframes hk-vein-pulse {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+
+/* blotching — gamma skin is never one even colour */
+.hk-mottle {
   -webkit-mask-image: var(--logo);
   mask-image: var(--logo);
   mix-blend-mode: multiply;
-  opacity: 0.38;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='v'><feTurbulence type='fractalNoise' baseFrequency='0.06' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23v)'/></svg>");
-  background-size: 26vw 26vw;
+  opacity: 0.3;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23m)'/></svg>");
+  background-size: 24vw 24vw;
+}
+
+/* and never matte. NEVER transform this to move the highlight — the mask
+   travels with it and the sweep passes outside the mark. Scroll an oversized
+   background behind a fixed mask instead. */
+.hk-sheen {
+  -webkit-mask-image: var(--logo);
+  mask-image: var(--logo);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  background-image: linear-gradient(
+    108deg,
+    transparent 34%,
+    rgba(255, 255, 255, 0.5) 46%,
+    rgba(210, 255, 180, 0.22) 52%,
+    transparent 62%
+  );
+  background-size: 260% 100%;
+  background-position: 150% 0;
+}
+.hk-p3 .hk-sheen,
+.hk-p4 .hk-sheen {
+  animation: hk-sheen 2600ms cubic-bezier(0.4, 0, 0.2, 1) 400ms infinite;
+}
+@keyframes hk-sheen {
+  0% { background-position: 150% 0; }
+  46%, 100% { background-position: -60% 0; }
 }
 
 /* ====================================================================
-   WOODBRIDGE — hulk lettering, cut into the same slab
+   WOODBRIDGE — welded under the mark, lit the same way he is
    ==================================================================== */
 
 .hk-type {
-  position: relative;
-  z-index: 3;
-  width: 100%;
+  margin-top: 3.2vw;
   text-align: center;
   opacity: 0;
-  transform: translateY(0.8vw);
-  transition: opacity 320ms ease, transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.86);
+  transition: opacity 220ms ease, transform 380ms cubic-bezier(0.15, 1.4, 0.35, 1);
 }
 .hk-p4 .hk-type {
   opacity: 1;
-  transform: none;
+  transform: scale(1);
 }
 
 .hk-caption {
   display: inline-block;
-  font-size: 5.6vw;
+  font-size: 6vw;
   font-weight: 900;
-  letter-spacing: 0.7vw;
-  /* heavy and stretched — hulk lettering is brute force: wide-stroked, tightly
-     packed and taller than it is elegant */
-  transform: scaleY(1.16);
-  background: linear-gradient(178deg, #f0ffd6 0%, #a5ff5c 42%, #6ddc2c 84%, #4aa81b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-stroke: 0.2vw #0d1a08;
-  paint-order: stroke fill;
-  /* the same engraved lip as the mark, so the two belong to one slab */
+  letter-spacing: 0.86vw;
+  /* brute force rather than elegance: heavy, tightly tracked, stretched */
+  transform: scaleY(1.12);
+  /* NOT background-clip:text here. A clipped gradient is a BACKGROUND, and
+     text-shadow paints ABOVE the background and below the glyph fill — so with
+     a transparent fill the violet offset covered the gradient completely and
+     the word rendered solid purple. A solid colour keeps the offsets. */
+  color: #a8ff5c;
+  /* the same violet key and gamma bounce the mark gets, so the name belongs to
+     the same light rather than floating in front of it */
   text-shadow:
-    0 -0.1vw 0 rgba(0, 0, 0, 0.8),
-    0 0.16vw 0 rgba(255, 255, 255, 0.22),
-    0 0.45vw 0.7vw rgba(0, 0, 0, 0.55),
-    0 0 1.4vw rgba(141, 255, 58, 0.45);
+    -0.1vw -0.09vw 0 rgba(150, 92, 255, 0.9),
+    0.1vw 0.13vw 0 rgba(14, 60, 10, 0.95),
+    0 0 1.8vw rgba(125, 255, 46, 0.55);
 }
 
 /* ====================================================================
-   THE IMPACT
+   THE HIT
    ==================================================================== */
 
-/* broken cement around the base */
-.hk-rubble {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: var(--impact);
-  height: 0;
-  z-index: 6;
-  pointer-events: none;
-}
-.hk-rubble span {
-  position: absolute;
-  top: calc(var(--t) + 6.5vw);
-  width: var(--w);
-  height: calc(var(--w) * 0.5);
-  margin-left: calc(var(--w) / -2);
-  /* an irregular shard, not a pebble — a rounded blob reads as a stone from a
-     riverbed rather than something that has just been broken off */
-  clip-path: polygon(4% 62%, 22% 8%, 58% 0%, 92% 26%, 100% 68%, 74% 100%, 28% 96%);
-  background: linear-gradient(168deg, #8e8a7e 0%, #5d5a52 46%, #302e29 100%);
-  transform: rotate(var(--r)) scale(0.2);
-  transform-origin: 50% 100%;
-  opacity: 0;
-  filter: drop-shadow(0 0.5vw 0.4vw rgba(0, 0, 0, 0.65));
-}
-.hk-p3 .hk-rubble span,
-.hk-p4 .hk-rubble span {
-  animation: hk-rubble 380ms cubic-bezier(0.2, 1.2, 0.4, 1) forwards;
-  animation-delay: calc(var(--i) * 14ms);
-}
-@keyframes hk-rubble {
-  to { opacity: 1; transform: rotate(var(--r)) scale(1); }
-}
-
-/* the shockwave running out across the floor */
+/* one hard ring running out off him. Squashed, because a perfect circle reads
+   as a target and an ellipse reads as something moving through space. */
 .hk-wave {
   position: absolute;
   left: 50%;
-  top: var(--impact);
-  width: 40vw;
-  height: 40vw;
-  margin: -20vw 0 0 -20vw;
+  top: var(--mark-y);
+  width: 60vw;
+  height: 60vw;
+  margin: -30vw 0 0 -30vw;
   border-radius: 50%;
-  border: 0.7vw solid rgba(232, 240, 216, 0.7);
+  border: 0.8vw solid rgba(214, 255, 170, 0.85);
   opacity: 0;
-  transform: scale(0.25) scaleY(0.3);
+  transform: scale(0.3) scaleY(0.62);
+  z-index: 25;
   pointer-events: none;
 }
 .hk-p3 .hk-wave {
-  animation: hk-wave 620ms cubic-bezier(0.1, 0.7, 0.3, 1) 1;
+  animation: hk-wave 760ms cubic-bezier(0.08, 0.75, 0.25, 1) 1;
 }
 @keyframes hk-wave {
-  0% { opacity: 0.85; transform: scale(0.25) scaleY(0.3); border-width: 1.1vw; }
-  100% { opacity: 0; transform: scale(4.6) scaleY(0.3); border-width: 0.15vw; }
+  0% { opacity: 0.95; transform: scale(0.32) scaleY(0.62); border-width: 1.4vw; }
+  100% { opacity: 0; transform: scale(3.4) scaleY(0.62); border-width: 0.1vw; }
 }
 
-/* dust: it goes UP and OUT and hangs, because that is what a slab dropped on a
-   dusty floor throws. Particles that only fall read as debris, not dust. */
-.hk-dust {
+/* and what it throws off him */
+.hk-sparks {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: var(--impact);
+  left: 50%;
+  top: var(--mark-y);
+  width: 0;
   height: 0;
+  z-index: 26;
   pointer-events: none;
 }
-.hk-dust span {
+.hk-sparks span {
   position: absolute;
-  bottom: 0;
-  width: 9vw;
-  height: 9vw;
-  margin-left: -4.5vw;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(214, 212, 196, 0.6) 0%, rgba(180, 178, 162, 0.18) 58%, transparent 76%);
+  left: 0;
+  top: 0;
+  width: 1.5vw;
+  height: 0.34vw;
+  margin: -0.17vw 0 0 -0.75vw;
+  border-radius: 0.2vw;
+  background: linear-gradient(90deg, rgba(240, 255, 220, 0.95), rgba(125, 255, 46, 0));
   opacity: 0;
-  transform: scale(calc(var(--s) * 0.3));
-  filter: blur(0.6vw);
+  transform: rotate(var(--a)) translateX(6vw) scale(var(--sc));
 }
-.hk-p3 .hk-dust span,
-.hk-p4 .hk-dust span {
-  animation: hk-dust 1500ms cubic-bezier(0.15, 0.7, 0.35, 1) var(--d) forwards;
+.hk-p3 .hk-sparks span,
+.hk-p4 .hk-sparks span {
+  animation: hk-spark 900ms cubic-bezier(0.1, 0.8, 0.3, 1) var(--dl) forwards;
 }
-@keyframes hk-dust {
-  0% { opacity: 0; transform: translate(0, 0) scale(calc(var(--s) * 0.3)); }
-  16% { opacity: 0.85; }
-  100% { opacity: 0; transform: translate(var(--x), -14vw) scale(calc(var(--s) * 2.4)); }
+@keyframes hk-spark {
+  0% { opacity: 0; transform: rotate(var(--a)) translateX(6vw) scale(var(--sc)); }
+  14% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a)) translateX(var(--d)) scale(calc(var(--sc) * 0.5)); }
+}
+
+/* one frame of gamma at the moment of contact */
+.hk-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  background: radial-gradient(60% 40% at 42% 46%, #f4ffe6 0%, rgba(125, 255, 46, 0.5) 40%, transparent 74%);
+  opacity: 0;
+  pointer-events: none;
+}
+.hk-p3 .hk-flash {
+  animation: hk-flash 260ms ease-out 1;
+}
+@keyframes hk-flash {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
 }
 
 /* ====================================================================
@@ -499,7 +609,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 40;
-  opacity: 0.09;
+  opacity: 0.12;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
   background-size: 160px 160px;
@@ -510,11 +620,11 @@
   inset: 0;
   pointer-events: none;
   z-index: 41;
-  background: radial-gradient(76% 56% at 50% 44%, transparent 40%, rgba(0, 0, 0, 0.72) 100%);
+  background: radial-gradient(78% 56% at 50% 46%, transparent 38%, rgba(0, 0, 0, 0.82) 100%);
 }
 
 /* ====================================================================
-   STATIC MODE — the poster: slab landed, floor split, name cut in
+   STATIC MODE — the poster: full gamma, veins up, name in
    ==================================================================== */
 
 .hk.is-static *,
@@ -523,27 +633,34 @@
   animation: none !important;
   transition: none !important;
 }
-.hk.is-static .hk-fissure path,
-.hk.is-static .hk-fresh path {
+.hk.is-static .hk-stage {
+  transform: scale(1);
+  filter: none;
+}
+.hk.is-static .hk-rays { opacity: 0.7; }
+.hk.is-static .hk-bloom { opacity: 0.6; transform: scale(1); }
+.hk.is-static .hk-halo { opacity: 0.38; }
+.hk.is-static .hk-pool,
+.hk.is-static .hk-motes { opacity: 1; }
+/* the dust has to be spread through the frame in the still — with the drift
+   stopped it would otherwise all sit below the bottom edge */
+.hk.is-static .hk-motes span {
+  bottom: var(--y);
+}
+.hk.is-static .hk-brow path { opacity: 0.85; }
+.hk.is-static .hk-vein-deep path,
+.hk.is-static .hk-vein-lit path {
   stroke-dashoffset: 0;
 }
 .hk.is-static .hk-type {
   opacity: 1;
-  transform: none;
+  transform: scale(1);
 }
-/* the dust and the shockwave are one-pass events with no resting state, so
-   they are simply gone in the still */
-.hk.is-static .hk-slab {
-  transform: var(--rest);
-}
-.hk.is-static .hk-rubble span {
-  opacity: 1;
-  transform: rotate(var(--r)) scale(1);
-}
-.hk.is-static .hk-dust,
-.hk.is-static .hk-wave {
-  opacity: 0;
-}
+/* one-pass events with no resting state */
+.hk.is-static .hk-flash,
+.hk.is-static .hk-wave,
+.hk.is-static .hk-sparks { opacity: 0; }
+.hk.is-static .hk-sheen { background-position: 20% 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .hk *,
@@ -552,19 +669,27 @@
     animation: none !important;
     transition: none !important;
   }
-  .hk .hk-slab {
-    transform: none;
+  .hk .hk-stage {
+    transform: scale(1);
+    filter: none;
   }
-  .hk .hk-fissure path,
-  .hk .hk-fresh path {
+  .hk .hk-rays { opacity: 0.7; }
+  .hk .hk-bloom { opacity: 0.6; transform: scale(1); }
+  .hk .hk-halo { opacity: 0.38; }
+  .hk .hk-pool,
+  .hk .hk-motes { opacity: 1; }
+  .hk .hk-motes span { bottom: var(--y); }
+  .hk .hk-brow path { opacity: 0.85; }
+  .hk .hk-vein-deep path,
+  .hk .hk-vein-lit path {
     stroke-dashoffset: 0;
   }
   .hk .hk-type {
     opacity: 1;
-    transform: none;
+    transform: scale(1);
   }
-  .hk .hk-dust,
-  .hk .hk-wave {
-    opacity: 0;
-  }
+  .hk .hk-flash,
+  .hk .hk-wave,
+  .hk .hk-sparks { opacity: 0; }
+  .hk .hk-sheen { background-position: 20% 0; }
 }

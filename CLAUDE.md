@@ -41,7 +41,7 @@ Same rule as the sibling repo: the compositions sit next to each other on one
 feed, so **give each theme its own colour story.** Samurai is washi cream and
 vermilion; Robotics is graphite, steel and green; Pirates is a light stage with
 the brand's own colours; Patriot is Old Glory red, white and blue; BJJ is
-bleached gi cotton; Hulk is cold cement and gamma green. Brand red `#e4002b` is the
+bleached gi cotton; Hulk is gamma green against violet. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
@@ -130,6 +130,22 @@ Hard-won details, don't relearn them:
   deck as three bands and every seam read as a hard edge straight through the
   composition. A single volume — water with light falling through it — has depth
   for free. If a theme needs a horizon, hide it behind fog or a gradient falloff.
+- **`text-shadow` paints ABOVE a `background-clip: text` fill.** A clipped
+  gradient is a *background*, and backgrounds paint below text shadows — so a
+  gradient-filled word with `color: transparent` and an offset shadow renders as
+  the SHADOW's colour, completely covering the gradient. Hulk's WOODBRIDGE came
+  out solid purple this way. Pick one: a gradient fill with no offsets, or a
+  solid `color` with offsets.
+- **A green ninja is not a hulk — the brow is.** Recolouring the mark got most
+  of the way there and still read as "the logo, but green". What actually
+  carried it was one drawn element: a soft dark ridge over the eye band,
+  sloping DOWN toward the middle. Pinned to the eye band's measured bounds, not
+  eyeballed.
+- **Radial cracks plus concentric rings read as a SPIDER WEB**, wherever you put
+  them. It is the correct structure for fractured glass and it still looks like
+  a web at phone scale, and it lands on top of whatever it is drawn over. Hulk
+  tried it twice — across the frame and confined to one corner — and both were
+  cut for a shockwave ring instead.
 - **When a theme IS the mark, recolour it BY REGION.** Hulk is the exception to
   the rule below: "the ninja is a hulk" cannot live on the background, so the
   lockup is repainted — but through the three region masks, not as one flat
