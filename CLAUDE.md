@@ -41,7 +41,7 @@ Same rule as the sibling repo: the compositions sit next to each other on one
 feed, so **give each theme its own colour story.** Samurai is washi cream and
 vermilion; Robotics is graphite, steel and green; Pirates is a light stage with
 the brand's own colours; Patriot is Old Glory red, white and blue; BJJ is
-bleached gi cotton; Hulk is gamma green against violet. Brand red `#e4002b` is the
+bleached gi cotton; Hulk is gamma green on near-black. Brand red `#e4002b` is the
 through-line; everything around it changes theme to theme.
 
 ## MOBILE ONLY
@@ -136,11 +136,19 @@ Hard-won details, don't relearn them:
   the SHADOW's colour, completely covering the gradient. Hulk's WOODBRIDGE came
   out solid purple this way. Pick one: a gradient fill with no offsets, or a
   solid `color` with offsets.
-- **A green ninja is not a hulk — the brow is.** Recolouring the mark got most
-  of the way there and still read as "the logo, but green". What actually
-  carried it was one drawn element: a soft dark ridge over the eye band,
-  sloping DOWN toward the middle. Pinned to the eye band's measured bounds, not
-  eyeballed.
+- **If a theme needs a different HEAD, draw it — don't recolour the mark.**
+  Hulk went through three passes recolouring `logo.png` by region and every one
+  read as "the logo, but green", because a hulk needs a heavier skull, a brow
+  ridge and a jaw and a raster cannot be reshaped. Drawing it (Patriot's
+  approach: no `useLogo`, name set as type) fixed in one pass what recolouring
+  could not fix in three. Two rules came out of it: the ridge is a shaded MASS
+  above the eyes *inside* the skin, dipping toward the middle — a pair of
+  eyebrows laid on top reads as cheesy; and the eyes carry the anger, so make
+  them narrow slits lit from inside.
+- **One colour story per theme, and mean it.** Hulk's violet key was
+  theoretically correct (green/purple is the Hulk pair) and in practice washed
+  the whole frame muddy purple on a phone. Gamma green on near-black was
+  immediately better.
 - **Radial cracks plus concentric rings read as a SPIDER WEB**, wherever you put
   them. It is the correct structure for fractured glass and it still looks like
   a web at phone scale, and it lands on top of whatever it is drawn over. Hulk

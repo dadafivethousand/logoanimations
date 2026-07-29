@@ -65,11 +65,11 @@ merrowed border rolled and lit like a bead of thread, twill face, tack stitching
 round the inside, embroidered artwork and satin-stitched lettering, with the
 cloth puckering where it is tacked down.
 
-**Hulk** — the mark hulks out. It starts small and desaturated, a double-thump
-heartbeat swells it while veins draw up over his skin and a brow ridge comes
-down over his eyes, then it slams to full size and throws a shockwave. Gamma
-green against violet key light. The one theme that recolours the mark, because
-*the ninja being the hulk* is the brief — repainted region by region.
+**Hulk** — a hulked-out ninja, drawn from scratch (no logo file, like Patriot).
+Heavier skull, a brow ridge inside the skin band dipping toward the middle,
+slit eyes lit from inside, veins on the exposed skin. Cold and small, then a
+double-thump heartbeat swells him, then he slams to full size and throws a
+shockwave. Gamma green on near-black.
 
 ## Adding one
 

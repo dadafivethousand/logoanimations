@@ -1,41 +1,29 @@
-/* Hulk — the mark hulks out, and the screen takes the hit.
+/* Hulk — a hulked-out ninja, drawn from scratch.
    Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
    px is reserved for hairlines that must stay hairlines. */
 
-/* the beams behind him sweep, so the angle has to interpolate rather than
-   step — a bare custom property would jump frame to frame */
-@property --hk-spin {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
 .hk {
-  /* palette — gamma green against torn violet. Green and purple IS the Hulk
-     colour story, and no other theme in this repo is using violet, so the two
-     sit apart on the feed. */
+  /* palette — gamma green on near-black. ONE colour story: the earlier pass
+     put a violet key on it and the whole frame went muddy purple. */
   --gamma: #7dff2e;
   --gamma-hot: #eaffcb;
-  --gamma-mid: #3d9c22;
-  --gamma-deep: #12500e;
-  --violet: #7a37e0;
-  --violet-deep: #2c0f5c;
-  --void: #06070a;
+  --gamma-mid: #3f9d1e;
+  --gamma-deep: #14520f;
+  --void: #05070a;
 
   /* screen-recording crop: nothing meaningful inside this band */
   --safe-x: 11.5vw;
   --safe-y: 4.7vh;
 
   /* the composition scales from these two */
-  --mark-w: 92vw;
-  --mark-y: 46vh;
+  --head-w: 52vw;
+  --lock-y: 47vh;
 
   position: absolute;
   inset: 0;
   overflow: hidden;
   background: var(--void);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  color: var(--gamma-hot);
   isolation: isolate;
 }
 
@@ -47,107 +35,27 @@
 }
 
 /* ====================================================================
-   THE SPACE — violet key from the upper left, gamma bounce from below
+   THE SPACE
    ==================================================================== */
 
 .hk-void {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(56% 36% at 18% 16%, rgba(122, 55, 224, 0.5) 0%, transparent 72%),
-    radial-gradient(46% 26% at 88% 62%, rgba(122, 55, 224, 0.32) 0%, transparent 74%),
-    radial-gradient(64% 40% at 64% 90%, rgba(61, 156, 34, 0.26) 0%, transparent 74%),
-    radial-gradient(90% 60% at 50% 46%, #12161c 0%, #090b10 52%, var(--void) 100%);
+  background: radial-gradient(88% 56% at 50% 44%, #101511 0%, #0a0d0b 54%, var(--void) 100%);
 }
 
-/* gamma raking past him. Sized well beyond the frame so the beams read as
-   parallel shafts near the middle rather than as a pinwheel. */
-.hk-rays {
-  position: absolute;
-  left: 50%;
-  top: var(--mark-y);
-  width: 320vw;
-  height: 320vw;
-  margin: -160vw 0 0 -160vw;
-  background: repeating-conic-gradient(
-    from var(--hk-spin),
-    rgba(125, 255, 46, 0.075) 0deg 2.2deg,
-    transparent 2.4deg 13deg
-  );
-  -webkit-mask-image: radial-gradient(closest-side, transparent 6%, #000 26%, transparent 62%);
-  mask-image: radial-gradient(closest-side, transparent 6%, #000 26%, transparent 62%);
-  opacity: 0;
-  transition: opacity 900ms ease;
-  animation: hk-spin 52s linear infinite;
-  pointer-events: none;
-}
-@keyframes hk-spin {
-  to { --hk-spin: 360deg; }
-}
-.hk-p2 .hk-rays { opacity: 0.35; }
-.hk-p3 .hk-rays,
-.hk-p4 .hk-rays { opacity: 0.7; }
-
-/* the gamma building up behind him */
-.hk-bloom {
-  position: absolute;
-  left: 50%;
-  top: var(--mark-y);
-  width: 150vw;
-  height: 150vw;
-  margin: -75vw 0 0 -75vw;
-  background: radial-gradient(
-    closest-side,
-    rgba(125, 255, 46, 0.42) 0%,
-    rgba(61, 156, 34, 0.2) 34%,
-    rgba(44, 15, 92, 0.22) 58%,
-    transparent 76%
-  );
-  opacity: 0;
-  transform: scale(0.5);
-  pointer-events: none;
-}
-.hk-p2 .hk-bloom {
-  animation: hk-bloom-beat 600ms cubic-bezier(0.3, 0, 0.2, 1) 2 forwards;
-}
-@keyframes hk-bloom-beat {
-  0% { opacity: 0.16; transform: scale(0.52); }
-  22% { opacity: 0.5; transform: scale(0.74); }
-  44% { opacity: 0.24; transform: scale(0.62); }
-  62% { opacity: 0.62; transform: scale(0.84); }
-  100% { opacity: 0.34; transform: scale(0.72); }
-}
-.hk-p3 .hk-bloom {
-  animation: hk-bloom-burst 900ms cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
-}
-@keyframes hk-bloom-burst {
-  0% { opacity: 0.34; transform: scale(0.72); }
-  18% { opacity: 1; transform: scale(1.12); }
-  100% { opacity: 0.6; transform: scale(1); }
-}
-.hk-p4 .hk-bloom {
-  opacity: 0.6;
-  transform: scale(1);
-  animation: hk-bloom-breathe 3400ms ease-in-out infinite;
-}
-@keyframes hk-bloom-breathe {
-  0%, 100% { opacity: 0.54; transform: scale(0.98); }
-  50% { opacity: 0.68; transform: scale(1.03); }
-}
-
-/* gamma pooling below him — without it the lockup floats in an empty frame
-   and the bottom third of the composition is dead */
+/* gamma pooling below him, so the lockup stands on something */
 .hk-pool {
   position: absolute;
   left: 50%;
-  top: 74vh;
-  width: 170vw;
-  height: 46vh;
-  margin-left: -85vw;
+  top: 70vh;
+  width: 180vw;
+  height: 52vh;
+  margin-left: -90vw;
   background: radial-gradient(
     closest-side,
-    rgba(125, 255, 46, 0.3) 0%,
-    rgba(61, 156, 34, 0.14) 42%,
+    rgba(125, 255, 46, 0.26) 0%,
+    rgba(63, 157, 30, 0.12) 44%,
     transparent 74%
   );
   opacity: 0;
@@ -157,6 +65,52 @@
 .hk-p2 .hk-pool { opacity: 0.5; }
 .hk-p3 .hk-pool,
 .hk-p4 .hk-pool { opacity: 1; }
+
+/* the gamma building up behind him */
+.hk-bloom {
+  position: absolute;
+  left: 50%;
+  top: var(--lock-y);
+  width: 130vw;
+  height: 130vw;
+  margin: -65vw 0 0 -65vw;
+  background: radial-gradient(
+    closest-side,
+    rgba(125, 255, 46, 0.34) 0%,
+    rgba(63, 157, 30, 0.15) 36%,
+    transparent 70%
+  );
+  opacity: 0;
+  transform: scale(0.5);
+  pointer-events: none;
+}
+.hk-p2 .hk-bloom {
+  animation: hk-bloom-beat 600ms cubic-bezier(0.3, 0, 0.2, 1) 2 forwards;
+}
+@keyframes hk-bloom-beat {
+  0% { opacity: 0.14; transform: scale(0.52); }
+  22% { opacity: 0.46; transform: scale(0.74); }
+  44% { opacity: 0.22; transform: scale(0.62); }
+  62% { opacity: 0.58; transform: scale(0.84); }
+  100% { opacity: 0.32; transform: scale(0.72); }
+}
+.hk-p3 .hk-bloom {
+  animation: hk-bloom-burst 900ms cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
+}
+@keyframes hk-bloom-burst {
+  0% { opacity: 0.32; transform: scale(0.72); }
+  18% { opacity: 1; transform: scale(1.12); }
+  100% { opacity: 0.62; transform: scale(1); }
+}
+.hk-p4 .hk-bloom {
+  opacity: 0.62;
+  transform: scale(1);
+  animation: hk-bloom-breathe 3400ms ease-in-out infinite;
+}
+@keyframes hk-bloom-breathe {
+  0%, 100% { opacity: 0.56; transform: scale(0.98); }
+  50% { opacity: 0.7; transform: scale(1.03); }
+}
 
 /* dust hanging in the light */
 .hk-motes {
@@ -176,19 +130,19 @@
   width: calc(var(--sc) * 1.1vw);
   height: calc(var(--sc) * 1.1vw);
   border-radius: 50%;
-  background: rgba(190, 255, 140, 0.75);
+  background: rgba(190, 255, 140, 0.7);
   filter: blur(0.22vw);
   animation: hk-mote var(--du) linear var(--dl) infinite;
 }
 @keyframes hk-mote {
   0% { transform: translate(0, 0); opacity: 0; }
   12% { opacity: 0.7; }
-  80% { opacity: 0.5; }
+  80% { opacity: 0.45; }
   100% { transform: translate(var(--dx), -104vh); opacity: 0; }
 }
 
 /* ====================================================================
-   THE HIT — the scene rattles inside here
+   THE HIT — the frame rattles inside here
    ==================================================================== */
 
 .hk-shake {
@@ -213,14 +167,13 @@
    THE TRANSFORMATION
    ==================================================================== */
 
-/* ONE property carries the change: everything below is painted at full gamma
-   from the start, and p1 simply holds the colour out of it. Cross-fading two
-   colourways instead reads as a dissolve rather than something happening
-   to him. */
+/* ONE property carries the change: everything is drawn at full gamma from the
+   start and p1 simply holds the colour out of it. Cross-fading two colourways
+   reads as a dissolve rather than something happening to him. */
 .hk-stage {
   position: absolute;
   inset: 0;
-  transform-origin: 50% var(--mark-y);
+  transform-origin: 50% var(--lock-y);
   transform: scale(0.82);
   filter: saturate(0.1) brightness(0.5) contrast(1.1);
   transition: filter 1000ms ease;
@@ -229,8 +182,8 @@
   filter: saturate(1) brightness(1) contrast(1);
   animation: hk-swell 1200ms cubic-bezier(0.4, 0, 0.3, 1) forwards;
 }
-/* a real heartbeat is a double thump, not a sine — lub, dub, and a bigger one
-   each time as it gets away from him */
+/* a real heartbeat is a double thump, not a sine — and each pair gets away
+   from him a little more than the last */
 @keyframes hk-swell {
   0% { transform: scale(0.82); }
   12% { transform: scale(0.89); }
@@ -242,7 +195,6 @@
   84% { transform: scale(0.985); }
   100% { transform: scale(0.95); }
 }
-
 .hk-p3 .hk-stage,
 .hk-p4 .hk-stage {
   filter: none;
@@ -256,7 +208,6 @@
   22% { transform: scale(1.13); }
   100% { transform: scale(1); }
 }
-/* he does not go still afterwards */
 .hk-p4 .hk-stage {
   animation: hk-breathe 3400ms ease-in-out infinite;
 }
@@ -266,273 +217,179 @@
 }
 
 /* ====================================================================
-   THE MARK
+   THE NINJA
    ==================================================================== */
 
-/* WOODBRIDGE is a flow sibling of the mark in here — never positioned on its
-   own, or it drifts down the frame the moment anything else moves */
-.hk-markwrap {
+/* the name is a FLOW SIBLING of the head in here, never positioned on its own,
+   or it drifts down the frame the moment anything else moves */
+.hk-lockup {
   position: absolute;
   left: 50%;
-  top: var(--mark-y);
-  width: var(--mark-w);
+  top: var(--lock-y);
+  width: 84vw;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.hk-markbox {
-  position: relative;
-  width: 100%;
-}
-
-.hk-mark {
-  position: relative;
-  width: 100%;
-  aspect-ratio: var(--logo-aspect);
-  /* three-point lighting, and the reason the mark reads as a solid body:
-     violet key off the upper left, gamma bounce off the lower right, then the
-     glow and the shadow it sits in. The chain lives on the WRAPPER — a
-     drop-shadow on an empty masked box casts nothing. */
+.hk-head {
+  width: var(--head-w);
+  height: auto;
+  display: block;
+  overflow: visible;
   filter:
-    drop-shadow(-0.12vw -0.14vw 0 rgba(150, 92, 255, 0.55))
-    drop-shadow(0.14vw 0.2vw 0 rgba(88, 200, 32, 0.55))
-    drop-shadow(0 0 2.4vw rgba(125, 255, 46, 0.4))
-    drop-shadow(0 0 3.4vw rgba(122, 55, 224, 0.5))
-    drop-shadow(0 1.4vw 1.8vw rgba(0, 0, 0, 0.8));
+    drop-shadow(0 0.6vw 1.2vw rgba(0, 0, 0, 0.85))
+    drop-shadow(0 0 3vw rgba(125, 255, 46, 0.35));
 }
 
-.hk-layer,
-.hk-region {
-  position: absolute;
-  inset: 0;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+.hk-skull { fill: url(#hk-hoodfill); }
+
+/* the hood sits forward over the brow and casts down onto it */
+.hk-crown {
+  fill: #04100a;
+  opacity: 0.55;
 }
 
-/* gamma coming out from behind him, in his own shape rather than as a disc */
-.hk-halo {
-  -webkit-mask-image: var(--logo);
-  mask-image: var(--logo);
-  background: var(--gamma);
-  filter: blur(1.4vw);
-  opacity: 0;
-  transform: scale(1.04);
-  transition: opacity 800ms ease;
-}
-.hk-p2 .hk-halo { opacity: 0.22; }
-.hk-p3 .hk-halo,
-.hk-p4 .hk-halo { opacity: 0.38; }
-
-/* hood and "NINJAS" — his skin, and the surface the veins run over */
-.hk-skin {
-  -webkit-mask-image: var(--logo-dark);
-  mask-image: var(--logo-dark);
-  background:
-    radial-gradient(86% 150% at 28% 12%, #a2ff5c 0%, #6ad235 34%, #43a827 66%, #2c7a1a 100%);
+.hk-skull-hi {
+  fill: rgba(150, 255, 110, 0.18);
 }
 
-/* "CODE" — deeper and cooler, so the lockup has three values instead of one
-   flat green */
-.hk-code {
-  -webkit-mask-image: var(--logo-accent);
-  mask-image: var(--logo-accent);
-  background: linear-gradient(172deg, #5ce07d 0%, #2aa851 52%, #17743a 100%);
+.hk-knot path {
+  fill: #16341a;
 }
 
-/* the band at his eyes: blown out. It is the brightest thing in the frame and
-   the only part that is nearly white — that is where the rage reads. */
-.hk-eyes {
-  -webkit-mask-image: var(--logo-light);
-  mask-image: var(--logo-light);
-  background: radial-gradient(60% 150% at 40% 26%, #ffffff 0%, var(--gamma-hot) 42%, #a5f065 100%);
+/* --- the exposed skin --- */
+.hk-band { fill: url(#hk-skinfill); }
+
+/* the skin is rounded, so it turns away from the light at the bottom */
+.hk-band-shade {
+  fill: none;
+  stroke: rgba(8, 40, 6, 0.75);
+  stroke-width: 26;
+  filter: blur(7px);
 }
 
-/* the head is a BALL. The skin gradient runs across the whole lockup, so the
-   roundness has to come from a layer aimed at the head alone — measured off
-   the artwork's pixels (head: left 32.7%, top 0%, w 29.3%, h 46.3%), not
-   eyeballed. */
-.hk-form {
-  -webkit-mask-image: var(--logo-dark);
-  mask-image: var(--logo-dark);
-  mix-blend-mode: multiply;
-  opacity: 0.85;
-  background:
-    radial-gradient(16% 30% at 41% 14%, rgba(255, 255, 255, 0.55) 0%, transparent 60%),
-    radial-gradient(20% 38% at 53% 34%, rgba(10, 46, 6, 0.75) 0%, transparent 72%);
-}
-
-/* the brow ridge, sitting over the band at his eyes */
-.hk-brow {
-  position: absolute;
-  left: 38%;
-  top: 7.5%;
-  width: 24%;
-  height: 14%;
-  overflow: visible;
-  pointer-events: none;
-}
-.hk-brow path {
-  fill: #0f3d0a;
-  opacity: 0;
-  filter: blur(0.24vw);
-  transition: opacity 500ms ease;
-}
-/* it comes down as he changes — the brow arriving IS the scowl arriving */
-.hk-p2 .hk-brow path { opacity: 0.5; }
-.hk-p3 .hk-brow path,
-.hk-p4 .hk-brow path { opacity: 0.85; }
-
-/* --- veins --- */
 .hk-veins {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  /* masked to his SKIN, not to the whole mark: veins across "CODE" or across
-     the band at his eyes would be veins on things that are not skin */
-  -webkit-mask-image: var(--logo-dark);
-  mask-image: var(--logo-dark);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  filter: url(#hk-vein) blur(0.12vw);
+  filter: url(#hk-vein);
 }
-
-.hk-vein-deep path {
+.hk-veins path {
   fill: none;
-  stroke: #14520d;
-  stroke-width: 2.1;
+  stroke: #1c5f14;
+  stroke-width: 3.6;
   stroke-linecap: round;
-  opacity: 0.32;
+  opacity: 0.55;
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
 }
-/* a vein standing proud of the skin catches light along its top — the dark
-   line alone reads as a crack, the lit edge is what makes it a vessel */
-.hk-vein-lit path {
-  fill: none;
-  stroke: #c8ff8e;
-  stroke-width: 0.8;
-  stroke-linecap: round;
-  opacity: 0.28;
-  transform: translate(0, -1.3px);
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-}
-
-/* pathLength="100" on every path: one dash rule drives thirty-odd veins of
-   completely different lengths at the same rate */
-.hk-p2 .hk-vein-deep path,
-.hk-p3 .hk-vein-deep path,
-.hk-p4 .hk-vein-deep path,
-.hk-p2 .hk-vein-lit path,
-.hk-p3 .hk-vein-lit path,
-.hk-p4 .hk-vein-lit path {
+/* pathLength="100" on every vein: one dash rule drives them all at the same
+   rate whatever their real lengths */
+.hk-p2 .hk-veins path,
+.hk-p3 .hk-veins path,
+.hk-p4 .hk-veins path {
   animation: hk-draw 620ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
-  animation-delay: calc(var(--i) * 17ms);
+  animation-delay: calc(var(--i) * 60ms);
 }
 @keyframes hk-draw {
   to { stroke-dashoffset: 0; }
 }
-
 .hk-p4 .hk-veins {
   animation: hk-vein-pulse 3400ms ease-in-out infinite;
 }
 @keyframes hk-vein-pulse {
-  0%, 100% { opacity: 0.72; }
+  0%, 100% { opacity: 0.75; }
   50% { opacity: 1; }
 }
 
-/* blotching — gamma skin is never one even colour */
-.hk-mottle {
-  -webkit-mask-image: var(--logo);
-  mask-image: var(--logo);
-  mix-blend-mode: multiply;
-  opacity: 0.3;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23m)'/></svg>");
-  background-size: 24vw 24vw;
+/* the brow ridge — a mass, not a pair of eyebrows */
+.hk-ridge {
+  fill: #0d3a0b;
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity 500ms ease;
 }
+.hk-ridge-hi {
+  fill: rgba(190, 255, 130, 0.4);
+  opacity: 0;
+  filter: blur(2px);
+  transition: opacity 500ms ease;
+}
+/* it comes down as he changes — the ridge arriving IS the scowl arriving */
+.hk-p2 .hk-ridge { opacity: 0.55; }
+.hk-p2 .hk-ridge-hi { opacity: 0.5; }
+.hk-p3 .hk-ridge,
+.hk-p4 .hk-ridge { opacity: 0.85; }
+.hk-p3 .hk-ridge-hi,
+.hk-p4 .hk-ridge-hi { opacity: 1; }
 
-/* and never matte. NEVER transform this to move the highlight — the mask
-   travels with it and the sweep passes outside the mark. Scroll an oversized
-   background behind a fixed mask instead. */
-.hk-sheen {
-  -webkit-mask-image: var(--logo);
-  mask-image: var(--logo);
-  mix-blend-mode: screen;
-  opacity: 0.55;
-  background-image: linear-gradient(
-    108deg,
-    transparent 34%,
-    rgba(255, 255, 255, 0.5) 46%,
-    rgba(210, 255, 180, 0.22) 52%,
-    transparent 62%
-  );
-  background-size: 260% 100%;
-  background-position: 150% 0;
+.hk-eyes path {
+  fill: url(#hk-eyefill);
 }
-.hk-p3 .hk-sheen,
-.hk-p4 .hk-sheen {
-  animation: hk-sheen 2600ms cubic-bezier(0.4, 0, 0.2, 1) 400ms infinite;
-}
-@keyframes hk-sheen {
-  0% { background-position: 150% 0; }
-  46%, 100% { background-position: -60% 0; }
+.hk-p3 .hk-eyes,
+.hk-p4 .hk-eyes {
+  filter: drop-shadow(0 0 1.4vw rgba(125, 255, 46, 0.9));
 }
 
 /* ====================================================================
-   WOODBRIDGE — welded under the mark, lit the same way he is
+   THE NAME
    ==================================================================== */
 
 .hk-type {
-  margin-top: 3.2vw;
+  margin-top: 3.4vw;
   text-align: center;
+}
+
+.hk-brand {
+  font-size: 11.6vw;
+  font-weight: 900;
+  letter-spacing: -0.2vw;
+  line-height: 1;
+  white-space: nowrap;
+  /* heavy and stretched — brute force rather than elegance */
+  transform: scaleY(1.06);
   opacity: 0;
-  transform: scale(0.86);
+  transition: opacity 300ms ease;
+}
+.hk-p2 .hk-brand,
+.hk-p3 .hk-brand,
+.hk-p4 .hk-brand {
+  opacity: 1;
+}
+.hk-brand-a {
+  color: var(--gamma);
+  text-shadow: 0 0.2vw 0 #10430c, 0 0 1.6vw rgba(125, 255, 46, 0.5);
+}
+.hk-brand-b {
+  color: #4aa52c;
+  text-shadow: 0 0.2vw 0 #071f06;
+}
+
+.hk-caption {
+  margin-top: 1vw;
+  font-size: 5.4vw;
+  font-weight: 900;
+  letter-spacing: 0.78vw;
+  color: var(--gamma-hot);
+  text-shadow: 0 0.16vw 0 #10430c, 0 0 1.4vw rgba(125, 255, 46, 0.5);
+  opacity: 0;
+  transform: scale(0.9);
   transition: opacity 220ms ease, transform 380ms cubic-bezier(0.15, 1.4, 0.35, 1);
 }
-.hk-p4 .hk-type {
+.hk-p4 .hk-caption {
   opacity: 1;
   transform: scale(1);
 }
 
-.hk-caption {
-  display: inline-block;
-  font-size: 6vw;
-  font-weight: 900;
-  letter-spacing: 0.86vw;
-  /* brute force rather than elegance: heavy, tightly tracked, stretched */
-  transform: scaleY(1.12);
-  /* NOT background-clip:text here. A clipped gradient is a BACKGROUND, and
-     text-shadow paints ABOVE the background and below the glyph fill — so with
-     a transparent fill the violet offset covered the gradient completely and
-     the word rendered solid purple. A solid colour keeps the offsets. */
-  color: #a8ff5c;
-  /* the same violet key and gamma bounce the mark gets, so the name belongs to
-     the same light rather than floating in front of it */
-  text-shadow:
-    -0.1vw -0.09vw 0 rgba(150, 92, 255, 0.9),
-    0.1vw 0.13vw 0 rgba(14, 60, 10, 0.95),
-    0 0 1.8vw rgba(125, 255, 46, 0.55);
-}
-
 /* ====================================================================
-   THE HIT
+   THE BURST
    ==================================================================== */
 
-/* one hard ring running out off him. Squashed, because a perfect circle reads
-   as a target and an ellipse reads as something moving through space. */
+/* squashed, because a perfect circle reads as a target and an ellipse reads as
+   something moving through space */
 .hk-wave {
   position: absolute;
   left: 50%;
-  top: var(--mark-y);
+  top: var(--lock-y);
   width: 60vw;
   height: 60vw;
   margin: -30vw 0 0 -30vw;
@@ -551,11 +408,10 @@
   100% { opacity: 0; transform: scale(3.4) scaleY(0.62); border-width: 0.1vw; }
 }
 
-/* and what it throws off him */
 .hk-sparks {
   position: absolute;
   left: 50%;
-  top: var(--mark-y);
+  top: var(--lock-y);
   width: 0;
   height: 0;
   z-index: 26;
@@ -588,7 +444,7 @@
   position: absolute;
   inset: 0;
   z-index: 35;
-  background: radial-gradient(60% 40% at 42% 46%, #f4ffe6 0%, rgba(125, 255, 46, 0.5) 40%, transparent 74%);
+  background: radial-gradient(58% 38% at 50% 44%, #f4ffe6 0%, rgba(125, 255, 46, 0.5) 40%, transparent 74%);
   opacity: 0;
   pointer-events: none;
 }
@@ -620,11 +476,11 @@
   inset: 0;
   pointer-events: none;
   z-index: 41;
-  background: radial-gradient(78% 56% at 50% 46%, transparent 38%, rgba(0, 0, 0, 0.82) 100%);
+  background: radial-gradient(80% 58% at 50% 46%, transparent 38%, rgba(0, 0, 0, 0.84) 100%);
 }
 
 /* ====================================================================
-   STATIC MODE — the poster: full gamma, veins up, name in
+   STATIC MODE — the poster: full gamma, veins up, ridge down, name in
    ==================================================================== */
 
 .hk.is-static *,
@@ -637,30 +493,22 @@
   transform: scale(1);
   filter: none;
 }
-.hk.is-static .hk-rays { opacity: 0.7; }
-.hk.is-static .hk-bloom { opacity: 0.6; transform: scale(1); }
-.hk.is-static .hk-halo { opacity: 0.38; }
 .hk.is-static .hk-pool,
-.hk.is-static .hk-motes { opacity: 1; }
+.hk.is-static .hk-motes,
+.hk.is-static .hk-brand,
+.hk.is-static .hk-ridge-hi { opacity: 1; }
+.hk.is-static .hk-bloom { opacity: 0.62; transform: scale(1); }
+.hk.is-static .hk-ridge { opacity: 0.85; }
+.hk.is-static .hk-veins path { stroke-dashoffset: 0; }
+.hk.is-static .hk-eyes { filter: drop-shadow(0 0 1.4vw rgba(125, 255, 46, 0.9)); }
+.hk.is-static .hk-caption { opacity: 1; transform: scale(1); }
 /* the dust has to be spread through the frame in the still — with the drift
    stopped it would otherwise all sit below the bottom edge */
-.hk.is-static .hk-motes span {
-  bottom: var(--y);
-}
-.hk.is-static .hk-brow path { opacity: 0.85; }
-.hk.is-static .hk-vein-deep path,
-.hk.is-static .hk-vein-lit path {
-  stroke-dashoffset: 0;
-}
-.hk.is-static .hk-type {
-  opacity: 1;
-  transform: scale(1);
-}
+.hk.is-static .hk-motes span { bottom: var(--y); }
 /* one-pass events with no resting state */
 .hk.is-static .hk-flash,
 .hk.is-static .hk-wave,
 .hk.is-static .hk-sparks { opacity: 0; }
-.hk.is-static .hk-sheen { background-position: 20% 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .hk *,
@@ -673,23 +521,17 @@
     transform: scale(1);
     filter: none;
   }
-  .hk .hk-rays { opacity: 0.7; }
-  .hk .hk-bloom { opacity: 0.6; transform: scale(1); }
-  .hk .hk-halo { opacity: 0.38; }
   .hk .hk-pool,
-  .hk .hk-motes { opacity: 1; }
+  .hk .hk-motes,
+  .hk .hk-brand,
+  .hk .hk-ridge-hi { opacity: 1; }
+  .hk .hk-bloom { opacity: 0.62; transform: scale(1); }
+  .hk .hk-ridge { opacity: 0.85; }
+  .hk .hk-veins path { stroke-dashoffset: 0; }
+  .hk .hk-eyes { filter: drop-shadow(0 0 1.4vw rgba(125, 255, 46, 0.9)); }
+  .hk .hk-caption { opacity: 1; transform: scale(1); }
   .hk .hk-motes span { bottom: var(--y); }
-  .hk .hk-brow path { opacity: 0.85; }
-  .hk .hk-vein-deep path,
-  .hk .hk-vein-lit path {
-    stroke-dashoffset: 0;
-  }
-  .hk .hk-type {
-    opacity: 1;
-    transform: scale(1);
-  }
   .hk .hk-flash,
   .hk .hk-wave,
   .hk .hk-sparks { opacity: 0; }
-  .hk .hk-sheen { background-position: 20% 0; }
 }
