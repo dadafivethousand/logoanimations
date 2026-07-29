@@ -65,11 +65,11 @@ merrowed border rolled and lit like a bead of thread, twill face, tack stitching
 round the inside, embroidered artwork and satin-stitched lettering, with the
 cloth puckering where it is tacked down.
 
-**Hulk** — a hulked-out ninja, drawn from scratch (no logo file, like Patriot).
-Heavier skull, a brow ridge inside the skin band dipping toward the middle,
-slit eyes lit from inside, veins on the exposed skin. Cold and small, then a
-double-thump heartbeat swells him, then he slams to full size and throws a
-shockwave. Gamma green on near-black.
+**Hulk** — CODE NINJAS WOODBRIDGE in hulk lettering and nothing else: heavy,
+tightly packed, extruded with a stack of offset copies rather than a flat
+shadow, cracked through the glyphs, roughened so it stops reading as a system
+font. Cold, then a double-thump swell, then it slams and the frame shakes.
+Deliberately small and centred, with room all round for a crop.
 
 ## Adding one
 

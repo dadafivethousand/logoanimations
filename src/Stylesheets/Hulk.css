@@ -1,23 +1,21 @@
-/* Hulk — a hulked-out ninja, drawn from scratch.
+/* Hulk — CODE NINJAS WOODBRIDGE in hulk lettering, and nothing else.
    Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
    px is reserved for hairlines that must stay hairlines. */
 
 .hk {
-  /* palette — gamma green on near-black. ONE colour story: the earlier pass
-     put a violet key on it and the whole frame went muddy purple. */
+  /* palette — gamma green on near-black. One colour story. */
   --gamma: #7dff2e;
   --gamma-hot: #eaffcb;
-  --gamma-mid: #3f9d1e;
-  --gamma-deep: #14520f;
   --void: #05070a;
 
-  /* screen-recording crop: nothing meaningful inside this band */
-  --safe-x: 11.5vw;
-  --safe-y: 4.7vh;
+  /* The lockup is deliberately small and centred with room all round, so the
+     frame can be cropped in without touching the type. Everything meaningful
+     sits inside these. */
+  --safe-x: 16vw;
+  --safe-y: 12vh;
 
-  /* the composition scales from these two */
-  --head-w: 52vw;
-  --lock-y: 47vh;
+  --lock-w: 66vw;
+  --lock-y: 46vh;
 
   position: absolute;
   inset: 0;
@@ -27,13 +25,6 @@
   isolation: isolate;
 }
 
-.hk-defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-
 /* ====================================================================
    THE SPACE
    ==================================================================== */
@@ -41,108 +32,57 @@
 .hk-void {
   position: absolute;
   inset: 0;
-  background: radial-gradient(88% 56% at 50% 44%, #101511 0%, #0a0d0b 54%, var(--void) 100%);
+  background: radial-gradient(86% 52% at 50% 46%, #101511 0%, #0a0d0b 52%, var(--void) 100%);
 }
 
-/* gamma pooling below him, so the lockup stands on something */
-.hk-pool {
-  position: absolute;
-  left: 50%;
-  top: 70vh;
-  width: 180vw;
-  height: 52vh;
-  margin-left: -90vw;
-  background: radial-gradient(
-    closest-side,
-    rgba(125, 255, 46, 0.26) 0%,
-    rgba(63, 157, 30, 0.12) 44%,
-    transparent 74%
-  );
-  opacity: 0;
-  transition: opacity 900ms ease;
-  pointer-events: none;
-}
-.hk-p2 .hk-pool { opacity: 0.5; }
-.hk-p3 .hk-pool,
-.hk-p4 .hk-pool { opacity: 1; }
-
-/* the gamma building up behind him */
+/* gamma building up behind the type */
 .hk-bloom {
   position: absolute;
   left: 50%;
   top: var(--lock-y);
-  width: 130vw;
-  height: 130vw;
-  margin: -65vw 0 0 -65vw;
+  width: 120vw;
+  height: 120vw;
+  margin: -60vw 0 0 -60vw;
   background: radial-gradient(
     closest-side,
-    rgba(125, 255, 46, 0.34) 0%,
-    rgba(63, 157, 30, 0.15) 36%,
-    transparent 70%
+    rgba(125, 255, 46, 0.3) 0%,
+    rgba(63, 157, 30, 0.13) 36%,
+    transparent 68%
   );
   opacity: 0;
   transform: scale(0.5);
   pointer-events: none;
 }
 .hk-p2 .hk-bloom {
-  animation: hk-bloom-beat 600ms cubic-bezier(0.3, 0, 0.2, 1) 2 forwards;
+  animation: hk-bloom-beat 560ms cubic-bezier(0.3, 0, 0.2, 1) 2 forwards;
 }
 @keyframes hk-bloom-beat {
-  0% { opacity: 0.14; transform: scale(0.52); }
-  22% { opacity: 0.46; transform: scale(0.74); }
-  44% { opacity: 0.22; transform: scale(0.62); }
-  62% { opacity: 0.58; transform: scale(0.84); }
-  100% { opacity: 0.32; transform: scale(0.72); }
+  0% { opacity: 0.12; transform: scale(0.5); }
+  24% { opacity: 0.44; transform: scale(0.72); }
+  48% { opacity: 0.2; transform: scale(0.6); }
+  66% { opacity: 0.56; transform: scale(0.82); }
+  100% { opacity: 0.3; transform: scale(0.7); }
 }
 .hk-p3 .hk-bloom {
-  animation: hk-bloom-burst 900ms cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
+  animation: hk-bloom-burst 880ms cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
 }
 @keyframes hk-bloom-burst {
-  0% { opacity: 0.32; transform: scale(0.72); }
-  18% { opacity: 1; transform: scale(1.12); }
-  100% { opacity: 0.62; transform: scale(1); }
+  0% { opacity: 0.3; transform: scale(0.7); }
+  18% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.6; transform: scale(1); }
 }
 .hk-p4 .hk-bloom {
-  opacity: 0.62;
+  opacity: 0.6;
   transform: scale(1);
   animation: hk-bloom-breathe 3400ms ease-in-out infinite;
 }
 @keyframes hk-bloom-breathe {
-  0%, 100% { opacity: 0.56; transform: scale(0.98); }
-  50% { opacity: 0.7; transform: scale(1.03); }
-}
-
-/* dust hanging in the light */
-.hk-motes {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 1200ms ease;
-  pointer-events: none;
-}
-.hk-p2 .hk-motes { opacity: 0.5; }
-.hk-p3 .hk-motes,
-.hk-p4 .hk-motes { opacity: 1; }
-.hk-motes span {
-  position: absolute;
-  bottom: -4vw;
-  width: calc(var(--sc) * 1.1vw);
-  height: calc(var(--sc) * 1.1vw);
-  border-radius: 50%;
-  background: rgba(190, 255, 140, 0.7);
-  filter: blur(0.22vw);
-  animation: hk-mote var(--du) linear var(--dl) infinite;
-}
-@keyframes hk-mote {
-  0% { transform: translate(0, 0); opacity: 0; }
-  12% { opacity: 0.7; }
-  80% { opacity: 0.45; }
-  100% { transform: translate(var(--dx), -104vh); opacity: 0; }
+  0%, 100% { opacity: 0.54; transform: scale(0.98); }
+  50% { opacity: 0.68; transform: scale(1.03); }
 }
 
 /* ====================================================================
-   THE HIT — the frame rattles inside here
+   THE HIT
    ==================================================================== */
 
 .hk-shake {
@@ -150,50 +90,49 @@
   inset: 0;
 }
 .hk-p3 .hk-shake {
-  animation: hk-shake 460ms cubic-bezier(0.3, 0, 0.2, 1) 1;
+  animation: hk-shake 440ms cubic-bezier(0.3, 0, 0.2, 1) 1;
 }
 @keyframes hk-shake {
   0% { transform: translate3d(0, 0, 0); }
-  6% { transform: translate3d(-2.2vw, 1.4vw, 0); }
-  16% { transform: translate3d(1.9vw, -1.1vw, 0); }
-  28% { transform: translate3d(-1.4vw, 0.8vw, 0); }
-  42% { transform: translate3d(1vw, -0.6vw, 0); }
-  58% { transform: translate3d(-0.6vw, 0.4vw, 0); }
-  76% { transform: translate3d(0.3vw, -0.2vw, 0); }
+  6% { transform: translate3d(-2vw, 1.3vw, 0); }
+  16% { transform: translate3d(1.7vw, -1vw, 0); }
+  28% { transform: translate3d(-1.2vw, 0.7vw, 0); }
+  42% { transform: translate3d(0.9vw, -0.5vw, 0); }
+  58% { transform: translate3d(-0.5vw, 0.3vw, 0); }
+  76% { transform: translate3d(0.25vw, -0.15vw, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
 
 /* ====================================================================
-   THE TRANSFORMATION
+   THE TYPE
    ==================================================================== */
 
-/* ONE property carries the change: everything is drawn at full gamma from the
+/* ONE property carries the change: the type is drawn at full gamma from the
    start and p1 simply holds the colour out of it. Cross-fading two colourways
-   reads as a dissolve rather than something happening to him. */
+   reads as a dissolve rather than something happening to it. */
 .hk-stage {
   position: absolute;
   inset: 0;
   transform-origin: 50% var(--lock-y);
-  transform: scale(0.82);
+  transform: scale(0.86);
   filter: saturate(0.1) brightness(0.5) contrast(1.1);
-  transition: filter 1000ms ease;
+  transition: filter 900ms ease;
 }
 .hk-p2 .hk-stage {
   filter: saturate(1) brightness(1) contrast(1);
-  animation: hk-swell 1200ms cubic-bezier(0.4, 0, 0.3, 1) forwards;
+  animation: hk-swell 900ms cubic-bezier(0.4, 0, 0.3, 1) forwards;
 }
-/* a real heartbeat is a double thump, not a sine — and each pair gets away
-   from him a little more than the last */
+/* a double thump, not a sine — and the second pair gets further away from it
+   than the first */
 @keyframes hk-swell {
-  0% { transform: scale(0.82); }
-  12% { transform: scale(0.89); }
-  20% { transform: scale(0.855); }
-  30% { transform: scale(0.925); }
-  40% { transform: scale(0.875); }
-  56% { transform: scale(0.955); }
-  68% { transform: scale(0.905); }
-  84% { transform: scale(0.985); }
-  100% { transform: scale(0.95); }
+  0% { transform: scale(0.86); }
+  14% { transform: scale(0.91); }
+  24% { transform: scale(0.885); }
+  38% { transform: scale(0.935); }
+  50% { transform: scale(0.9); }
+  70% { transform: scale(0.965); }
+  84% { transform: scale(0.925); }
+  100% { transform: scale(0.955); }
 }
 .hk-p3 .hk-stage,
 .hk-p4 .hk-stage {
@@ -201,11 +140,11 @@
   transform: scale(1);
 }
 .hk-p3 .hk-stage {
-  animation: hk-slam 560ms cubic-bezier(0.15, 1.3, 0.35, 1) 1;
+  animation: hk-slam 540ms cubic-bezier(0.15, 1.3, 0.35, 1) 1;
 }
 @keyframes hk-slam {
-  0% { transform: scale(0.95); }
-  22% { transform: scale(1.13); }
+  0% { transform: scale(0.955); }
+  22% { transform: scale(1.11); }
   100% { transform: scale(1); }
 }
 .hk-p4 .hk-stage {
@@ -213,171 +152,84 @@
 }
 @keyframes hk-breathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.016); }
+  50% { transform: scale(1.012); }
 }
 
-/* ====================================================================
-   THE NINJA
-   ==================================================================== */
-
-/* the name is a FLOW SIBLING of the head in here, never positioned on its own,
-   or it drifts down the frame the moment anything else moves */
-.hk-lockup {
+.hk-lock {
   position: absolute;
   left: 50%;
   top: var(--lock-y);
-  width: 84vw;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.hk-head {
-  width: var(--head-w);
+  width: var(--lock-w);
   height: auto;
-  display: block;
+  transform: translate(-50%, -50%);
   overflow: visible;
   filter:
-    drop-shadow(0 0.6vw 1.2vw rgba(0, 0, 0, 0.85))
-    drop-shadow(0 0 3vw rgba(125, 255, 46, 0.35));
+    drop-shadow(0 0.5vw 0.9vw rgba(0, 0, 0, 0.9))
+    drop-shadow(0 0 2.6vw rgba(125, 255, 46, 0.4));
 }
 
-.hk-skull { fill: url(#hk-hoodfill); }
-
-/* the hood sits forward over the brow and casts down onto it */
-.hk-crown {
-  fill: #04100a;
-  opacity: 0.55;
+/* mass: as heavy as the stack goes, packed tight, stretched taller than wide */
+.hk-t {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI Black", "Arial Black", sans-serif;
+  font-weight: 900;
+}
+.hk-t-brand {
+  font-size: 82px;
+  letter-spacing: -1px;
+}
+.hk-t-cap {
+  font-size: 40px;
+  letter-spacing: 4px;
 }
 
-.hk-skull-hi {
-  fill: rgba(150, 255, 110, 0.18);
+/* the extruded side. A stack of offset copies, not a drop-shadow — a shadow
+   is flat and this has to have a visible side face. */
+.hk-ext {
+  fill: url(#hk-side);
 }
-
-.hk-knot path {
-  fill: #16341a;
-}
-
-/* --- the exposed skin --- */
-.hk-band { fill: url(#hk-skinfill); }
-
-/* the skin is rounded, so it turns away from the light at the bottom */
-.hk-band-shade {
+/* the outline, painted under the fill so it never eats the letterforms */
+.hk-out {
   fill: none;
-  stroke: rgba(8, 40, 6, 0.75);
-  stroke-width: 26;
-  filter: blur(7px);
+  stroke: #04160a;
+  stroke-width: 9;
+  stroke-linejoin: round;
+  paint-order: stroke;
 }
+.hk-face { fill: url(#hk-face); }
+.hk-face2 { fill: url(#hk-face2); }
 
-.hk-veins {
-  filter: url(#hk-vein);
-}
-.hk-veins path {
+/* damage, clipped to the glyphs */
+.hk-cracks path {
   fill: none;
-  stroke: #1c5f14;
-  stroke-width: 3.6;
+  stroke: #06210a;
+  stroke-width: 3.4;
   stroke-linecap: round;
-  opacity: 0.55;
+  stroke-linejoin: round;
+  opacity: 0.9;
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
 }
-/* pathLength="100" on every vein: one dash rule drives them all at the same
+/* pathLength="100" on every crack: one dash rule drives them all at the same
    rate whatever their real lengths */
-.hk-p2 .hk-veins path,
-.hk-p3 .hk-veins path,
-.hk-p4 .hk-veins path {
-  animation: hk-draw 620ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
-  animation-delay: calc(var(--i) * 60ms);
+.hk-p3 .hk-cracks path,
+.hk-p4 .hk-cracks path {
+  animation: hk-split 240ms cubic-bezier(0.05, 0.9, 0.2, 1) forwards;
+  animation-delay: calc(var(--i) * 16ms);
 }
-@keyframes hk-draw {
+@keyframes hk-split {
   to { stroke-dashoffset: 0; }
 }
-.hk-p4 .hk-veins {
-  animation: hk-vein-pulse 3400ms ease-in-out infinite;
-}
-@keyframes hk-vein-pulse {
-  0%, 100% { opacity: 0.75; }
-  50% { opacity: 1; }
-}
 
-/* the brow ridge — a mass, not a pair of eyebrows */
-.hk-ridge {
-  fill: #0d3a0b;
-  opacity: 0;
-  filter: blur(4px);
-  transition: opacity 500ms ease;
-}
-.hk-ridge-hi {
-  fill: rgba(190, 255, 130, 0.4);
-  opacity: 0;
-  filter: blur(2px);
-  transition: opacity 500ms ease;
-}
-/* it comes down as he changes — the ridge arriving IS the scowl arriving */
-.hk-p2 .hk-ridge { opacity: 0.55; }
-.hk-p2 .hk-ridge-hi { opacity: 0.5; }
-.hk-p3 .hk-ridge,
-.hk-p4 .hk-ridge { opacity: 0.85; }
-.hk-p3 .hk-ridge-hi,
-.hk-p4 .hk-ridge-hi { opacity: 1; }
-
-.hk-eyes path {
-  fill: url(#hk-eyefill);
-}
-.hk-p3 .hk-eyes,
-.hk-p4 .hk-eyes {
-  filter: drop-shadow(0 0 1.4vw rgba(125, 255, 46, 0.9));
-}
-
-/* ====================================================================
-   THE NAME
-   ==================================================================== */
-
-.hk-type {
-  margin-top: 3.4vw;
-  text-align: center;
-}
-
-.hk-brand {
-  font-size: 11.6vw;
-  font-weight: 900;
-  letter-spacing: -0.2vw;
-  line-height: 1;
-  white-space: nowrap;
-  /* heavy and stretched — brute force rather than elegance */
-  transform: scaleY(1.06);
-  opacity: 0;
-  transition: opacity 300ms ease;
-}
-.hk-p2 .hk-brand,
-.hk-p3 .hk-brand,
-.hk-p4 .hk-brand {
-  opacity: 1;
-}
-.hk-brand-a {
-  color: var(--gamma);
-  text-shadow: 0 0.2vw 0 #10430c, 0 0 1.6vw rgba(125, 255, 46, 0.5);
-}
-.hk-brand-b {
-  color: #4aa52c;
-  text-shadow: 0 0.2vw 0 #071f06;
-}
-
+/* WOODBRIDGE lands after the brand line */
 .hk-caption {
-  margin-top: 1vw;
-  font-size: 5.4vw;
-  font-weight: 900;
-  letter-spacing: 0.78vw;
-  color: var(--gamma-hot);
-  text-shadow: 0 0.16vw 0 #10430c, 0 0 1.4vw rgba(125, 255, 46, 0.5);
   opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 220ms ease, transform 380ms cubic-bezier(0.15, 1.4, 0.35, 1);
+  transform: translateY(0.6px) scale(0.94);
+  transform-origin: 300px 160px;
+  transition: opacity 200ms ease, transform 360ms cubic-bezier(0.15, 1.4, 0.35, 1);
 }
 .hk-p4 .hk-caption {
   opacity: 1;
-  transform: scale(1);
+  transform: none;
 }
 
 /* ====================================================================
@@ -390,53 +242,22 @@
   position: absolute;
   left: 50%;
   top: var(--lock-y);
-  width: 60vw;
-  height: 60vw;
-  margin: -30vw 0 0 -30vw;
+  width: 56vw;
+  height: 56vw;
+  margin: -28vw 0 0 -28vw;
   border-radius: 50%;
-  border: 0.8vw solid rgba(214, 255, 170, 0.85);
+  border: 0.7vw solid rgba(214, 255, 170, 0.8);
   opacity: 0;
-  transform: scale(0.3) scaleY(0.62);
+  transform: scale(0.3) scaleY(0.5);
   z-index: 25;
   pointer-events: none;
 }
 .hk-p3 .hk-wave {
-  animation: hk-wave 760ms cubic-bezier(0.08, 0.75, 0.25, 1) 1;
+  animation: hk-wave 720ms cubic-bezier(0.08, 0.75, 0.25, 1) 1;
 }
 @keyframes hk-wave {
-  0% { opacity: 0.95; transform: scale(0.32) scaleY(0.62); border-width: 1.4vw; }
-  100% { opacity: 0; transform: scale(3.4) scaleY(0.62); border-width: 0.1vw; }
-}
-
-.hk-sparks {
-  position: absolute;
-  left: 50%;
-  top: var(--lock-y);
-  width: 0;
-  height: 0;
-  z-index: 26;
-  pointer-events: none;
-}
-.hk-sparks span {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1.5vw;
-  height: 0.34vw;
-  margin: -0.17vw 0 0 -0.75vw;
-  border-radius: 0.2vw;
-  background: linear-gradient(90deg, rgba(240, 255, 220, 0.95), rgba(125, 255, 46, 0));
-  opacity: 0;
-  transform: rotate(var(--a)) translateX(6vw) scale(var(--sc));
-}
-.hk-p3 .hk-sparks span,
-.hk-p4 .hk-sparks span {
-  animation: hk-spark 900ms cubic-bezier(0.1, 0.8, 0.3, 1) var(--dl) forwards;
-}
-@keyframes hk-spark {
-  0% { opacity: 0; transform: rotate(var(--a)) translateX(6vw) scale(var(--sc)); }
-  14% { opacity: 1; }
-  100% { opacity: 0; transform: rotate(var(--a)) translateX(var(--d)) scale(calc(var(--sc) * 0.5)); }
+  0% { opacity: 0.9; transform: scale(0.3) scaleY(0.5); border-width: 1.2vw; }
+  100% { opacity: 0; transform: scale(3.2) scaleY(0.5); border-width: 0.1vw; }
 }
 
 /* one frame of gamma at the moment of contact */
@@ -444,15 +265,15 @@
   position: absolute;
   inset: 0;
   z-index: 35;
-  background: radial-gradient(58% 38% at 50% 44%, #f4ffe6 0%, rgba(125, 255, 46, 0.5) 40%, transparent 74%);
+  background: radial-gradient(54% 32% at 50% 46%, #f4ffe6 0%, rgba(125, 255, 46, 0.45) 40%, transparent 72%);
   opacity: 0;
   pointer-events: none;
 }
 .hk-p3 .hk-flash {
-  animation: hk-flash 260ms ease-out 1;
+  animation: hk-flash 240ms ease-out 1;
 }
 @keyframes hk-flash {
-  0% { opacity: 0.9; }
+  0% { opacity: 0.85; }
   100% { opacity: 0; }
 }
 
@@ -465,7 +286,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 40;
-  opacity: 0.12;
+  opacity: 0.1;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
   background-size: 160px 160px;
@@ -476,11 +297,11 @@
   inset: 0;
   pointer-events: none;
   z-index: 41;
-  background: radial-gradient(80% 58% at 50% 46%, transparent 38%, rgba(0, 0, 0, 0.84) 100%);
+  background: radial-gradient(78% 54% at 50% 46%, transparent 36%, rgba(0, 0, 0, 0.85) 100%);
 }
 
 /* ====================================================================
-   STATIC MODE — the poster: full gamma, veins up, ridge down, name in
+   STATIC MODE — the poster: full gamma, cracked, both lines in
    ==================================================================== */
 
 .hk.is-static *,
@@ -493,22 +314,12 @@
   transform: scale(1);
   filter: none;
 }
-.hk.is-static .hk-pool,
-.hk.is-static .hk-motes,
-.hk.is-static .hk-brand,
-.hk.is-static .hk-ridge-hi { opacity: 1; }
-.hk.is-static .hk-bloom { opacity: 0.62; transform: scale(1); }
-.hk.is-static .hk-ridge { opacity: 0.85; }
-.hk.is-static .hk-veins path { stroke-dashoffset: 0; }
-.hk.is-static .hk-eyes { filter: drop-shadow(0 0 1.4vw rgba(125, 255, 46, 0.9)); }
-.hk.is-static .hk-caption { opacity: 1; transform: scale(1); }
-/* the dust has to be spread through the frame in the still — with the drift
-   stopped it would otherwise all sit below the bottom edge */
-.hk.is-static .hk-motes span { bottom: var(--y); }
+.hk.is-static .hk-bloom { opacity: 0.6; transform: scale(1); }
+.hk.is-static .hk-cracks path { stroke-dashoffset: 0; }
+.hk.is-static .hk-caption { opacity: 1; transform: none; }
 /* one-pass events with no resting state */
 .hk.is-static .hk-flash,
-.hk.is-static .hk-wave,
-.hk.is-static .hk-sparks { opacity: 0; }
+.hk.is-static .hk-wave { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .hk *,
@@ -521,17 +332,9 @@
     transform: scale(1);
     filter: none;
   }
-  .hk .hk-pool,
-  .hk .hk-motes,
-  .hk .hk-brand,
-  .hk .hk-ridge-hi { opacity: 1; }
-  .hk .hk-bloom { opacity: 0.62; transform: scale(1); }
-  .hk .hk-ridge { opacity: 0.85; }
-  .hk .hk-veins path { stroke-dashoffset: 0; }
-  .hk .hk-eyes { filter: drop-shadow(0 0 1.4vw rgba(125, 255, 46, 0.9)); }
-  .hk .hk-caption { opacity: 1; transform: scale(1); }
-  .hk .hk-motes span { bottom: var(--y); }
+  .hk .hk-bloom { opacity: 0.6; transform: scale(1); }
+  .hk .hk-cracks path { stroke-dashoffset: 0; }
+  .hk .hk-caption { opacity: 1; transform: none; }
   .hk .hk-flash,
-  .hk .hk-wave,
-  .hk .hk-sparks { opacity: 0; }
+  .hk .hk-wave { opacity: 0; }
 }

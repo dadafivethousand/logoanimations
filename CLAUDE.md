@@ -136,6 +136,15 @@ Hard-won details, don't relearn them:
   the SHADOW's colour, completely covering the gradient. Hulk's WOODBRIDGE came
   out solid purple this way. Pick one: a gradient fill with no offsets, or a
   solid `color` with offsets.
+- **Making heavy system type look like display lettering.** No custom fonts are
+  bundled here, so a "themed font" has to be built (Hulk): the weight stack at
+  900, tight tracking, a real extrusion (a stack of copies offset downward — a
+  drop-shadow is flat and gives no side face), an outline painted UNDER the
+  fill via `paint-order: stroke`, damage clipped to the glyphs with a
+  `clipPath` holding the same `<text>`, and one `feDisplacementMap` over the
+  lot. The machine-clean edge is the single thing that gives a system font
+  away. Pin every line with `textLength` + `lengthAdjust="spacingAndGlyphs"` so
+  the layout holds whatever the device actually falls back to.
 - **If a theme needs a different HEAD, draw it — don't recolour the mark.**
   Hulk went through three passes recolouring `logo.png` by region and every one
   read as "the logo, but green", because a hulk needs a heavier skull, a brow
