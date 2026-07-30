@@ -5,10 +5,11 @@ import "./Stylesheets/App.css";
 // import Pirates from "./Components/Pirates";
 // import Patriot from "./Components/Patriot";
 // import Bjj from "./Components/Bjj";
-import Hulk from "./Components/Hulk";
+// import Hulk from "./Components/Hulk";
+import Hologram from "./Components/Hologram";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Hulk mode="animated" />;
+  return <Hologram mode="animated" />;
 }
 export default App;

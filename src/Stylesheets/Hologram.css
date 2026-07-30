@@ -1,0 +1,681 @@
+/* Hologram — the mark as a volumetric light projection.
+   Midnight indigo void, electric cyan light, brand red as the chromatic
+   fringe. Portrait phone only (~390x844), screen-recorded. Layout in vw/vh;
+   px reserved for hairlines that must stay hairlines. */
+
+@property --hg-sweep {
+  syntax: "<percentage>";
+  initial-value: 160%;
+  inherits: false;
+}
+
+.hg {
+  /* palette — light, not metal */
+  --void: #03060e;
+  --deep: #071328;
+  --indigo: #0d2b4d;
+  --indigo-hi: #17507f;
+  --cyan: #57e6ff;
+  --cyan-hi: #dcfaff;
+  --cyan-lo: #1b7fa8;
+  --brand-blue: #3fb3ee;
+  --red: #e4002b;
+
+  /* screen-recording crop: nothing meaningful inside this band */
+  --safe-x: 11.5vw;
+  --safe-y: 4.7vh;
+
+  --mark-w: 64vw;
+  /* the scan line has to travel the mark's real height, and the mark box is
+     sized off the logo's own aspect — so derive it rather than guessing */
+  --mark-h: calc(var(--mark-w) / var(--logo-aspect, 1.8));
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--void);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--cyan-hi);
+  isolation: isolate;
+}
+
+/* ====================================================================
+   THE ROOM — one volume with light falling through it, not stacked bands
+   ==================================================================== */
+
+.hg-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(74% 46% at 50% 40%, #0d2a4a 0%, #071630 38%, var(--void) 100%),
+    linear-gradient(180deg, #050b18, #02040a);
+}
+
+/* floor plane: perspective rules that fade out well before the horizon, so
+   there is no seam across the frame */
+.hg-floor {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: 0;
+  height: 34vh;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(87, 230, 255, 0.16) 0 1px, transparent 1px 7.5%),
+    repeating-linear-gradient(0deg, rgba(87, 230, 255, 0.13) 0 1px, transparent 1px 22%);
+  transform: perspective(46vh) rotateX(66deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to top, #000 0%, transparent 78%);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 78%);
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+.hg-p1 .hg-floor,
+.hg-p2 .hg-floor,
+.hg-p3 .hg-floor,
+.hg-p4 .hg-floor {
+  opacity: 0.7;
+}
+
+/* ====================================================================
+   BEAM + EMITTER
+   ==================================================================== */
+
+.hg-beam {
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  width: 86vw;
+  height: 64vh;
+  transform: translateX(-50%) scaleY(0.2);
+  transform-origin: 50% 100%;
+  clip-path: polygon(0% 0%, 100% 0%, 61% 100%, 39% 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(87, 230, 255, 0.15) 0%,
+    rgba(87, 230, 255, 0.07) 46%,
+    rgba(87, 230, 255, 0.02) 78%,
+    transparent 100%
+  );
+  /* the clip gives the cone its shape but leaves a hard lid across the frame
+     and crisp sides — fade the top out and feather the whole thing so it
+     reads as light in air rather than a translucent panel */
+  mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.55) 46%, transparent 92%);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.55) 46%, transparent 92%);
+  filter: blur(13px);
+  opacity: 0;
+  transition: opacity 700ms ease, transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hg-p1 .hg-beam,
+.hg-p2 .hg-beam,
+.hg-p3 .hg-beam,
+.hg-p4 .hg-beam {
+  opacity: 1;
+  transform: translateX(-50%) scaleY(1);
+}
+.hg-p3 .hg-beam,
+.hg-p4 .hg-beam {
+  animation: hg-beam-flicker 5.2s ease-in-out 400ms infinite;
+}
+@keyframes hg-beam-flicker {
+  0%, 100% { opacity: 1; }
+  46% { opacity: 0.86; }
+  52% { opacity: 1; }
+  71% { opacity: 0.92; }
+}
+
+.hg-motes {
+  position: absolute;
+  left: 50%;
+  bottom: 22vh;
+  width: 56vw;
+  height: 44vh;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.hg-motes span {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  background: var(--cyan-hi);
+  box-shadow: 0 0 6px rgba(87, 230, 255, 0.9);
+  opacity: 0;
+}
+.hg-p2 .hg-motes span,
+.hg-p3 .hg-motes span,
+.hg-p4 .hg-motes span {
+  animation-name: hg-mote;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes hg-mote {
+  0% { opacity: 0; transform: translateY(0); }
+  14% { opacity: 0.85; }
+  76% { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(var(--rise)); }
+}
+
+.hg-emitter {
+  position: absolute;
+  left: 50%;
+  top: 74%;
+  width: 30vw;
+  height: 30vw;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.hg-p1 .hg-emitter,
+.hg-p2 .hg-emitter,
+.hg-p3 .hg-emitter,
+.hg-p4 .hg-emitter {
+  opacity: 1;
+}
+.hg-emitter-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 17vw;
+  height: 1.5vw;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--cyan-hi), var(--cyan) 45%, transparent 100%);
+  box-shadow: 0 0 5vw rgba(87, 230, 255, 0.55);
+}
+.hg-p1 .hg-emitter-core,
+.hg-p2 .hg-emitter-core,
+.hg-p3 .hg-emitter-core,
+.hg-p4 .hg-emitter-core {
+  animation: hg-pulse 2.6s ease-in-out infinite;
+}
+@keyframes hg-pulse {
+  0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scaleX(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scaleX(1.08); }
+}
+.hg-emitter-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26vw;
+  height: 2.4vw;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(87, 230, 255, 0.42);
+  border-radius: 50%;
+}
+
+/* ====================================================================
+   THE LOCKUP
+   ==================================================================== */
+
+.hg-markwrap {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: var(--mark-w);
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.hg-markbox {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--logo-aspect);
+}
+
+/* alignment ring, behind the mark */
+.hg-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 132%;
+  height: auto;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  fill: none;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.hg-p2 .hg-ring,
+.hg-p3 .hg-ring,
+.hg-p4 .hg-ring {
+  opacity: 0.5;
+  animation: hg-spin 26s linear infinite;
+}
+@keyframes hg-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.hg-ring-dash {
+  stroke: rgba(87, 230, 255, 0.55);
+  stroke-width: 0.9;
+  stroke-dasharray: 3 9;
+}
+.hg-ring-thin {
+  stroke: rgba(87, 230, 255, 0.18);
+  stroke-width: 0.5;
+}
+.hg-ring-ticks path {
+  stroke: rgba(87, 230, 255, 0.6);
+  stroke-width: 1.4;
+}
+
+/* soft bloom the projection throws into the air around itself */
+.hg-bloom {
+  position: absolute;
+  inset: -22%;
+  background: radial-gradient(
+    50% 44% at 50% 50%,
+    rgba(87, 230, 255, 0.34) 0%,
+    rgba(43, 140, 200, 0.14) 42%,
+    transparent 76%
+  );
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+.hg-p3 .hg-bloom,
+.hg-p4 .hg-bloom {
+  opacity: 1;
+}
+
+/* the mark builds bottom-up; the clip belongs to the wrapper so the material
+   layers inside keep their own logo masks in register */
+/* Only the TOP edge of this clip does the revealing. The other three are held
+   well outside the box because the glow chain on .hg-proj spreads ~4.5vw past
+   the letterforms — clipping at inset 0 sheared it off square and drew a
+   visible rectangle of haze around the mark. */
+.hg-mark {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(100% -45% -45% -45%);
+  transition: clip-path 1000ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hg-p2 .hg-mark,
+.hg-p3 .hg-mark,
+.hg-p4 .hg-mark {
+  clip-path: inset(-45% -45% -45% -45%);
+}
+
+.hg-layer,
+.hg-region {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: var(--logo);
+  mask-image: var(--logo);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+/* --- chromatic split: the same mark offset either side and screened. The
+   whole masked copy moves, which is the effect; a highlight could not be
+   moved this way — the mask would travel with it. --- */
+.hg-fringe {
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+/* kept low: at 0.55 the red copy sat over the dark region and turned the hood
+   and "NINJAS" muddy violet, which is the wash Hulk was rebuilt to avoid */
+.hg-p3 .hg-fringe,
+.hg-p4 .hg-fringe {
+  opacity: 0.34;
+}
+/* Offset with transform, not `left`: `inset: 0` pins both edges, so shifting
+   one would resize the box and `mask-size: contain` would rescale the mark
+   inside it — a squashed ghost rather than a displaced one. */
+.hg-fr-red {
+  transform: translateX(0.55vw);
+  background: var(--red);
+}
+.hg-fr-cyan {
+  transform: translateX(-0.55vw);
+  background: var(--cyan);
+}
+.hg-p3 .hg-fr-red,
+.hg-p4 .hg-fr-red {
+  animation: hg-glitch-r 6.4s steps(1, end) infinite;
+}
+.hg-p3 .hg-fr-cyan,
+.hg-p4 .hg-fr-cyan {
+  animation: hg-glitch-c 6.4s steps(1, end) infinite;
+}
+@keyframes hg-glitch-r {
+  0%, 86%, 100% { transform: translateX(0.55vw); }
+  88% { transform: translateX(1.9vw); }
+  90% { transform: translateX(0.2vw); }
+  92% { transform: translateX(1.3vw); }
+}
+@keyframes hg-glitch-c {
+  0%, 86%, 100% { transform: translateX(-0.55vw); }
+  88% { transform: translateX(-1.9vw); }
+  90% { transform: translateX(-0.2vw); }
+  92% { transform: translateX(-1.3vw); }
+}
+
+/* --- the glow chain traces the letterforms because drop-shadow reads the
+   alpha of the layers inside this wrapper --- */
+.hg-proj {
+  position: absolute;
+  inset: 0;
+  filter:
+    drop-shadow(0 0 0.5vw rgba(87, 230, 255, 0.85))
+    drop-shadow(0 0 1.8vw rgba(60, 190, 240, 0.55))
+    drop-shadow(0 0 4.5vw rgba(30, 120, 190, 0.4))
+    blur(1.4px);
+  transition: filter 700ms ease;
+}
+.hg-p3 .hg-proj,
+.hg-p4 .hg-proj {
+  filter:
+    drop-shadow(0 0 0.5vw rgba(87, 230, 255, 0.85))
+    drop-shadow(0 0 1.8vw rgba(60, 190, 240, 0.55))
+    drop-shadow(0 0 4.5vw rgba(30, 120, 190, 0.4))
+    blur(0);
+}
+
+/* base glass — translucent, lit from within */
+.hg-body {
+  background: linear-gradient(
+    170deg,
+    rgba(120, 240, 255, 0.42) 0%,
+    rgba(60, 175, 230, 0.3) 40%,
+    rgba(30, 110, 180, 0.34) 100%
+  );
+}
+
+/* Hood + "NINJAS": the dark region, kept well clear of black so the letters
+   never sink into the void behind them. */
+.hg-hood {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+  /* This is LIT GLASS, not a shadow. The first pass ran it down to #0a2340
+     and "NINJAS" read as unlit grey next to a glowing "CODE" — the same trap
+     Hulk fell into. Keep every stop well clear of black. */
+  background: linear-gradient(168deg, #4aa6dd 0%, #2f7fba 46%, var(--indigo-hi) 100%);
+}
+
+/* The eye band is the light source — brightest thing in the frame. */
+.hg-face {
+  -webkit-mask-image: var(--logo-light, var(--logo));
+  mask-image: var(--logo-light, var(--logo));
+  background: linear-gradient(180deg, var(--cyan-hi) 0%, var(--cyan) 60%, #24a9d6 100%);
+}
+
+/* "CODE" keeps the brand's blue, pushed bright enough to read as light. */
+.hg-code {
+  -webkit-mask-image: var(--logo-accent, var(--logo));
+  mask-image: var(--logo-accent, var(--logo));
+  background: linear-gradient(180deg, #7fd8ff 0%, var(--brand-blue) 55%, #1d7fc0 100%);
+}
+
+/* interference: horizontal lines rolling through the projection. Scrolled by
+   background-position behind a fixed mask, never by transform. */
+.hg-lines {
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.17) 0 1px,
+    rgba(255, 255, 255, 0.05) 1px 2px,
+    transparent 2px 5px
+  );
+  background-size: 100% 5px;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.hg-p3 .hg-lines,
+.hg-p4 .hg-lines {
+  opacity: 1;
+  animation: hg-lines 2.2s linear infinite;
+}
+@keyframes hg-lines {
+  from { background-position: 0 0; }
+  to { background-position: 0 -25px; }
+}
+
+/* a light pass travelling across the glass */
+.hg-spec {
+  background-image: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(230, 252, 255, 0.5) 48%,
+    rgba(230, 252, 255, 0.12) 54%,
+    transparent 62%
+  );
+  background-size: 260% 100%;
+  background-position: var(--hg-sweep) 0;
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.hg-p3 .hg-spec,
+.hg-p4 .hg-spec {
+  opacity: 1;
+  animation: hg-sweep 4.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+@keyframes hg-sweep {
+  0% { --hg-sweep: 170%; }
+  55%, 100% { --hg-sweep: -70%; }
+}
+
+/* the scan line that builds the mark, then keeps passing slowly */
+.hg-scanbar {
+  position: absolute;
+  left: -8%;
+  right: -8%;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(87, 230, 255, 0.25) 12%,
+    var(--cyan-hi) 50%,
+    rgba(87, 230, 255, 0.25) 88%,
+    transparent
+  );
+  box-shadow: 0 0 1.6vw rgba(87, 230, 255, 0.9);
+  opacity: 0;
+  transform: translateY(0);
+}
+.hg-p2 .hg-scanbar {
+  opacity: 1;
+  animation: hg-build 1000ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hg-p3 .hg-scanbar,
+.hg-p4 .hg-scanbar {
+  opacity: 0.4;
+  animation: hg-repass 5.2s ease-in-out 600ms infinite;
+}
+@keyframes hg-build {
+  from { transform: translateY(var(--mark-h, 100%)); }
+  to { transform: translateY(0); }
+}
+@keyframes hg-repass {
+  0%, 100% { transform: translateY(0); opacity: 0; }
+  6% { opacity: 0.45; }
+  60% { transform: translateY(var(--mark-h, 100%)); opacity: 0.45; }
+  70% { transform: translateY(var(--mark-h, 100%)); opacity: 0; }
+}
+
+/* ====================================================================
+   TYPE — welded under the mark as a flow sibling
+   ==================================================================== */
+
+.hg-type {
+  position: relative;
+  margin-top: 7.5vw;
+  text-align: center;
+  z-index: 26;
+}
+
+/* solid colour with offsets — a background-clip gradient would be painted
+   over by these shadows and come out flat */
+.hg-caption {
+  font-size: 4.3vw;
+  font-weight: 900;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--cyan-hi);
+  text-shadow:
+    0.12vw 0 0 rgba(228, 0, 43, 0.6),
+    -0.12vw 0 0 rgba(87, 230, 255, 0.6),
+    0 0 2.4vw rgba(87, 230, 255, 0.75);
+  opacity: 0;
+  transform: translateY(1.2vw);
+  transition: opacity 560ms ease, transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hg-p4 .hg-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hg-rule {
+  width: 62%;
+  height: 1px;
+  margin: 3vw auto 0;
+  background: rgba(87, 230, 255, 0.16);
+  overflow: hidden;
+}
+.hg-rule span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  box-shadow: 0 0 1.2vw rgba(87, 230, 255, 0.8);
+  transform: scaleX(0);
+  transition: transform 900ms 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hg-p4 .hg-rule span {
+  transform: scaleX(1);
+}
+
+/* ====================================================================
+   FILM
+   ==================================================================== */
+
+.hg-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.22) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 40;
+}
+
+/* one soft band rolling down the frame, like a signal refresh */
+.hg-roll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 26vh;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(87, 230, 255, 0.055) 45%,
+    rgba(87, 230, 255, 0.02) 60%,
+    transparent
+  );
+  pointer-events: none;
+  z-index: 41;
+  animation: hg-rollpass 7.5s linear infinite;
+}
+@keyframes hg-rollpass {
+  from { transform: translateY(-30vh); }
+  to { transform: translateY(110vh); }
+}
+
+.hg-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    78% 62% at 50% 46%,
+    transparent 42%,
+    rgba(0, 0, 0, 0.55) 88%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  pointer-events: none;
+  z-index: 42;
+}
+
+/* ====================================================================
+   STATIC POSTER FRAME — every one-pass effect forced off, everything that
+   should persist frozen at a flattering value
+   ==================================================================== */
+
+.hg.is-static *,
+.hg.is-static *::before,
+.hg.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.hg.is-static .hg-mark {
+  clip-path: inset(-45% -45% -45% -45%);
+}
+.hg.is-static .hg-proj {
+  filter:
+    drop-shadow(0 0 0.5vw rgba(87, 230, 255, 0.85))
+    drop-shadow(0 0 1.8vw rgba(60, 190, 240, 0.55))
+    drop-shadow(0 0 4.5vw rgba(30, 120, 190, 0.4))
+    blur(0);
+}
+/* one-pass, no resting state */
+.hg.is-static .hg-scanbar,
+.hg.is-static .hg-roll {
+  opacity: 0;
+}
+/* the sweep has to sit somewhere flattering when frozen */
+.hg.is-static .hg-spec {
+  opacity: 1;
+  --hg-sweep: 42%;
+}
+.hg.is-static .hg-lines {
+  opacity: 1;
+}
+/* park each mote at its own height so the still shows dust in the beam, not a
+   row of dots along the bottom */
+.hg.is-static .hg-motes span {
+  opacity: 0.55;
+  transform: translateY(var(--seat, -18vh));
+}
+.hg.is-static .hg-beam {
+  opacity: 1;
+  transform: translateX(-50%) scaleY(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg *,
+  .hg *::before,
+  .hg *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .hg .hg-mark {
+    clip-path: inset(-45% -45% -45% -45%);
+  }
+  .hg .hg-proj {
+    filter:
+      drop-shadow(0 0 0.5vw rgba(87, 230, 255, 0.85))
+      drop-shadow(0 0 1.8vw rgba(60, 190, 240, 0.55))
+      drop-shadow(0 0 4.5vw rgba(30, 120, 190, 0.4))
+      blur(0);
+  }
+  .hg .hg-scanbar,
+  .hg .hg-roll {
+    opacity: 0;
+  }
+  .hg .hg-spec {
+    opacity: 1;
+    --hg-sweep: 42%;
+  }
+  .hg .hg-lines {
+    opacity: 1;
+  }
+  .hg .hg-beam {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1);
+  }
+}
