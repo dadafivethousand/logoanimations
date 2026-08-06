@@ -154,26 +154,22 @@ Hard-won details, don't relearn them:
   above the eyes *inside* the skin, dipping toward the middle — a pair of
   eyebrows laid on top reads as cheesy; and the eyes carry the anger, so make
   them narrow slits lit from inside.
-- **Don't hybridise the ninja with a character — pick one.** Pokemon burned
+- **Don't hybridise the mark with a character — pick one.** Pokemon burned
   three passes on this. A Charmander head under a ninja hood reads as a cartoon
   lizard in a hood and the brand is gone; the mark's own head on a Charmander
-  body reads as neither. The user's call was to drop the ninja and just draw
-  the Charmander, and it was immediately better — a theme can be a *character*
-  with CODE NINJAS WOODBRIDGE set as type under it, exactly as Patriot and Hulk
-  do without the logo file. Dead ends collected on the way, all still true: a
-  dark shape down both sides of a face reads as a bob haircut, not a hood; a
-  cream chin patch under a snout reads as a bear; and a mouth that doesn't run
-  most of the face's width reads as a bear's, not a lizard's.
-- **Drawing a cartoon animal face that isn't creepy.** The Pokemon face came
-  back as "creepy" and three things were doing it, in order of weight. (1) A
-  WHITE SCLERA RING around the iris — that is a human eye, and on an animal it
-  stares. Build the eye as a dark oval, iris inside it, pupil, shine on top; no
-  white around the rim, and keep the dark rim thin. (2) The muzzle painted a
-  lighter colour than the head, which reads as a mask stuck on the face. It is
-  the same hide: give it the same fill and let a drop-shadow do the form. (3) A
-  hairline mouth reads as a slit cut in the face — it wants weight and corners
-  that lift. Also keep the head no wider than the body or it is a balloon, and
-  put a throat between the two.
+  body reads as neither. Dropping the ninja and drawing just the Charmander was
+  immediately better — a theme can be a *character* with CODE NINJAS WOODBRIDGE
+  set as type under it, exactly as Patriot and Hulk work without the logo file.
+  (Pokemon then dropped the character too — see the note under Copy.)
+- **Drawing a cartoon animal face that isn't creepy.** Three things were doing
+  it, in order of weight. (1) A WHITE SCLERA RING around the iris — that is a
+  human eye, and on an animal it stares. Build the eye as a dark oval with the
+  iris inside it, a pupil, and a shine on top; no white around the rim, and keep
+  the dark rim thin. (2) The muzzle painted a lighter colour than the head reads
+  as a mask stuck on the face. It is the same hide: same fill, and let a
+  drop-shadow do the form. (3) A hairline mouth reads as a slit cut in the face
+  — it wants weight, corners that lift, and most of the face's width. Keep the
+  head no wider than the body or it is a balloon, and put a throat between them.
 - **One colour story per theme, and mean it.** Hulk's violet key was
   theoretically correct (green/purple is the Hulk pair) and in practice washed
   the whole frame muddy purple on a phone. Gamma green on near-black was
@@ -275,6 +271,16 @@ for these to be gone; don't reintroduce them when adding a theme.
 
 Anything beyond that word is a claim, so **confirm the wording with the user
 before treating it as final** — this is public-facing marketing.
+
+Two themes depart from this, both because the user asked for it, and neither is
+a new licence: SoundOn renders a "SOUND ON" cue, and **Pokemon renders a promo**
+— a tablet comes out of the burst Poké Ball carrying a back-to-school headline,
+a line of body copy and a call to action. Those three strings are props on the
+component and are **placeholder wording**: a promo carries an actual offer, so
+the real headline, offer and CTA have to come from the user before a take is
+posted. Pokemon is also the theme where the mark position is held by something
+that isn't the ninja at all — the ball stands in for the head, and the lockup
+is the artwork's own arrangement with the name set in the theme's lettering.
 
 ## Workflow
 
