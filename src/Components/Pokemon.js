@@ -59,11 +59,13 @@ export default function Pokemon({
   mode = "animated",
   brand = "CODE NINJAS",
   caption = "WOODBRIDGE",
-  // PLACEHOLDER COPY — confirm with the user before posting a take. The
-  // headline is two strings because it is set on two lines; each is pinned to
-  // its own textLength, so new wording needs new widths.
-  promoLine1 = "BACK TO",
-  promoLine2 = "SCHOOL",
+  // PLACEHOLDER COPY — every one of these, and the DISCOUNT ESPECIALLY. "50%"
+  // is a number picked to lay the page out with, not an offer. Confirm the real
+  // one with the user before a take is posted. Each line is pinned to its own
+  // textLength, so new wording needs new widths.
+  promoKicker = "BACK TO SCHOOL",
+  promoDiscount = "50%",
+  promoOff = "OFF",
   promoSub = "CODING CLASSES",
   promoCta = "ENROLL NOW",
   loopAt = 9200,
@@ -135,7 +137,8 @@ export default function Pokemon({
               </g>
             </g>
 
-            <Tablet line1={promoLine1} line2={promoLine2} sub={promoSub} cta={promoCta} />
+            <Tablet kicker={promoKicker} discount={promoDiscount} off={promoOff}
+                     sub={promoSub} cta={promoCta} />
 
             {/* ---- the burst itself ---- */}
             <circle className="pk-shock pk-shock-1" cx="200" cy="200" r="56" />
@@ -209,7 +212,7 @@ export default function Pokemon({
 
    Drawn in scene units (400x400), centred on the ball at (200,200).
    ====================================================================== */
-function Tablet({ line1, line2, sub, cta }) {
+function Tablet({ kicker, discount, off, sub, cta }) {
   return (
     <g className="pk-tab">
       <rect className="pk-anchor" x="0" y="0" width="400" height="400" fill="none" />
@@ -239,15 +242,22 @@ function Tablet({ line1, line2, sub, cta }) {
 
             <Pencil />
 
-            {/* headline, ranged left off the margin like something written on
-                the page — centred type would fight the rules */}
-            <text className="pk-h1" x="100" y="146" textLength="150"
-                  lengthAdjust="spacingAndGlyphs">{line1}</text>
-            <text className="pk-h1" x="100" y="184" textLength="142"
-                  lengthAdjust="spacingAndGlyphs">{line2}</text>
-            <rect className="pk-uline" x="100" y="194" width="120" height="4.5" rx="2.25" />
+            {/* HIERARCHY: the discount is the hero and BACK TO SCHOOL is the
+                kicker over it, not the other way round. The number is the
+                biggest thing on the page and "OFF" hangs off it at a third the
+                size — that pair is the whole point of the frame. */}
+            <text className="pk-kicker" x="100" y="122" textLength="132"
+                  lengthAdjust="spacingAndGlyphs">{kicker}</text>
 
-            <text className="pk-sub" x="100" y="224" textLength="140"
+            <g className="pk-tabhero">
+              <text className="pk-hero-num" x="100" y="184" textLength="100"
+                    lengthAdjust="spacingAndGlyphs">{discount}</text>
+              <text className="pk-hero-off" x="206" y="184" textLength="56"
+                    lengthAdjust="spacingAndGlyphs">{off}</text>
+            </g>
+            <rect className="pk-uline" x="100" y="194" width="162" height="5" rx="2.5" />
+
+            <text className="pk-sub" x="100" y="224" textLength="132"
                   lengthAdjust="spacingAndGlyphs">{sub}</text>
           </g>
 
@@ -274,7 +284,7 @@ function Tablet({ line1, line2, sub, cta }) {
    next person to animate it will find the origin already free. */
 function Pencil() {
   return (
-    <g transform="translate(306 164) rotate(24)">
+    <g transform="translate(315 200) rotate(30) scale(0.86)">
       <g className="pk-pencil">
         <path className="pk-pen-wood" d="M-12 -46 L12 -46 L0 -70 Z" />
         {/* the point goes AFTER the cone or the cone paints over it and the

@@ -164,7 +164,11 @@ Hard-won details, don't relearn them:
   on a phone, so the layout gets four elements — headline, rule, one line of
   body, one button. A kicker or a second body line lands under 10px and is
   unreadable in a feed. Range the headline left off the margin rule; centred
-  type fights the rules. And a device's screen should WAKE (blow out white,
+  type fights the rules. When there is an OFFER, the offer is the hero and the
+  occasion is the kicker over it, not the other way round — BACK TO SCHOOL at
+  16px over a 60px number, with "OFF" at half the number's size and in red so
+  the number keeps the weight. Give it its own beat too: the discount lands
+  last and hardest, and the button follows it rather than sharing the cue. And a device's screen should WAKE (blow out white,
   then resolve) — one that fades up with its content already on it reads as a
   picture of a device rather than one that just turned on.
 - **Don't hybridise the mark with a character — pick one.** Pokemon burned

@@ -432,13 +432,29 @@
 .pk-pen-ferrule-line { fill: rgba(80, 84, 96, 0.45); }
 .pk-pen-eraser { fill: #f28aa0; }
 
-/* --- the copy --- */
-.pk-h1 {
+/* --- the copy: the DISCOUNT is the hero and BACK TO SCHOOL is the kicker --- */
+.pk-kicker {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 38px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 2.2px;
+  fill: var(--red);
+}
+.pk-hero-num {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 60px;
   font-weight: 900;
-  letter-spacing: -0.5px;
+  letter-spacing: -2px;
   fill: var(--ink);
+}
+/* "OFF" is red and a third the size — the number carries it, and putting them
+   both at the same weight makes neither of them the point */
+.pk-hero-off {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  fill: var(--red);
 }
 .pk-uline { fill: var(--red); }
 .pk-sub {
@@ -485,7 +501,22 @@
   to { opacity: 1; }
 }
 
-/* the call to action lands last and lands hard */
+/* The discount lands last and lands hardest — it is the reason for the frame,
+   so it gets its own beat and the button follows it rather than sharing one.
+   It grows from its own left edge, where the eye already is after the kicker. */
+.pk-tabhero {
+  opacity: 0;
+  transform: scale(0.55);
+  transform-box: fill-box;
+  transform-origin: 0% 70%;
+}
+.pk-p5 .pk-tabhero {
+  animation: pk-slam 520ms cubic-bezier(0.2, 1.7, 0.36, 1) forwards;
+}
+@keyframes pk-slam {
+  to { opacity: 1; transform: scale(1); }
+}
+
 .pk-tabcta {
   opacity: 0;
   transform: scale(0.82);
@@ -493,7 +524,7 @@
   transform-origin: center;
 }
 .pk-p5 .pk-tabcta {
-  animation: pk-pop 460ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+  animation: pk-pop 460ms 260ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
 }
 @keyframes pk-pop {
   to { opacity: 1; transform: scale(1); }
@@ -646,6 +677,7 @@
 .pk.is-static .pk-tabcopy {
   opacity: 1;
 }
+.pk.is-static .pk-tabhero,
 .pk.is-static .pk-tabcta {
   opacity: 1;
   transform: none;
@@ -703,6 +735,7 @@
   .pk .pk-tabcopy {
     opacity: 1;
   }
+  .pk .pk-tabhero,
   .pk .pk-tabcta {
     opacity: 1;
     transform: none;
