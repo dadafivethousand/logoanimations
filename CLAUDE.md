@@ -170,7 +170,24 @@ Hard-won details, don't relearn them:
   close that gap. The user saw it shift on the burst and asked for it to stop:
   one resting position for every phase, and the ball beats just carry more air.
   A permanent pull-up takes back some of the gap without animating, capped by
-  the thrown bottom shell, which must stay clear of the wordmark. And a device's screen should WAKE (blow out white,
+  the thrown bottom shell, which must stay clear of the wordmark.
+- **Styling that page, in order of how much each thing bought.** A HIGHLIGHTER
+  swipe under the hook is the strongest emphasis device a page has, and it is
+  the one bit of motion the layout wants — but blend it `multiply` or it lies on
+  the rules as an opaque slab, and draw it on AFTER the words, because that is
+  the order it happens in on real paper. Then: three facets on the pencil (a
+  hexagonal pencil has a lit side, a body and a shaded side; one flat yellow is
+  clip-art), rules that fade off to the right so the page has a light
+  direction, dished punch holes rather than flat grey circles, a bezel shadow
+  down the top of the page, and paper fibre from `feTurbulence` — which must be
+  desaturated with `feColorMatrix`, or it is coloured confetti rather than
+  grain. A paper-plane glyph in the button does more for "DM" than the word.
+- **A thrown half-shell needs its CUT EDGE visible or it is a coloured blob.**
+  What identifies a Poké Ball half is the flat edge and its black band, so a
+  piece thrown only far enough to peek out from behind something shows the dome
+  and reads as nothing. Throw it clear to a corner, and scale it down as it
+  goes — it is flying away from the viewer, so the perspective is right and the
+  shrink buys the clearance the throw needs. And a device's screen should WAKE (blow out white,
   then resolve) — one that fades up with its content already on it reads as a
   picture of a device rather than one that just turned on.
 - **Don't hybridise the mark with a character — pick one.** Pokemon burned

@@ -31,7 +31,7 @@
   /* the one knob the whole composition scales from. Bigger than the previous
      subject was, because this one carries COPY and it has to be readable on a
      phone at arm's length. */
-  --lock: 66vw;
+  --lock: 70vw;
 
   /* the mark's centre, as a fraction of the 400x400 scene box */
   --mark-x: 50%;
@@ -283,9 +283,11 @@
 }
 
 .pk-shell { transform-box: fill-box; }
-/* The tablet is nearly as wide as the box, so shells thrown to the corners end
-   up behind it and read as two coloured blobs. They go clear above and below
-   it instead, with a lateral kick so it is not a dead-symmetrical split. */
+/* The tablet is nearly as wide as the box, so a shell that does not get thrown
+   FAR ends up behind it with its flat edge hidden — and a half-shell without
+   its flat edge and black band is just a coloured blob. They go to opposite
+   corners, and they shrink on the way: they are flying away from the viewer,
+   so the perspective is right and it buys the clearance the throw needs. */
 .pk-shell-top {
   transform-origin: 50% 42.75%;
   transition: transform 680ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -297,12 +299,12 @@
 .pk-p3 .pk-shell-top,
 .pk-p4 .pk-shell-top,
 .pk-p5 .pk-shell-top {
-  transform: translate(-14%, -35%) rotate(-26deg);
+  transform: translate(-40%, -30%) rotate(-38deg) scale(0.75);
 }
 .pk-p3 .pk-shell-bot,
 .pk-p4 .pk-shell-bot,
 .pk-p5 .pk-shell-bot {
-  transform: translate(18%, 28%) rotate(16deg);
+  transform: translate(40%, 30%) rotate(34deg) scale(0.75);
 }
 
 .pk-btn-rim { fill: #120c18; }
@@ -412,39 +414,74 @@
 }
 
 /* --- the page: ruled paper, red margin, punch holes --- */
-.pk-rule { fill: #cfe0f2; }
+.pk-paper-grain {
+  filter: url(#pk-fibre);
+  opacity: 0.055;
+  mix-blend-mode: multiply;
+}
+.pk-page-top { fill: url(#pk-pagetop); }
+.pk-rule { fill: url(#pk-rulefill); }
 .pk-margin { fill: rgba(228, 0, 43, 0.45); }
 /* holes, not dots: a flat grey circle reads as a sticker */
-.pk-hole { fill: #e7e2d5; }
+.pk-hole { fill: url(#pk-holefill); }
 .pk-hole-rim {
   fill: none;
-  stroke: rgba(90, 78, 54, 0.22);
+  stroke: rgba(90, 78, 54, 0.26);
   stroke-width: 1.4;
 }
 
-/* --- the pencil --- */
-.pk-pencil { filter: drop-shadow(2px 4px 4px rgba(52, 38, 12, 0.22)); }
+/* --- the highlighter --- */
+/* Multiply, or it lies on top of the rules as an opaque slab instead of
+   letting them show through the way real marker does. */
+.pk-hl {
+  fill: #ffe14d;
+  mix-blend-mode: multiply;
+}
+.pk-hl-2 {
+  fill: #ffd21f;
+  opacity: 0.55;
+}
+
+/* --- the pencil: three facets, because a hexagonal pencil has a lit side, a
+       body and a shaded side, and one flat yellow is clip-art --- */
+.pk-pencil { filter: drop-shadow(2px 4px 4px rgba(52, 38, 12, 0.24)); }
+.pk-pen-hi { fill: #ffdd7a; }
 .pk-pen-body { fill: #f7c948; }
-.pk-pen-shade { fill: #d9a92b; }
+.pk-pen-shade { fill: #d09b22; }
 .pk-pen-wood { fill: #e8c79a; }
+.pk-pen-wood-hi { fill: #f5ddba; }
 .pk-pen-graphite { fill: #3a3340; }
-.pk-pen-ferrule { fill: #c9ccd4; }
-.pk-pen-ferrule-line { fill: rgba(80, 84, 96, 0.45); }
+.pk-pen-ferrule { fill: #b9bdc7; }
+.pk-pen-ferrule-hi { fill: #dfe2e8; }
+.pk-pen-ferrule-line { fill: rgba(70, 74, 86, 0.5); }
 .pk-pen-eraser { fill: #f28aa0; }
+.pk-pen-eraser-shade { fill: rgba(150, 60, 82, 0.3); }
 
 /* --- the copy --- */
 .pk-h1 {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 900;
-  letter-spacing: -0.5px;
+  letter-spacing: -1px;
   fill: var(--ink);
 }
-/* the third line takes the accent so the block has somewhere to land */
-.pk-h1-red { fill: var(--red); }
+.pk-hook {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  fill: #2a2340;
+}
+
 .pk-tab-pill {
   fill: var(--red);
   filter: drop-shadow(0 3px 6px rgba(228, 0, 43, 0.4));
+}
+.pk-plane { fill: #ffffff; }
+.pk-plane-fold {
+  fill: none;
+  stroke: rgba(228, 0, 43, 0.55);
+  stroke-width: 1.4;
 }
 .pk-tab-ctatext {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -479,20 +516,20 @@
   to { opacity: 1; }
 }
 
-/* The third line of the headline lands on its own beat, and the button follows
-   it — the page arrives in two moves rather than all at once. It grows from its
-   own left edge, where the eye already is after the two lines above it. */
-.pk-tabhero {
-  opacity: 0;
-  transform: scale(0.55);
+/* The highlighter DRAWS ON at the last beat, left to right, the way a marker
+   is actually pulled across a page — then the button follows it. The hook text
+   is already there and gets highlighted; highlighting empty paper and then
+   fading words in on top of it is the wrong order. */
+.pk-swipe {
   transform-box: fill-box;
-  transform-origin: 0% 70%;
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
 }
-.pk-p5 .pk-tabhero {
-  animation: pk-slam 520ms cubic-bezier(0.2, 1.7, 0.36, 1) forwards;
+.pk-p5 .pk-swipe {
+  animation: pk-mark 420ms cubic-bezier(0.3, 0.9, 0.4, 1) forwards;
 }
-@keyframes pk-slam {
-  to { opacity: 1; transform: scale(1); }
+@keyframes pk-mark {
+  to { transform: scaleX(1); }
 }
 
 .pk-tabcta {
@@ -633,10 +670,10 @@
   transform: none;
 }
 .pk.is-static .pk-shell-top {
-  transform: translate(-14%, -35%) rotate(-26deg);
+  transform: translate(-40%, -30%) rotate(-38deg) scale(0.75);
 }
 .pk.is-static .pk-shell-bot {
-  transform: translate(18%, 28%) rotate(16deg);
+  transform: translate(40%, 30%) rotate(34deg) scale(0.75);
 }
 .pk.is-static .pk-btn,
 .pk.is-static .pk-flash,
@@ -655,7 +692,9 @@
 .pk.is-static .pk-tabcopy {
   opacity: 1;
 }
-.pk.is-static .pk-tabhero,
+.pk.is-static .pk-swipe {
+  transform: none;
+}
 .pk.is-static .pk-tabcta {
   opacity: 1;
   transform: none;
@@ -691,10 +730,10 @@
     transform: none;
   }
   .pk .pk-shell-top {
-    transform: translate(-14%, -35%) rotate(-26deg);
+    transform: translate(-40%, -30%) rotate(-38deg) scale(0.75);
   }
   .pk .pk-shell-bot {
-    transform: translate(18%, 28%) rotate(16deg);
+    transform: translate(40%, 30%) rotate(34deg) scale(0.75);
   }
   .pk .pk-btn,
   .pk .pk-flash,
@@ -713,7 +752,9 @@
   .pk .pk-tabcopy {
     opacity: 1;
   }
-  .pk .pk-tabhero,
+  .pk .pk-swipe {
+    transform: none;
+  }
   .pk .pk-tabcta {
     opacity: 1;
     transform: none;
