@@ -1,0 +1,732 @@
+/* Pokemon — a Poké Ball bursts and releases the ninja, drawn as a Charmander.
+   Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh; px is
+   reserved for hairlines that must stay hairlines.
+
+   No logo file is used anywhere in this theme: the creature is drawn and the
+   name is set as type.
+
+   Every animated SVG group carries a `pk-anchor` rect spanning the viewBox, so
+   `transform-box: fill-box` resolves to the viewBox and one percentage origin
+   means the same scene point everywhere: x/400, y/620. */
+
+.pk {
+  /* plum-indigo dusk with a single warm key off the flame — deliberately not
+     the cream/vermilion, graphite/green, cyan or paper of the siblings */
+  --night: #100719;
+  --dusk: #2b1247;
+  --plum: #4a1a54;
+  --flame: #ff8a2b;
+  --flame-hi: #ffd45e;
+  --ember: #ffb457;
+
+  --red: #e4002b;
+  --red-hi: #ff2a4d;
+
+  --skin: #f6a44e;
+  --cream: #ffe6c4;
+  --teal: #35d6c6;
+  --ink: #17101f;
+
+  /* screen-recording crop: nothing meaningful inside this band */
+  --safe-x: 11.5vw;
+  --safe-y: 4.7vh;
+
+  /* the one knob the whole composition scales from */
+  --lock: 72vw;
+
+  /* the ball's resting centre, as a fraction of the 400x620 scene box */
+  --ball-x: 50%;
+  --ball-y: 87.9%;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--night);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  isolation: isolate;
+}
+
+.pk-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   THE SPACE — one graded volume. Stacked bands read as a diorama.
+   ==================================================================== */
+
+.pk-dusk {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(78% 44% at 50% 86%, rgba(255, 138, 43, 0.3) 0%, transparent 72%),
+    radial-gradient(92% 62% at 50% 34%, var(--plum) 0%, var(--dusk) 40%, var(--night) 78%);
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 900ms ease, transform 1800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pk-p1 .pk-dusk,
+.pk-p2 .pk-dusk,
+.pk-p3 .pk-dusk,
+.pk-p4 .pk-dusk,
+.pk-p5 .pk-dusk {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* the warm key the flame throws back into the room — it only exists once the
+   tail is lit, so it arrives with the release */
+.pk-key {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 130vw;
+  height: 130vw;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(255, 150, 60, 0.34), transparent 68%);
+  filter: blur(6vw);
+  opacity: 0;
+  transition: opacity 1100ms ease;
+}
+.pk-p4 .pk-key,
+.pk-p5 .pk-key {
+  opacity: 1;
+}
+
+.pk-embers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+.pk-p4 .pk-embers,
+.pk-p5 .pk-embers {
+  opacity: 1;
+}
+.pk-ember {
+  position: absolute;
+  left: var(--x);
+  bottom: -4vh;
+  width: calc(var(--s) * 0.9vw);
+  height: calc(var(--s) * 0.9vw);
+  border-radius: 50%;
+  background: var(--ember);
+  box-shadow: 0 0 1.4vw rgba(255, 180, 87, 0.9);
+  opacity: 0;
+  animation: pk-rise var(--t) var(--d) linear infinite;
+}
+@keyframes pk-rise {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  14% { opacity: 0.85; }
+  70% { opacity: 0.6; }
+  100% { transform: translateY(-104vh) translateX(3vw); opacity: 0; }
+}
+
+/* ====================================================================
+   THE LOCKUP — scene + name, welded together
+   ==================================================================== */
+
+.pk-lockup {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--lock);
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.pk-stagebox {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 400 / 620;
+  /* the ball drops in from above the box while the camera is zoomed */
+  overflow: visible;
+}
+
+/* the anime release burst. Sits at the ball's resting point, behind the scene. */
+.pk-rays {
+  position: absolute;
+  left: var(--ball-x);
+  top: var(--ball-y);
+  width: 210vw;
+  height: 210vw;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255, 214, 150, 0.14) 0deg 5deg,
+    transparent 5deg 17deg
+  );
+  -webkit-mask-image: radial-gradient(closest-side, #000 4%, rgba(0, 0, 0, 0.55) 26%, transparent 60%);
+  mask-image: radial-gradient(closest-side, #000 4%, rgba(0, 0, 0, 0.55) 26%, transparent 60%);
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 700ms ease;
+}
+.pk-p3 .pk-rays,
+.pk-p4 .pk-rays,
+.pk-p5 .pk-rays {
+  opacity: 1;
+  animation: pk-turn 90s linear infinite;
+}
+@keyframes pk-turn {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* the burst blows the frame out for two frames, nothing more */
+.pk-flash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 300vw;
+  height: 300vh;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(38% 26% at 50% 66%, #fffaf0 0%, rgba(255, 226, 170, 0.5) 34%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 30;
+}
+.pk-p3 .pk-flash {
+  animation: pk-blow 460ms ease-out forwards;
+}
+@keyframes pk-blow {
+  0% { opacity: 0; }
+  9% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* --- the camera: tight on the wobbling ball, pulls back for the release --- */
+.pk-cam {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  transform-origin: var(--ball-x) var(--ball-y);
+  transform: scale(2.2) translateY(-17.2%);
+  transition: transform 640ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pk-p3 .pk-cam,
+.pk-p4 .pk-cam,
+.pk-p5 .pk-cam {
+  transform: none;
+}
+.pk-scene {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.pk-floor {
+  fill: rgba(255, 150, 60, 0.16);
+  filter: blur(6px);
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.pk-p3 .pk-floor,
+.pk-p4 .pk-floor,
+.pk-p5 .pk-floor {
+  opacity: 1;
+}
+
+/* ====================================================================
+   THE BALL
+   ==================================================================== */
+
+.pk-ball {
+  transform-box: fill-box;
+  transform-origin: var(--ball-x) var(--ball-y);
+  opacity: 0;
+}
+.pk-p1 .pk-ball,
+.pk-p2 .pk-ball,
+.pk-p3 .pk-ball,
+.pk-p4 .pk-ball,
+.pk-p5 .pk-ball {
+  opacity: 1;
+}
+/* it falls in and lands, squashing on the floor */
+.pk-p1 .pk-ball {
+  animation: pk-drop 760ms cubic-bezier(0.36, 0, 0.28, 1) both;
+}
+@keyframes pk-drop {
+  0% { transform: translateY(-68%) scale(0.9, 1.1); }
+  62% { transform: translateY(0) scale(1.12, 0.86); }
+  78% { transform: translateY(-5%) scale(0.96, 1.05); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+/* something is fighting to get out */
+.pk-p2 .pk-ball {
+  animation: pk-wobble 460ms 3 ease-in-out;
+}
+@keyframes pk-wobble {
+  0% { transform: rotate(0deg); }
+  22% { transform: rotate(11deg) translateX(1%); }
+  50% { transform: rotate(0deg); }
+  76% { transform: rotate(-11deg) translateX(-1%); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Each half keeps its own heavy outline, INCLUDING along the flat edge — that
+   shared stroke is what draws the black band across the middle, and it is why
+   the halves still look finished once they come apart. */
+.pk-shell path {
+  stroke: #120c18;
+  stroke-width: 13;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+.pk-shell-red {
+  fill: url(#pk-redfill);
+}
+.pk-shell-white {
+  fill: url(#pk-whitefill);
+}
+.pk-shell-gloss {
+  fill: rgba(255, 255, 255, 0.42);
+  stroke: none;
+}
+
+.pk-shell {
+  transform-box: fill-box;
+}
+.pk-shell-top {
+  transform-origin: 50% 83.7%;
+  transition:
+    transform 620ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 400ms ease;
+}
+.pk-shell-bot {
+  transform-origin: var(--ball-x) var(--ball-y);
+  transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pk-p3 .pk-shell-top,
+.pk-p4 .pk-shell-top,
+.pk-p5 .pk-shell-top {
+  transform: translate(-11%, -4.2%) rotate(-34deg);
+}
+.pk-p3 .pk-shell-bot,
+.pk-p4 .pk-shell-bot,
+.pk-p5 .pk-shell-bot {
+  transform: translateY(0.9%);
+}
+
+.pk-btn-rim { fill: #120c18; }
+.pk-btn-face { fill: #f4eef4; }
+.pk-btn-lamp { fill: #7d7488; }
+.pk-btn {
+  transition: opacity 260ms ease;
+}
+/* the lamp blinks faster the closer it gets to going off */
+.pk-p2 .pk-btn-lamp {
+  animation: pk-blink 300ms infinite steps(1, end);
+}
+@keyframes pk-blink {
+  0%, 49% { fill: var(--red-hi); }
+  50%, 100% { fill: #7d7488; }
+}
+.pk-p3 .pk-btn,
+.pk-p4 .pk-btn,
+.pk-p5 .pk-btn {
+  opacity: 0;
+}
+
+/* ====================================================================
+   THE BURST
+   ==================================================================== */
+
+.pk-shock {
+  fill: none;
+  stroke: #fff3d6;
+  stroke-width: 7;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+.pk-p3 .pk-shock,
+.pk-p4 .pk-shock,
+.pk-p5 .pk-shock {
+  animation: pk-ring 900ms cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+.pk-shock-2 {
+  animation-delay: 130ms !important;
+  stroke: rgba(255, 178, 90, 0.85);
+}
+@keyframes pk-ring {
+  0% { opacity: 0.95; transform: scale(0.25); stroke-width: 9; }
+  100% { opacity: 0; transform: scale(5.4); stroke-width: 1; }
+}
+
+.pk-spark {
+  fill: #fff1cd;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.pk-p3 .pk-spark,
+.pk-p4 .pk-spark,
+.pk-p5 .pk-spark {
+  animation: pk-throw 760ms calc(var(--i) * 12ms) cubic-bezier(0.12, 0.8, 0.3, 1) forwards;
+}
+@keyframes pk-throw {
+  0% { opacity: 1; transform: translate(0, 0) scale(calc(var(--s) * 0.4)); }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(calc(var(--s) * 1.1)); }
+}
+
+/* the release beam out of the open shell */
+.pk-beam {
+  transform-box: fill-box;
+  transform-origin: 50% 87.9%;
+  transform: scaleY(0.02) scaleX(0.4);
+  opacity: 0;
+  filter: blur(4px);
+}
+.pk-beam path {
+  fill: url(#pk-beamfill);
+}
+.pk-p3 .pk-beam,
+.pk-p4 .pk-beam,
+.pk-p5 .pk-beam {
+  animation: pk-open 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes pk-open {
+  0% { opacity: 0; transform: scaleY(0.02) scaleX(0.4); }
+  22% { opacity: 1; }
+  100% { opacity: 0.55; transform: scaleY(1) scaleX(1); }
+}
+
+/* ====================================================================
+   THE CREATURE — the ninja as a Charmander
+   ==================================================================== */
+
+/* it grows out of the ball's mouth and RESOLVES: white energy first, colour
+   after. A cross-fade between two copies reads as a cut. */
+.pk-mon {
+  transform-box: fill-box;
+  transform-origin: var(--ball-x) var(--ball-y);
+  transform: scale(0.04);
+  opacity: 0;
+  filter: url(#pk-drop);
+}
+.pk-p4 .pk-mon,
+.pk-p5 .pk-mon {
+  animation: pk-release 720ms cubic-bezier(0.18, 1.4, 0.38, 1) forwards;
+}
+@keyframes pk-release {
+  0% { opacity: 0; transform: scale(0.04); }
+  12% { opacity: 1; }
+  66% { transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+/* the material resolving is a separate track from the growth */
+.pk-p4 .pk-monbob,
+.pk-p5 .pk-monbob {
+  animation:
+    pk-solidify 700ms ease-out forwards,
+    pk-bob 3.6s 760ms ease-in-out infinite;
+}
+@keyframes pk-solidify {
+  0% { filter: brightness(0) invert(1) saturate(0) blur(2px); }
+  46% { filter: brightness(0.45) invert(0.45) saturate(0.4) blur(0.6px); }
+  100% { filter: brightness(1) invert(0) saturate(1) blur(0); }
+}
+@keyframes pk-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.4%); }
+}
+
+.pk-skin { fill: url(#pk-skinfill); }
+.pk-muzzle { fill: url(#pk-muzzlefill); }
+.pk-belly { fill: url(#pk-bellyfill); }
+.pk-head { stroke: rgba(120, 52, 12, 0.28); stroke-width: 2; }
+.pk-claw {
+  fill: #fff0d6;
+  stroke: rgba(120, 52, 12, 0.45);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.pk-nostril { fill: #7a3a12; }
+.pk-mouth {
+  fill: none;
+  stroke: #7a3a12;
+  stroke-width: 5.5;
+  stroke-linecap: round;
+}
+
+.pk-sclera { fill: #fffaf2; }
+.pk-iris { fill: url(#pk-irisfill); }
+.pk-pupil { fill: #150d18; }
+.pk-glint { fill: #ffffff; }
+.pk-glint-sm { fill: rgba(255, 255, 255, 0.7); }
+
+.pk-hood { fill: url(#pk-hoodfill); }
+.pk-hood-hi { fill: rgba(255, 255, 255, 0.12); }
+/* the cowl needs a lit outer edge or it is a flat black disc behind the face */
+.pk-hood-rim { fill: rgba(255, 236, 210, 0.16); }
+.pk-cloth-hi { fill: rgba(255, 236, 210, 0.2); }
+/* the snout is a mass in front of the face, so it casts back onto it */
+.pk-snout { filter: drop-shadow(0 3px 5px rgba(110, 46, 10, 0.4)); }
+
+/* the headband and sash are the two pieces that have to be SEEN — brand red on
+   the hood would vanish into it, so both sit against skin or cream */
+.pk-band-red,
+.pk-sash-band { fill: var(--red); }
+.pk-band-hi,
+.pk-sash-hi { fill: rgba(255, 255, 255, 0.22); }
+
+/* --- the tail flame --- */
+.pk-flame {
+  transform-box: fill-box;
+  transform-origin: 88.75% 43.5%;
+  transform: scale(0);
+  opacity: 0;
+}
+.pk-p4 .pk-flame,
+.pk-p5 .pk-flame {
+  animation: pk-ignite 520ms 300ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+}
+@keyframes pk-ignite {
+  0% { opacity: 0; transform: scale(0); }
+  40% { opacity: 1; }
+  70% { transform: scale(1.16); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.pk-flicker {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  filter: url(#pk-fire);
+}
+.pk-p4 .pk-flicker,
+.pk-p5 .pk-flicker {
+  animation: pk-lick 820ms 820ms ease-in-out infinite;
+}
+@keyframes pk-lick {
+  0%, 100% { transform: scale(1, 1) rotate(0deg); }
+  28% { transform: scale(0.94, 1.1) rotate(-3deg); }
+  62% { transform: scale(1.06, 0.95) rotate(2.5deg); }
+}
+.pk-flame-outer {
+  fill: var(--flame);
+  filter: drop-shadow(0 0 14px rgba(255, 138, 43, 0.9));
+}
+.pk-flame-inner { fill: var(--flame-hi); }
+.pk-flame-core { fill: #fffdf0; }
+
+/* ====================================================================
+   THE NAME — set as type, welded under the scene
+   ==================================================================== */
+
+.pk-type {
+  margin-top: 1.2vh;
+  opacity: 0;
+  transform: translateY(1.6vh);
+  transition: opacity 520ms ease, transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pk-p5 .pk-type {
+  opacity: 1;
+  transform: translateY(0);
+}
+.pk-type svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* Heavy system type made to read as game lettering: mass, tight tracking, and
+   two strokes painted UNDER the fill via paint-order. textLength pins both
+   lines so the layout holds whatever font the device falls back to. */
+.pk-t {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 900;
+}
+.pk-brand {
+  font-size: 62px;
+  letter-spacing: 1px;
+  paint-order: stroke;
+  stroke-linejoin: round;
+}
+/* the outer keyline: it lifts the whole lockup off the dusk */
+.pk-brand-key {
+  fill: none;
+  stroke: #fff4dc;
+  stroke-width: 20;
+}
+.pk-brand-face {
+  fill: url(#pk-typefill);
+  stroke: #2a0f3f;
+  stroke-width: 13;
+}
+.pk-cap {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  fill: var(--cream);
+  paint-order: stroke;
+  stroke: #2a0f3f;
+  stroke-width: 6;
+  stroke-linejoin: round;
+}
+
+/* ====================================================================
+   GRADE
+   ==================================================================== */
+
+.pk-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.075;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
+  background-size: 160px 160px;
+}
+
+.pk-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 41;
+  background: radial-gradient(76% 58% at 50% 46%, transparent 34%, rgba(8, 3, 16, 0.9) 100%);
+}
+
+/* ====================================================================
+   STATIC MODE — the poster: the shell open, the creature out, the tail lit.
+   Every one-pass effect (flash, shockwave, sparks) is forced OFF; everything
+   with a resting state is frozen at it.
+   ==================================================================== */
+
+.pk.is-static *,
+.pk.is-static *::before,
+.pk.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.pk.is-static .pk-dusk {
+  opacity: 1;
+  transform: scale(1);
+}
+.pk.is-static .pk-key,
+.pk.is-static .pk-rays,
+.pk.is-static .pk-floor,
+.pk.is-static .pk-embers {
+  opacity: 1;
+}
+.pk.is-static .pk-ember {
+  opacity: 0.7;
+  transform: translateY(-40vh);
+}
+.pk.is-static .pk-cam {
+  transform: none;
+}
+.pk.is-static .pk-ball {
+  opacity: 1;
+  transform: none;
+}
+.pk.is-static .pk-shell-top {
+  transform: translate(-11%, -4.2%) rotate(-34deg);
+}
+.pk.is-static .pk-shell-bot {
+  transform: translateY(0.9%);
+}
+.pk.is-static .pk-btn {
+  opacity: 0;
+}
+.pk.is-static .pk-beam {
+  opacity: 0.55;
+  transform: none;
+}
+.pk.is-static .pk-flash,
+.pk.is-static .pk-shock,
+.pk.is-static .pk-spark {
+  opacity: 0;
+}
+.pk.is-static .pk-mon {
+  opacity: 1;
+  transform: none;
+}
+.pk.is-static .pk-monbob {
+  filter: none;
+  transform: none;
+}
+.pk.is-static .pk-flame {
+  opacity: 1;
+  transform: none;
+}
+.pk.is-static .pk-flicker {
+  transform: none;
+}
+.pk.is-static .pk-type {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pk *,
+  .pk *::before,
+  .pk *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .pk .pk-dusk {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .pk .pk-key,
+  .pk .pk-rays,
+  .pk .pk-floor,
+  .pk .pk-embers {
+    opacity: 1;
+  }
+  .pk .pk-ember {
+    opacity: 0.7;
+    transform: translateY(-40vh);
+  }
+  .pk .pk-cam {
+    transform: none;
+  }
+  .pk .pk-ball {
+    opacity: 1;
+    transform: none;
+  }
+  .pk .pk-shell-top {
+    transform: translate(-11%, -4.2%) rotate(-34deg);
+  }
+  .pk .pk-shell-bot {
+    transform: translateY(0.9%);
+  }
+  .pk .pk-btn {
+    opacity: 0;
+  }
+  .pk .pk-beam {
+    opacity: 0.55;
+    transform: none;
+  }
+  .pk .pk-flash,
+  .pk .pk-shock,
+  .pk .pk-spark {
+    opacity: 0;
+  }
+  .pk .pk-mon {
+    opacity: 1;
+    transform: none;
+  }
+  .pk .pk-monbob {
+    filter: none;
+    transform: none;
+  }
+  .pk .pk-flame {
+    opacity: 1;
+    transform: none;
+  }
+  .pk .pk-flicker {
+    transform: none;
+  }
+  .pk .pk-type {
+    opacity: 1;
+    transform: none;
+  }
+}

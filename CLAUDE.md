@@ -154,6 +154,16 @@ Hard-won details, don't relearn them:
   above the eyes *inside* the skin, dipping toward the middle — a pair of
   eyebrows laid on top reads as cheesy; and the eyes carry the anger, so make
   them narrow slits lit from inside.
+- **Drawing a creature-ninja: hair vs. hood, and the bear muzzle.** Pokemon
+  hybridises the ninja with a Charmander, and two passes went on the head. A
+  dark shape hanging down BOTH sides of the face reads as a bob haircut, not a
+  hood — what fixes it is a cowl that continues *below the jaw* to the
+  shoulders (hair does not) with a lit outer edge and its cloth streaming off
+  one side. And a cream chin patch under a snout reads as a bear: keep the face
+  one colour to the jaw and let only the belly go cream. Also mind the seam
+  where a headband crosses the hood's front edge — a sharp corner in the hood
+  poking above the band left two orange triangles that read as horns, so the
+  band's top edge must clear the hood's edge everywhere.
 - **One colour story per theme, and mean it.** Hulk's violet key was
   theoretically correct (green/purple is the Hulk pair) and in practice washed
   the whole frame muddy purple on a phone. Gamma green on near-black was

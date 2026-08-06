@@ -7,10 +7,11 @@ import "./Stylesheets/App.css";
 // import Bjj from "./Components/Bjj";
 // import Hulk from "./Components/Hulk";
 // import Hologram from "./Components/Hologram";
-import SoundOn from "./Components/SoundOn";
+// import SoundOn from "./Components/SoundOn";
+import Pokemon from "./Components/Pokemon";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <SoundOn mode="animated" />;
+  return <Pokemon mode="animated" />;
 }
 export default App;
