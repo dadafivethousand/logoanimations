@@ -22,9 +22,9 @@
   --red: #e4002b;
   --red-hi: #ff2a4d;
 
-  --skin: #f6a44e;
+  --skin: #f5a04e;
   --cream: #ffe6c4;
-  --teal: #35d6c6;
+  --logo-skin: #d7c19b;
   --ink: #17101f;
 
   /* screen-recording crop: nothing meaningful inside this band */
@@ -32,7 +32,7 @@
   --safe-y: 4.7vh;
 
   /* the one knob the whole composition scales from */
-  --lock: 72vw;
+  --lock: 58vw;
 
   /* the ball's resting centre, as a fraction of the 400x620 scene box */
   --ball-x: 50%;
@@ -438,42 +438,24 @@
 }
 
 .pk-skin { fill: url(#pk-skinfill); }
-.pk-muzzle { fill: url(#pk-muzzlefill); }
 .pk-belly { fill: url(#pk-bellyfill); }
-.pk-head { stroke: rgba(120, 52, 12, 0.28); stroke-width: 2; }
 .pk-claw {
   fill: #fff0d6;
   stroke: rgba(120, 52, 12, 0.45);
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
-.pk-nostril { fill: #7a3a12; }
-.pk-mouth {
-  fill: none;
-  stroke: #7a3a12;
-  stroke-width: 5.5;
-  stroke-linecap: round;
-}
+/* The head is the mark's: FLAT, not graded. A radial gradient on the hood is
+   what stopped it reading as the logo. Lifted clear of pure black — a true
+   #000 disc punches a hole in the dusk (the Hulk lesson, in CLAUDE.md). */
+.pk-hood { fill: #15121d; }
+.pk-hood-hi { fill: #3d3852; }
+.pk-eyeband { fill: #d7c19b; }
+.pk-eye { fill: #0b0910; }
+.pk-nostril { fill: #8a7a5e; }
 
-.pk-sclera { fill: #fffaf2; }
-.pk-iris { fill: url(#pk-irisfill); }
-.pk-pupil { fill: #150d18; }
-.pk-glint { fill: #ffffff; }
-.pk-glint-sm { fill: rgba(255, 255, 255, 0.7); }
-
-.pk-hood { fill: url(#pk-hoodfill); }
-.pk-hood-hi { fill: rgba(255, 255, 255, 0.12); }
-/* the cowl needs a lit outer edge or it is a flat black disc behind the face */
-.pk-hood-rim { fill: rgba(255, 236, 210, 0.16); }
-.pk-cloth-hi { fill: rgba(255, 236, 210, 0.2); }
-/* the snout is a mass in front of the face, so it casts back onto it */
-.pk-snout { filter: drop-shadow(0 3px 5px rgba(110, 46, 10, 0.4)); }
-
-/* the headband and sash are the two pieces that have to be SEEN — brand red on
-   the hood would vanish into it, so both sit against skin or cream */
-.pk-band-red,
+/* the sash is the only place the brand's own red lands on the creature */
 .pk-sash-band { fill: var(--red); }
-.pk-band-hi,
 .pk-sash-hi { fill: rgba(255, 255, 255, 0.22); }
 
 /* --- the tail flame --- */

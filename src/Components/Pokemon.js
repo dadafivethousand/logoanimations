@@ -3,7 +3,8 @@
 //
 // Genre, not franchise. No franchise wordmark, no trainer, no series typeface —
 // the read comes from the beats (drop · wobble · burst · release) and from the
-// creature: orange hide, cream belly, blunt snout, tail flame, teal eyes.
+// creature: the MARK's head — flat black disc, skin band, angular slits — on a
+// Charmander body: orange hide, cream belly, clawed limbs, tail flame.
 //
 // NO LOGO FILE. Like Patriot and Hulk, this theme never calls useLogo: a raster
 // mark cannot be given a snout, a jaw and a tail, and the three passes that
@@ -188,17 +189,18 @@ export default function Pokemon({
 /* ======================================================================
    THE CREATURE — the ninja as a Charmander, drawn here.
 
-   Not the mark recoloured. What makes it read as Charmander rather than "an
-   orange ninja" is the FAT tapering tail with the flame on it, the blunt snout
-   with two nostril dots and a wide smile, the cream belly, and big round teal
-   eyes. What keeps it a Code Ninja is the hood over the crown with its cloth
-   streaming off to the left, the brand-red headband, and the sash.
+   The split is deliberate: the HEAD is the mark, the BODY is the Charmander.
 
-   Two things learned the hard way on the first pass:
-     · a long dark shape hanging down BOTH sides of the head reads as HAIR, not
-       a hood. The cloth streams off one side instead, clear of the silhouette.
-     · a cream chin patch under the muzzle reads as a bear. Charmander's face
-       is orange all the way to the jaw; only the belly is cream.
+   Drawing a Charmander head and hooding it was tried first and read as a
+   cartoon lizard in a hood, not as Code Ninjas. So the head is now the
+   artwork's own four flat shapes — black disc, two grey speculars, a straight
+   skin band, two angular slits, knot to the left — and the Charmander is
+   carried entirely by the body: orange hide, cream belly, stubby clawed limbs
+   and the fat tapering tail with the flame on it. The snout welded under the
+   band is the single liberty taken with the head.
+
+   Flat fills throughout. The mark is clean vector, and a photoreal blob of a
+   body next to a flat black disc reads as two different drawings.
 
    Drawn in scene units (400x620) so it shares one coordinate system with the
    ball, and its feet clear the open shell instead of standing on it.
@@ -233,25 +235,6 @@ function Charmninja() {
           </g>
         </g>
 
-        {/* ---- the hood ----
-             A cowl that WRAPS the head and carries on past the jaw to the
-             shoulders. The first pass put two long dark shapes down either
-             side of the face and it read as a bob haircut; what fixes it is
-             the cloth continuing BELOW the jaw (hair does not) and a lit outer
-             edge, so it reads as a wrapped material with a thickness. Drawn
-             before the body so the shoulders cover where it tucks in. ---- */}
-        <path className="pk-hood pk-cloth" d="M100 148 C 62 156, 26 178, 6 208 C 36 202, 68 202, 96 210 C 92 190, 92 166, 100 150 Z" />
-        <path className="pk-hood pk-cloth" d="M96 184 C 64 202, 34 232, 20 262 C 48 246, 78 236, 104 234 C 96 220, 92 200, 96 186 Z" />
-        <path className="pk-cloth-hi" d="M100 148 C 68 158, 36 180, 16 206 C 40 186, 70 168, 100 160 Z" />
-        <path className="pk-cloth-hi" d="M96 184 C 68 202, 40 232, 26 258 C 48 232, 76 210, 100 198 Z" />
-
-        <path
-          className="pk-hood"
-          d="M200 26 C 284 26, 332 86, 332 158 C 332 206, 328 250, 322 292 C 286 272, 244 264, 200 264 C 156 264, 114 272, 78 292 C 72 250, 68 206, 68 158 C 68 86, 116 26, 200 26 Z"
-        />
-        {/* the lit outer edge — without it the cowl is a flat black disc */}
-        <path className="pk-hood-rim" d="M68 176 C 68 94, 118 26, 200 26 C 130 42, 86 102, 84 180 Z" />
-
         {/* ---- feet ---- */}
         <path className="pk-skin" d="M150 396 C 132 406, 128 428, 140 440 C 152 452, 184 452, 192 438 C 198 426, 196 404, 188 396 Z" />
         <path className="pk-skin" d="M250 396 C 268 406, 272 428, 260 440 C 248 452, 216 452, 208 438 C 202 426, 204 404, 212 396 Z" />
@@ -280,50 +263,50 @@ function Charmninja() {
           <path d="M279 381 L276 394 L268 383 Z" />
         </g>
 
-        {/* ---- the sash: brand red on the cream belly. Black gear on a black
-                hood is invisible — this is a piece that has to be seen ---- */}
+        {/* ---- the sash: brand red on the cream belly, and the only place the
+                brand's own colour lands on the creature ---- */}
         <g className="pk-sash">
           <path className="pk-sash-band" d="M130 340 C 158 358, 242 358, 270 340 L 276 366 C 242 386, 158 386, 124 366 Z" />
           <path className="pk-sash-hi" d="M134 344 C 160 360, 240 360, 266 344 L 267 351 C 240 367, 160 367, 133 351 Z" />
         </g>
 
-        {/* ---- head: orange to the jaw, no cream muzzle patch ---- */}
-        <path className="pk-skin pk-head" d="M200 50 C 268 50, 306 96, 306 152 C 306 210, 268 254, 200 254 C 132 254, 94 210, 94 152 C 94 96, 132 50, 200 50 Z" />
-        {/* the snout is a MASS pushed out of the skin, not a line drawn on it */}
-        <path className="pk-muzzle pk-snout" d="M200 176 C 228 176, 248 192, 248 212 C 248 234, 228 250, 200 250 C 172 250, 152 234, 152 212 C 152 192, 172 176, 200 176 Z" />
-
-        <ellipse className="pk-nostril" cx="186" cy="198" rx="4.5" ry="3.5" />
-        <ellipse className="pk-nostril" cx="214" cy="198" rx="4.5" ry="3.5" />
-        <path className="pk-mouth" d="M160 219 C 180 243, 220 243, 240 219" />
-
-        {/* eyes: big and round with a teal iris — the single feature that says
-            Charmander before anything else is read */}
-        <g className="pk-eyes">
-          <ellipse className="pk-sclera" cx="158" cy="172" rx="26" ry="29" />
-          <ellipse className="pk-sclera" cx="242" cy="172" rx="26" ry="29" />
-          <ellipse className="pk-iris" cx="161" cy="175" rx="17" ry="20" />
-          <ellipse className="pk-iris" cx="239" cy="175" rx="17" ry="20" />
-          <ellipse className="pk-pupil" cx="161" cy="176" rx="8" ry="11" />
-          <ellipse className="pk-pupil" cx="239" cy="176" rx="8" ry="11" />
-          <circle className="pk-glint" cx="153" cy="164" r="6" />
-          <circle className="pk-glint" cx="231" cy="164" r="6" />
-          <circle className="pk-glint pk-glint-sm" cx="167" cy="188" r="3" />
-          <circle className="pk-glint pk-glint-sm" cx="245" cy="188" r="3" />
+        {/* ---- the head: the ARTWORK's, near enough ----
+             The first pass drew a Charmander head — big round eyes, a snout,
+             a cowl — and it read as a cartoon lizard wearing a hood rather
+             than as the Code Ninjas mark. The mark's head is four flat shapes
+             and nothing else: a black disc, two grey speculars, a straight
+             skin band across the eyes, and two angular slits, with the knot
+             tied off to the left. That is what is drawn here. The Charmander
+             lives in the BODY — orange hide, cream belly, claws, tail flame —
+             and the one liberty taken with the head is the snout under the
+             band. ---- */}
+        <g transform="translate(200 158) scale(0.92) translate(-200 -150)">
+        <g className="pk-knot">
+          <path className="pk-hood" d="M104 126 C 84 116, 60 112, 50 120 C 60 130, 80 138, 100 141 Z" />
+          <path className="pk-hood" d="M100 144 C 82 150, 66 164, 62 180 C 76 174, 92 162, 104 152 Z" />
         </g>
 
-        {/* ---- the hood over the crown, sitting proud of the skull ---- */}
-        <path
-          className="pk-hood"
-          d="M88 172 C 80 98, 130 36, 200 36 C 270 36, 320 98, 312 172 C 304 146, 294 130, 280 124 C 252 140, 226 146, 200 144 C 174 146, 148 140, 120 124 C 106 130, 96 146, 88 172 Z"
-        />
-        <path className="pk-hood-hi" d="M132 62 C 158 44, 242 44, 268 62 C 238 52, 162 52, 132 62 Z" />
+        <circle className="pk-hood" cx="200" cy="150" r="104" />
 
-        {/* ---- headband + its two tails, tied off to the left ---- */}
-        <g className="pk-band">
-          <path className="pk-band-red" d="M92 118 C 126 96, 168 114, 200 114 C 232 114, 274 96, 308 118 L 306 152 C 270 128, 232 146, 200 146 C 168 146, 130 128, 94 152 Z" />
-          <path className="pk-band-hi" d="M96 120 C 128 102, 168 118, 200 118 C 232 118, 272 102, 304 120 L 303 128 C 271 110, 232 126, 200 126 C 168 126, 129 110, 97 128 Z" />
-          <path className="pk-band-red" d="M98 116 C 78 118, 62 130, 64 150 C 80 136, 90 130, 102 126 Z" />
-          <path className="pk-band-red" d="M94 134 C 72 148, 60 172, 66 190 C 76 172, 90 156, 100 146 Z" />
+        <g clipPath="url(#pk-headclip)">
+          {/* flat black lit by two crescents — the same two the artwork has.
+              A gradient here is what made the head stop reading as the mark. */}
+          <path className="pk-hood-hi" d="M108 112 C 124 66, 168 38, 220 40 C 272 42, 306 68, 316 106 C 296 76, 258 58, 216 56 C 168 54, 128 76, 108 112 Z" />
+          <path className="pk-hood-hi" d="M104 188 C 122 232, 158 256, 200 256 C 242 256, 278 232, 296 188 C 286 240, 248 268, 200 268 C 152 268, 114 240, 104 188 Z" />
+
+          {/* the band: straight edges, a hair off level, running the full width
+              of the disc — the clip is what squares it off against the rim */}
+          <path className="pk-eyeband" d="M84 126 L316 118 L316 152 L84 160 Z" />
+
+          {/* the snout, welded to the underside of the band */}
+          <path className="pk-eyeband" d="M166 148 C 166 174, 180 185, 200 185 C 220 185, 234 174, 234 148 Z" />
+          <ellipse className="pk-nostril" cx="189" cy="164" rx="3.6" ry="2.8" />
+          <ellipse className="pk-nostril" cx="211" cy="164" rx="3.6" ry="2.8" />
+
+          {/* slits, not eyes: angled so the inner corners sit lower */}
+          <path className="pk-eye" d="M134 132 C 152 132, 172 137, 186 144 C 168 148, 146 147, 134 144 C 132 140, 132 135, 134 132 Z" />
+          <path className="pk-eye" d="M266 131 C 248 131, 228 136, 214 143 C 232 147, 254 146, 266 143 C 268 139, 268 134, 266 131 Z" />
+        </g>
         </g>
       </g>
     </g>
@@ -334,36 +317,22 @@ function PokemonDefs() {
   return (
     <svg className="pk-defs" aria-hidden focusable="false">
       <defs>
+        {/* the band and the speculars run past the disc and are cut by it */}
+        <clipPath id="pk-headclip">
+          <circle cx="200" cy="150" r="104" />
+        </clipPath>
+
         {/* the hide is lit from the upper left; flat orange reads as clip-art */}
         <radialGradient id="pk-skinfill" cx="34%" cy="26%" r="88%">
-          <stop offset="0%" stopColor="#ffc27a" />
-          <stop offset="44%" stopColor="#f6a44e" />
-          <stop offset="100%" stopColor="#c96a24" />
-        </radialGradient>
-
-        <radialGradient id="pk-muzzlefill" cx="42%" cy="24%" r="86%">
-          <stop offset="0%" stopColor="#ffcf94" />
-          <stop offset="52%" stopColor="#f8ac5a" />
-          <stop offset="100%" stopColor="#d9812f" />
+          <stop offset="0%" stopColor="#ffc584" />
+          <stop offset="46%" stopColor="#f5a04e" />
+          <stop offset="100%" stopColor="#dd8134" />
         </radialGradient>
 
         <radialGradient id="pk-bellyfill" cx="42%" cy="24%" r="88%">
           <stop offset="0%" stopColor="#fff4e0" />
           <stop offset="58%" stopColor="#ffe6c4" />
           <stop offset="100%" stopColor="#e8c391" />
-        </radialGradient>
-
-        {/* the hood is not flat black — it has a lit side */}
-        <radialGradient id="pk-hoodfill" cx="34%" cy="22%" r="90%">
-          <stop offset="0%" stopColor="#3a2b46" />
-          <stop offset="46%" stopColor="#221a2c" />
-          <stop offset="100%" stopColor="#100a17" />
-        </radialGradient>
-
-        <radialGradient id="pk-irisfill" cx="40%" cy="30%" r="80%">
-          <stop offset="0%" stopColor="#8ff4e6" />
-          <stop offset="52%" stopColor="#35d6c6" />
-          <stop offset="100%" stopColor="#12756f" />
         </radialGradient>
 
         {/* the shell's top is brand red, dished so it reads as a struck object */}

@@ -154,16 +154,19 @@ Hard-won details, don't relearn them:
   above the eyes *inside* the skin, dipping toward the middle — a pair of
   eyebrows laid on top reads as cheesy; and the eyes carry the anger, so make
   them narrow slits lit from inside.
-- **Drawing a creature-ninja: hair vs. hood, and the bear muzzle.** Pokemon
-  hybridises the ninja with a Charmander, and two passes went on the head. A
-  dark shape hanging down BOTH sides of the face reads as a bob haircut, not a
-  hood — what fixes it is a cowl that continues *below the jaw* to the
-  shoulders (hair does not) with a lit outer edge and its cloth streaming off
-  one side. And a cream chin patch under a snout reads as a bear: keep the face
-  one colour to the jaw and let only the belly go cream. Also mind the seam
-  where a headband crosses the hood's front edge — a sharp corner in the hood
-  poking above the band left two orange triangles that read as horns, so the
-  band's top edge must clear the hood's edge everywhere.
+- **Hybridising the ninja with a creature: draw the MARK's head, put the
+  creature in the body.** Pokemon crosses the ninja with a Charmander and three
+  passes went on the head before this landed. Drawing a Charmander head and
+  hooding it gives a cartoon lizard in a hood — the brand is gone. The mark's
+  head is four flat shapes and nothing else: a black disc, two grey speculars, a
+  straight skin band running the full width (clipped by the disc, which is what
+  squares its ends off), and two angular slits with the inner corners lower.
+  Draw exactly those, keep them FLAT — a radial gradient on the hood is what
+  stopped it reading as the logo — and let the body carry the creature entirely.
+  One liberty is affordable; Pokemon spends it on a snout welded under the band.
+  Two dead ends on the way: a dark shape down both sides of a face reads as a
+  bob haircut rather than a hood, and a cream chin patch under a snout reads as
+  a bear.
 - **One colour story per theme, and mean it.** Hulk's violet key was
   theoretically correct (green/purple is the Hulk pair) and in practice washed
   the whole frame muddy purple on a phone. Gamma green on near-black was
