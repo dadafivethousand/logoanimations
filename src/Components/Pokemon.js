@@ -59,8 +59,11 @@ export default function Pokemon({
   mode = "animated",
   brand = "CODE NINJAS",
   caption = "WOODBRIDGE",
-  // PLACEHOLDER COPY — confirm with the user before posting a take.
-  promoHead = "BACK TO SCHOOL",
+  // PLACEHOLDER COPY — confirm with the user before posting a take. The
+  // headline is two strings because it is set on two lines; each is pinned to
+  // its own textLength, so new wording needs new widths.
+  promoLine1 = "BACK TO",
+  promoLine2 = "SCHOOL",
   promoSub = "CODING CLASSES",
   promoCta = "ENROLL NOW",
   loopAt = 9200,
@@ -132,7 +135,7 @@ export default function Pokemon({
               </g>
             </g>
 
-            <Tablet head={promoHead} sub={promoSub} cta={promoCta} />
+            <Tablet line1={promoLine1} line2={promoLine2} sub={promoSub} cta={promoCta} />
 
             {/* ---- the burst itself ---- */}
             <circle className="pk-shock pk-shock-1" cx="200" cy="200" r="56" />
@@ -180,55 +183,109 @@ export default function Pokemon({
 }
 
 /* ======================================================================
-   THE TABLET — what comes out of the ball.
+   THE TABLET — what comes out of the ball, and the promo on it.
 
    Grows from the ball's own centre, then the screen WAKES: it blows out white
-   and the copy resolves on it. A tablet that fades up with its content already
-   on it reads as a picture of a tablet; the wake is what makes it a device that
-   just turned on.
+   and the page resolves. A tablet that fades up with its content already on it
+   reads as a picture of a tablet; the wake is what makes it a device that just
+   turned on.
+
+   THE SCREEN IS A PAGE OF RULED PAPER — blue rules, a red margin, three punch
+   holes down the left. That, not the words, is what makes it read as BACK TO
+   SCHOOL at thumbnail size; the first pass was three centred lines on white and
+   it could have been any promo at all. The pencil laid across the right half is
+   the second half of that read, and it fills the space the ragged-right
+   headline leaves.
+
+   SIZE IS THE CONSTRAINT. The screen is about 180px across on a phone, so the
+   layout gets FOUR elements and no more: headline, rule, one line of body, one
+   button. A kicker or a second body line lands under 10px and is unreadable in
+   a feed — that is why they are not here.
 
    Every line is pinned with textLength + lengthAdjust so the layout holds
-   whatever font the device actually falls back to — no fonts are bundled here.
+   whatever font the device falls back to. Change the copy and the textLength
+   values need changing with it, or the new words get squeezed into the old
+   width.
 
    Drawn in scene units (400x400), centred on the ball at (200,200).
    ====================================================================== */
-function Tablet({ head, sub, cta }) {
+function Tablet({ line1, line2, sub, cta }) {
   return (
     <g className="pk-tab">
       <rect className="pk-anchor" x="0" y="0" width="400" height="400" fill="none" />
 
       <g className="pk-tabtilt">
-        <rect className="pk-tab-case" x="40" y="80" width="320" height="240" rx="24" />
+        <rect className="pk-tab-case" x="28" y="74" width="344" height="252" rx="26" />
         {/* a lit top-left edge is what gives the case a thickness */}
-        <rect className="pk-tab-rim" x="41.5" y="81.5" width="317" height="237" rx="22.5" />
+        <rect className="pk-tab-rim" x="29.5" y="75.5" width="341" height="249" rx="24.5" />
 
-        <rect className="pk-tab-screen" x="58" y="98" width="284" height="204" rx="12" />
-        <circle className="pk-tab-cam" cx="200" cy="89" r="3.4" />
+        <rect className="pk-tab-screen" x="46" y="92" width="308" height="216" rx="12" />
+        <circle className="pk-tab-cam" cx="200" cy="83" r="3.4" />
 
-        {/* ---- what is on the screen ---- */}
-        <g className="pk-tabcopy">
-          <text className="pk-tab-head" x="200" y="152" textAnchor="middle"
-                textLength="240" lengthAdjust="spacingAndGlyphs">{head}</text>
-          <rect className="pk-tab-rule" x="155" y="166" width="90" height="5" rx="2.5" />
-          <text className="pk-tab-sub" x="200" y="206" textAnchor="middle"
-                textLength="156" lengthAdjust="spacingAndGlyphs">{sub}</text>
-        </g>
-
-        <g className="pk-tabcta">
-          <rect className="pk-tab-pill" x="118" y="230" width="164" height="46" rx="23" />
-          <text className="pk-tab-ctatext" x="200" y="260" textAnchor="middle"
-                textLength="122" lengthAdjust="spacingAndGlyphs">{cta}</text>
-        </g>
-
-        {/* one soft sweep across the glass — a screen catches light in a band.
-            Clipped to the screen, or its square corners poke out past the
-            glass's radius as two bright nicks. */}
+        {/* ---- the page ---- */}
         <g clipPath="url(#pk-screenclip)">
-          <path className="pk-tab-gloss" d="M58 98 L154 98 L74 302 L58 302 Z" />
+          <g className="pk-tabcopy">
+            {/* ruled paper: the whole back-to-school read in four shapes */}
+            {[118, 142, 166, 190, 214, 238, 262, 286].map((y) => (
+              <rect className="pk-rule" key={y} x="84" y={y} width="264" height="1.6" />
+            ))}
+            <rect className="pk-margin" x="83" y="92" width="2.2" height="216" />
+            {[130, 200, 270].map((y) => (
+              <g key={y}>
+                <circle className="pk-hole" cx="64.5" cy={y} r="7" />
+                <circle className="pk-hole-rim" cx="64.5" cy={y} r="7" />
+              </g>
+            ))}
+
+            <Pencil />
+
+            {/* headline, ranged left off the margin like something written on
+                the page — centred type would fight the rules */}
+            <text className="pk-h1" x="100" y="146" textLength="150"
+                  lengthAdjust="spacingAndGlyphs">{line1}</text>
+            <text className="pk-h1" x="100" y="184" textLength="142"
+                  lengthAdjust="spacingAndGlyphs">{line2}</text>
+            <rect className="pk-uline" x="100" y="194" width="120" height="4.5" rx="2.25" />
+
+            <text className="pk-sub" x="100" y="224" textLength="140"
+                  lengthAdjust="spacingAndGlyphs">{sub}</text>
+          </g>
+
+          {/* the button lands last and lands hard */}
+          <g className="pk-tabcta">
+            <rect className="pk-tab-pill" x="100" y="240" width="158" height="44" rx="22" />
+            <text className="pk-tab-ctatext" x="179" y="269" textAnchor="middle"
+                  textLength="118" lengthAdjust="spacingAndGlyphs">{cta}</text>
+          </g>
+
+          {/* one soft sweep across the glass — a screen catches light in a band */}
+          <path className="pk-tab-gloss" d="M46 92 L150 92 L60 308 L46 308 Z" />
         </g>
 
-        {/* the wake: the screen blows out white, then the copy resolves on it */}
-        <rect className="pk-tab-wake" x="58" y="98" width="284" height="204" rx="12" />
+        {/* the wake: the screen blows out white, then the page resolves on it */}
+        <rect className="pk-tab-wake" x="46" y="92" width="308" height="216" rx="12" />
+      </g>
+    </g>
+  );
+}
+
+/* A pencil, drawn upright about its own origin and then laid across the page.
+   The placement transform is on the OUTER <g> — nothing here animates, but the
+   next person to animate it will find the origin already free. */
+function Pencil() {
+  return (
+    <g transform="translate(306 164) rotate(24)">
+      <g className="pk-pencil">
+        <path className="pk-pen-wood" d="M-12 -46 L12 -46 L0 -70 Z" />
+        {/* the point goes AFTER the cone or the cone paints over it and the
+            pencil has a blunt beige nose */}
+        <path className="pk-pen-graphite" d="M-4.5 -61 L4.5 -61 L0 -70 Z" />
+        <rect className="pk-pen-body" x="-12" y="-46" width="24" height="78" />
+        <rect className="pk-pen-shade" x="4" y="-46" width="8" height="78" />
+        <rect className="pk-pen-ferrule" x="-12" y="32" width="24" height="11" />
+        <rect className="pk-pen-ferrule-line" x="-12" y="35" width="24" height="1.4" />
+        <rect className="pk-pen-ferrule-line" x="-12" y="39" width="24" height="1.4" />
+        <rect className="pk-pen-eraser" x="-12" y="43" width="24" height="16" rx="6" />
       </g>
     </g>
   );
@@ -239,7 +296,7 @@ function PokemonDefs() {
     <svg className="pk-defs" aria-hidden focusable="false">
       <defs>
         <clipPath id="pk-screenclip">
-          <rect x="58" y="98" width="284" height="204" rx="12" />
+          <rect x="46" y="92" width="308" height="216" rx="12" />
         </clipPath>
 
         {/* the shell's top is brand red, dished so it reads as a struck object */}
@@ -262,11 +319,12 @@ function PokemonDefs() {
           <stop offset="100%" stopColor="#191622" />
         </linearGradient>
 
-        {/* the glass is lit, not painted — it is the brightest thing in frame */}
+        {/* paper, lit: it is the brightest thing in frame and it is warm, so
+            it does not read as a blank white panel */}
         <linearGradient id="pk-screenfill" x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="58%" stopColor="#f6f4fb" />
-          <stop offset="100%" stopColor="#e4e0ee" />
+          <stop offset="0%" stopColor="#fffdf7" />
+          <stop offset="58%" stopColor="#faf6ea" />
+          <stop offset="100%" stopColor="#ece5d4" />
         </linearGradient>
 
         <linearGradient id="pk-typefill" x1="0" y1="0" x2="0" y2="1">

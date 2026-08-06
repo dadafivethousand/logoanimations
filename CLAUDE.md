@@ -154,6 +154,19 @@ Hard-won details, don't relearn them:
   above the eyes *inside* the skin, dipping toward the middle — a pair of
   eyebrows laid on top reads as cheesy; and the eyes carry the anger, so make
   them narrow slits lit from inside.
+- **A promo on a screen inside the frame: the SET carries the read, and the
+  size caps the element count.** Pokemon puts a back-to-school promo on a
+  tablet. The first pass was three centred lines on white and could have been
+  any promo at all; making the screen a page of RULED PAPER — blue rules, red
+  margin, three punch holes, a pencil laid across it — is what makes it read as
+  back-to-school at thumbnail size, before a single word is read. Then do the
+  arithmetic on type: a screen inside a mark-sized object is about 180px across
+  on a phone, so the layout gets four elements — headline, rule, one line of
+  body, one button. A kicker or a second body line lands under 10px and is
+  unreadable in a feed. Range the headline left off the margin rule; centred
+  type fights the rules. And a device's screen should WAKE (blow out white,
+  then resolve) — one that fades up with its content already on it reads as a
+  picture of a device rather than one that just turned on.
 - **Don't hybridise the mark with a character — pick one.** Pokemon burned
   three passes on this. A Charmander head under a ninja hood reads as a cartoon
   lizard in a hood and the brand is gone; the mark's own head on a Charmander

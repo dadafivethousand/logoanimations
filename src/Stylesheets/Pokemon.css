@@ -411,20 +411,41 @@
   pointer-events: none;
 }
 
-/* --- what is on the screen --- */
-.pk-tab-head {
+/* --- the page: ruled paper, red margin, punch holes --- */
+.pk-rule { fill: #cfe0f2; }
+.pk-margin { fill: rgba(228, 0, 43, 0.45); }
+/* holes, not dots: a flat grey circle reads as a sticker */
+.pk-hole { fill: #e7e2d5; }
+.pk-hole-rim {
+  fill: none;
+  stroke: rgba(90, 78, 54, 0.22);
+  stroke-width: 1.4;
+}
+
+/* --- the pencil --- */
+.pk-pencil { filter: drop-shadow(2px 4px 4px rgba(52, 38, 12, 0.22)); }
+.pk-pen-body { fill: #f7c948; }
+.pk-pen-shade { fill: #d9a92b; }
+.pk-pen-wood { fill: #e8c79a; }
+.pk-pen-graphite { fill: #3a3340; }
+.pk-pen-ferrule { fill: #c9ccd4; }
+.pk-pen-ferrule-line { fill: rgba(80, 84, 96, 0.45); }
+.pk-pen-eraser { fill: #f28aa0; }
+
+/* --- the copy --- */
+.pk-h1 {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 30px;
+  font-size: 38px;
   font-weight: 900;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.5px;
   fill: var(--ink);
 }
-.pk-tab-rule { fill: var(--red); }
-.pk-tab-sub {
+.pk-uline { fill: var(--red); }
+.pk-sub {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
-  letter-spacing: 1.6px;
+  letter-spacing: 1.4px;
   fill: #5d5680;
 }
 .pk-tab-pill {
