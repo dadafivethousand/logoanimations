@@ -59,15 +59,13 @@ export default function Pokemon({
   mode = "animated",
   brand = "CODE NINJAS",
   caption = "WOODBRIDGE",
-  // PLACEHOLDER COPY — every one of these, and the DISCOUNT ESPECIALLY. "50%"
-  // is a number picked to lay the page out with, not an offer. Confirm the real
-  // one with the user before a take is posted. Each line is pinned to its own
-  // textLength, so new wording needs new widths.
-  promoKicker = "BACK TO SCHOOL",
-  promoDiscount = "50%",
-  promoOff = "OFF",
-  promoSub = "CODING CLASSES",
-  promoCta = "ENROLL NOW",
+  // The user's own copy. No offer is stated on the page on purpose — the ask
+  // is the DM. Each line is pinned to its own textLength, so new wording needs
+  // new widths or it gets squeezed into the old one.
+  promoLine1 = "BACK TO",
+  promoLine2 = "SCHOOL",
+  promoLine3 = "PROMO",
+  promoCta = "DM FOR DETAILS",
   loopAt = 9200,
 }) {
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
@@ -137,8 +135,7 @@ export default function Pokemon({
               </g>
             </g>
 
-            <Tablet kicker={promoKicker} discount={promoDiscount} off={promoOff}
-                     sub={promoSub} cta={promoCta} />
+            <Tablet line1={promoLine1} line2={promoLine2} line3={promoLine3} cta={promoCta} />
 
             {/* ---- the burst itself ---- */}
             <circle className="pk-shock pk-shock-1" cx="200" cy="200" r="56" />
@@ -212,7 +209,7 @@ export default function Pokemon({
 
    Drawn in scene units (400x400), centred on the ball at (200,200).
    ====================================================================== */
-function Tablet({ kicker, discount, off, sub, cta }) {
+function Tablet({ line1, line2, line3, cta }) {
   return (
     <g className="pk-tab">
       <rect className="pk-anchor" x="0" y="0" width="400" height="400" fill="none" />
@@ -242,30 +239,24 @@ function Tablet({ kicker, discount, off, sub, cta }) {
 
             <Pencil />
 
-            {/* HIERARCHY: the discount is the hero and BACK TO SCHOOL is the
-                kicker over it, not the other way round. The number is the
-                biggest thing on the page and "OFF" hangs off it at a third the
-                size — that pair is the whole point of the frame. */}
-            <text className="pk-kicker" x="100" y="122" textLength="132"
-                  lengthAdjust="spacingAndGlyphs">{kicker}</text>
-
+            {/* The copy is the user's own: BACK TO SCHOOL PROMO, and DM FOR
+                DETAILS on the button. No offer is stated on the page — the ask
+                is the DM, so the button is the thing that has to land. */}
+            <text className="pk-h1" x="100" y="144" textLength="142"
+                  lengthAdjust="spacingAndGlyphs">{line1}</text>
+            <text className="pk-h1" x="100" y="178" textLength="136"
+                  lengthAdjust="spacingAndGlyphs">{line2}</text>
             <g className="pk-tabhero">
-              <text className="pk-hero-num" x="100" y="184" textLength="100"
-                    lengthAdjust="spacingAndGlyphs">{discount}</text>
-              <text className="pk-hero-off" x="206" y="184" textLength="56"
-                    lengthAdjust="spacingAndGlyphs">{off}</text>
+              <text className="pk-h1 pk-h1-red" x="100" y="212" textLength="118"
+                    lengthAdjust="spacingAndGlyphs">{line3}</text>
             </g>
-            <rect className="pk-uline" x="100" y="194" width="162" height="5" rx="2.5" />
-
-            <text className="pk-sub" x="100" y="224" textLength="132"
-                  lengthAdjust="spacingAndGlyphs">{sub}</text>
           </g>
 
           {/* the button lands last and lands hard */}
           <g className="pk-tabcta">
-            <rect className="pk-tab-pill" x="100" y="240" width="158" height="44" rx="22" />
-            <text className="pk-tab-ctatext" x="179" y="269" textAnchor="middle"
-                  textLength="118" lengthAdjust="spacingAndGlyphs">{cta}</text>
+            <rect className="pk-tab-pill" x="100" y="230" width="172" height="44" rx="22" />
+            <text className="pk-tab-ctatext" x="186" y="259" textAnchor="middle"
+                  textLength="138" lengthAdjust="spacingAndGlyphs">{cta}</text>
           </g>
 
           {/* one soft sweep across the glass — a screen catches light in a band */}

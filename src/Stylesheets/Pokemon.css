@@ -302,7 +302,7 @@
 .pk-p3 .pk-shell-bot,
 .pk-p4 .pk-shell-bot,
 .pk-p5 .pk-shell-bot {
-  transform: translate(14%, 33%) rotate(24deg);
+  transform: translate(18%, 28%) rotate(16deg);
 }
 
 .pk-btn-rim { fill: #120c18; }
@@ -432,45 +432,23 @@
 .pk-pen-ferrule-line { fill: rgba(80, 84, 96, 0.45); }
 .pk-pen-eraser { fill: #f28aa0; }
 
-/* --- the copy: the DISCOUNT is the hero and BACK TO SCHOOL is the kicker --- */
-.pk-kicker {
+/* --- the copy --- */
+.pk-h1 {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 2.2px;
-  fill: var(--red);
-}
-.pk-hero-num {
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 60px;
+  font-size: 36px;
   font-weight: 900;
-  letter-spacing: -2px;
+  letter-spacing: -0.5px;
   fill: var(--ink);
 }
-/* "OFF" is red and a third the size — the number carries it, and putting them
-   both at the same weight makes neither of them the point */
-.pk-hero-off {
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 30px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  fill: var(--red);
-}
-.pk-uline { fill: var(--red); }
-.pk-sub {
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: 1.4px;
-  fill: #5d5680;
-}
+/* the third line takes the accent so the block has somewhere to land */
+.pk-h1-red { fill: var(--red); }
 .pk-tab-pill {
   fill: var(--red);
   filter: drop-shadow(0 3px 6px rgba(228, 0, 43, 0.4));
 }
 .pk-tab-ctatext {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
   letter-spacing: 1.4px;
   fill: #ffffff;
@@ -501,9 +479,9 @@
   to { opacity: 1; }
 }
 
-/* The discount lands last and lands hardest — it is the reason for the frame,
-   so it gets its own beat and the button follows it rather than sharing one.
-   It grows from its own left edge, where the eye already is after the kicker. */
+/* The third line of the headline lands on its own beat, and the button follows
+   it — the page arrives in two moves rather than all at once. It grows from its
+   own left edge, where the eye already is after the two lines above it. */
 .pk-tabhero {
   opacity: 0;
   transform: scale(0.55);
@@ -537,23 +515,23 @@
 /* It arrives WITH the ball, not at the end: the ball plus the name IS the
    logo, and that read is the whole point of the first two beats.
 
-   The box is sized for the tablet, so while only the ball is in it the name
-   would float a third of a box below the mark and the lockup falls apart. The
-   name rides up under the ball until the tablet arrives and pushes it back
-   down — the frame opening to make room. Expressed off --lock so it tracks the
-   one knob the composition scales from. */
+   It NEVER MOVES after that. An earlier pass had the name ride up under the
+   ball and get pushed back down when the tablet arrived, to close the gap
+   during the ball-only beats — the user saw the name shift on the burst and
+   asked for it to stop. So there is ONE resting position for every phase, set
+   low enough to clear the tablet, and the ball beats simply carry more air
+   under the mark. A permanent pull-up takes back some of that gap without ever
+   animating; it is capped by the thrown bottom shell, which must not reach the
+   wordmark. */
 .pk-type {
-  margin-top: 0.2vh;
+  margin-top: calc(var(--lock) * -0.03);
   opacity: 0;
   transform: translateY(1.6vh);
   transition: opacity 520ms ease, transform 640ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .pk-p1 .pk-type,
 .pk-p2 .pk-type,
-.pk-p3 .pk-type {
-  opacity: 1;
-  transform: translateY(calc(var(--lock) * -0.28));
-}
+.pk-p3 .pk-type,
 .pk-p4 .pk-type,
 .pk-p5 .pk-type {
   opacity: 1;
@@ -658,7 +636,7 @@
   transform: translate(-14%, -35%) rotate(-26deg);
 }
 .pk.is-static .pk-shell-bot {
-  transform: translate(14%, 33%) rotate(24deg);
+  transform: translate(18%, 28%) rotate(16deg);
 }
 .pk.is-static .pk-btn,
 .pk.is-static .pk-flash,
@@ -716,7 +694,7 @@
     transform: translate(-14%, -35%) rotate(-26deg);
   }
   .pk .pk-shell-bot {
-    transform: translate(14%, 33%) rotate(24deg);
+    transform: translate(18%, 28%) rotate(16deg);
   }
   .pk .pk-btn,
   .pk .pk-flash,
