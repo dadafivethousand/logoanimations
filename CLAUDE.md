@@ -154,19 +154,17 @@ Hard-won details, don't relearn them:
   above the eyes *inside* the skin, dipping toward the middle — a pair of
   eyebrows laid on top reads as cheesy; and the eyes carry the anger, so make
   them narrow slits lit from inside.
-- **Hybridising the ninja with a creature: draw the MARK's head, put the
-  creature in the body.** Pokemon crosses the ninja with a Charmander and three
-  passes went on the head before this landed. Drawing a Charmander head and
-  hooding it gives a cartoon lizard in a hood — the brand is gone. The mark's
-  head is four flat shapes and nothing else: a black disc, two grey speculars, a
-  straight skin band running the full width (clipped by the disc, which is what
-  squares its ends off), and two angular slits with the inner corners lower.
-  Draw exactly those, keep them FLAT — a radial gradient on the hood is what
-  stopped it reading as the logo — and let the body carry the creature entirely.
-  One liberty is affordable; Pokemon spends it on a snout welded under the band.
-  Two dead ends on the way: a dark shape down both sides of a face reads as a
-  bob haircut rather than a hood, and a cream chin patch under a snout reads as
-  a bear.
+- **Don't hybridise the ninja with a character — pick one.** Pokemon burned
+  three passes on this. A Charmander head under a ninja hood reads as a cartoon
+  lizard in a hood and the brand is gone; the mark's own head on a Charmander
+  body reads as neither. The user's call was to drop the ninja and just draw
+  the Charmander, and it was immediately better — a theme can be a *character*
+  with CODE NINJAS WOODBRIDGE set as type under it, exactly as Patriot and Hulk
+  do without the logo file. Dead ends collected on the way, all still true: a
+  dark shape down both sides of a face reads as a bob haircut, not a hood; a
+  cream chin patch under a snout reads as a bear; a muzzle needs its own light
+  *and* a drop-shadow or the snout has no form; and a mouth that doesn't run
+  most of the face's width reads as a bear's, not a lizard's.
 - **One colour story per theme, and mean it.** Hulk's violet key was
   theoretically correct (green/purple is the Hulk pair) and in practice washed
   the whole frame muddy purple on a phone. Gamma green on near-black was

@@ -24,7 +24,7 @@
 
   --skin: #f5a04e;
   --cream: #ffe6c4;
-  --logo-skin: #d7c19b;
+  --teal: #35d6c6;
   --ink: #17101f;
 
   /* screen-recording crop: nothing meaningful inside this band */
@@ -445,18 +445,25 @@
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
-/* The head is the mark's: FLAT, not graded. A radial gradient on the hood is
-   what stopped it reading as the logo. Lifted clear of pure black — a true
-   #000 disc punches a hole in the dusk (the Hulk lesson, in CLAUDE.md). */
-.pk-hood { fill: #15121d; }
-.pk-hood-hi { fill: #3d3852; }
-.pk-eyeband { fill: #d7c19b; }
-.pk-eye { fill: #0b0910; }
-.pk-nostril { fill: #8a7a5e; }
+/* the muzzle is a mass in FRONT of the face, so it casts back onto it —
+   without the shadow it is just a lighter patch and the snout has no form */
+.pk-muzzle {
+  fill: url(#pk-muzzlefill);
+  filter: drop-shadow(0 3px 4px rgba(150, 70, 15, 0.3));
+}
+.pk-nostril { fill: #7a3a12; }
+.pk-mouth {
+  fill: none;
+  stroke: #7a3a12;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
 
-/* the sash is the only place the brand's own red lands on the creature */
-.pk-sash-band { fill: var(--red); }
-.pk-sash-hi { fill: rgba(255, 255, 255, 0.22); }
+.pk-sclera { fill: #fffaf2; }
+.pk-iris { fill: url(#pk-irisfill); }
+.pk-pupil { fill: #150d18; }
+.pk-glint { fill: #ffffff; }
+.pk-glint-sm { fill: rgba(255, 255, 255, 0.7); }
 
 /* --- the tail flame --- */
 .pk-flame {

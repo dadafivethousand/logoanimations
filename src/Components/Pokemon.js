@@ -3,13 +3,13 @@
 //
 // Genre, not franchise. No franchise wordmark, no trainer, no series typeface —
 // the read comes from the beats (drop · wobble · burst · release) and from the
-// creature: the MARK's head — flat black disc, skin band, angular slits — on a
-// Charmander body: orange hide, cream belly, clawed limbs, tail flame.
+// creature: a Charmander — orange hide, blunt muzzle, cream underside, clawed
+// limbs, and the tail flame.
 //
-// NO LOGO FILE. Like Patriot and Hulk, this theme never calls useLogo: a raster
-// mark cannot be given a snout, a jaw and a tail, and the three passes that
-// went into learning that on Hulk are in CLAUDE.md. The ninja is DRAWN and the
-// name is set as type, so the theme survives the logo file being replaced.
+// NO LOGO FILE, and no ninja on screen — asked for explicitly after two passes
+// that hybridised the two. The brand is carried by the name set as type under
+// the creature and by the ball's brand-red shell. Like Patriot and Hulk this
+// theme never calls useLogo, so it survives the logo file being replaced.
 //
 // Colour story: plum-indigo dusk, one warm key off the tail flame, brand red
 // #e4002b carried by the ball's top shell. Deliberately unlike the siblings —
@@ -187,20 +187,18 @@ export default function Pokemon({
 }
 
 /* ======================================================================
-   THE CREATURE — the ninja as a Charmander, drawn here.
+   THE CREATURE — a Charmander, released from the ball.
 
-   The split is deliberate: the HEAD is the mark, the BODY is the Charmander.
+   Earlier passes hybridised it with the ninja: a Charmander head under a hood,
+   then the mark's own head on a Charmander body. Both were dropped — the
+   creature is simply a Charmander now, and the brand is carried by the name
+   set under it and by the ball's brand-red shell.
 
-   Drawing a Charmander head and hooding it was tried first and read as a
-   cartoon lizard in a hood, not as Code Ninjas. So the head is now the
-   artwork's own four flat shapes — black disc, two grey speculars, a straight
-   skin band, two angular slits, knot to the left — and the Charmander is
-   carried entirely by the body: orange hide, cream belly, stubby clawed limbs
-   and the fat tapering tail with the flame on it. The snout welded under the
-   band is the single liberty taken with the head.
-
-   Flat fills throughout. The mark is clean vector, and a photoreal blob of a
-   body next to a flat black disc reads as two different drawings.
+   What has to be right for it to read as Charmander rather than "an orange
+   lizard": the blunt MUZZLE as a mass filling the lower face with the eyes
+   sitting on top of it, the cream underside running unbroken from the jaw
+   through the throat to the belly, three claws on every limb, and the fat
+   tapering tail with the flame on the tip.
 
    Drawn in scene units (400x620) so it shares one coordinate system with the
    ball, and its feet clear the open shell instead of standing on it.
@@ -214,7 +212,7 @@ function Charmninja() {
         {/* ---- tail: fat at the root, tapering into the flame ---- */}
         <path
           className="pk-skin"
-          d="M246 424 C 316 428, 362 386, 376 320 C 382 288, 380 258, 374 232 L 336 240 C 342 268, 344 294, 338 316 C 326 358, 296 380, 244 376 Z"
+          d="M244 424 C 314 428, 360 388, 374 324 C 380 294, 378 262, 372 234 L 336 242 C 342 270, 344 296, 338 318 C 326 358, 296 378, 242 374 Z"
         />
 
         <g className="pk-flame">
@@ -222,91 +220,78 @@ function Charmninja() {
           <g className="pk-flicker">
             <path
               className="pk-flame-outer"
-              d="M355 140 C 372 178, 390 200, 390 228 C 390 254, 374 272, 354 272 C 334 272, 318 254, 318 230 C 318 200, 338 178, 355 140 Z"
+              d="M356 142 C 373 180, 390 202, 390 230 C 390 256, 374 274, 354 274 C 334 274, 318 256, 318 232 C 318 202, 339 180, 356 142 Z"
             />
             <path
               className="pk-flame-inner"
-              d="M355 182 C 366 208, 377 222, 377 238 C 377 256, 367 268, 354 268 C 341 268, 331 255, 331 238 C 331 222, 347 200, 355 182 Z"
+              d="M356 184 C 367 210, 378 224, 378 240 C 378 258, 368 270, 355 270 C 342 270, 332 257, 332 240 C 332 224, 348 202, 356 184 Z"
             />
             <path
               className="pk-flame-core"
-              d="M355 214 C 361 228, 367 234, 367 244 C 367 254, 361 260, 353 260 C 345 260, 339 253, 339 244 C 339 234, 349 226, 355 214 Z"
+              d="M356 216 C 362 230, 368 236, 368 246 C 368 256, 362 262, 354 262 C 346 262, 340 255, 340 246 C 340 236, 350 228, 356 216 Z"
             />
           </g>
         </g>
 
         {/* ---- feet ---- */}
-        <path className="pk-skin" d="M150 396 C 132 406, 128 428, 140 440 C 152 452, 184 452, 192 438 C 198 426, 196 404, 188 396 Z" />
-        <path className="pk-skin" d="M250 396 C 268 406, 272 428, 260 440 C 248 452, 216 452, 208 438 C 202 426, 204 404, 212 396 Z" />
+        <path className="pk-skin" d="M150 392 C 130 402, 126 428, 140 442 C 154 454, 186 454, 194 438 C 200 426, 198 402, 190 392 Z" />
+        <path className="pk-skin" d="M250 392 C 270 402, 274 428, 260 442 C 246 454, 214 454, 206 438 C 200 426, 202 402, 210 392 Z" />
         <g className="pk-claw">
-          <path d="M140 438 L145 452 L153 442 Z" />
-          <path d="M157 443 L163 456 L171 445 Z" />
-          <path d="M175 441 L181 452 L187 440 Z" />
-          <path d="M260 438 L255 452 L247 442 Z" />
-          <path d="M243 443 L237 456 L229 445 Z" />
-          <path d="M225 441 L219 452 L213 440 Z" />
+          <path d="M140 438 L145 454 L153 442 Z" />
+          <path d="M157 444 L163 458 L171 446 Z" />
+          <path d="M175 442 L181 454 L187 440 Z" />
+          <path d="M260 438 L255 454 L247 442 Z" />
+          <path d="M243 444 L237 458 L229 446 Z" />
+          <path d="M225 442 L219 454 L213 440 Z" />
         </g>
 
         {/* ---- body ---- */}
-        <path className="pk-skin" d="M200 246 C 260 246, 284 294, 284 338 C 284 392, 248 420, 200 420 C 152 420, 116 392, 116 338 C 116 294, 140 246, 200 246 Z" />
-        <path className="pk-belly" d="M200 288 C 234 288, 248 314, 248 342 C 248 378, 226 398, 200 398 C 174 398, 152 378, 152 342 C 152 314, 166 288, 200 288 Z" />
+        <path className="pk-skin" d="M200 232 C 262 232, 288 284, 288 332 C 288 388, 250 420, 200 420 C 150 420, 112 388, 112 332 C 112 284, 138 232, 200 232 Z" />
+        <path className="pk-belly" d="M200 272 C 238 272, 254 304, 254 338 C 254 380, 230 402, 200 402 C 170 402, 146 380, 146 338 C 146 304, 162 272, 200 272 Z" />
 
-        {/* ---- arms: short and tucked, clear of the tail ---- */}
-        <path className="pk-skin" d="M126 312 C 106 320, 96 342, 98 362 C 100 378, 114 386, 126 378 C 136 370, 138 344, 140 326 Z" />
-        <path className="pk-skin" d="M274 312 C 294 320, 304 342, 302 362 C 300 378, 286 386, 274 378 C 264 370, 262 344, 260 326 Z" />
+        {/* ---- arms ---- */}
+        <path className="pk-skin" d="M124 298 C 102 306, 90 330, 92 352 C 94 370, 110 380, 124 372 C 136 364, 138 334, 140 312 Z" />
+        <path className="pk-skin" d="M276 298 C 298 306, 310 330, 308 352 C 306 370, 290 380, 276 372 C 264 364, 262 334, 260 312 Z" />
         <g className="pk-claw">
-          <path d="M100 374 L95 390 L108 384 Z" />
-          <path d="M110 380 L110 395 L120 386 Z" />
-          <path d="M121 381 L124 394 L132 383 Z" />
-          <path d="M300 374 L305 390 L292 384 Z" />
-          <path d="M290 380 L290 395 L280 386 Z" />
-          <path d="M279 381 L276 394 L268 383 Z" />
+          <path d="M100 368 L95 384 L108 378 Z" />
+          <path d="M110 374 L110 389 L120 380 Z" />
+          <path d="M121 375 L124 388 L132 377 Z" />
+          <path d="M300 368 L305 384 L292 378 Z" />
+          <path d="M290 374 L290 389 L280 380 Z" />
+          <path d="M279 375 L276 388 L268 377 Z" />
         </g>
 
-        {/* ---- the sash: brand red on the cream belly, and the only place the
-                brand's own colour lands on the creature ---- */}
-        <g className="pk-sash">
-          <path className="pk-sash-band" d="M130 340 C 158 358, 242 358, 270 340 L 276 366 C 242 386, 158 386, 124 366 Z" />
-          <path className="pk-sash-hi" d="M134 344 C 160 360, 240 360, 266 344 L 267 351 C 240 367, 160 367, 133 351 Z" />
-        </g>
+        {/* the cream underside is ONE run from the jaw to the tail — drawn over
+            the body and lapping the belly, so there is no seam at the neck */}
+        <path className="pk-belly" d="M200 222 C 226 222, 244 234, 244 252 C 244 270, 224 282, 200 282 C 176 282, 156 270, 156 252 C 156 234, 174 222, 200 222 Z" />
 
-        {/* ---- the head: the ARTWORK's, near enough ----
-             The first pass drew a Charmander head — big round eyes, a snout,
-             a cowl — and it read as a cartoon lizard wearing a hood rather
-             than as the Code Ninjas mark. The mark's head is four flat shapes
-             and nothing else: a black disc, two grey speculars, a straight
-             skin band across the eyes, and two angular slits, with the knot
-             tied off to the left. That is what is drawn here. The Charmander
-             lives in the BODY — orange hide, cream belly, claws, tail flame —
-             and the one liberty taken with the head is the snout under the
-             band. ---- */}
-        <g transform="translate(200 158) scale(0.92) translate(-200 -150)">
-        <g className="pk-knot">
-          <path className="pk-hood" d="M104 126 C 84 116, 60 112, 50 120 C 60 130, 80 138, 100 141 Z" />
-          <path className="pk-hood" d="M100 144 C 82 150, 66 164, 62 180 C 76 174, 92 162, 104 152 Z" />
-        </g>
+        {/* ---- head: wide at the cheeks, narrowing to a rounded jaw ---- */}
+        <path
+          className="pk-skin"
+          d="M200 56 C 262 56, 306 92, 306 140 C 306 184, 276 216, 240 230 C 226 236, 212 238, 200 238 C 188 238, 174 236, 160 230 C 124 216, 94 184, 94 140 C 94 92, 138 56, 200 56 Z"
+        />
 
-        <circle className="pk-hood" cx="200" cy="150" r="104" />
+        {/* the muzzle is a MASS filling the lower face, with the eyes sitting on
+            top of it — a mouth line drawn on a flat face is what made the first
+            pass read as a bear */}
+        <path className="pk-muzzle" d="M200 136 C 238 136, 266 158, 266 187 C 266 215, 236 236, 200 236 C 164 236, 134 215, 134 187 C 134 158, 162 136, 200 136 Z" />
 
-        <g clipPath="url(#pk-headclip)">
-          {/* flat black lit by two crescents — the same two the artwork has.
-              A gradient here is what made the head stop reading as the mark. */}
-          <path className="pk-hood-hi" d="M108 112 C 124 66, 168 38, 220 40 C 272 42, 306 68, 316 106 C 296 76, 258 58, 216 56 C 168 54, 128 76, 108 112 Z" />
-          <path className="pk-hood-hi" d="M104 188 C 122 232, 158 256, 200 256 C 242 256, 278 232, 296 188 C 286 240, 248 268, 200 268 C 152 268, 114 240, 104 188 Z" />
+        <ellipse className="pk-nostril" cx="184" cy="168" rx="5" ry="3.8" />
+        <ellipse className="pk-nostril" cx="216" cy="168" rx="5" ry="3.8" />
+        <path className="pk-mouth" d="M140 192 C 160 220, 240 220, 260 192" />
 
-          {/* the band: straight edges, a hair off level, running the full width
-              of the disc — the clip is what squares it off against the rim */}
-          <path className="pk-eyeband" d="M84 126 L316 118 L316 152 L84 160 Z" />
-
-          {/* the snout, welded to the underside of the band */}
-          <path className="pk-eyeband" d="M166 148 C 166 174, 180 185, 200 185 C 220 185, 234 174, 234 148 Z" />
-          <ellipse className="pk-nostril" cx="189" cy="164" rx="3.6" ry="2.8" />
-          <ellipse className="pk-nostril" cx="211" cy="164" rx="3.6" ry="2.8" />
-
-          {/* slits, not eyes: angled so the inner corners sit lower */}
-          <path className="pk-eye" d="M134 132 C 152 132, 172 137, 186 144 C 168 148, 146 147, 134 144 C 132 140, 132 135, 134 132 Z" />
-          <path className="pk-eye" d="M266 131 C 248 131, 228 136, 214 143 C 232 147, 254 146, 266 143 C 268 139, 268 134, 266 131 Z" />
-        </g>
+        {/* eyes: tall ovals, teal iris, sitting over the top of the muzzle */}
+        <g className="pk-eyes">
+          <ellipse className="pk-sclera" cx="154" cy="138" rx="27" ry="32" />
+          <ellipse className="pk-sclera" cx="246" cy="138" rx="27" ry="32" />
+          <ellipse className="pk-iris" cx="156" cy="142" rx="19" ry="24" />
+          <ellipse className="pk-iris" cx="244" cy="142" rx="19" ry="24" />
+          <ellipse className="pk-pupil" cx="156" cy="144" rx="10" ry="14" />
+          <ellipse className="pk-pupil" cx="244" cy="144" rx="10" ry="14" />
+          <circle className="pk-glint" cx="146" cy="130" r="7" />
+          <circle className="pk-glint" cx="238" cy="130" r="7" />
+          <circle className="pk-glint pk-glint-sm" cx="162" cy="156" r="3.5" />
+          <circle className="pk-glint pk-glint-sm" cx="254" cy="156" r="3.5" />
         </g>
       </g>
     </g>
@@ -317,16 +302,24 @@ function PokemonDefs() {
   return (
     <svg className="pk-defs" aria-hidden focusable="false">
       <defs>
-        {/* the band and the speculars run past the disc and are cut by it */}
-        <clipPath id="pk-headclip">
-          <circle cx="200" cy="150" r="104" />
-        </clipPath>
-
         {/* the hide is lit from the upper left; flat orange reads as clip-art */}
         <radialGradient id="pk-skinfill" cx="34%" cy="26%" r="88%">
           <stop offset="0%" stopColor="#ffc584" />
           <stop offset="46%" stopColor="#f5a04e" />
           <stop offset="100%" stopColor="#dd8134" />
+        </radialGradient>
+
+        {/* the muzzle reads as a separate mass only if it is lit separately */}
+        <radialGradient id="pk-muzzlefill" cx="42%" cy="22%" r="86%">
+          <stop offset="0%" stopColor="#ffd7a2" />
+          <stop offset="54%" stopColor="#f9b168" />
+          <stop offset="100%" stopColor="#e59542" />
+        </radialGradient>
+
+        <radialGradient id="pk-irisfill" cx="40%" cy="28%" r="82%">
+          <stop offset="0%" stopColor="#8ff4e6" />
+          <stop offset="52%" stopColor="#35d6c6" />
+          <stop offset="100%" stopColor="#12756f" />
         </radialGradient>
 
         <radialGradient id="pk-bellyfill" cx="42%" cy="24%" r="88%">
