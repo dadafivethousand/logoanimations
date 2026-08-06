@@ -162,9 +162,18 @@ Hard-won details, don't relearn them:
   with CODE NINJAS WOODBRIDGE set as type under it, exactly as Patriot and Hulk
   do without the logo file. Dead ends collected on the way, all still true: a
   dark shape down both sides of a face reads as a bob haircut, not a hood; a
-  cream chin patch under a snout reads as a bear; a muzzle needs its own light
-  *and* a drop-shadow or the snout has no form; and a mouth that doesn't run
+  cream chin patch under a snout reads as a bear; and a mouth that doesn't run
   most of the face's width reads as a bear's, not a lizard's.
+- **Drawing a cartoon animal face that isn't creepy.** The Pokemon face came
+  back as "creepy" and three things were doing it, in order of weight. (1) A
+  WHITE SCLERA RING around the iris — that is a human eye, and on an animal it
+  stares. Build the eye as a dark oval, iris inside it, pupil, shine on top; no
+  white around the rim, and keep the dark rim thin. (2) The muzzle painted a
+  lighter colour than the head, which reads as a mask stuck on the face. It is
+  the same hide: give it the same fill and let a drop-shadow do the form. (3) A
+  hairline mouth reads as a slit cut in the face — it wants weight and corners
+  that lift. Also keep the head no wider than the body or it is a balloon, and
+  put a throat between the two.
 - **One colour story per theme, and mean it.** Hulk's violet key was
   theoretically correct (green/purple is the Hulk pair) and in practice washed
   the whole frame muddy purple on a phone. Gamma green on near-black was

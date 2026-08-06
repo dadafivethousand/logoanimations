@@ -263,35 +263,49 @@ function Charmninja() {
 
         {/* the cream underside is ONE run from the jaw to the tail — drawn over
             the body and lapping the belly, so there is no seam at the neck */}
-        <path className="pk-belly" d="M200 222 C 226 222, 244 234, 244 252 C 244 270, 224 282, 200 282 C 176 282, 156 270, 156 252 C 156 234, 174 222, 200 222 Z" />
+        <path className="pk-belly" d="M200 218 C 224 218, 240 229, 240 246 C 240 263, 222 274, 200 274 C 178 274, 160 263, 160 246 C 160 229, 176 218, 200 218 Z" />
 
-        {/* ---- head: wide at the cheeks, narrowing to a rounded jaw ---- */}
+        {/* ---- head ----
+             Third pass on this face. What made the previous one look wrong,
+             in order of how much it mattered:
+
+               · a WHITE SCLERA RING around the iris. That is a human eye, and
+                 on a lizard it stares. A Pokemon eye is a dark oval with the
+                 iris inside it and a shine on top — no white around the edge.
+               · the muzzle painted a lighter colour than the head, which read
+                 as a mask stuck on the face. It is the same hide, so it takes
+                 the same fill and gets its form from a drop-shadow instead.
+               · a thin mouth line. It reads as a slit; it wants weight and
+                 corners that lift.
+               · the head wider than the body, which made it a balloon. It is
+                 now barely wider, and there is a throat between the two.
+             ---- */}
         <path
           className="pk-skin"
-          d="M200 56 C 262 56, 306 92, 306 140 C 306 184, 276 216, 240 230 C 226 236, 212 238, 200 238 C 188 238, 174 236, 160 230 C 124 216, 94 184, 94 140 C 94 92, 138 56, 200 56 Z"
+          d="M200 62 C 258 62, 294 94, 296 132 C 299 162, 288 188, 268 207 C 250 224, 226 234, 200 234 C 174 234, 150 224, 132 207 C 112 188, 101 162, 104 132 C 106 94, 142 62, 200 62 Z"
         />
 
-        {/* the muzzle is a MASS filling the lower face, with the eyes sitting on
-            top of it — a mouth line drawn on a flat face is what made the first
-            pass read as a bear */}
-        <path className="pk-muzzle" d="M200 136 C 238 136, 266 158, 266 187 C 266 215, 236 236, 200 236 C 164 236, 134 215, 134 187 C 134 158, 162 136, 200 136 Z" />
+        {/* same hide as the rest of the head — only the shadow says it is in
+            front of the face */}
+        <path className="pk-muzzle" d="M200 146 C 228 146, 250 164, 250 186 C 250 208, 228 226, 200 226 C 172 226, 150 208, 150 186 C 150 164, 172 146, 200 146 Z" />
 
-        <ellipse className="pk-nostril" cx="184" cy="168" rx="5" ry="3.8" />
-        <ellipse className="pk-nostril" cx="216" cy="168" rx="5" ry="3.8" />
-        <path className="pk-mouth" d="M140 192 C 160 220, 240 220, 260 192" />
+        <ellipse className="pk-nostril" cx="186" cy="178" rx="4" ry="3" />
+        <ellipse className="pk-nostril" cx="214" cy="178" rx="4" ry="3" />
+        <path className="pk-mouth" d="M150 186 C 158 208, 180 217, 200 217 C 220 217, 242 208, 250 186" />
 
-        {/* eyes: tall ovals, teal iris, sitting over the top of the muzzle */}
+        {/* dark oval · teal iris · pupil · shine. Both shines sit upper-left,
+            because they are the same light that lights the hide. */}
         <g className="pk-eyes">
-          <ellipse className="pk-sclera" cx="154" cy="138" rx="27" ry="32" />
-          <ellipse className="pk-sclera" cx="246" cy="138" rx="27" ry="32" />
-          <ellipse className="pk-iris" cx="156" cy="142" rx="19" ry="24" />
-          <ellipse className="pk-iris" cx="244" cy="142" rx="19" ry="24" />
-          <ellipse className="pk-pupil" cx="156" cy="144" rx="10" ry="14" />
-          <ellipse className="pk-pupil" cx="244" cy="144" rx="10" ry="14" />
-          <circle className="pk-glint" cx="146" cy="130" r="7" />
-          <circle className="pk-glint" cx="238" cy="130" r="7" />
-          <circle className="pk-glint pk-glint-sm" cx="162" cy="156" r="3.5" />
-          <circle className="pk-glint pk-glint-sm" cx="254" cy="156" r="3.5" />
+          <ellipse className="pk-eyebase" cx="154" cy="140" rx="22" ry="27" />
+          <ellipse className="pk-eyebase" cx="246" cy="140" rx="22" ry="27" />
+          <ellipse className="pk-iris" cx="154" cy="136" rx="17" ry="20.5" />
+          <ellipse className="pk-iris" cx="246" cy="136" rx="17" ry="20.5" />
+          <ellipse className="pk-pupil" cx="154" cy="141" rx="8" ry="11" />
+          <ellipse className="pk-pupil" cx="246" cy="141" rx="8" ry="11" />
+          <circle className="pk-glint" cx="146" cy="128" r="6" />
+          <circle className="pk-glint" cx="238" cy="128" r="6" />
+          <circle className="pk-glint pk-glint-sm" cx="161" cy="152" r="2.8" />
+          <circle className="pk-glint pk-glint-sm" cx="253" cy="152" r="2.8" />
         </g>
       </g>
     </g>
@@ -309,11 +323,11 @@ function PokemonDefs() {
           <stop offset="100%" stopColor="#dd8134" />
         </radialGradient>
 
-        {/* the muzzle reads as a separate mass only if it is lit separately */}
+        {/* all but the same as the hide: the muzzle must not read as a patch */}
         <radialGradient id="pk-muzzlefill" cx="42%" cy="22%" r="86%">
-          <stop offset="0%" stopColor="#ffd7a2" />
-          <stop offset="54%" stopColor="#f9b168" />
-          <stop offset="100%" stopColor="#e59542" />
+          <stop offset="0%" stopColor="#ffcb92" />
+          <stop offset="54%" stopColor="#f6a856" />
+          <stop offset="100%" stopColor="#e08e3e" />
         </radialGradient>
 
         <radialGradient id="pk-irisfill" cx="40%" cy="28%" r="82%">

@@ -449,17 +449,18 @@
    without the shadow it is just a lighter patch and the snout has no form */
 .pk-muzzle {
   fill: url(#pk-muzzlefill);
-  filter: drop-shadow(0 3px 4px rgba(150, 70, 15, 0.3));
+  filter: drop-shadow(0 2px 4px rgba(140, 64, 12, 0.32));
 }
 .pk-nostril { fill: #7a3a12; }
+/* weight and lifting corners — a hairline reads as a slit cut in the face */
 .pk-mouth {
   fill: none;
-  stroke: #7a3a12;
-  stroke-width: 6;
+  stroke: #6b3010;
+  stroke-width: 7.5;
   stroke-linecap: round;
 }
 
-.pk-sclera { fill: #fffaf2; }
+.pk-eyebase { fill: #17121f; }
 .pk-iris { fill: url(#pk-irisfill); }
 .pk-pupil { fill: #150d18; }
 .pk-glint { fill: #ffffff; }
