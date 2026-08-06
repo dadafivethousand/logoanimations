@@ -29,7 +29,9 @@ import "../Stylesheets/Pokemon.css";
 import usePhases from "../Utils/usePhases";
 
 // p1 the ball lands and the name arrives · p2 it wobbles · p3 BURST
-// p4 the tablet comes out and wakes · p5 the call to action
+// p4 the tablet comes out and wakes · p5 the highlighter and the button
+//
+// Plays ONCE and holds. See `loopAt` below.
 const CUES = [250, 1500, 2900, 3200, 4300];
 
 /* Sparks thrown off the burst. Computed once so every take composes the same —
@@ -66,7 +68,10 @@ export default function Pokemon({
   promoLine2 = "SCHOOL",
   promoHook = "PROMOTIONS ON NOW",
   promoCta = "DM FOR DETAILS",
-  loopAt = 9200,
+  // NO LOOP. The sequence plays once and holds on the finished frame; the user
+  // refreshes to play it again. Passing a number here would restart it — every
+  // other theme in the repo still does, and they all want the same treatment.
+  loopAt = null,
 }) {
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
 
