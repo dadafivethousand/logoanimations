@@ -86,7 +86,7 @@ traps that waste an hour are written up in `CLAUDE.md`.
 dark straight at the camera and glides to a stop, square. The TORONTO EXPRESS
 masthead prints in spot red a beat after the paper settles, a hair off
 register, the way a two-colour front page was actually made. The lead art is a
-clean photograph at the full measure; the lockup sits under it as a boxed house
+lightly-printed photograph at the full measure; the lockup sits under it as a boxed house
 ad, set as a halftone through the mark's three region masks. The page is made
 up like a real one — section flag, headline set to the measure, deck, cutline
 and credit, three columns of justified prose with a byline, a drop cap, a

@@ -230,7 +230,7 @@
 .np-page {
   position: relative;
   width: var(--page-w);
-  aspect-ratio: 0.50;
+  aspect-ratio: 0.455;
   padding: 3.6% 4.6% 3.2%;
   display: flex;
   flex-direction: column;
@@ -581,21 +581,40 @@
 .np-cut-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 1.72;
+  aspect-ratio: 1.34;
   overflow: hidden;
   outline: 1px solid rgba(22, 19, 12, 0.5);
   background: var(--paper-hi);
 }
-/* Printed CLEAN — no screen, no greyscale, no blend. The crop is the only
-   treatment left: cover shows half of this portrait's height, and 82% puts
-   that band below the wall logo and on the faces. */
+/* Lightly printed: a little of the colour pulled out, a little contrast, and
+   the paper multiplied through it, so the picture sits ON newsprint without
+   the full grey halftone treatment burying anybody's face.
+
+   The crop is the other half of it. `cover` shows about half this portrait's
+   height, so the anchor decides which half: 12% keeps the TOP of the frame —
+   the wall behind them and the standing student — instead of cutting heads. */
 .np-cut-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 82%;
+  object-position: 50% 13%;
+  filter: grayscale(0.55) contrast(1.08) brightness(1.02);
+  mix-blend-mode: multiply;
+}
+
+/* the dot screen, held well back */
+.np-cut-screen {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 50% 50%, var(--paper-hi) 40%, transparent 52%),
+    radial-gradient(circle at 50% 50%, var(--paper-hi) 40%, transparent 52%);
+  background-size: var(--pitch) var(--pitch), var(--pitch) var(--pitch);
+  background-position: 0 0, calc(var(--pitch) / 2) calc(var(--pitch) / 2);
+  mix-blend-mode: lighten;
+  opacity: 0.3;
 }
 /* with no image supplied the block prints as an unresolved plate, which still
    reads as a picture at this size */

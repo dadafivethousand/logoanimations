@@ -86,9 +86,9 @@ export default function Newspaper({
   headline2 = "ONE BELT AT A TIME",
   deck = "Woodbridge students earn their rank by shipping something that works",
   byline = "BY STAFF REPORTER",
-  // The page's lead art, run at the full measure across the top. It is printed
-  // CLEAN — no screen, no greyscale, no blend — because the user wants the
-  // photograph readable rather than treated.
+  // The page's lead art, run at the full measure across the top. Lightly
+  // printed: most of the colour is still there and every face is readable —
+  // the full newsprint treatment buried them.
   photo = dojo,
   photoCaption =
     "Students at the Woodbridge dojo with their laptops and robotics builds.",
@@ -206,6 +206,9 @@ export default function Newspaper({
                     ) : (
                       <div className="np-cut-plate" />
                     )}
+                    {/* a light dot screen over the picture — enough to say
+                        "printed", not enough to obscure anyone's face */}
+                    <div className="np-cut-screen" />
                   </div>
                   <figcaption className="np-cutline">
                     {photoCaption} <span className="np-credit">{photoCredit}</span>
