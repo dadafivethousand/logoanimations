@@ -11,26 +11,22 @@
 // that furniture is what makes a page read as a PAGE rather than as a poster
 // with lines on it. The wording is PLACEHOLDER — see STORY below.
 //
-// THE MARK IS PRINTED, NOT LIT. A press lays one ink on one paper, so the
-// lockup is rendered as a monochrome HALFTONE — but through the three region
-// masks, never as one flat tint: the hood and "NINJAS" print as a solid black
-// screen, "CODE" as a mid screen, and the eye band as a light screen. That
-// tonal separation is the only thing keeping the mark readable once the colour
-// is gone. Brand red is the press's SECOND PLATE: it carries the masthead,
-// which stamps on a beat after the page lands and a hair off register, exactly
-// how a two-colour front page was actually made.
+// NO LOGO FILE. The lockup is not set on the page — the user cut it, and the
+// space went to the story. The brand is carried by the PHOTOGRAPH, which has
+// CODE NINJAS WOODBRIDGE on the wall behind the students, so this theme
+// survives the logo file being replaced and never calls useLogo.
 //
-// WOODBRIDGE is a flow sibling of the photo inside the mark wrapper, so the
-// pair travel as one lockup no matter what the page does.
+// Brand red is the press's SECOND PLATE: it carries the masthead, which stamps
+// on a beat after the page lands and a hair off register, exactly how a
+// two-colour front page was actually made.
 import React from "react";
 import "../Stylesheets/Newspaper.css";
 import usePhases from "../Utils/usePhases";
-import useLogo from "../Utils/useLogo";
 import dojo from "../Images/dojo.jpg";
 
-// p1 the page spins in out of the dark · p2 it has come to rest and the mark
-// resolves · p3 the red masthead overprints · p4 the camera pushes in, light
-// crosses the page · p5 hold
+// p1 the page spins in out of the dark · p2 it has come to rest · p3 the red
+// masthead overprints · p4 the camera pushes in, light crosses the page
+// p5 hold
 //
 // p2 is set AFTER the flight finishes (140 + 1750), not on top of it — landing
 // beats that fire while the paper is still moving are what made the stop read
@@ -61,6 +57,20 @@ const STORY = {
     "Belts are earned in front of the room. A ninja demonstrates the build, takes questions, and walks everyone through the one bug that nearly beat them.",
   end2:
     "Afterwards there is a wall of names, and the next belt is already on it. Nobody hurries. The kids who finish fastest are usually the ones who slowed down at the start.",
+  more1:
+    "The belts are not decoration. There is a list behind each one and the list is not negotiable: build the thing, make it run, then say out loud how it works.",
+  more2:
+    "Sessions are open rather than sorted by grade, so a nine-year-old on a first project sits next to a twelve-year-old halfway through a game engine. The younger one watches, and that is most of the curriculum.",
+  more3:
+    "A ninja who is stuck stays stuck until the question gets better. The room is arranged so that being stuck in front of everybody is ordinary rather than embarrassing.",
+  more4:
+    "Parents wait at the back, often with laptops of their own. The rule is that they do not lean over and fix anything, which is harder than it sounds.",
+  more6:
+    "There is no homework and no grade at the end. The work is the demonstration, and the demonstration happens in front of the people who watched it get built.",
+  more7:
+    "Nothing on the wall is finished. Every project has a next version, and most ninjas are describing it before the current one has been signed off.",
+  more5:
+    "By the end of a term the vocabulary has changed. Students stop saying that something is broken and start saying which part of it is broken, and that is the difference the belts are really tracking.",
 };
 
 /* Paper dust hanging in the press-hall light. Hand-placed so every take
@@ -76,7 +86,6 @@ const DUST = [-38, -22, -9, 6, 20, 35];
 
 export default function Newspaper({
   mode = "animated",
-  caption = "WOODBRIDGE",
   // PROP WORDING — a prop paper, and a straight news headline rather than a
   // joke. Every line here is pinned with textLength, so new wording re-fits
   // itself instead of overrunning the measure.
@@ -97,17 +106,10 @@ export default function Newspaper({
   // refreshes to play it again.
   loopAt = null,
 }) {
-  const { logoVar, ready } = useLogo();
-  const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt, enabled: ready });
-
-  if (!ready) return <div className="np np-p0" aria-hidden />;
+  const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
 
   return (
-    <div
-      className={`np np-p${phase} ${isStatic ? "is-static" : ""}`}
-      style={logoVar}
-      key={run}
-    >
+    <div className={`np np-p${phase} ${isStatic ? "is-static" : ""}`} key={run}>
       <NewspaperDefs />
 
       {/* ---- the space: one dark volume with a press lamp in it ---- */}
@@ -215,50 +217,39 @@ export default function Newspaper({
                   </figcaption>
                 </figure>
 
-                {/* --- the story. The lockup sits in the made-up page as a
-                        boxed house ad across two columns, which is exactly
-                        where a paper puts its own mark. --- */}
+                {/* --- the story, running the full depth of the page in
+                        three columns. NOTE: the mark is no longer set on the
+                        page at all — the brand appears only where it is
+                        already in the photograph, on the wall behind the
+                        students. --- */}
                 <div className="np-cols" aria-hidden>
-                  <div className="np-markwrap">
-                    <div className="np-markbox">
-                      <div className="np-photo">
-                        {/* the flat plate the picture resolves out of */}
-                        <div className="np-ph-plate" />
-                        {/* one screen per region: solid / mid / light. Masking
-                            the whole mark with one value would flatten the
-                            hood, the eye band and CODE into a single grey and
-                            the ninja would lose his eyes. */}
-                        <div className="np-ph np-ph-dark" />
-                        <div className="np-ph np-ph-accent" />
-                        <div className="np-ph np-ph-light" />
-                      </div>
-                    </div>
-
-                    {/* welded under the mark, in flow — never positioned */}
-                    <div className="np-type">
-                      <div className="np-caption">{caption}</div>
-                      <div className="np-cutrule" />
-                    </div>
-                  </div>
-
                   <div className="np-col np-col-a">
                     <div className="np-byline">{byline}</div>
                     <div className="np-rule np-rule-hair np-rule-tight" />
                     <p className="np-body np-body-lead">{STORY.lead}</p>
                     <p className="np-body">{STORY.lead2}</p>
+                    <p className="np-body">{STORY.lead3}</p>
+                    <p className="np-body">{STORY.more1}</p>
+                    <p className="np-body">{STORY.more6}</p>
                   </div>
 
                   <div className="np-col np-col-b">
-                    <p className="np-body">{STORY.lead3}</p>
-                    <p className="np-body">{STORY.end1}</p>
-                    <p className="np-jump">Continued on Page 4</p>
-                  </div>
-
-                  <div className="np-col np-col-c">
                     <div className="np-subhead">A GAME OF THEIR OWN</div>
                     <p className="np-body">{STORY.mid1}</p>
                     <p className="np-body">{STORY.mid2}</p>
                     <p className="np-body">{STORY.mid3}</p>
+                    <p className="np-body">{STORY.more2}</p>
+                    <p className="np-body">{STORY.more7}</p>
+                  </div>
+
+                  <div className="np-col np-col-c">
+                    <div className="np-subhead">EARNING THE BELT</div>
+                    <p className="np-body">{STORY.end1}</p>
+                    <p className="np-body">{STORY.more3}</p>
+                    <p className="np-body">{STORY.more4}</p>
+                    <p className="np-body">{STORY.end2}</p>
+                    <p className="np-body">{STORY.more5}</p>
+                    <p className="np-jump">Continued on Page 4</p>
                   </div>
                 </div>
 

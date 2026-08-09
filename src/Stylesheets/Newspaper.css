@@ -360,144 +360,6 @@
 }
 
 /* ====================================================================
-   THE LOCKUP — the mark printed as the page's halftone photograph
-   ==================================================================== */
-
-.np-markwrap {
-  position: relative;
-  /* the paper's own mark, boxed across two columns — where a paper actually
-     puts a house ad */
-  grid-column: 1 / span 2;
-  grid-row: 1;
-  align-self: start;
-  margin-bottom: calc(2 * var(--u));
-  padding: 4% 5% 3.4%;
-  border: 1px solid rgba(22, 19, 12, 0.6);
-}
-
-.np-markbox {
-  position: relative;
-  width: 100%;
-}
-
-.np-photo {
-  position: relative;
-  width: 100%;
-  /* measured from the trimmed mark at load, so any logo lands on register */
-  aspect-ratio: var(--logo-aspect, 2.17);
-  /* the picture resolves out of the plate as the page stops spinning */
-  filter: blur(2.6px) contrast(0.55);
-  transition: filter 880ms ease;
-}
-.np-p2 .np-photo,
-.np-p3 .np-photo,
-.np-p4 .np-photo,
-.np-p5 .np-photo {
-  filter: blur(0) contrast(1);
-}
-
-/* the flat ink plate the halftone comes out of */
-.np-ph-plate {
-  position: absolute;
-  inset: 0;
-  background: var(--ink-soft);
-  -webkit-mask-image: var(--logo);
-  mask-image: var(--logo);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  opacity: 0.55;
-  transition: opacity 760ms ease;
-}
-.np-p2 .np-ph-plate,
-.np-p3 .np-ph-plate,
-.np-p4 .np-ph-plate,
-.np-p5 .np-ph-plate {
-  opacity: 0;
-}
-
-/* One screen per region. A press has one ink, so the lockup's three regions
-   are separated by DOT DENSITY instead of colour — solid for the hood and
-   NINJAS, mid for CODE, light for the eye band. Mask the whole mark with a
-   single value and the ninja loses his eyes. */
-.np-ph {
-  position: absolute;
-  inset: 0;
-  background-color: var(--paper-hi);
-  background-image:
-    radial-gradient(circle at 50% 50%, var(--ink) var(--r1), transparent var(--r2)),
-    radial-gradient(circle at 50% 50%, var(--ink) var(--r1), transparent var(--r2));
-  background-size: var(--pitch) var(--pitch), var(--pitch) var(--pitch);
-  background-position: 0 0, calc(var(--pitch) / 2) calc(var(--pitch) / 2);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  opacity: 0;
-  transition: opacity 700ms ease;
-}
-.np-p2 .np-ph,
-.np-p3 .np-ph,
-.np-p4 .np-ph,
-.np-p5 .np-ph {
-  opacity: 1;
-}
-
-/* hood + "NINJAS": a 100% screen, dots merged, paper barely showing */
-.np-ph-dark {
-  --r1: 74%;
-  --r2: 86%;
-  -webkit-mask-image: var(--logo-dark, var(--logo));
-  mask-image: var(--logo-dark, var(--logo));
-}
-/* "CODE": a mid screen, so it reads as the blue does in the artwork */
-.np-ph-accent {
-  --r1: 45%;
-  --r2: 57%;
-  -webkit-mask-image: var(--logo-accent);
-  mask-image: var(--logo-accent);
-}
-/* the band across the eyes: a light screen, so the face stays open */
-.np-ph-light {
-  --r1: 29%;
-  --r2: 40%;
-  -webkit-mask-image: var(--logo-light);
-  mask-image: var(--logo-light);
-}
-
-/* WOODBRIDGE — a flow sibling of the photo, never positioned */
-.np-type {
-  position: relative;
-  margin-top: 2.6%;
-  text-align: center;
-}
-.np-caption {
-  font-size: calc(3.8 * var(--u));
-  font-weight: 700;
-  letter-spacing: 0.34em;
-  text-indent: 0.34em;
-  color: var(--ink);
-}
-.np-cutrule {
-  width: 34%;
-  height: 2px;
-  margin: 2.2% auto 0;
-  background: linear-gradient(90deg, transparent, var(--red) 50%, transparent);
-  opacity: 0;
-  transition: opacity 520ms ease;
-}
-.np-p3 .np-cutrule,
-.np-p4 .np-cutrule,
-.np-p5 .np-cutrule {
-  opacity: 1;
-}
-
-/* ====================================================================
    THE STORY — made up like a page: the art runs wide across two columns
    and the text sets under and beside it. At phone scale the body sets at
    about 3px and reads as texture, but it is real text, justified and
@@ -507,7 +369,6 @@
 .np-cols {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: min-content 1fr;
   gap: 0 4%;
   margin-top: 3%;
   flex: 1;
@@ -519,16 +380,12 @@
 .np-col {
   min-width: 0;
 }
-/* column rules run between the text columns only — under the art there is
-   nothing to separate, which is exactly how a made-up page looks */
+/* column rules between the text columns */
 .np-col-b,
 .np-col-c {
   padding-left: 3%;
   border-left: 1px solid rgba(22, 19, 12, 0.28);
 }
-.np-col-a { grid-column: 1; grid-row: 2; }
-.np-col-b { grid-column: 2; grid-row: 2; }
-.np-col-c { grid-column: 3; grid-row: 1 / span 2; }
 
 .np-byline {
   font-size: calc(1.75 * var(--u));
@@ -538,6 +395,7 @@
 }
 
 .np-subhead {
+  margin-top: 0;
   text-align: center;
   font-size: calc(1.9 * var(--u));
   font-weight: 700;
@@ -822,9 +680,7 @@
   transform: scale(1.06) translateY(-1.4%);
 }
 .np.is-static .np-shadow,
-.np.is-static .np-ph,
-.np.is-static .np-masthead-t,
-.np.is-static .np-cutrule {
+.np.is-static .np-masthead-t {
   opacity: 1;
 }
 .np.is-static .np-masthead-t {
@@ -833,11 +689,7 @@
 .np.is-static .np-rule-thick {
   background: var(--red);
 }
-.np.is-static .np-photo {
-  filter: none;
-}
-.np.is-static .np-ph-plate,
-.np.is-static .np-streaks,
+.np.is-static .np.is-static .np-streaks,
 .np.is-static .np-sweep,
 .np.is-static .np-flash,
 .np.is-static .np-puff,
@@ -868,9 +720,7 @@
     transform: scale(1.06) translateY(-1.4%);
   }
   .np .np-shadow,
-  .np .np-ph,
-  .np .np-masthead-t,
-  .np .np-cutrule {
+  .np .np-masthead-t {
     opacity: 1;
   }
   .np .np-masthead-t {
@@ -879,11 +729,7 @@
   .np .np-rule-thick {
     background: var(--red);
   }
-  .np .np-photo {
-    filter: none;
-  }
-  .np .np-ph-plate,
-  .np .np-streaks,
+  .np   .np .np-streaks,
   .np .np-sweep,
   .np .np-flash,
   .np .np-puff,
