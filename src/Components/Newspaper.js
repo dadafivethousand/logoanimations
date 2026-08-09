@@ -1,11 +1,12 @@
 // Newspaper.js — the old newsreel gag: a front page comes spinning out of the
-// dark, straight at the camera, and stops flat so you can read it. EXTRA!
-// EXTRA! across the top, and the mark set as the page's halftone photo.
+// dark, straight at the camera, and stops flat so you can read it. The
+// TORONTO EXPRESS masthead and EXTRA! EXTRA! across the top, and the mark set
+// as the page's halftone photo.
 //
 // Genre, not a real title. The masthead is a PROP — no real publication's
 // name, logotype or typeface — and the only claim-free copy the page carries
-// is the masthead, the edition line, EXTRA! EXTRA! and the lockup. Every other
-// "word" on the page is GREEKED: rows of ink, not sentences. A newspaper is
+// is the masthead, EXTRA! EXTRA! and the lockup. Every other "word" on the
+// page is GREEKED: rows of ink, not sentences. A newspaper is
 // made of text, and inventing sentences about Code Ninjas would be inventing
 // marketing copy, so the columns are texture and the headline is the logo.
 //
@@ -14,9 +15,9 @@
 // masks, never as one flat tint: the hood and "NINJAS" print as a solid black
 // screen, the eye band as a light 20% screen, and "CODE" as a mid 45% screen.
 // That tonal separation is the only thing keeping the mark readable once the
-// colour is gone. Brand red survives as the press's SECOND PLATE — the EXTRA
-// banner is a spot-red overprint, and it stamps on a beat late and a hair off
-// register, which is exactly how a real extra edition was made.
+// colour is gone. Brand red is the press's SECOND PLATE — it carries the
+// masthead and the EXTRA banner, and the banner stamps on a beat late and a
+// hair off register, which is exactly how a real extra edition was made.
 //
 // WOODBRIDGE is a flow sibling of the photo inside the mark wrapper, so the
 // pair travel as one lockup no matter what the page does.
@@ -63,11 +64,10 @@ const DUST = [-38, -22, -9, 6, 20, 35];
 export default function Newspaper({
   mode = "animated",
   caption = "WOODBRIDGE",
-  // PROP WORDING — not a real newspaper and not confirmed copy. The masthead
-  // and edition line are the theme's set dressing; if the user wants different
-  // wording, both are pinned with textLength and will re-fit on their own.
+  // The masthead is pinned with textLength, so new wording re-fits itself.
+  // There is no edition line: "LATE EDITION / EXTRA / PRICE FIVE CENTS" was
+  // invented copy and the user cut all three.
   masthead = "TORONTO EXPRESS",
-  edition = "LATE EDITION ★ EXTRA ★ PRICE FIVE CENTS",
   banner = "EXTRA! EXTRA!",
   // NO LOOP. The sequence plays once and holds on the finished frame; the user
   // refreshes to play it again.
@@ -128,19 +128,6 @@ export default function Newspaper({
                 </svg>
 
                 <div className="np-rule np-rule-thick" aria-hidden />
-                <svg className="np-edition" viewBox="0 0 600 26" aria-hidden>
-                  <text
-                    className="np-edition-t"
-                    x="300"
-                    y="19"
-                    textAnchor="middle"
-                    textLength="520"
-                    lengthAdjust="spacingAndGlyphs"
-                  >
-                    {edition}
-                  </text>
-                </svg>
-                <div className="np-rule" aria-hidden />
 
                 {/* --- the banner: spot red, laid down as a second pass --- */}
                 <svg className="np-extra" viewBox="0 0 600 132" aria-hidden>

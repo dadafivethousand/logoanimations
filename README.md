@@ -85,5 +85,6 @@ traps that waste an hour are written up in `CLAUDE.md`.
 **Newspaper** — the old newsreel gag: a front page comes spinning out of the
 dark straight at the camera and stops flat. EXTRA! EXTRA! across the top of the TORONTO EXPRESS in
 spot red, printed a beat late and a hair off register, and the mark set as the
-page's halftone photograph. The masthead and edition line are props, and the
-columns are greeked — rows of ink, not sentences.
+page's halftone photograph. The columns are greeked — rows of ink, not
+sentences — so the only copy on the page is the masthead, the banner and the
+lockup.

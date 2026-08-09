@@ -257,7 +257,7 @@
   height: auto;
 }
 .np-masthead-t {
-  fill: var(--ink);
+  fill: var(--red);
   font-family: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
   font-size: 70px;
   font-weight: 700;
@@ -274,22 +274,10 @@
 }
 .np-rule-thick {
   height: 3px;
+  background: var(--red);
   opacity: 0.9;
-  margin-top: 1%;
+  margin-top: 0.6%;
   margin-bottom: 1.2%;
-}
-
-.np-edition {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.np-edition-t {
-  fill: var(--ink);
-  font-family: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
 }
 
 /* ---- EXTRA! EXTRA! — spot red, overprinted a beat late ---- */
@@ -297,7 +285,9 @@
   display: block;
   width: 100%;
   height: auto;
-  margin-top: 1.4%;
+  /* air between the two red elements — with the edition line gone they were
+     crowding each other */
+  margin-top: 3.2%;
 }
 .np-extra-t,
 .np-extra-ghost {
