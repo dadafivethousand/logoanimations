@@ -230,7 +230,7 @@
 .np-page {
   position: relative;
   width: var(--page-w);
-  aspect-ratio: 0.455;
+  aspect-ratio: 0.49;
   padding: 3.6% 4.6% 3.2%;
   display: flex;
   flex-direction: column;

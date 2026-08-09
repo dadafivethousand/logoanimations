@@ -91,10 +91,9 @@ export default function Newspaper({
   // itself instead of overrunning the measure.
   masthead = "TORONTO EXPRESS",
   kicker = "EDUCATION",
-  headline1 = "LEARNING TO CODE,",
-  headline2 = "ONE BELT AT A TIME",
+  headline = "LEARNING TO CODE",
   deck = "Woodbridge students earn their rank by shipping something that works",
-  byline = "BY STAFF REPORTER",
+  byline = "BY RUSSELL JOHNSON",
   // The page's lead art, run at the full measure across the top. Lightly
   // printed: most of the colour is still there and every face is readable —
   // the full newsprint treatment buried them.
@@ -173,25 +172,16 @@ export default function Newspaper({
                 </div>
 
                 {/* --- the headline, set to the measure like a real one --- */}
-                <svg className="np-headline" viewBox="0 0 600 216" aria-hidden>
+                <svg className="np-headline" viewBox="0 0 600 118" aria-hidden>
                   <g filter="url(#np-ink)">
                     <text
                       x="300"
-                      y="88"
+                      y="92"
                       textAnchor="middle"
                       textLength="574"
                       lengthAdjust="spacingAndGlyphs"
                     >
-                      {headline1}
-                    </text>
-                    <text
-                      x="300"
-                      y="192"
-                      textAnchor="middle"
-                      textLength="574"
-                      lengthAdjust="spacingAndGlyphs"
-                    >
-                      {headline2}
+                      {headline}
                     </text>
                   </g>
                 </svg>
@@ -234,7 +224,7 @@ export default function Newspaper({
                   </div>
 
                   <div className="np-col np-col-b">
-                    <div className="np-subhead">A GAME OF THEIR OWN</div>
+                    <div className="np-subhead">BUILDING GAMES</div>
                     <p className="np-body">{STORY.mid1}</p>
                     <p className="np-body">{STORY.mid2}</p>
                     <p className="np-body">{STORY.mid3}</p>
