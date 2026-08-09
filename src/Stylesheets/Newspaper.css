@@ -1,0 +1,751 @@
+/* Newspaper — the front page comes spinning out of the dark and stops flat.
+   Portrait phone only (~390x844), screen-recorded. Layout sized in vw/vh;
+   px is reserved for hairlines and halftone dot pitch, which must stay fixed
+   or the screen turns into a pattern of blobs. */
+
+.np {
+  /* palette — newsprint cream, press-ink black, and brand red as the SECOND
+     PLATE. Nothing else on the page carries colour: a press lays one ink at a
+     time, and the red overprint is the whole point of an EXTRA. */
+  --paper: #e9e1cd;
+  --paper-hi: #f6f0df;
+  --paper-lo: #cfc4aa;
+  --ink: #16130c;
+  --ink-soft: #4c4438;
+  --red: #e4002b;
+  --hall: #0a0b0d;
+  --lamp: #f2dcaa;
+
+  /* screen-recording crop: nothing meaningful outside this band */
+  --safe-x: 9vw;
+  --safe-y: 5vh;
+
+  /* the one knob the composition scales from */
+  --page-w: 82vw;
+  /* halftone screen: 3px pitch, two offset grids = a 45deg screen */
+  --pitch: 3px;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--hall);
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+  color: var(--ink);
+  isolation: isolate;
+}
+
+.np-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   THE SPACE — one dark volume with a press lamp in it, not a diorama
+   ==================================================================== */
+
+.np-hall {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(88% 58% at 50% 34%, #1d2028 0%, #101216 46%, #07080a 100%),
+    linear-gradient(180deg, #0d0f13 0%, #08090b 100%);
+}
+
+/* the overhead lamp the page lands under */
+.np-lamp {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 150vw;
+  height: 150vw;
+  transform: translate(-50%, -50%) scale(0.86);
+  background: radial-gradient(
+    closest-side,
+    rgba(242, 220, 170, 0.24) 0%,
+    rgba(242, 220, 170, 0.09) 42%,
+    transparent 72%
+  );
+  opacity: 0;
+  transition: opacity 900ms ease, transform 1800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.np-p1 .np-lamp,
+.np-p2 .np-lamp,
+.np-p3 .np-lamp,
+.np-p4 .np-lamp,
+.np-p5 .np-lamp {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* paper dust hanging in that light */
+.np-motes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.np-mote {
+  position: absolute;
+  left: var(--x);
+  bottom: -6vh;
+  width: calc(0.7vw * var(--s));
+  height: calc(0.7vw * var(--s));
+  border-radius: 50%;
+  background: rgba(246, 240, 223, 0.5);
+  filter: blur(0.4px);
+  opacity: 0;
+  animation: np-drift var(--t) linear var(--d) infinite;
+}
+@keyframes np-drift {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  12% { opacity: 0.6; }
+  70% { opacity: 0.35; }
+  100% { transform: translateY(-108vh) translateX(4vw); opacity: 0; }
+}
+
+/* speed lines — only while the page is still coming at the camera */
+.np-streaks {
+  position: absolute;
+  inset: -35%;
+  background: repeating-conic-gradient(
+    from 0deg at 50% 46%,
+    rgba(255, 255, 255, 0.07) 0deg 1.2deg,
+    transparent 1.2deg 6.4deg
+  );
+  -webkit-mask-image: radial-gradient(closest-side, transparent 16%, #000 52%, transparent 90%);
+  mask-image: radial-gradient(closest-side, transparent 16%, #000 52%, transparent 90%);
+  opacity: 0;
+  pointer-events: none;
+}
+.np-p1 .np-streaks {
+  animation: np-streak 1340ms cubic-bezier(0.12, 0.72, 0.16, 1) both;
+}
+@keyframes np-streak {
+  0% { opacity: 0; transform: scale(0.42) rotate(0deg); }
+  18% { opacity: 1; }
+  78% { opacity: 0.7; }
+  100% { opacity: 0; transform: scale(1.7) rotate(46deg); }
+}
+
+/* ====================================================================
+   THE PAGE — three transform layers so the flight, the landing bounce
+   and the camera push never fight over one transform
+   ==================================================================== */
+
+.np-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  perspective: 1150px;
+  perspective-origin: 50% 46%;
+  z-index: 10;
+}
+
+/* contact shadow: the page has to land ON something */
+.np-shadow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--page-w) * 1.02);
+  height: calc(var(--page-w) * 1.5);
+  transform: translate(-50%, -47%) scale(0.98);
+  background: radial-gradient(60% 52% at 50% 56%, rgba(0, 0, 0, 0.62) 0%, transparent 72%);
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 620ms ease;
+}
+.np-p2 .np-shadow,
+.np-p3 .np-shadow,
+.np-p4 .np-shadow,
+.np-p5 .np-shadow {
+  opacity: 1;
+}
+
+/* the slow push in toward the headline */
+.np-cam {
+  transform: scale(1);
+  transform-style: preserve-3d;
+  transition: transform 2600ms cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+.np-p4 .np-cam,
+.np-p5 .np-cam {
+  transform: scale(1.06) translateY(-1.4%);
+}
+
+/* the flight itself */
+.np-flyer {
+  transform: rotateX(7deg) rotate(-1.8deg);
+  transform-style: preserve-3d;
+}
+.np-p0 .np-flyer {
+  opacity: 0;
+}
+.np-p1 .np-flyer,
+.np-p2 .np-flyer,
+.np-p3 .np-flyer,
+.np-p4 .np-flyer,
+.np-p5 .np-flyer {
+  animation: np-fly 1360ms cubic-bezier(0.1, 0.72, 0.14, 1) both;
+}
+@keyframes np-fly {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 9vh, -3000px) rotateX(64deg) rotate(-1440deg);
+    filter: blur(7px);
+  }
+  7% { opacity: 1; }
+  55% { filter: blur(3px); }
+  /* past the resting plane and back — it is flying AT the camera, so it
+     overshoots toward you before it settles */
+  82% {
+    transform: translate3d(0, -1.4vh, 130px) rotateX(-5deg) rotate(26deg);
+    filter: blur(0.7px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateX(7deg) rotate(-1.8deg);
+    filter: blur(0);
+  }
+}
+
+/* the bounce as it stops */
+.np-settle {
+  transform: none;
+}
+.np-p2 .np-settle,
+.np-p3 .np-settle,
+.np-p4 .np-settle,
+.np-p5 .np-settle {
+  animation: np-settle 620ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+@keyframes np-settle {
+  0% { transform: translateY(-0.9vh) scale(1.02); }
+  46% { transform: translateY(0.35vh) scale(0.996); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.np-page {
+  position: relative;
+  width: var(--page-w);
+  aspect-ratio: 0.63;
+  padding: 3.6% 4.6% 3.2%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 78% at 50% 4%, var(--paper-hi) 0%, var(--paper) 52%, var(--paper-lo) 100%);
+  /* a second sheet under the first, and the shadow it throws */
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.35),
+    2px 3px 0 var(--paper-lo),
+    3px 5px 0 rgba(0, 0, 0, 0.22),
+    0 2vw 5vw rgba(0, 0, 0, 0.55);
+}
+
+/* ---- masthead ---- */
+.np-masthead {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.np-masthead-t {
+  fill: var(--ink);
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+  font-size: 70px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.np-rule {
+  height: 1px;
+  width: 100%;
+  background: var(--ink);
+  opacity: 0.75;
+  margin: 1.6% 0;
+  flex: none;
+}
+.np-rule-thick {
+  height: 3px;
+  opacity: 0.9;
+  margin-top: 1%;
+  margin-bottom: 1.2%;
+}
+
+.np-edition {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.np-edition-t {
+  fill: var(--ink);
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* ---- EXTRA! EXTRA! — spot red, overprinted a beat late ---- */
+.np-extra {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 1.4%;
+}
+.np-extra-t,
+.np-extra-ghost {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+  font-size: 96px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+/* the black plate, printed first and a hair off register */
+.np-extra-ghost {
+  fill: rgba(22, 19, 12, 0.88);
+  transform: translate(3px, 2.4px);
+}
+/* the red plate, laid down on the second pass */
+.np-extra-t {
+  fill: var(--red);
+  transform-box: fill-box;
+  transform-origin: 50% 76%;
+  opacity: 0;
+  transform: scale(1.07);
+  transition: opacity 220ms ease, transform 420ms cubic-bezier(0.2, 1.5, 0.35, 1);
+}
+.np-p3 .np-extra-t,
+.np-p4 .np-extra-t,
+.np-p5 .np-extra-t {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ====================================================================
+   THE LOCKUP — the mark printed as the page's halftone photograph
+   ==================================================================== */
+
+.np-markwrap {
+  position: relative;
+  margin-top: 2.2%;
+  padding: 3.4% 0 2.6%;
+  border-top: 1px solid rgba(22, 19, 12, 0.55);
+  border-bottom: 1px solid rgba(22, 19, 12, 0.55);
+  flex: none;
+}
+
+.np-markbox {
+  position: relative;
+  width: 100%;
+}
+
+.np-photo {
+  position: relative;
+  width: 100%;
+  /* measured from the trimmed mark at load, so any logo lands on register */
+  aspect-ratio: var(--logo-aspect, 2.17);
+  /* the picture resolves out of the plate as the page stops spinning */
+  filter: blur(2.6px) contrast(0.55);
+  transition: filter 880ms ease;
+}
+.np-p2 .np-photo,
+.np-p3 .np-photo,
+.np-p4 .np-photo,
+.np-p5 .np-photo {
+  filter: blur(0) contrast(1);
+}
+
+/* the flat ink plate the halftone comes out of */
+.np-ph-plate {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-soft);
+  -webkit-mask-image: var(--logo);
+  mask-image: var(--logo);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  opacity: 0.55;
+  transition: opacity 760ms ease;
+}
+.np-p2 .np-ph-plate,
+.np-p3 .np-ph-plate,
+.np-p4 .np-ph-plate,
+.np-p5 .np-ph-plate {
+  opacity: 0;
+}
+
+/* One screen per region. A press has one ink, so the lockup's three regions
+   are separated by DOT DENSITY instead of colour — solid for the hood and
+   NINJAS, mid for CODE, light for the eye band. Mask the whole mark with a
+   single value and the ninja loses his eyes. */
+.np-ph {
+  position: absolute;
+  inset: 0;
+  background-color: var(--paper-hi);
+  background-image:
+    radial-gradient(circle at 50% 50%, var(--ink) var(--r1), transparent var(--r2)),
+    radial-gradient(circle at 50% 50%, var(--ink) var(--r1), transparent var(--r2));
+  background-size: var(--pitch) var(--pitch), var(--pitch) var(--pitch);
+  background-position: 0 0, calc(var(--pitch) / 2) calc(var(--pitch) / 2);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.np-p2 .np-ph,
+.np-p3 .np-ph,
+.np-p4 .np-ph,
+.np-p5 .np-ph {
+  opacity: 1;
+}
+
+/* hood + "NINJAS": a 100% screen, dots merged, paper barely showing */
+.np-ph-dark {
+  --r1: 74%;
+  --r2: 86%;
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+}
+/* "CODE": a mid screen, so it reads as the blue does in the artwork */
+.np-ph-accent {
+  --r1: 52%;
+  --r2: 63%;
+  -webkit-mask-image: var(--logo-accent);
+  mask-image: var(--logo-accent);
+}
+/* the band across the eyes: a light screen, so the face stays open */
+.np-ph-light {
+  --r1: 29%;
+  --r2: 40%;
+  -webkit-mask-image: var(--logo-light);
+  mask-image: var(--logo-light);
+}
+
+/* WOODBRIDGE — a flow sibling of the photo, never positioned */
+.np-type {
+  position: relative;
+  margin-top: 2.6%;
+  text-align: center;
+}
+.np-caption {
+  font-size: 3.1vw;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--ink);
+}
+.np-cutrule {
+  width: 34%;
+  height: 2px;
+  margin: 2.2% auto 0;
+  background: linear-gradient(90deg, transparent, var(--red) 50%, transparent);
+  opacity: 0;
+  transition: opacity 520ms ease;
+}
+.np-p3 .np-cutrule,
+.np-p4 .np-cutrule,
+.np-p5 .np-cutrule {
+  opacity: 1;
+}
+
+/* ====================================================================
+   GREEKED COLUMNS — rows of ink, not sentences
+   ==================================================================== */
+
+.np-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 4.5%;
+  margin-top: 3.4%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.np-col {
+  display: flex;
+  flex-direction: column;
+  padding-left: 3%;
+  border-left: 1px solid rgba(22, 19, 12, 0.28);
+}
+.np-col:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.np-sub {
+  display: block;
+  width: 84%;
+  height: 0.85vw;
+  margin-bottom: 1.5vw;
+  background: var(--ink);
+  opacity: 0.88;
+}
+.np-line {
+  display: block;
+  width: calc(var(--w) * 100%);
+  height: 0.34vw;
+  margin-bottom: 0.82vw;
+  background: rgba(22, 19, 12, 0.62);
+}
+.np-line:nth-child(even) {
+  opacity: 0.86;
+}
+.np-line-gap {
+  margin-bottom: 1.7vw;
+}
+/* a second, smaller halftone block down the page — newsprint texture */
+.np-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.25;
+  margin-bottom: 1.4vw;
+  background-color: var(--paper-hi);
+  background-image:
+    radial-gradient(60% 70% at 40% 34%, rgba(22, 19, 12, 0.85), transparent 72%),
+    radial-gradient(circle at 50% 50%, var(--ink) 44%, transparent 55%),
+    radial-gradient(circle at 50% 50%, var(--ink) 44%, transparent 55%);
+  background-size: 100% 100%, var(--pitch) var(--pitch), var(--pitch) var(--pitch);
+  background-position: 0 0, 0 0, calc(var(--pitch) / 2) calc(var(--pitch) / 2);
+  background-blend-mode: multiply, normal, normal;
+  outline: 1px solid rgba(22, 19, 12, 0.4);
+}
+
+/* ====================================================================
+   PAPER — fibre, the fold, and one pass of light
+   ==================================================================== */
+
+.np-fibre {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.09;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* the crease from being folded in half */
+.np-fold {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 58%;
+  height: 7%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.11) 44%,
+    rgba(255, 255, 255, 0.55) 56%,
+    transparent 100%
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* one pass of the lamp across the sheet as the camera moves in. No resting
+   state, so it is forced off in static and reduced-motion. */
+.np-sweep {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(
+    104deg,
+    transparent 36%,
+    rgba(255, 252, 238, 0.55) 50%,
+    transparent 64%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  transform: translateX(-60%);
+  pointer-events: none;
+}
+.np-p4 .np-sweep,
+.np-p5 .np-sweep {
+  animation: np-sweep 1500ms cubic-bezier(0.3, 0.7, 0.3, 1) both;
+}
+@keyframes np-sweep {
+  0% { opacity: 0; transform: translateX(-70%); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(70%); }
+}
+
+/* ====================================================================
+   THE LANDING — dust and the press flash
+   ==================================================================== */
+
+.np-dust {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--page-w);
+  height: 1px;
+  transform: translate(-50%, 24vh);
+  z-index: 12;
+  pointer-events: none;
+}
+.np-puff {
+  position: absolute;
+  left: calc(50% + var(--x));
+  bottom: 0;
+  width: 6vw;
+  height: 6vw;
+  margin-left: -3vw;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(240, 231, 208, 0.5), transparent 70%);
+  opacity: 0;
+}
+.np-p2 .np-puff,
+.np-p3 .np-puff,
+.np-p4 .np-puff,
+.np-p5 .np-puff {
+  animation: np-puff 900ms cubic-bezier(0.2, 0.7, 0.3, 1) calc(var(--i) * 26ms) both;
+}
+@keyframes np-puff {
+  0% { opacity: 0; transform: translateY(0) scale(0.3); }
+  25% { opacity: 0.75; }
+  100% { opacity: 0; transform: translateY(-7vh) scale(1.9); }
+}
+
+.np-flash {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  width: 150vw;
+  height: 150vw;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(255, 250, 235, 0.85), transparent 62%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  z-index: 14;
+  pointer-events: none;
+}
+.np-p2 .np-flash,
+.np-p3 .np-flash,
+.np-p4 .np-flash,
+.np-p5 .np-flash {
+  animation: np-flash 560ms ease-out both;
+}
+@keyframes np-flash {
+  0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.55); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* ====================================================================
+   FRAME
+   ==================================================================== */
+
+.np-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  z-index: 20;
+  pointer-events: none;
+}
+.np-vig {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(78% 62% at 50% 46%, transparent 42%, rgba(0, 0, 0, 0.72) 100%);
+  z-index: 21;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   STATIC — the poster frame. Every one-pass effect is forced off and
+   everything that should persist is frozen at its finished value.
+   ==================================================================== */
+
+.np.is-static *,
+.np.is-static *::before,
+.np.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.np.is-static .np-lamp {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.np.is-static .np-flyer {
+  opacity: 1;
+  transform: rotateX(7deg) rotate(-1.8deg);
+  filter: none;
+}
+.np.is-static .np-settle {
+  transform: none;
+}
+.np.is-static .np-cam {
+  transform: scale(1.06) translateY(-1.4%);
+}
+.np.is-static .np-shadow,
+.np.is-static .np-ph,
+.np.is-static .np-extra-t,
+.np.is-static .np-cutrule {
+  opacity: 1;
+}
+.np.is-static .np-extra-t {
+  transform: scale(1);
+}
+.np.is-static .np-photo {
+  filter: none;
+}
+.np.is-static .np-ph-plate,
+.np.is-static .np-streaks,
+.np.is-static .np-sweep,
+.np.is-static .np-flash,
+.np.is-static .np-puff,
+.np.is-static .np-mote {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .np *,
+  .np *::before,
+  .np *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .np .np-lamp {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .np .np-flyer {
+    opacity: 1;
+    transform: rotateX(7deg) rotate(-1.8deg);
+    filter: none;
+  }
+  .np .np-settle {
+    transform: none;
+  }
+  .np .np-cam {
+    transform: scale(1.06) translateY(-1.4%);
+  }
+  .np .np-shadow,
+  .np .np-ph,
+  .np .np-extra-t,
+  .np .np-cutrule {
+    opacity: 1;
+  }
+  .np .np-extra-t {
+    transform: scale(1);
+  }
+  .np .np-photo {
+    filter: none;
+  }
+  .np .np-ph-plate,
+  .np .np-streaks,
+  .np .np-sweep,
+  .np .np-flash,
+  .np .np-puff,
+  .np .np-mote {
+    opacity: 0;
+  }
+}

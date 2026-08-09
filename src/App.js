@@ -8,10 +8,11 @@ import "./Stylesheets/App.css";
 // import Hulk from "./Components/Hulk";
 // import Hologram from "./Components/Hologram";
 // import SoundOn from "./Components/SoundOn";
-import Pokemon from "./Components/Pokemon";
+// import Pokemon from "./Components/Pokemon";
+import Newspaper from "./Components/Newspaper";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Pokemon mode="animated" />;
+  return <Newspaper mode="animated" />;
 }
 export default App;
