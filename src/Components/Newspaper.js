@@ -28,12 +28,16 @@ import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 import dojo from "../Images/dojo.jpg";
 
-// p1 the page spins in out of the dark · p2 it lands, the picture resolves
-// p3 the red masthead overprints · p4 the camera pushes in, light crosses the
-// page · p5 hold
+// p1 the page spins in out of the dark · p2 it has come to rest and the mark
+// resolves · p3 the red masthead overprints · p4 the camera pushes in, light
+// crosses the page · p5 hold
+//
+// p2 is set AFTER the flight finishes (140 + 1750), not on top of it — landing
+// beats that fire while the paper is still moving are what made the stop read
+// as a bump.
 //
 // Plays ONCE and holds. See `loopAt` below.
-const CUES = [140, 1500, 2000, 2480, 3300];
+const CUES = [140, 1900, 2380, 2860, 3700];
 
 /* PLACEHOLDER PROSE. This is public-facing marketing, so the real wording has
    to come from the user before a take is posted — but it is written rather
@@ -44,7 +48,7 @@ const STORY = {
   lead:
     "WOODBRIDGE — The dojo on the corner does not look like a classroom, and that is the point. Inside, a dozen kids are hunched over laptops, arguing about whether a character should jump higher or run faster, and testing the answer on the spot.",
   lead2:
-    "They call the students ninjas, and belts are earned the way they are in a martial arts studio: by shipping something that works.",
+    "They call the students ninjas, and belts are earned the way they are in a martial arts studio.",
   lead3:
     "The room is loud on purpose. Senseis move between screens asking questions instead of giving answers, which is slower on any given afternoon and much faster over a year.",
   mid1:
@@ -82,9 +86,9 @@ export default function Newspaper({
   headline2 = "ONE BELT AT A TIME",
   deck = "Woodbridge students earn their rank by shipping something that works",
   byline = "BY STAFF REPORTER",
-  // The page's second photograph, run wide across two columns the way front
-  // page art actually is. It prints through the same dot screen as the mark —
-  // a colour picture pasted onto newsprint reads as a sticker.
+  // The page's lead art, run at the full measure across the top. It is printed
+  // CLEAN — no screen, no greyscale, no blend — because the user wants the
+  // photograph readable rather than treated.
   photo = dojo,
   photoCaption =
     "Students at the Woodbridge dojo with their laptops and robotics builds.",
@@ -193,49 +197,46 @@ export default function Newspaper({
                 <div className="np-deck">{deck}</div>
                 <div className="np-rule np-rule-hair" aria-hidden />
 
-                {/* --- the lockup, printed as the page's photograph --- */}
-                <div className="np-markwrap">
-                  <div className="np-markbox">
-                    <div className="np-photo">
-                      {/* the flat plate the picture resolves out of */}
-                      <div className="np-ph-plate" aria-hidden />
-                      {/* one screen per region: solid / mid / light. Masking
-                          the whole mark with one value would flatten the hood,
-                          the eye band and CODE into a single grey and the
-                          ninja would lose his eyes. */}
-                      <div className="np-ph np-ph-dark" aria-hidden />
-                      <div className="np-ph np-ph-accent" aria-hidden />
-                      <div className="np-ph np-ph-light" aria-hidden />
-                    </div>
+                {/* --- the lead art: the photograph, run at the full
+                        measure across the top of the page --- */}
+                <figure className="np-lead">
+                  <div className="np-cut-frame">
+                    {photo ? (
+                      <img className="np-cut-img" src={photo} alt="" />
+                    ) : (
+                      <div className="np-cut-plate" />
+                    )}
                   </div>
+                  <figcaption className="np-cutline">
+                    {photoCaption} <span className="np-credit">{photoCredit}</span>
+                  </figcaption>
+                </figure>
 
-                  {/* welded under the photo, in flow — never positioned */}
-                  <div className="np-type">
-                    <div className="np-caption">{caption}</div>
-                    <div className="np-cutrule" aria-hidden />
-                  </div>
-                </div>
-
-                {/* --- the story. The art runs WIDE across two columns and
-                        the text sets under and beside it, which is how a front
-                        page is actually made up; three equal columns of solid
-                        text with a stamp-sized picture in one of them is a
-                        newsletter, not a newspaper. --- */}
+                {/* --- the story. The lockup sits in the made-up page as a
+                        boxed house ad across two columns, which is exactly
+                        where a paper puts its own mark. --- */}
                 <div className="np-cols" aria-hidden>
-                  <figure className="np-cut">
-                    <div className="np-cut-frame">
-                      {photo ? (
-                        <img className="np-cut-img" src={photo} alt="" />
-                      ) : (
-                        <div className="np-cut-plate" />
-                      )}
-                      {/* the dot screen the picture is printed through */}
-                      <div className="np-cut-screen" />
+                  <div className="np-markwrap">
+                    <div className="np-markbox">
+                      <div className="np-photo">
+                        {/* the flat plate the picture resolves out of */}
+                        <div className="np-ph-plate" />
+                        {/* one screen per region: solid / mid / light. Masking
+                            the whole mark with one value would flatten the
+                            hood, the eye band and CODE into a single grey and
+                            the ninja would lose his eyes. */}
+                        <div className="np-ph np-ph-dark" />
+                        <div className="np-ph np-ph-accent" />
+                        <div className="np-ph np-ph-light" />
+                      </div>
                     </div>
-                    <figcaption className="np-cutline">
-                      {photoCaption} <span className="np-credit">{photoCredit}</span>
-                    </figcaption>
-                  </figure>
+
+                    {/* welded under the mark, in flow — never positioned */}
+                    <div className="np-type">
+                      <div className="np-caption">{caption}</div>
+                      <div className="np-cutrule" />
+                    </div>
+                  </div>
 
                   <div className="np-col np-col-a">
                     <div className="np-byline">{byline}</div>

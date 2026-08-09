@@ -125,7 +125,7 @@
   pointer-events: none;
 }
 .np-p1 .np-streaks {
-  animation: np-streak 1340ms cubic-bezier(0.12, 0.72, 0.16, 1) both;
+  animation: np-streak 1750ms cubic-bezier(0.19, 0.62, 0.11, 1) both;
 }
 @keyframes np-streak {
   0% { opacity: 0; transform: scale(0.42) rotate(0deg); }
@@ -195,46 +195,36 @@
 .np-p3 .np-flyer,
 .np-p4 .np-flyer,
 .np-p5 .np-flyer {
-  animation: np-fly 1360ms cubic-bezier(0.1, 0.72, 0.14, 1) both;
+  /* Two animations on purpose. The transform has keyframes at 0% and 100% and
+     NOWHERE ELSE, so it interpolates across one interval under one curve —
+     that is what makes the stop smooth. Intermediate keyframes restart the
+     easing at every stop, and the paper visibly re-accelerated into its last
+     turn. The fade is a separate animation so it can be quick without adding
+     a keyframe to the flight. */
+  animation:
+    np-fly 1750ms cubic-bezier(0.19, 0.62, 0.11, 1) both,
+    np-fadein 260ms linear both;
 }
 @keyframes np-fly {
   0% {
-    opacity: 0;
     transform: translate3d(0, 9vh, -2400px) rotateX(64deg) rotate(-1440deg);
     filter: blur(7px);
   }
-  7% { opacity: 1; }
-  55% { filter: blur(3px); }
-  /* Every angle runs ONE WAY to its resting value and stops there. An earlier
-     pass overshot the spin past square and twisted back to straighten up, and
-     that correction read as a second, separate move after the paper had
-     already stopped. Only the distance overshoots — it is flying AT the
-     camera, so coming slightly too close and easing back is the impact. */
-  82% {
-    transform: translate3d(0, -1.2vh, 70px) rotateX(13deg) rotate(-11deg);
-    filter: blur(0.7px);
-  }
   100% {
-    opacity: 1;
     transform: translate3d(0, 0, 0) rotateX(6deg) rotate(0deg);
     filter: blur(0);
   }
 }
+@keyframes np-fadein {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
 
-/* the bounce as it stops */
+/* No landing bounce. It used to fire the moment the flight ended and read as
+   a second, separate motion — the paper stopping twice. The glide out of the
+   flight curve is the stop now. */
 .np-settle {
   transform: none;
-}
-.np-p2 .np-settle,
-.np-p3 .np-settle,
-.np-p4 .np-settle,
-.np-p5 .np-settle {
-  animation: np-settle 620ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
-}
-@keyframes np-settle {
-  0% { transform: translateY(-0.9vh) scale(1.02); }
-  46% { transform: translateY(0.35vh) scale(0.996); }
-  100% { transform: translateY(0) scale(1); }
 }
 
 .np-page {
@@ -375,19 +365,19 @@
 
 .np-markwrap {
   position: relative;
-  margin-top: 2.2%;
-  padding: 3.4% 0 2.6%;
-  border-top: 1px solid rgba(22, 19, 12, 0.55);
-  border-bottom: 1px solid rgba(22, 19, 12, 0.55);
-  flex: none;
+  /* the paper's own mark, boxed across two columns — where a paper actually
+     puts a house ad */
+  grid-column: 1 / span 2;
+  grid-row: 1;
+  align-self: start;
+  margin-bottom: calc(2 * var(--u));
+  padding: 4% 5% 3.4%;
+  border: 1px solid rgba(22, 19, 12, 0.6);
 }
 
 .np-markbox {
   position: relative;
-  /* the mark is still the page's lead art, but at the full measure it left
-     the story with nothing — a front page photo does not run edge to edge */
-  width: 76%;
-  margin: 0 auto;
+  width: 100%;
 }
 
 .np-photo {
@@ -519,7 +509,7 @@
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: min-content 1fr;
   gap: 0 4%;
-  margin-top: 2.4%;
+  margin-top: 3%;
   flex: 1;
   min-height: 0;
   /* the page cuts the story off at the fold, as a front page does */
@@ -585,33 +575,27 @@
 }
 
 /* --- the art: a screened cut run wide, with a cutline and a credit --- */
-.np-cut {
-  grid-column: 1 / span 2;
-  grid-row: 1;
-  margin: 0 0 calc(1.8 * var(--u));
+.np-lead {
+  margin: 2.2% 0 0;
 }
 .np-cut-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 1.5;
+  aspect-ratio: 1.72;
   overflow: hidden;
   outline: 1px solid rgba(22, 19, 12, 0.5);
   background: var(--paper-hi);
 }
-/* a photograph on newsprint is grey, contrasty and screened — not a colour
-   picture pasted onto a beige page. The crop favours the faces: a portrait
-   shot centred into a wide cut lands on everybody's laptop. */
+/* Printed CLEAN — no screen, no greyscale, no blend. The crop is the only
+   treatment left: cover shows half of this portrait's height, and 82% puts
+   that band below the wall logo and on the faces. */
 .np-cut-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* cover shows half this portrait's height; 82% puts that band below the
-     wall logo (the mark is already the page's lead art) and on the faces */
   object-position: 50% 82%;
-  filter: grayscale(1) contrast(1.46) brightness(0.99);
-  mix-blend-mode: multiply;
 }
 /* with no image supplied the block prints as an unresolved plate, which still
    reads as a picture at this size */
@@ -622,17 +606,6 @@
     radial-gradient(58% 66% at 42% 34%, rgba(22, 19, 12, 0.9), transparent 74%),
     linear-gradient(168deg, rgba(22, 19, 12, 0.36), rgba(22, 19, 12, 0.7));
 }
-/* the dot screen the picture is printed through */
-.np-cut-screen {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 50% 50%, var(--paper-hi) 40%, transparent 52%),
-    radial-gradient(circle at 50% 50%, var(--paper-hi) 40%, transparent 52%);
-  background-size: var(--pitch) var(--pitch), var(--pitch) var(--pitch);
-  background-position: 0 0, calc(var(--pitch) / 2) calc(var(--pitch) / 2);
-  mix-blend-mode: lighten;
-}
 .np-cutline {
   margin-top: calc(0.9 * var(--u));
   font-size: calc(1.6 * var(--u));
@@ -640,7 +613,11 @@
   line-height: 1.25;
   color: rgba(22, 19, 12, 0.74);
 }
+.np-credit::before {
+  content: "— ";
+}
 .np-credit {
+  margin-left: 0.5em;
   font-style: normal;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -770,10 +747,10 @@
 .np-p3 .np-flash,
 .np-p4 .np-flash,
 .np-p5 .np-flash {
-  animation: np-flash 560ms ease-out both;
+  animation: np-flash 900ms ease-out both;
 }
 @keyframes np-flash {
-  0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.55); }
+  0% { opacity: 0.42; transform: translate(-50%, -50%) scale(0.7); }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
 }
 
