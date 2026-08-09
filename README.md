@@ -83,9 +83,12 @@ layers, `drop-shadow` bevel chains, `feTurbulence` for organic edges — and the
 traps that waste an hour are written up in `CLAUDE.md`.
 
 **Newspaper** — the old newsreel gag: a front page comes spinning out of the
-dark straight at the camera and stops square, and the mark is the page's
-halftone photograph. The TORONTO EXPRESS masthead prints in spot red a beat
-after the paper lands, a hair off register, the way a two-colour front page was
-actually made. The columns are real justified prose with a byline, a drop cap,
-a subhead, a screened cut and a jump line — placeholder wording, but written
-rather than greeked, because a page of type has a texture grey bars don't.
+dark straight at the camera and stops square. The TORONTO EXPRESS masthead
+prints in spot red a beat after the paper lands, a hair off register, the way a
+two-colour front page was actually made; the mark is the page's lead art, set
+as a halftone through its three region masks. Under it the page is made up like
+a real one — a section flag, a headline set to the measure, a deck, a wide
+screened photo cut with a cutline and a credit, three columns of justified
+prose with a byline, a drop cap, a subhead and a jump line, and a folio. The
+wording is placeholder, but it is written rather than greeked: a page of type
+has a texture grey bars don't.

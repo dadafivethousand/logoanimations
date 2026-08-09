@@ -26,6 +26,7 @@ import React from "react";
 import "../Stylesheets/Newspaper.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
+import dojo from "../Images/dojo.jpg";
 
 // p1 the page spins in out of the dark · p2 it lands, the picture resolves
 // p3 the red masthead overprints · p4 the camera pushes in, light crosses the
@@ -43,7 +44,7 @@ const STORY = {
   lead:
     "WOODBRIDGE — The dojo on the corner does not look like a classroom, and that is the point. Inside, a dozen kids are hunched over laptops, arguing about whether a character should jump higher or run faster, and testing the answer on the spot.",
   lead2:
-    "They call the students ninjas. Belts are earned here the way they are earned in a martial arts studio, except a belt is earned by shipping something that works. A white belt starts by dragging blocks together. A black belt writes the code, finds the bug, and explains it to somebody else.",
+    "They call the students ninjas, and belts are earned the way they are in a martial arts studio: by shipping something that works.",
   lead3:
     "The room is loud on purpose. Senseis move between screens asking questions instead of giving answers, which is slower on any given afternoon and much faster over a year.",
   mid1:
@@ -53,7 +54,7 @@ const STORY = {
   mid3:
     "What changes first is not the code. It is the willingness to sit with a problem for ten minutes without asking anyone for the answer.",
   end1:
-    "Belts are earned in front of the room. A ninja demonstrates the build, takes questions, and walks everyone through the one bug that nearly beat them. The explaining counts as much as the building does.",
+    "Belts are earned in front of the room. A ninja demonstrates the build, takes questions, and walks everyone through the one bug that nearly beat them.",
   end2:
     "Afterwards there is a wall of names, and the next belt is already on it. Nobody hurries. The kids who finish fastest are usually the ones who slowed down at the start.",
 };
@@ -72,18 +73,22 @@ const DUST = [-38, -22, -9, 6, 20, 35];
 export default function Newspaper({
   mode = "animated",
   caption = "WOODBRIDGE",
-  // PROP WORDING — a prop paper, and a playful headline rather than a claim.
-  // Every line here is pinned with textLength, so new wording re-fits itself.
+  // PROP WORDING — a prop paper, and a straight news headline rather than a
+  // joke. Every line here is pinned with textLength, so new wording re-fits
+  // itself instead of overrunning the measure.
   masthead = "TORONTO EXPRESS",
-  headline1 = "NINJAS SPOTTED",
-  headline2 = "IN WOODBRIDGE",
-  deck = "Coding dojo draws recruits after the last bell",
+  kicker = "EDUCATION",
+  headline1 = "LEARNING TO CODE,",
+  headline2 = "ONE BELT AT A TIME",
+  deck = "Woodbridge students earn their rank by shipping something that works",
   byline = "BY STAFF REPORTER",
-  // The second photograph on the page. Drop an image in and it prints as a
-  // screened cut with a cutline under it; with no image the block prints as
-  // an unresolved plate, which still reads as a picture at this size.
-  photo = null,
-  photoCaption = "Ninjas at work in the dojo.",
+  // The page's second photograph, run wide across two columns the way front
+  // page art actually is. It prints through the same dot screen as the mark —
+  // a colour picture pasted onto newsprint reads as a sticker.
+  photo = dojo,
+  photoCaption =
+    "Students at the Woodbridge dojo with their laptops and robotics builds.",
+  photoCredit = "EXPRESS PHOTO",
   // NO LOOP. The sequence plays once and holds on the finished frame; the user
   // refreshes to play it again.
   loopAt = null,
@@ -154,6 +159,12 @@ export default function Newspaper({
                 </svg>
 
                 <div className="np-rule np-rule-thick" aria-hidden />
+                <div className="np-rule np-rule-hair np-rule-tight" aria-hidden />
+
+                {/* --- section flag, the way a paper labels its page --- */}
+                <div className="np-kicker" aria-hidden>
+                  <span>{kicker}</span>
+                </div>
 
                 {/* --- the headline, set to the measure like a real one --- */}
                 <svg className="np-headline" viewBox="0 0 600 216" aria-hidden>
@@ -205,39 +216,45 @@ export default function Newspaper({
                   </div>
                 </div>
 
-                {/* --- the story, in three columns --- */}
+                {/* --- the story. The art runs WIDE across two columns and
+                        the text sets under and beside it, which is how a front
+                        page is actually made up; three equal columns of solid
+                        text with a stamp-sized picture in one of them is a
+                        newsletter, not a newspaper. --- */}
                 <div className="np-cols" aria-hidden>
-                  <div className="np-col">
+                  <figure className="np-cut">
+                    <div className="np-cut-frame">
+                      {photo ? (
+                        <img className="np-cut-img" src={photo} alt="" />
+                      ) : (
+                        <div className="np-cut-plate" />
+                      )}
+                      {/* the dot screen the picture is printed through */}
+                      <div className="np-cut-screen" />
+                    </div>
+                    <figcaption className="np-cutline">
+                      {photoCaption} <span className="np-credit">{photoCredit}</span>
+                    </figcaption>
+                  </figure>
+
+                  <div className="np-col np-col-a">
                     <div className="np-byline">{byline}</div>
                     <div className="np-rule np-rule-hair np-rule-tight" />
                     <p className="np-body np-body-lead">{STORY.lead}</p>
                     <p className="np-body">{STORY.lead2}</p>
-                    <p className="np-body">{STORY.lead3}</p>
                   </div>
 
-                  <div className="np-col">
+                  <div className="np-col np-col-b">
+                    <p className="np-body">{STORY.lead3}</p>
+                    <p className="np-body">{STORY.end1}</p>
+                    <p className="np-jump">Continued on Page 4</p>
+                  </div>
+
+                  <div className="np-col np-col-c">
                     <div className="np-subhead">A GAME OF THEIR OWN</div>
                     <p className="np-body">{STORY.mid1}</p>
                     <p className="np-body">{STORY.mid2}</p>
                     <p className="np-body">{STORY.mid3}</p>
-                  </div>
-
-                  <div className="np-col">
-                    <figure className="np-cut">
-                      <div className="np-cut-frame">
-                        {photo ? (
-                          <img className="np-cut-img" src={photo} alt="" />
-                        ) : (
-                          <div className="np-cut-plate" />
-                        )}
-                        {/* the dot screen the picture is printed through */}
-                        <div className="np-cut-screen" />
-                      </div>
-                      <figcaption className="np-cutline">{photoCaption}</figcaption>
-                    </figure>
-                    <p className="np-body">{STORY.end1}</p>
-                    <p className="np-body">{STORY.end2}</p>
-                    <p className="np-jump">Continued on Page 4</p>
                   </div>
                 </div>
 
