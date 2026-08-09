@@ -20,10 +20,16 @@
   --safe-x: 9vw;
   --safe-y: 5vh;
 
-  /* the one knob the composition scales from */
-  --page-w: 82vw;
-  /* halftone screen: 3px pitch, two offset grids = a 45deg screen */
-  --pitch: 3px;
+  /* the one knob the composition scales from — the page, and everything on
+     it, is measured off this. --u is 1% of the page's width, so the type,
+     rules and column leading hold their proportions when the page resizes;
+     sizing any of them in vw would leave them behind the moment it does. */
+  --page-w: 49vw;
+  --u: calc(var(--page-w) / 100);
+  /* halftone screen: two offset grids = a 45deg screen. The pitch comes down
+     with the page so the mark keeps roughly the same number of dots across
+     it — a fixed pitch on a smaller photo reads as blobs. */
+  --pitch: 2px;
 
   position: absolute;
   inset: 0;
@@ -192,7 +198,7 @@
 @keyframes np-fly {
   0% {
     opacity: 0;
-    transform: translate3d(0, 9vh, -3000px) rotateX(64deg) rotate(-1440deg);
+    transform: translate3d(0, 9vh, -2400px) rotateX(64deg) rotate(-1440deg);
     filter: blur(7px);
   }
   7% { opacity: 1; }
@@ -241,7 +247,7 @@
     0 1px 0 rgba(0, 0, 0, 0.35),
     2px 3px 0 var(--paper-lo),
     3px 5px 0 rgba(0, 0, 0, 0.22),
-    0 2vw 5vw rgba(0, 0, 0, 0.55);
+    0 calc(2.4 * var(--u)) calc(6.1 * var(--u)) rgba(0, 0, 0, 0.55);
 }
 
 /* ---- masthead ---- */
@@ -416,8 +422,8 @@
 }
 /* "CODE": a mid screen, so it reads as the blue does in the artwork */
 .np-ph-accent {
-  --r1: 52%;
-  --r2: 63%;
+  --r1: 45%;
+  --r2: 57%;
   -webkit-mask-image: var(--logo-accent);
   mask-image: var(--logo-accent);
 }
@@ -436,7 +442,7 @@
   text-align: center;
 }
 .np-caption {
-  font-size: 3.1vw;
+  font-size: calc(3.8 * var(--u));
   font-weight: 700;
   letter-spacing: 0.34em;
   text-indent: 0.34em;
@@ -482,30 +488,30 @@
 .np-sub {
   display: block;
   width: 84%;
-  height: 0.85vw;
-  margin-bottom: 1.5vw;
+  height: calc(1.04 * var(--u));
+  margin-bottom: calc(1.83 * var(--u));
   background: var(--ink);
   opacity: 0.88;
 }
 .np-line {
   display: block;
   width: calc(var(--w) * 100%);
-  height: 0.34vw;
-  margin-bottom: 0.82vw;
+  height: calc(0.42 * var(--u));
+  margin-bottom: var(--u);
   background: rgba(22, 19, 12, 0.62);
 }
 .np-line:nth-child(even) {
   opacity: 0.86;
 }
 .np-line-gap {
-  margin-bottom: 1.7vw;
+  margin-bottom: calc(2.07 * var(--u));
 }
 /* a second, smaller halftone block down the page — newsprint texture */
 .np-thumb {
   display: block;
   width: 100%;
   aspect-ratio: 1.25;
-  margin-bottom: 1.4vw;
+  margin-bottom: calc(1.71 * var(--u));
   background-color: var(--paper-hi);
   background-image:
     radial-gradient(60% 70% at 40% 34%, rgba(22, 19, 12, 0.85), transparent 72%),
@@ -586,7 +592,7 @@
   top: 50%;
   width: var(--page-w);
   height: 1px;
-  transform: translate(-50%, 24vh);
+  transform: translate(-50%, 15vh);
   z-index: 12;
   pointer-events: none;
 }
@@ -594,9 +600,9 @@
   position: absolute;
   left: calc(50% + var(--x));
   bottom: 0;
-  width: 6vw;
-  height: 6vw;
-  margin-left: -3vw;
+  width: calc(7.3 * var(--u));
+  height: calc(7.3 * var(--u));
+  margin-left: calc(-3.65 * var(--u));
   border-radius: 50%;
   background: radial-gradient(closest-side, rgba(240, 231, 208, 0.5), transparent 70%);
   opacity: 0;
@@ -610,7 +616,7 @@
 @keyframes np-puff {
   0% { opacity: 0; transform: translateY(0) scale(0.3); }
   25% { opacity: 0.75; }
-  100% { opacity: 0; transform: translateY(-7vh) scale(1.9); }
+  100% { opacity: 0; transform: translateY(-4.5vh) scale(1.9); }
 }
 
 .np-flash {

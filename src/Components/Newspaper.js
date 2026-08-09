@@ -66,7 +66,7 @@ export default function Newspaper({
   // PROP WORDING — not a real newspaper and not confirmed copy. The masthead
   // and edition line are the theme's set dressing; if the user wants different
   // wording, both are pinned with textLength and will re-fit on their own.
-  masthead = "THE NINJA TIMES",
+  masthead = "TORONTO EXPRESS",
   edition = "LATE EDITION ★ EXTRA ★ PRICE FIVE CENTS",
   banner = "EXTRA! EXTRA!",
   // NO LOOP. The sequence plays once and holds on the finished frame; the user
