@@ -1,23 +1,24 @@
 // Newspaper.js — the old newsreel gag: a front page comes spinning out of the
-// dark, straight at the camera, and stops flat so you can read it. The
-// TORONTO EXPRESS masthead and EXTRA! EXTRA! across the top, and the mark set
-// as the page's halftone photo.
+// dark, straight at the camera, and stops flat so you can read it. The TORONTO
+// EXPRESS, with the mark set as the page's halftone photograph.
 //
 // Genre, not a real title. The masthead is a PROP — no real publication's
-// name, logotype or typeface — and the only claim-free copy the page carries
-// is the masthead, EXTRA! EXTRA! and the lockup. Every other "word" on the
-// page is GREEKED: rows of ink, not sentences. A newspaper is
-// made of text, and inventing sentences about Code Ninjas would be inventing
-// marketing copy, so the columns are texture and the headline is the logo.
+// name, logotype or typeface.
+//
+// THE COLUMNS ARE REAL PROSE, not greeked bars. At phone scale the body sets
+// at about 3px and reads as texture, but it is written text: a byline, a
+// place dateline, a drop cap, a subhead, a cutline and a jump line, because
+// that furniture is what makes a page read as a PAGE rather than as a poster
+// with lines on it. The wording is PLACEHOLDER — see STORY below.
 //
 // THE MARK IS PRINTED, NOT LIT. A press lays one ink on one paper, so the
 // lockup is rendered as a monochrome HALFTONE — but through the three region
 // masks, never as one flat tint: the hood and "NINJAS" print as a solid black
-// screen, the eye band as a light 20% screen, and "CODE" as a mid 45% screen.
-// That tonal separation is the only thing keeping the mark readable once the
-// colour is gone. Brand red is the press's SECOND PLATE — it carries the
-// masthead and the EXTRA banner, and the banner stamps on a beat late and a
-// hair off register, which is exactly how a real extra edition was made.
+// screen, "CODE" as a mid screen, and the eye band as a light screen. That
+// tonal separation is the only thing keeping the mark readable once the colour
+// is gone. Brand red is the press's SECOND PLATE: it carries the masthead,
+// which stamps on a beat after the page lands and a hair off register, exactly
+// how a two-colour front page was actually made.
 //
 // WOODBRIDGE is a flow sibling of the photo inside the mark wrapper, so the
 // pair travel as one lockup no matter what the page does.
@@ -27,31 +28,38 @@ import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
 // p1 the page spins in out of the dark · p2 it lands, the picture resolves
-// p3 the red EXTRA overprints · p4 the camera pushes in, light crosses the page
-// p5 hold
+// p3 the red masthead overprints · p4 the camera pushes in, light crosses the
+// page · p5 hold
 //
 // Plays ONCE and holds. See `loopAt` below.
 const CUES = [140, 1500, 2000, 2480, 3300];
 
-/* Column copy is greeked — rows of ink at varied widths. Computed once from a
-   fixed seed so every take composes identically; a re-roll between takes means
-   the recording never matches the still. */
-function greek(seed, n) {
-  let s = seed;
-  return Array.from({ length: n }, (_, i) => {
-    s = (s * 1103515245 + 12345) % 2147483648;
-    return {
-      w: +(0.58 + (s / 2147483648) * 0.42).toFixed(3),
-      // a paragraph break every few lines, so the column has structure
-      gap: i % 5 === 4,
-    };
-  });
-}
-/* enough lines to run off the bottom of the page — the column block clips,
-   so the copy reads as continuing past the fold rather than stopping short */
-const COLUMNS = [greek(7, 24), greek(23, 24), greek(61, 18)];
+/* PLACEHOLDER PROSE. This is public-facing marketing, so the real wording has
+   to come from the user before a take is posted — but it is written rather
+   than greeked, because a column of real justified text with a drop cap in it
+   has a texture that grey bars do not. Deliberately claim-free: no offers, no
+   prices, no addresses, no dates, no named people. */
+const STORY = {
+  lead:
+    "WOODBRIDGE — The dojo on the corner does not look like a classroom, and that is the point. Inside, a dozen kids are hunched over laptops, arguing about whether a character should jump higher or run faster, and testing the answer on the spot.",
+  lead2:
+    "They call the students ninjas. Belts are earned here the way they are earned in a martial arts studio, except a belt is earned by shipping something that works. A white belt starts by dragging blocks together. A black belt writes the code, finds the bug, and explains it to somebody else.",
+  lead3:
+    "The room is loud on purpose. Senseis move between screens asking questions instead of giving answers, which is slower on any given afternoon and much faster over a year.",
+  mid1:
+    "Every ninja builds games, and that is not an accident. A game is a program that tells you immediately when you are wrong: the ball falls through the floor, the enemy walks through a wall, the score counts backwards, and the fix is a line or two away.",
+  mid2:
+    "Parents ask whether the games are the point. They are not. Underneath the sprites are variables, loops, conditions and functions, the same pieces a working engineer uses, introduced in an order that keeps the room busy.",
+  mid3:
+    "What changes first is not the code. It is the willingness to sit with a problem for ten minutes without asking anyone for the answer.",
+  end1:
+    "Belts are earned in front of the room. A ninja demonstrates the build, takes questions, and walks everyone through the one bug that nearly beat them. The explaining counts as much as the building does.",
+  end2:
+    "Afterwards there is a wall of names, and the next belt is already on it. Nobody hurries. The kids who finish fastest are usually the ones who slowed down at the start.",
+};
 
-/* Paper dust hanging in the press-hall light. Hand-placed for the same reason. */
+/* Paper dust hanging in the press-hall light. Hand-placed so every take
+   composes identically — a random scatter never matches between takes. */
 const MOTES = [
   [8, 0.0, 0.8, 11], [19, 2.2, 0.5, 13], [31, 1.1, 1.1, 9.5],
   [44, 3.4, 0.6, 12], [57, 0.6, 0.9, 10.5], [68, 2.8, 0.5, 14],
@@ -64,11 +72,18 @@ const DUST = [-38, -22, -9, 6, 20, 35];
 export default function Newspaper({
   mode = "animated",
   caption = "WOODBRIDGE",
-  // The masthead is pinned with textLength, so new wording re-fits itself.
-  // There is no edition line: "LATE EDITION / EXTRA / PRICE FIVE CENTS" was
-  // invented copy and the user cut all three.
+  // PROP WORDING — a prop paper, and a playful headline rather than a claim.
+  // Every line here is pinned with textLength, so new wording re-fits itself.
   masthead = "TORONTO EXPRESS",
-  banner = "EXTRA! EXTRA!",
+  headline1 = "NINJAS SPOTTED",
+  headline2 = "IN WOODBRIDGE",
+  deck = "Coding dojo draws recruits after the last bell",
+  byline = "BY STAFF REPORTER",
+  // The second photograph on the page. Drop an image in and it prints as a
+  // screened cut with a cutline under it; with no image the block prints as
+  // an unresolved plate, which still reads as a picture at this size.
+  photo = null,
+  photoCaption = "Ninjas at work in the dojo.",
   // NO LOOP. The sequence plays once and holds on the finished frame; the user
   // refreshes to play it again.
   loopAt = null,
@@ -115,6 +130,17 @@ export default function Newspaper({
                 {/* --- masthead. SVG + textLength so the layout holds whatever
                         serif the device actually falls back to --- */}
                 <svg className="np-masthead" viewBox="0 0 600 96" aria-hidden>
+                  {/* the black plate, printed first and a hair off register */}
+                  <text
+                    className="np-masthead-ghost"
+                    x="300"
+                    y="72"
+                    textAnchor="middle"
+                    textLength="572"
+                    lengthAdjust="spacingAndGlyphs"
+                  >
+                    {masthead}
+                  </text>
                   <text
                     className="np-masthead-t"
                     x="300"
@@ -129,33 +155,32 @@ export default function Newspaper({
 
                 <div className="np-rule np-rule-thick" aria-hidden />
 
-                {/* --- the banner: spot red, laid down as a second pass --- */}
-                <svg className="np-extra" viewBox="0 0 600 132" aria-hidden>
-                  {/* the black plate under it, printed first and slightly off
-                      register — that misalignment is the whole tell */}
-                  <text
-                    className="np-extra-ghost"
-                    x="300"
-                    y="98"
-                    textAnchor="middle"
-                    textLength="574"
-                    lengthAdjust="spacingAndGlyphs"
-                  >
-                    {banner}
-                  </text>
+                {/* --- the headline, set to the measure like a real one --- */}
+                <svg className="np-headline" viewBox="0 0 600 216" aria-hidden>
                   <g filter="url(#np-ink)">
                     <text
-                      className="np-extra-t"
                       x="300"
-                      y="98"
+                      y="88"
                       textAnchor="middle"
                       textLength="574"
                       lengthAdjust="spacingAndGlyphs"
                     >
-                      {banner}
+                      {headline1}
+                    </text>
+                    <text
+                      x="300"
+                      y="192"
+                      textAnchor="middle"
+                      textLength="574"
+                      lengthAdjust="spacingAndGlyphs"
+                    >
+                      {headline2}
                     </text>
                   </g>
                 </svg>
+
+                <div className="np-deck">{deck}</div>
+                <div className="np-rule np-rule-hair" aria-hidden />
 
                 {/* --- the lockup, printed as the page's photograph --- */}
                 <div className="np-markwrap">
@@ -180,21 +205,47 @@ export default function Newspaper({
                   </div>
                 </div>
 
-                {/* --- greeked columns, so the page reads as a page --- */}
+                {/* --- the story, in three columns --- */}
                 <div className="np-cols" aria-hidden>
-                  {COLUMNS.map((col, i) => (
-                    <div className="np-col" key={i}>
-                      <span className="np-sub" />
-                      {i === 2 && <span className="np-thumb" />}
-                      {col.map((l, j) => (
-                        <span
-                          key={j}
-                          className={`np-line ${l.gap ? "np-line-gap" : ""}`}
-                          style={{ "--w": l.w }}
-                        />
-                      ))}
-                    </div>
-                  ))}
+                  <div className="np-col">
+                    <div className="np-byline">{byline}</div>
+                    <div className="np-rule np-rule-hair np-rule-tight" />
+                    <p className="np-body np-body-lead">{STORY.lead}</p>
+                    <p className="np-body">{STORY.lead2}</p>
+                    <p className="np-body">{STORY.lead3}</p>
+                  </div>
+
+                  <div className="np-col">
+                    <div className="np-subhead">A GAME OF THEIR OWN</div>
+                    <p className="np-body">{STORY.mid1}</p>
+                    <p className="np-body">{STORY.mid2}</p>
+                    <p className="np-body">{STORY.mid3}</p>
+                  </div>
+
+                  <div className="np-col">
+                    <figure className="np-cut">
+                      <div className="np-cut-frame">
+                        {photo ? (
+                          <img className="np-cut-img" src={photo} alt="" />
+                        ) : (
+                          <div className="np-cut-plate" />
+                        )}
+                        {/* the dot screen the picture is printed through */}
+                        <div className="np-cut-screen" />
+                      </div>
+                      <figcaption className="np-cutline">{photoCaption}</figcaption>
+                    </figure>
+                    <p className="np-body">{STORY.end1}</p>
+                    <p className="np-body">{STORY.end2}</p>
+                    <p className="np-jump">Continued on Page 4</p>
+                  </div>
+                </div>
+
+                {/* --- folio, the way a front page signs itself --- */}
+                <div className="np-rule np-rule-hair" aria-hidden />
+                <div className="np-folio" aria-hidden>
+                  <span>{masthead}</span>
+                  <span>PAGE ONE</span>
                 </div>
 
                 {/* fibre, so it is newsprint and not white card */}
@@ -239,14 +290,14 @@ function NewspaperDefs() {
         </filter>
 
         {/* letterpress wobble: the machine-clean edge is the one thing that
-            gives a system font away, so the banner gets its edges displaced a
-            little before it prints */}
+            gives a system font away, so the headline gets its edges displaced
+            a little before it prints */}
         <filter id="np-ink" x="-8%" y="-25%" width="116%" height="150%">
           <feTurbulence type="fractalNoise" baseFrequency="0.09 0.16" numOctaves="2" seed="4" result="n" />
           <feDisplacementMap
             in="SourceGraphic"
             in2="n"
-            scale="1.9"
+            scale="1.7"
             xChannelSelector="R"
             yChannelSelector="G"
           />
