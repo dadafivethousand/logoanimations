@@ -30,13 +30,19 @@
   --safe-x: 11.5vw;
   --safe-y: 4.7vh;
 
-  /* the one knob the composition scales from. The logo is the entire subject,
-     so it runs right out to the safe margins. */
-  --mark-w: 76vw;
+  /* The one knob the composition scales from. Pulled back 15% from the 76vw
+     the earlier passes used — WOODBRIDGE is sized in vw of its own and does
+     NOT come down with it, which is the point: the mark gives up the room and
+     the caption keeps it. */
+  --mark-w: 64.6vw;
 
   /* how far above the frame the mark starts. Has to clear the head, which
-     overhangs the top of the mark box by about 10.5vw. */
+     overhangs the top of the mark box by about 6.7vw. */
   --fall: 80vh;
+
+  /* how long the wavefront takes to reach the spokes' full reach */
+  --spin: 1000ms;
+  --spin-ease: cubic-bezier(0.24, 0.62, 0.36, 1);
 
   /* Transparent over the artwork's head, opaque over the wordmark — see the
      knockout note further down. The cut lands at 58%, inside the empty band
@@ -65,6 +71,9 @@
    take starts, and the mark descending is the only event.
    ==================================================================== */
 
+/* Frame zero is blank. The wall's own dark ground is the blank screen; its
+   texture, the city and the spill all come up under the spreading web, so the
+   scene assembles rather than cutting in. */
 .sp-wall {
   position: absolute;
   inset: 0;
@@ -79,17 +88,32 @@
   position: absolute;
   inset: -10%;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0;
+  transition: opacity 1500ms 200ms ease;
   background-image:
     repeating-linear-gradient(0deg, transparent 0 5.4vw, var(--mortar) 5.4vw 5.7vw),
     repeating-linear-gradient(90deg, transparent 0 11vw, var(--mortar) 11vw 11.3vw);
   transform: rotate(-0.6deg);
+}
+.sp-p1 .sp-bricks,
+.sp-p2 .sp-bricks,
+.sp-p3 .sp-bricks,
+.sp-p4 .sp-bricks {
+  opacity: 0.5;
 }
 
 .sp-city {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 1700ms 300ms ease;
+}
+.sp-p1 .sp-city,
+.sp-p2 .sp-city,
+.sp-p3 .sp-city,
+.sp-p4 .sp-city {
+  opacity: 1;
 }
 .sp-light {
   position: absolute;
@@ -104,13 +128,27 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
+  opacity: 0;
   background:
     radial-gradient(60% 44% at -8% 26%, rgba(70, 150, 230, 0.28), transparent 70%),
     radial-gradient(66% 40% at 108% 92%, rgba(255, 158, 78, 0.2), transparent 72%);
+  transition: opacity 1600ms ease;
+}
+.sp-p1 .sp-glow,
+.sp-p2 .sp-glow,
+.sp-p3 .sp-glow,
+.sp-p4 .sp-glow {
+  opacity: 1;
 }
 
 /* ====================================================================
-   THE WEB — already spun
+   THE WEB — spun outward from the hub, out of a blank frame
+
+   One wavefront: the spokes strike out from the centre over --spin, and each
+   ring waits for that front to reach its own radius (--t, a fraction of the
+   spokes' reach) before it starts winding. Both share an easing so the front
+   stays coherent — give the rings their own curve and they visibly overtake
+   or lag the spoke tips.
    ==================================================================== */
 
 .sp-web {
@@ -128,17 +166,38 @@
   fill: none;
   stroke: var(--silk);
   stroke-linecap: round;
+  /* pathLength="1" on every path, so one dash rule draws all of them no
+     matter how long the individual thread is */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
 }
+
 .sp-spoke {
   stroke-width: 1.15;
   opacity: 0.42;
+  transition: stroke-dashoffset var(--spin) var(--spin-ease);
+  transition-delay: calc(var(--i) * 16ms);
 }
+
 /* the spiral is the thread that actually catches things — brighter than the
    anchor spokes it is strung between */
 .sp-ring {
   stroke-width: 1.5;
   opacity: 0.6;
   filter: drop-shadow(0 0 0.5vw rgba(180, 210, 255, 0.28));
+  transition: stroke-dashoffset 620ms var(--spin-ease);
+  transition-delay: calc(var(--t) * var(--spin));
+}
+
+.sp-p1 .sp-spoke,
+.sp-p2 .sp-spoke,
+.sp-p3 .sp-spoke,
+.sp-p4 .sp-spoke,
+.sp-p1 .sp-ring,
+.sp-p2 .sp-ring,
+.sp-p3 .sp-ring,
+.sp-p4 .sp-ring {
+  stroke-dashoffset: 0;
 }
 
 /* ====================================================================
@@ -148,10 +207,10 @@
 .sp-markwrap {
   position: absolute;
   left: 50%;
-  /* The head overhangs the top of the mark box by about 7.8vw but the
+  /* The head overhangs the top of the mark box by about 6.7vw but the
      wrapper's box does not grow to include it, so centring the wrapper hangs
-     the composition about 3.9vw too high. Push it back down by hand. */
-  top: calc(50% + 3.9vw);
+     the composition about 3.3vw too high. Push it back down by hand. */
+  top: calc(50% + 3.3vw);
   width: var(--mark-w);
   transform: translate(-50%, -50%);
   z-index: 20;
@@ -165,9 +224,9 @@
   position: relative;
   transform-origin: 50% -62vh;
 }
-.sp-p1 .sp-hang,
 .sp-p2 .sp-hang,
-.sp-p3 .sp-hang {
+.sp-p3 .sp-hang,
+.sp-p4 .sp-hang {
   animation: sp-sway 5600ms ease-in-out infinite alternate;
 }
 @keyframes sp-sway {
@@ -187,9 +246,9 @@
   transform: translateY(calc(-1 * var(--fall)));
   transition: transform 2500ms cubic-bezier(0.3, 0.08, 0.24, 1);
 }
-.sp-p1 .sp-drop,
 .sp-p2 .sp-drop,
-.sp-p3 .sp-drop {
+.sp-p3 .sp-drop,
+.sp-p4 .sp-drop {
   transform: translateY(0);
 }
 
@@ -398,12 +457,12 @@
   fill: #ffffff;
   opacity: 0;
 }
-.sp-p2 .sp-lens-l .sp-lens-glint,
-.sp-p3 .sp-lens-l .sp-lens-glint {
+.sp-p3 .sp-lens-l .sp-lens-glint,
+.sp-p4 .sp-lens-l .sp-lens-glint {
   animation: sp-glint 900ms 120ms ease-out forwards;
 }
-.sp-p2 .sp-lens-r .sp-lens-glint,
-.sp-p3 .sp-lens-r .sp-lens-glint {
+.sp-p3 .sp-lens-r .sp-lens-glint,
+.sp-p4 .sp-lens-r .sp-lens-glint {
   animation: sp-glint 900ms 260ms ease-out forwards;
 }
 @keyframes sp-glint {
@@ -445,7 +504,7 @@
   transform: translateY(1vw);
   transition: opacity 600ms ease, transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.sp-p3 .sp-caption {
+.sp-p4 .sp-caption {
   opacity: 1;
   transform: translateY(0);
 }
@@ -457,8 +516,8 @@
   background: linear-gradient(90deg, transparent, var(--suit) 50%, transparent);
   transition: width 800ms 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.sp-p3 .sp-rule {
-  width: 58%;
+.sp-p4 .sp-rule {
+  width: 70%;
 }
 
 /* ====================================================================
@@ -494,11 +553,22 @@
   animation: none !important;
   transition: none !important;
 }
+.sp.is-static .sp-spoke,
+.sp.is-static .sp-ring {
+  stroke-dashoffset: 0;
+}
+.sp.is-static .sp-bricks {
+  opacity: 0.5;
+}
+.sp.is-static .sp-city,
+.sp.is-static .sp-glow {
+  opacity: 1;
+}
 .sp.is-static .sp-drop {
   transform: none;
 }
 .sp.is-static .sp-rule {
-  width: 58%;
+  width: 70%;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -508,10 +578,21 @@
     animation: none !important;
     transition: none !important;
   }
+  .sp .sp-spoke,
+  .sp .sp-ring {
+    stroke-dashoffset: 0;
+  }
+  .sp .sp-bricks {
+    opacity: 0.5;
+  }
+  .sp .sp-city,
+  .sp .sp-glow {
+    opacity: 1;
+  }
   .sp .sp-drop {
     transform: none;
   }
   .sp .sp-rule {
-    width: 58%;
+    width: 70%;
   }
 }

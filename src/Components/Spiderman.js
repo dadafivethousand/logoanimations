@@ -49,15 +49,19 @@ import "../Stylesheets/Spiderman.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
-// p1 the descent starts · p2 it has come to rest · p3 WOODBRIDGE
+// p1 the web spins out of the hub and the wall comes up with it · p2 the
+// descent starts · p3 it has come to rest · p4 WOODBRIDGE
 //
-// The wall, the city and the WEB are not on the clock at all — the web is
-// already spun when the take starts, and the only thing that moves is the
-// mark coming down into it.
+// Frame zero is blank: no web, no wall texture, no city, no mark. Everything
+// arrives on a cue.
+//
+// p2 is set after the spread finishes rather than on top of it — the mark
+// coming down while the web is still growing made two events compete, and
+// neither read.
 //
 // Plays ONCE and holds — loopAt is null. The thread keeps swaying on the held
 // frame; that is ambient, not a restart.
-const CUES = [140, 2600, 3200];
+const CUES = [140, 1500, 4000, 4600];
 
 // distant windows, out of focus. Fixed rather than random so every take of
 // the recording is identical. [left%, top%, size in vw, opacity]
@@ -113,14 +117,24 @@ export default function Spiderman({
       </div>
       <div className="sp-glow" aria-hidden />
 
-      {/* ---- the web: already spun, before the take starts ---- */}
+      {/* ---- the web, spun outward from the hub ----
+
+           Every path carries pathLength="1", so one dash rule draws all of
+           them regardless of how long the individual thread is.
+
+           The spread is radius-ordered, not source-ordered: the spokes strike
+           outward together, and each ring waits until the spokes have reached
+           ITS radius before it starts winding. `t` is that radius as a
+           fraction of the spokes' reach, handed to CSS as the delay. Firing
+           the rings on a fixed stagger instead looked like six separate
+           circles appearing, because the outer ones are so much longer. */}
       <svg className="sp-web" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden>
         <g filter="url(#sp-thread)">
           {WEB.spokes.map((d, i) => (
-            <path key={`s${i}`} className="sp-spoke" d={d} />
+            <path key={`s${i}`} className="sp-spoke" d={d} pathLength="1" style={{ "--i": i }} />
           ))}
-          {WEB.rings.map((d, i) => (
-            <path key={`r${i}`} className="sp-ring" d={d} />
+          {WEB.rings.map(({ d, t }, i) => (
+            <path key={`r${i}`} className="sp-ring" d={d} pathLength="1" style={{ "--t": t }} />
           ))}
         </g>
       </svg>
@@ -195,7 +209,7 @@ function Head() {
             {HEAD_WEB.spokes.map((d, i) => (
               <path key={`hs${i}`} d={d} />
             ))}
-            {HEAD_WEB.rings.map((d, i) => (
+            {HEAD_WEB.rings.map(({ d }, i) => (
               <path key={`hr${i}`} d={d} />
             ))}
           </g>
@@ -284,7 +298,9 @@ function buildWeb({ cx, cy, spokes, rings, r0, rMax, sag }) {
         d += ` Q${fx(mx)} ${fx(my)} ${fx(x)} ${fx(y)}`;
       }
     }
-    ringPaths.push(d);
+    // t: this ring's radius as a fraction of the spokes' reach, which is when
+    // the outward wavefront gets here
+    ringPaths.push({ d, t: Number((r / rMax).toFixed(4)) });
   }
 
   return { spokes: spokePaths, rings: ringPaths };
