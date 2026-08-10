@@ -49,8 +49,8 @@ import "../Stylesheets/Spiderman.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
-// p1 the hub lights, the web is thrown out of it, and the wall comes up with
-// it · p2 the descent starts · p3 it has come to rest · p4 WOODBRIDGE
+// p1 a dot lights at the hub and the web expands out of it, the wall coming
+// up with it · p2 the descent starts · p3 it has come to rest · p4 WOODBRIDGE
 //
 // Frame zero is blank: no web, no wall texture, no city, no mark. Everything
 // arrives on a cue.
@@ -61,7 +61,7 @@ import useLogo from "../Utils/useLogo";
 //
 // Plays ONCE and holds — loopAt is null. The thread keeps swaying on the held
 // frame; that is ambient, not a restart.
-const CUES = [140, 1850, 4350, 4950];
+const CUES = [140, 1650, 4150, 4750];
 
 // distant windows, out of focus. Fixed rather than random so every take of
 // the recording is identical. [left%, top%, size in vw, opacity]
@@ -120,32 +120,25 @@ export default function Spiderman({
       {/* the hub lights first — one hit, before the first thread is out */}
       <div className="sp-burst" aria-hidden />
 
-      {/* ---- the web, spun outward from the hub ----
+      {/* ---- the web, expanding evenly out of a dot ----
 
-           Every path carries pathLength="1", so one dash rule draws all of
-           them regardless of how long the individual thread is.
+           Two identical copies of the same web, revealed by the same growing
+           circle at two different radii: `base` is the settled silk, filled
+           in behind the front, and `hot` is a bright heavy copy showing only
+           through a thin annulus at the front itself. The result is one
+           circular wavefront moving outward at the same speed in every
+           direction, lighting each thread as it passes and leaving it.
 
-           The spread is radius-ordered, not source-ordered: the spokes strike
-           outward together, and each ring waits until the spokes have reached
-           ITS radius before it starts winding. `t` is that radius as a
-           fraction of the spokes' reach, handed to CSS as the delay. Firing
-           the rings on a fixed stagger instead looked like six separate
-           circles appearing, because the outer ones are so much longer. */}
-      <svg className="sp-web" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden>
-        {/* The front, racing a little ahead of the silk. Outside the displaced
-            group on purpose: it is a clean ring, and it must not be re-filtered
-            on every frame of its own expansion. */}
-        <circle className="sp-shock" cx="200" cy="372" r="0" />
+           This replaced a per-thread draw — spokes striking out, then rings
+           winding on in radius order. That version was legible but it was not
+           EVEN: a ring winds around, so the web arrived in a rotational
+           sweep, and the corners of the frame filled long after the sides.
 
-        <g filter="url(#sp-thread)">
-          {WEB.spokes.map((d, i) => (
-            <path key={`s${i}`} className="sp-spoke" d={d} pathLength="1" style={{ "--i": i }} />
-          ))}
-          {WEB.rings.map(({ d, t }, i) => (
-            <path key={`r${i}`} className="sp-ring" d={d} pathLength="1" style={{ "--t": t }} />
-          ))}
-        </g>
-      </svg>
+           Both copies carry the same displacement filter and the same seed,
+           so the hot copy sits exactly on the base one. Any difference there
+           shows up immediately as a doubled thread. */}
+      <WebLayer variant="base" />
+      <WebLayer variant="hot" />
 
       {/* ---- the mark, lowered in on a thread ---- */}
       <div className="sp-markwrap">
@@ -189,6 +182,31 @@ export default function Spiderman({
       <div className="sp-grain" aria-hidden />
       <div className="sp-vignette" aria-hidden />
     </div>
+  );
+}
+
+/**
+ * One copy of the web. Rendered twice — `base` is the settled silk and `hot`
+ * is a bright heavy copy that only shows through the annulus at the expanding
+ * front. Same paths, same filter, same seed, so the two register exactly.
+ */
+function WebLayer({ variant }) {
+  return (
+    <svg
+      className={`sp-web sp-web-${variant}`}
+      viewBox="0 0 400 800"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden
+    >
+      <g filter="url(#sp-thread)">
+        {WEB.spokes.map((d, i) => (
+          <path key={`s${i}`} className="sp-spoke" d={d} />
+        ))}
+        {WEB.rings.map(({ d }, i) => (
+          <path key={`r${i}`} className="sp-ring" d={d} />
+        ))}
+      </g>
+    </svg>
   );
 }
 

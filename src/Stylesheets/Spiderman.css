@@ -30,11 +30,11 @@
   --safe-x: 11.5vw;
   --safe-y: 4.7vh;
 
-  /* The one knob the composition scales from. Pulled back 15% from the 76vw
-     the earlier passes used — WOODBRIDGE is sized in vw of its own and does
+  /* The one knob the composition scales from. Pulled back 15%, twice, from
+     the 76vw the first passes used — WOODBRIDGE is sized in vw of its own and does
      NOT come down with it, which is the point: the mark gives up the room and
      the caption keeps it. */
-  --mark-w: 64.6vw;
+  --mark-w: 54.9vw;
 
   /* how far above the frame the mark starts. Has to clear the head, which
      overhangs the top of the mark box by about 6.7vw. */
@@ -43,8 +43,13 @@
   /* How long the wavefront takes to reach the spokes' full reach. The easing
      is nearly all front-loaded: the silk is THROWN out and then decelerates
      hard, which is what separates a web being shot from a web being drawn. */
-  --spin: 1150ms;
-  --spin-ease: cubic-bezier(0.2, 0.72, 0.3, 1);
+  /* How long the front takes to cross the frame. The easing is only mildly
+     front-loaded on purpose: the front clears the far corners at about 75% of
+     the mask's range, so a hard ease-out spends its whole tail on a front
+     that has already left the frame and the spread dies early. Keeping it
+     near-steady means the silk is still travelling right up to the end. */
+  --spin: 1350ms;
+  --spin-ease: cubic-bezier(0.18, 0.45, 0.38, 1);
 
   /* Transparent over the artwork's head, opaque over the wordmark — see the
      knockout note further down. The cut lands at 58%, inside the empty band
@@ -144,13 +149,19 @@
 }
 
 /* ====================================================================
-   THE WEB — spun outward from the hub, out of a blank frame
+   THE WEB — expanding evenly out of a dot
 
-   One wavefront: the spokes strike out from the centre over --spin, and each
-   ring waits for that front to reach its own radius (--t, a fraction of the
-   spokes' reach) before it starts winding. Both share an easing so the front
-   stays coherent — give the rings their own curve and they visibly overtake
-   or lag the spoke tips.
+   One growing circle drives everything. Two identical copies of the web are
+   masked by it at different radii: `base` shows behind the front as settled
+   silk, `hot` shows only through a thin annulus AT the front, bright and
+   heavy. So a single wavefront travels outward at the same speed in every
+   direction, lighting each thread as it crosses it.
+
+   mask-size does the growing, in vmax on both axes so the mask box stays
+   square and the reveal stays a circle whatever the frame's aspect. The end
+   value is deliberately past the point of coverage: the hot annulus has to
+   clear the far CORNERS of the frame, not just the edges, or a glowing arc
+   is left burning in them when the spread is over.
    ==================================================================== */
 
 .sp-web {
@@ -161,6 +172,63 @@
   z-index: 10;
   pointer-events: none;
   overflow: visible;
+
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  /* the hub: 46.5% down the web's viewBox, which the slice fit maps straight
+     onto the frame for any portrait taller than 1:2 */
+  -webkit-mask-position: 50% 46.5%;
+  mask-position: 50% 46.5%;
+  /* not zero — a few vmax of hub is the dot the whole thing grows out of */
+  -webkit-mask-size: 3.5vmax 3.5vmax;
+  mask-size: 3.5vmax 3.5vmax;
+  transition:
+    -webkit-mask-size var(--spin) var(--spin-ease),
+    mask-size var(--spin) var(--spin-ease);
+}
+
+/* settled silk, filled in behind the front */
+.sp-web-base {
+  -webkit-mask-image: radial-gradient(
+    circle closest-side,
+    #000 0 66%,
+    rgba(0, 0, 0, 0.45) 86%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle closest-side,
+    #000 0 66%,
+    rgba(0, 0, 0, 0.45) 86%,
+    transparent 100%
+  );
+}
+
+/* the front itself: the same web, bright and heavy, seen through an annulus */
+.sp-web-hot {
+  z-index: 11;
+  filter: drop-shadow(0 0 1.3vw rgba(150, 205, 255, 0.75));
+  -webkit-mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 52%,
+    rgba(0, 0, 0, 0.6) 72%,
+    #000 84%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle closest-side,
+    transparent 0 52%,
+    rgba(0, 0, 0, 0.6) 72%,
+    #000 84%,
+    transparent 100%
+  );
+}
+
+.sp-p1 .sp-web,
+.sp-p2 .sp-web,
+.sp-p3 .sp-web,
+.sp-p4 .sp-web {
+  -webkit-mask-size: 230vmax 230vmax;
+  mask-size: 230vmax 230vmax;
 }
 
 .sp-spoke,
@@ -168,12 +236,8 @@
   fill: none;
   stroke: var(--silk);
   stroke-linecap: round;
-  /* pathLength="1" on every path, so one dash rule draws all of them no
-     matter how long the individual thread is */
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
   stroke-width: var(--w);
-  opacity: 0;
+  opacity: var(--rest);
 }
 
 .sp-spoke {
@@ -189,120 +253,54 @@
   filter: drop-shadow(0 0 0.5vw rgba(180, 210, 255, 0.28));
 }
 
-/* Each thread FLASHES as it is laid and then settles back — it comes in white
-   and heavy and thins into its resting weight. A plain dash reveal at the
-   final opacity is legible but inert; the flash is what gives the spread its
-   snap, and it costs one keyframe because --w and --rest resolve per element. */
-@keyframes sp-lay {
-  0% {
-    stroke-dashoffset: 1;
-    opacity: 0;
-    stroke-width: calc(var(--w) * 2.7);
-  }
-  10% {
-    opacity: 1;
-  }
-  62% {
-    opacity: 1;
-  }
-  100% {
-    stroke-dashoffset: 0;
-    opacity: var(--rest);
-    stroke-width: var(--w);
-  }
+/* in the hot copy every thread is white and heavy; the annulus is what makes
+   that read as silk catching the light as it is laid rather than as a
+   permanently brighter web */
+.sp-web-hot .sp-spoke,
+.sp-web-hot .sp-ring {
+  stroke: #ffffff;
+  stroke-width: calc(var(--w) * 2.1);
+  opacity: 0.95;
+  filter: none;
 }
 
-.sp-p1 .sp-spoke,
-.sp-p2 .sp-spoke,
-.sp-p3 .sp-spoke,
-.sp-p4 .sp-spoke {
-  animation: sp-lay var(--spin) var(--spin-ease) both;
-  animation-delay: calc(var(--i) * 12ms);
-}
-.sp-p1 .sp-ring,
-.sp-p2 .sp-ring,
-.sp-p3 .sp-ring,
-.sp-p4 .sp-ring {
-  animation: sp-lay calc(var(--spin) * 0.62) var(--spin-ease) both;
-  animation-delay: calc(var(--t) * var(--spin));
-}
-
-/* ---- the front ---- */
-
-/* Races just ahead of the silk and burns out as it goes. Its whole job is to
-   tell you the web has a DIRECTION: without it the threads all arrive at once
-   and the spread reads as a fade-in. */
-.sp-shock {
-  fill: none;
-  stroke: #eaf3ff;
-  stroke-width: 0;
-  opacity: 0;
-  filter: drop-shadow(0 0 1.4vw rgba(150, 200, 255, 0.7));
-}
-.sp-p1 .sp-shock,
-.sp-p2 .sp-shock,
-.sp-p3 .sp-shock,
-.sp-p4 .sp-shock {
-  animation: sp-shock calc(var(--spin) * 0.95) var(--spin-ease) both;
-}
-@keyframes sp-shock {
-  0% {
-    r: 10;
-    stroke-width: 11;
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.95;
-  }
-  62% {
-    opacity: 0.5;
-  }
-  100% {
-    r: 660;
-    stroke-width: 0.8;
-    opacity: 0;
-  }
-}
-
-/* one hit at the hub before the first thread is out */
+/* one hit at the hub before the web is out — the dot it grows from */
 .sp-burst {
   position: absolute;
   left: 50%;
-  /* the web's hub: 46.5% down its viewBox, and the slice fit maps that
-     straight onto the frame for any portrait taller than 1:2 */
   top: 46.5%;
-  z-index: 11;
-  width: 30vw;
-  height: 30vw;
-  margin: -15vw 0 0 -15vw;
+  z-index: 12;
+  width: 26vw;
+  height: 26vw;
+  margin: -13vw 0 0 -13vw;
   border-radius: 50%;
   pointer-events: none;
   background: radial-gradient(
     closest-side,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(190, 220, 255, 0.5) 34%,
-    transparent 72%
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(190, 220, 255, 0.5) 30%,
+    transparent 70%
   );
   opacity: 0;
-  transform: scale(0.15);
+  transform: scale(0.12);
 }
 .sp-p1 .sp-burst,
 .sp-p2 .sp-burst,
 .sp-p3 .sp-burst,
 .sp-p4 .sp-burst {
-  animation: sp-burst 620ms cubic-bezier(0.15, 0.8, 0.3, 1) both;
+  animation: sp-burst 640ms cubic-bezier(0.15, 0.8, 0.3, 1) both;
 }
 @keyframes sp-burst {
   0% {
     opacity: 0;
-    transform: scale(0.15);
+    transform: scale(0.12);
   }
-  18% {
-    opacity: 0.9;
+  16% {
+    opacity: 0.95;
   }
   100% {
     opacity: 0;
-    transform: scale(2.1);
+    transform: scale(2.2);
   }
 }
 
@@ -313,10 +311,10 @@
 .sp-markwrap {
   position: absolute;
   left: 50%;
-  /* The head overhangs the top of the mark box by about 6.7vw but the
+  /* The head overhangs the top of the mark box by about 5.7vw but the
      wrapper's box does not grow to include it, so centring the wrapper hangs
-     the composition about 3.3vw too high. Push it back down by hand. */
-  top: calc(50% + 3.3vw);
+     the composition about 2.8vw too high. Push it back down by hand. */
+  top: calc(50% + 2.8vw);
   width: var(--mark-w);
   transform: translate(-50%, -50%);
   z-index: 20;
@@ -623,7 +621,7 @@
   transition: width 800ms 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .sp-p4 .sp-rule {
-  width: 70%;
+  width: 82%;
 }
 
 /* ====================================================================
@@ -659,11 +657,9 @@
   animation: none !important;
   transition: none !important;
 }
-.sp.is-static .sp-spoke,
-.sp.is-static .sp-ring {
-  stroke-dashoffset: 0;
-  opacity: var(--rest);
-  stroke-width: var(--w);
+.sp.is-static .sp-web {
+  -webkit-mask-size: 230vmax 230vmax;
+  mask-size: 230vmax 230vmax;
 }
 .sp.is-static .sp-bricks {
   opacity: 0.5;
@@ -676,7 +672,7 @@
   transform: none;
 }
 .sp.is-static .sp-rule {
-  width: 70%;
+  width: 82%;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -686,11 +682,9 @@
     animation: none !important;
     transition: none !important;
   }
-  .sp .sp-spoke,
-  .sp .sp-ring {
-    stroke-dashoffset: 0;
-    opacity: var(--rest);
-    stroke-width: var(--w);
+  .sp .sp-web {
+    -webkit-mask-size: 230vmax 230vmax;
+    mask-size: 230vmax 230vmax;
   }
   .sp .sp-bricks {
     opacity: 0.5;
@@ -703,6 +697,6 @@
     transform: none;
   }
   .sp .sp-rule {
-    width: 70%;
+    width: 82%;
   }
 }
