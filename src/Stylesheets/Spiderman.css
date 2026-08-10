@@ -1,11 +1,12 @@
-/* Spiderman — the mark hanging in a fresh orb web on a night wall, wearing the
-   suit. Portrait phone only (~390x844), screen-recorded. Layout sized in
-   vw/vh; px is reserved for hairlines that must stay hairlines. */
+/* Spiderman — a web already hangs on a night wall, and the mark is lowered
+   into it on a thread. Portrait phone only (~390x844), screen-recorded.
+   Layout sized in vw/vh; px is reserved for hairlines that must stay
+   hairlines. */
 
 .sp {
   /* Palette. The suit reds are kept well clear of black — the wall behind is
      already near-black, and a shadow stop that runs down to #1a0508 makes the
-     bottom of "NINJAS" disappear into it. Same trap Hulk and Hologram hit. */
+     bottom of the jaw disappear into it. Same trap Hulk and Hologram hit. */
   --wall: #0d1119;
   --wall-hi: #1b2333;
   --wall-lo: #05070b;
@@ -33,10 +34,14 @@
      so it runs right out to the safe margins. */
   --mark-w: 76vw;
 
-  /* where the strand is anchored, measured up from the top of the lockup. The
-     sway pivot and the strand's own length both read this, so they can never
-     drift apart. */
-  --anchor: 62vh;
+  /* how far above the frame the mark starts. Has to clear the head, which
+     overhangs the top of the mark box by about 10.5vw. */
+  --fall: 80vh;
+
+  /* Transparent over the artwork's head, opaque over the wordmark — see the
+     knockout note further down. The cut lands at 58%, inside the empty band
+     the artwork already has between the two. */
+  --no-hood: linear-gradient(180deg, transparent 0 58%, #000 58.5%);
 
   position: absolute;
   inset: 0;
@@ -55,7 +60,9 @@
 }
 
 /* ====================================================================
-   THE WALL — night brick, with the city a long way behind it
+   THE WALL — night brick, with the city a long way behind it.
+   None of this is on the clock: the scene is already standing when the
+   take starts, and the mark descending is the only event.
    ==================================================================== */
 
 .sp-wall {
@@ -64,17 +71,6 @@
   background:
     radial-gradient(78% 50% at 50% 34%, var(--wall-hi) 0%, var(--wall) 46%, var(--wall-lo) 100%),
     linear-gradient(168deg, #141b28 0%, #0b0f17 58%, #05070b 100%);
-  opacity: 0;
-  transform: scale(1.03);
-  transition: opacity 900ms ease, transform 1700ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.sp-p1 .sp-wall,
-.sp-p2 .sp-wall,
-.sp-p3 .sp-wall,
-.sp-p4 .sp-wall,
-.sp-p5 .sp-wall {
-  opacity: 1;
-  transform: scale(1);
 }
 
 /* Courses of brick, offset row to row. Faint on purpose — this is texture the
@@ -83,27 +79,11 @@
   position: absolute;
   inset: -10%;
   pointer-events: none;
-  opacity: 0;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 5.4vw,
-      var(--mortar) 5.4vw 5.7vw
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 11vw,
-      var(--mortar) 11vw 11.3vw
-    );
-  transform: rotate(-0.6deg);
-  transition: opacity 1200ms 120ms ease;
-}
-.sp-p1 .sp-bricks,
-.sp-p2 .sp-bricks,
-.sp-p3 .sp-bricks,
-.sp-p4 .sp-bricks,
-.sp-p5 .sp-bricks {
   opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 5.4vw, var(--mortar) 5.4vw 5.7vw),
+    repeating-linear-gradient(90deg, transparent 0 11vw, var(--mortar) 11vw 11.3vw);
+  transform: rotate(-0.6deg);
 }
 
 .sp-city {
@@ -116,18 +96,6 @@
   border-radius: 50%;
   background: radial-gradient(closest-side, #ffd79a 0%, rgba(255, 190, 110, 0.4) 46%, transparent 76%);
   filter: blur(0.5vw);
-  transform: scale(0.4);
-  transition: transform 1400ms cubic-bezier(0.16, 1, 0.3, 1), opacity 1200ms ease;
-}
-.sp-p0 .sp-light {
-  opacity: 0 !important;
-}
-.sp-p1 .sp-light,
-.sp-p2 .sp-light,
-.sp-p3 .sp-light,
-.sp-p4 .sp-light,
-.sp-p5 .sp-light {
-  transform: scale(1);
 }
 
 /* a cold rim from the left and sodium spill from the bottom right, so the wall
@@ -136,22 +104,13 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0;
   background:
     radial-gradient(60% 44% at -8% 26%, rgba(70, 150, 230, 0.28), transparent 70%),
     radial-gradient(66% 40% at 108% 92%, rgba(255, 158, 78, 0.2), transparent 72%);
-  transition: opacity 1300ms ease;
-}
-.sp-p1 .sp-glow,
-.sp-p2 .sp-glow,
-.sp-p3 .sp-glow,
-.sp-p4 .sp-glow,
-.sp-p5 .sp-glow {
-  opacity: 1;
 }
 
 /* ====================================================================
-   THE WEB — spokes strike out from the hub, then the spiral winds outward
+   THE WEB — already spun
    ==================================================================== */
 
 .sp-web {
@@ -169,113 +128,92 @@
   fill: none;
   stroke: var(--silk);
   stroke-linecap: round;
-  /* pathLength="1" on every path, so one dash rule draws all of them no matter
-     how long the individual thread is */
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
 }
-
 .sp-spoke {
   stroke-width: 1.15;
   opacity: 0.42;
-  transition: stroke-dashoffset 620ms cubic-bezier(0.3, 0.9, 0.35, 1);
-  transition-delay: calc(var(--i) * 26ms);
 }
-
-/* the spiral is the thread that actually catches things — brighter, and it
-   winds on after the spokes are up */
+/* the spiral is the thread that actually catches things — brighter than the
+   anchor spokes it is strung between */
 .sp-ring {
   stroke-width: 1.5;
   opacity: 0.6;
   filter: drop-shadow(0 0 0.5vw rgba(180, 210, 255, 0.28));
-  transition: stroke-dashoffset 780ms cubic-bezier(0.32, 0.86, 0.36, 1);
-  transition-delay: calc(380ms + var(--i) * 110ms);
-}
-
-.sp-p2 .sp-spoke,
-.sp-p3 .sp-spoke,
-.sp-p4 .sp-spoke,
-.sp-p5 .sp-spoke,
-.sp-p2 .sp-ring,
-.sp-p3 .sp-ring,
-.sp-p4 .sp-ring,
-.sp-p5 .sp-ring {
-  stroke-dashoffset: 0;
 }
 
 /* ====================================================================
-   THE LOAD — strand, sway, drop
+   THE DESCENT — thread, sway, and the long way down
    ==================================================================== */
 
 .sp-markwrap {
   position: absolute;
   left: 50%;
-  top: 50%;
+  /* The head overhangs the top of the mark box by about 7.8vw but the
+     wrapper's box does not grow to include it, so centring the wrapper hangs
+     the composition about 3.9vw too high. Push it back down by hand. */
+  top: calc(50% + 3.9vw);
   width: var(--mark-w);
   transform: translate(-50%, -50%);
   z-index: 20;
 }
 
-/* Pivots about the point the strand is tied to, not about itself — that is the
-   difference between a hanging weight and a spinning one. The caption is
-   inside this wrapper, so it swings with the mark instead of sliding off it. */
+/* Pivots about the point the thread is tied to, far above the frame, not
+   about itself — that is the difference between a hanging weight and a
+   spinning one. The caption is inside this wrapper, so it swings with the
+   mark instead of sliding off it. */
 .sp-hang {
   position: relative;
-  transform-origin: 50% calc(-1 * var(--anchor));
+  transform-origin: 50% -62vh;
 }
-.sp-p4 .sp-hang,
-.sp-p5 .sp-hang {
-  animation: sp-sway 5400ms 260ms ease-in-out infinite alternate;
+.sp-p1 .sp-hang,
+.sp-p2 .sp-hang,
+.sp-p3 .sp-hang {
+  animation: sp-sway 5600ms ease-in-out infinite alternate;
 }
 @keyframes sp-sway {
   from {
-    transform: rotate(-0.42deg);
+    transform: rotate(-0.5deg);
   }
   to {
-    transform: rotate(0.42deg);
+    transform: rotate(0.5deg);
   }
 }
 
+/* Lowered, not dropped. The easing barely accelerates and takes a long time
+   to stop — a bounce curve here reads as the mark FALLING and being caught,
+   which is a different gag. */
+.sp-drop {
+  position: relative;
+  transform: translateY(calc(-1 * var(--fall)));
+  transition: transform 2500ms cubic-bezier(0.3, 0.08, 0.24, 1);
+}
+.sp-p1 .sp-drop,
+.sp-p2 .sp-drop,
+.sp-p3 .sp-drop {
+  transform: translateY(0);
+}
+
+/* Pays out with the mark, because it is a child of it. Long enough to still
+   run off the top of the frame at the moment the mark touches down, and the
+   head paints over its lower end so it reads as tied to the crown. */
 .sp-strand {
   position: absolute;
   left: 50%;
   bottom: 100%;
   width: 2px;
   margin-left: -1px;
-  height: var(--anchor);
-  transform-origin: 50% 0;
-  transform: scaleY(0);
+  height: 220vh;
   background: linear-gradient(
     180deg,
     rgba(230, 237, 251, 0) 0%,
-    rgba(230, 237, 251, 0.4) 22%,
+    rgba(230, 237, 251, 0.34) 40%,
     rgba(244, 248, 255, 0.9) 100%
   );
   filter: drop-shadow(0 0 0.4vw rgba(170, 205, 255, 0.4));
-  transition: transform 1000ms cubic-bezier(0.2, 0.9, 0.3, 1);
-}
-.sp-p3 .sp-strand,
-.sp-p4 .sp-strand,
-.sp-p5 .sp-strand {
-  transform: scaleY(1);
-}
-
-.sp-drop {
-  opacity: 0;
-  transform: translateY(-44vh) scale(0.93);
-  transition:
-    opacity 480ms ease,
-    transform 1080ms cubic-bezier(0.2, 1.28, 0.34, 1);
-}
-.sp-p3 .sp-drop,
-.sp-p4 .sp-drop,
-.sp-p5 .sp-drop {
-  opacity: 1;
-  transform: translateY(0) scale(1);
 }
 
 /* ====================================================================
-   THE MARK — the suit, painted through the region masks
+   THE WORDMARK — painted through the region masks
    ==================================================================== */
 
 .sp-markbox {
@@ -288,19 +226,12 @@
 .sp-halo {
   position: absolute;
   left: 50%;
-  top: 50%;
-  width: 128%;
-  height: 190%;
+  top: 44%;
+  width: 122%;
+  height: 240%;
   transform: translate(-50%, -50%);
   background: radial-gradient(closest-side, rgba(4, 6, 10, 0.88), rgba(4, 6, 10, 0.4) 52%, transparent 78%);
   filter: blur(2vw);
-  opacity: 0;
-  transition: opacity 800ms ease;
-}
-.sp-p3 .sp-halo,
-.sp-p4 .sp-halo,
-.sp-p5 .sp-halo {
-  opacity: 1;
 }
 
 .sp-mark {
@@ -326,57 +257,55 @@
 }
 
 .sp-cast {
-  background: rgba(0, 0, 0, 0.72);
+  -webkit-mask-image: var(--logo), var(--no-hood);
+  mask-image: var(--logo), var(--no-hood);
+  background: rgba(0, 0, 0, 0.68);
   filter: blur(1.6vw);
-  transform: translateY(2.2vw) scale(1.01);
-  opacity: 0;
-  transition: opacity 700ms ease;
-}
-.sp-p3 .sp-cast,
-.sp-p4 .sp-cast,
-.sp-p5 .sp-cast {
-  opacity: 0.6;
+  transform: translateY(2vw) scale(1.01);
+  opacity: 0.55;
 }
 
-/* the unlit drop: charcoal rather than black, or the shape is invisible
-   against the wall on the way down */
-.sp-silh {
-  background: linear-gradient(176deg, #333a48 0%, #1e2431 52%, #2a3140 100%);
-  opacity: 0;
-  transition: opacity 420ms ease;
-}
-.sp-p3 .sp-silh,
-.sp-p4 .sp-silh,
-.sp-p5 .sp-silh {
-  opacity: 1;
+/* KNOCKING THE ARTWORK'S HEAD OUT.
+
+   The drawn head covers the artwork's own head, but not everything that hangs
+   past it — first the hood tie, then, once that was handled, the curve of the
+   jaw, which surfaced as a red crescent under the chin looking exactly like a
+   smile. Chasing those one at a time by widening the silhouette was the wrong
+   fix; the right one is not to paint the artwork's head at all.
+
+   So every layer that would paint it intersects its logo mask with a
+   horizontal cut: transparent above, opaque below. The measurements are off
+   the artwork's own pixels (see the note in Spiderman.js) — the head occupies
+   rows 0-54%, the wordmark starts at 62%, and rows 55-61% are empty. Cutting
+   at 58% therefore cannot clip either one. */
+.sp-knockout,
+.sp-suit-red,
+.sp-suit-face,
+.sp-cast {
+  -webkit-mask-size: contain, 100% 100%;
+  mask-size: contain, 100% 100%;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-position: center, center;
+  mask-position: center, center;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
 }
 
-/* --- the suit floods in on p4 --- */
-.sp-suit {
-  opacity: 0;
-  transition: opacity 640ms cubic-bezier(0.3, 0.9, 0.35, 1);
-}
-.sp-p4 .sp-suit,
-.sp-p5 .sp-suit {
-  opacity: 1;
-}
-
-/* hood + "NINJAS" — the red of the suit */
+/* hood + "NINJAS" — the red of the suit, with the hood knocked out */
 .sp-suit-red {
-  -webkit-mask-image: var(--logo-dark, var(--logo));
-  mask-image: var(--logo-dark, var(--logo));
+  -webkit-mask-image: var(--logo-dark, var(--logo)), var(--no-hood);
+  mask-image: var(--logo-dark, var(--logo)), var(--no-hood);
   background: linear-gradient(174deg, var(--suit-hi) 0%, var(--suit) 34%, var(--suit-lo) 72%, #c01f2c 100%);
 }
 
-/* The skin band across the eyes takes red too — the mask COVERS the face, and
-   leaving the band flesh-toned reads as a man holding a mask up, not wearing
-   one. Pitched a shade brighter than the hood because it is the raised,
-   forward-facing part of the head. */
+/* the skin band across the eyes — entirely inside the knockout, so in
+   practice this paints nothing. Kept so a replaced logo whose band reaches
+   below the hood never leaves a bare patch. */
 .sp-suit-face {
-  -webkit-mask-image: var(--logo-light, none);
-  mask-image: var(--logo-light, none);
+  -webkit-mask-image: var(--logo-light, none), var(--no-hood);
+  mask-image: var(--logo-light, none), var(--no-hood);
   background: linear-gradient(178deg, #ff5a63 0%, var(--suit-face) 44%, #b81a26 100%);
-  transition-delay: 90ms;
 }
 
 /* "CODE" keeps the brand's blue, pitched into the suit's blue */
@@ -384,43 +313,10 @@
   -webkit-mask-image: var(--logo-accent, none);
   mask-image: var(--logo-accent, none);
   background: linear-gradient(178deg, var(--suit-blue-hi) 0%, var(--suit-blue) 46%, var(--suit-blue-lo) 100%);
-  transition-delay: 150ms;
-}
-
-/* Suit webbing. Rings plus spokes radiating from the HEAD's centre
-   (32.7% + 29.3%/2 across, 46.3%/2 down) — a web centred on the whole lockup
-   would run its rings side-on through "CODE" and read as a target.
-
-   Masked to the RED regions only, by compositing the dark and light masks
-   together. The blue of the suit has no webbing on it, and adding some is the
-   quickest way to make this look like wrapping paper. */
-.sp-webbing {
-  -webkit-mask-image: var(--logo-dark, var(--logo)), var(--logo-light, none);
-  mask-image: var(--logo-dark, var(--logo)), var(--logo-light, none);
-  -webkit-mask-composite: source-over;
-  mask-composite: add;
-  background-image:
-    repeating-radial-gradient(
-      circle at 47.35% 23%,
-      transparent 0 1.95vw,
-      rgba(26, 3, 7, 0.66) 1.95vw 2.12vw
-    ),
-    repeating-conic-gradient(
-      from 7deg at 47.35% 23%,
-      rgba(26, 3, 7, 0.6) 0deg 1.35deg,
-      transparent 1.35deg 20deg
-    );
-  mix-blend-mode: multiply;
-  opacity: 0;
-  transition: opacity 760ms 220ms ease;
-}
-.sp-p4 .sp-webbing,
-.sp-p5 .sp-webbing {
-  opacity: 0.62;
 }
 
 /* spandex catches one broad highlight along the top — this is what stops the
-   suit reading as flat vector fill */
+   letters reading as flat vector fill */
 .sp-sheen {
   background: linear-gradient(
     173deg,
@@ -429,88 +325,127 @@
     transparent 44%,
     rgba(0, 0, 0, 0.2) 100%
   );
-  opacity: 0;
-  transition: opacity 700ms 160ms ease;
-}
-.sp-p4 .sp-sheen,
-.sp-p5 .sp-sheen {
-  opacity: 1;
 }
 
 /* ====================================================================
-   THE LENSES — pinned to the artwork's measured eye band
+   THE HEAD — drawn, not masked
+
+   Its chin sits where the artwork's chin sat (54% down the mark) and it is
+   centred on the artwork's head, so the lockup keeps the spacing it was drawn
+   with. Its HEIGHT comes from aspect-ratio rather than from a percentage of
+   the mark: a percentage height would be measured against the logo's aspect,
+   so replacing the logo file would stretch the head.
    ==================================================================== */
 
-.sp-lens {
+.sp-head {
   position: absolute;
+  left: 30.8%;
+  bottom: 46%;
+  width: 33.5%;
+  aspect-ratio: 200 / 210;
   pointer-events: none;
 }
-.sp-lens svg {
+.sp-head svg {
   width: 100%;
   height: 100%;
   display: block;
   overflow: visible;
-  filter: drop-shadow(0 0.18vw 0.3vw rgba(30, 2, 6, 0.55));
+  filter:
+    drop-shadow(0 0.3vw 0.5vw rgba(20, 1, 4, 0.6))
+    drop-shadow(0 1vw 1.8vw rgba(10, 0, 2, 0.4));
 }
+
+.sp-head-shape {
+  fill: url(#sp-headfill);
+}
+
+/* Webbing, clipped to the silhouette. Thin and low-contrast on purpose — at
+   phone scale this is a texture you feel rather than a graphic you read, and
+   cranking it up turns the head into a dartboard. */
+.sp-head-web path {
+  fill: none;
+  stroke: rgba(52, 3, 9, 0.5);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.sp-head-shade {
+  fill: url(#sp-headshade);
+}
+
+.sp-head-edge {
+  fill: none;
+  stroke: rgba(38, 2, 6, 0.5);
+  stroke-width: 2.4;
+}
+
+/* ---- the lenses ---- */
 
 .sp-lens-body {
   fill: url(#sp-lensfill);
   stroke: var(--lens-rim);
-  stroke-width: 7;
+  stroke-width: 6;
   stroke-linejoin: round;
 }
 .sp-lens-hi {
   fill: rgba(255, 255, 255, 0.9);
 }
 
-/* they land one after the other, outer corner first, so the pair reads as two
-   pieces of the mask rather than one printed graphic */
-.sp-lens-l,
-.sp-lens-r {
+/* one catchlight sweeps the glass as the mark comes to rest — the only thing
+   that happens on the landing beat, and it is what makes the head feel like
+   an object rather than a decal */
+.sp-lens-glint {
+  fill: #ffffff;
   opacity: 0;
-  /* fill-box, or the percentages resolve against the SVG viewport and both
-     lenses scale in from somewhere off in the corner of the eye band */
-  transform-box: fill-box;
-  transform-origin: 12% 38%;
-  transform: scale(0.62);
 }
-.sp-p4 .sp-lens-l,
-.sp-p5 .sp-lens-l {
-  animation: sp-snap 400ms 300ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+.sp-p2 .sp-lens-l .sp-lens-glint,
+.sp-p3 .sp-lens-l .sp-lens-glint {
+  animation: sp-glint 900ms 120ms ease-out forwards;
 }
-.sp-p4 .sp-lens-r,
-.sp-p5 .sp-lens-r {
-  animation: sp-snap 400ms 390ms cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+.sp-p2 .sp-lens-r .sp-lens-glint,
+.sp-p3 .sp-lens-r .sp-lens-glint {
+  animation: sp-glint 900ms 260ms ease-out forwards;
 }
-@keyframes sp-snap {
-  to {
-    opacity: 1;
-    transform: scale(1);
+@keyframes sp-glint {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
   }
+  35% {
+    opacity: 0.85;
+    transform: scale(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+.sp-lens-glint {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
 }
 
 /* ====================================================================
-   TYPE — small, and tight under CODE NINJAS
+   TYPE — WOODBRIDGE reads as the lockup's second line
    ==================================================================== */
 
 .sp-type {
   position: relative;
-  /* WOODBRIDGE is the lockup's second line, not a caption below it */
-  margin-top: 0.9vw;
+  margin-top: 1.6vw;
   text-align: center;
 }
 
 .sp-caption {
-  font-size: 2.7vw;
+  font-size: 4.8vw;
   font-weight: 900;
-  letter-spacing: 0.34em;
-  text-indent: 0.34em;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
   color: var(--ink);
   opacity: 0;
-  transform: translateY(0.8vw);
+  transform: translateY(1vw);
   transition: opacity 600ms ease, transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.sp-p5 .sp-caption {
+.sp-p3 .sp-caption {
   opacity: 1;
   transform: translateY(0);
 }
@@ -518,12 +453,12 @@
 .sp-rule {
   width: 0;
   height: 2px;
-  margin: 1.1vw auto 0;
+  margin: 1.6vw auto 0;
   background: linear-gradient(90deg, transparent, var(--suit) 50%, transparent);
   transition: width 800ms 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.sp-p5 .sp-rule {
-  width: 46%;
+.sp-p3 .sp-rule {
+  width: 58%;
 }
 
 /* ====================================================================
@@ -550,7 +485,7 @@
 }
 
 /* ====================================================================
-   STATIC MODE — the poster: web spun, mark landed, suit on, nothing mid-air
+   STATIC MODE — the poster: landed, nothing mid-air
    ==================================================================== */
 
 .sp.is-static *,
@@ -559,24 +494,11 @@
   animation: none !important;
   transition: none !important;
 }
-.sp.is-static .sp-spoke,
-.sp.is-static .sp-ring {
-  stroke-dashoffset: 0;
-}
-.sp.is-static .sp-strand {
-  transform: scaleY(1);
-}
 .sp.is-static .sp-drop {
-  opacity: 1;
   transform: none;
 }
-.sp.is-static .sp-lens-l,
-.sp.is-static .sp-lens-r {
-  opacity: 1;
-  transform: scale(1);
-}
 .sp.is-static .sp-rule {
-  width: 46%;
+  width: 58%;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -586,23 +508,10 @@
     animation: none !important;
     transition: none !important;
   }
-  .sp .sp-spoke,
-  .sp .sp-ring {
-    stroke-dashoffset: 0;
-  }
-  .sp .sp-strand {
-    transform: scaleY(1);
-  }
   .sp .sp-drop {
-    opacity: 1;
     transform: none;
   }
-  .sp .sp-lens-l,
-  .sp .sp-lens-r {
-    opacity: 1;
-    transform: scale(1);
-  }
   .sp .sp-rule {
-    width: 46%;
+    width: 58%;
   }
 }
