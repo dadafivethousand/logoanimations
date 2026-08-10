@@ -51,10 +51,6 @@
   --spin: 1350ms;
   --spin-ease: cubic-bezier(0.18, 0.45, 0.38, 1);
 
-  /* Transparent over the artwork's head, opaque over the wordmark — see the
-     knockout note further down. The cut lands at 58%, inside the empty band
-     the artwork already has between the two. */
-  --no-hood: linear-gradient(180deg, transparent 0 58%, #000 58.5%);
 
   position: absolute;
   inset: 0;
@@ -182,9 +178,19 @@
   /* not zero — a few vmax of hub is the dot the whole thing grows out of */
   -webkit-mask-size: 3.5vmax 3.5vmax;
   mask-size: 3.5vmax 3.5vmax;
+
+  /* Spun into place, not just uncovered. The whole web turns a couple of
+     degrees and tightens as the front travels, which is what stops a pure
+     mask reveal from reading as a fade. Both copies get the identical
+     transform or the hot one drifts off the base one. */
+  transform-origin: 50% 46.5%;
+  transform: rotate(-2.6deg) scale(0.93);
+
+  /* the delay is the beat where the hub is just a dot */
   transition:
-    -webkit-mask-size var(--spin) var(--spin-ease),
-    mask-size var(--spin) var(--spin-ease);
+    -webkit-mask-size var(--spin) var(--spin-ease) 110ms,
+    mask-size var(--spin) var(--spin-ease) 110ms,
+    transform calc(var(--spin) * 1.3) cubic-bezier(0.16, 0.84, 0.24, 1) 110ms;
 }
 
 /* settled silk, filled in behind the front */
@@ -207,18 +213,26 @@
 .sp-web-hot {
   z-index: 11;
   filter: drop-shadow(0 0 1.3vw rgba(150, 205, 255, 0.75));
+  /* Two annuli, not one: a bright leading edge and a dimmer pulse trailing
+     it. The second costs nothing — it is two more stops on the same gradient
+     — and it turns a single travelling ring into light running along the
+     silk. */
   -webkit-mask-image: radial-gradient(
     circle closest-side,
-    transparent 0 52%,
-    rgba(0, 0, 0, 0.6) 72%,
-    #000 84%,
+    transparent 0 38%,
+    rgba(0, 0, 0, 0.22) 48%,
+    transparent 57%,
+    rgba(0, 0, 0, 0.62) 73%,
+    #000 86%,
     transparent 100%
   );
   mask-image: radial-gradient(
     circle closest-side,
-    transparent 0 52%,
-    rgba(0, 0, 0, 0.6) 72%,
-    #000 84%,
+    transparent 0 38%,
+    rgba(0, 0, 0, 0.22) 48%,
+    transparent 57%,
+    rgba(0, 0, 0, 0.62) 73%,
+    #000 86%,
     transparent 100%
   );
 }
@@ -229,6 +243,7 @@
 .sp-p4 .sp-web {
   -webkit-mask-size: 230vmax 230vmax;
   mask-size: 230vmax 230vmax;
+  transform: rotate(0deg) scale(1);
 }
 
 .sp-spoke,
@@ -404,6 +419,30 @@
   aspect-ratio: var(--logo-aspect, 2.17);
 }
 
+/* Shows only the band below the artwork's head. The cut is at 58%, inside the
+   empty band the artwork already has between its head (rows 0-54%) and its
+   wordmark (rows 62-89%), measured off its own pixels — see Spiderman.js. */
+.sp-word {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 58%;
+  bottom: 0;
+  overflow: hidden;
+}
+
+/* Rebuilds the full mark box inside the clip, anchored to the same bottom
+   edge, so every masked layer inside still registers with the artwork. Its
+   height comes from the same aspect the mark box uses rather than from a
+   percentage of the clip, which would move if the cut ever changed. */
+.sp-wordbox {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  aspect-ratio: var(--logo-aspect, 2.17);
+}
+
 /* every material layer is the same box, masked by the artwork */
 .sp-layer,
 .sp-suit {
@@ -420,54 +459,26 @@
 }
 
 .sp-cast {
-  -webkit-mask-image: var(--logo), var(--no-hood);
-  mask-image: var(--logo), var(--no-hood);
   background: rgba(0, 0, 0, 0.68);
   filter: blur(1.6vw);
   transform: translateY(2vw) scale(1.01);
   opacity: 0.55;
 }
 
-/* KNOCKING THE ARTWORK'S HEAD OUT.
-
-   The drawn head covers the artwork's own head, but not everything that hangs
-   past it — first the hood tie, then, once that was handled, the curve of the
-   jaw, which surfaced as a red crescent under the chin looking exactly like a
-   smile. Chasing those one at a time by widening the silhouette was the wrong
-   fix; the right one is not to paint the artwork's head at all.
-
-   So every layer that would paint it intersects its logo mask with a
-   horizontal cut: transparent above, opaque below. The measurements are off
-   the artwork's own pixels (see the note in Spiderman.js) — the head occupies
-   rows 0-54%, the wordmark starts at 62%, and rows 55-61% are empty. Cutting
-   at 58% therefore cannot clip either one. */
-.sp-knockout,
-.sp-suit-red,
-.sp-suit-face,
-.sp-cast {
-  -webkit-mask-size: contain, 100% 100%;
-  mask-size: contain, 100% 100%;
-  -webkit-mask-repeat: no-repeat, no-repeat;
-  mask-repeat: no-repeat, no-repeat;
-  -webkit-mask-position: center, center;
-  mask-position: center, center;
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
-}
-
-/* hood + "NINJAS" — the red of the suit, with the hood knocked out */
+/* hood + "NINJAS" — the red of the suit. The hood half of this region is
+   clipped away by sp-word; what shows is the wordmark. */
 .sp-suit-red {
-  -webkit-mask-image: var(--logo-dark, var(--logo)), var(--no-hood);
-  mask-image: var(--logo-dark, var(--logo)), var(--no-hood);
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
   background: linear-gradient(174deg, var(--suit-hi) 0%, var(--suit) 34%, var(--suit-lo) 72%, #c01f2c 100%);
 }
 
-/* the skin band across the eyes — entirely inside the knockout, so in
-   practice this paints nothing. Kept so a replaced logo whose band reaches
-   below the hood never leaves a bare patch. */
+/* the skin band across the eyes — above the clip, so in practice this paints
+   nothing. Kept so a replaced logo whose band reaches below the head never
+   leaves a bare patch. */
 .sp-suit-face {
-  -webkit-mask-image: var(--logo-light, none), var(--no-hood);
-  mask-image: var(--logo-light, none), var(--no-hood);
+  -webkit-mask-image: var(--logo-light, none);
+  mask-image: var(--logo-light, none);
   background: linear-gradient(178deg, #ff5a63 0%, var(--suit-face) 44%, #b81a26 100%);
 }
 
@@ -660,6 +671,7 @@
 .sp.is-static .sp-web {
   -webkit-mask-size: 230vmax 230vmax;
   mask-size: 230vmax 230vmax;
+  transform: none;
 }
 .sp.is-static .sp-bricks {
   opacity: 0.5;
@@ -685,6 +697,7 @@
   .sp .sp-web {
     -webkit-mask-size: 230vmax 230vmax;
     mask-size: 230vmax 230vmax;
+    transform: none;
   }
   .sp .sp-bricks {
     opacity: 0.5;

@@ -135,8 +135,8 @@ export default function Spiderman({
            sweep, and the corners of the frame filled long after the sides.
 
            Both copies carry the same displacement filter and the same seed,
-           so the hot copy sits exactly on the base one. Any difference there
-           shows up immediately as a doubled thread. */}
+           and CSS gives them the same transform, so the hot copy sits exactly
+           on the base one. Any difference there shows as a doubled thread. */}
       <WebLayer variant="base" />
       <WebLayer variant="hot" />
 
@@ -158,13 +158,24 @@ export default function Spiderman({
               <div className="sp-halo" aria-hidden />
 
               <div className="sp-mark">
-                <div className="sp-layer sp-cast" aria-hidden />
+                {/* The artwork's head is CLIPPED away, not masked away. Every
+                    layer here paints the whole mark box and sp-word shows only
+                    the band below it, so the drawn head is all you ever see of
+                    a head. The mask-composite knockout this replaced worked,
+                    but it left a hairline of the suit gradient down both edges
+                    of the mark box — faint from each layer, visible once they
+                    stacked. A clip has no edge case. */}
+                <div className="sp-word">
+                  <div className="sp-wordbox">
+                    <div className="sp-layer sp-cast" aria-hidden />
 
-                {/* --- the wordmark, painted per region --- */}
-                <div className="sp-suit sp-suit-red" aria-hidden />
-                <div className="sp-suit sp-suit-face" aria-hidden />
-                <div className="sp-suit sp-suit-blue" aria-hidden />
-                <div className="sp-layer sp-sheen" aria-hidden />
+                    {/* --- the wordmark, painted per region --- */}
+                    <div className="sp-suit sp-suit-red" aria-hidden />
+                    <div className="sp-suit sp-suit-face" aria-hidden />
+                    <div className="sp-suit sp-suit-blue" aria-hidden />
+                    <div className="sp-layer sp-sheen" aria-hidden />
+                  </div>
+                </div>
 
                 <Head />
               </div>
