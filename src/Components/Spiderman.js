@@ -49,8 +49,8 @@ import "../Stylesheets/Spiderman.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
-// p1 the web spins out of the hub and the wall comes up with it · p2 the
-// descent starts · p3 it has come to rest · p4 WOODBRIDGE
+// p1 the hub lights, the web is thrown out of it, and the wall comes up with
+// it · p2 the descent starts · p3 it has come to rest · p4 WOODBRIDGE
 //
 // Frame zero is blank: no web, no wall texture, no city, no mark. Everything
 // arrives on a cue.
@@ -61,7 +61,7 @@ import useLogo from "../Utils/useLogo";
 //
 // Plays ONCE and holds — loopAt is null. The thread keeps swaying on the held
 // frame; that is ambient, not a restart.
-const CUES = [140, 1500, 4000, 4600];
+const CUES = [140, 1850, 4350, 4950];
 
 // distant windows, out of focus. Fixed rather than random so every take of
 // the recording is identical. [left%, top%, size in vw, opacity]
@@ -80,7 +80,7 @@ const CITY = [
 // The web in the frame and the webbing on the mask are the same geometry at
 // two scales and two tensions — the big one sags, the one stretched over a
 // head is nearly taut.
-const WEB = buildWeb({ cx: 200, cy: 372, spokes: 14, rings: 6, r0: 44, rMax: 520, sag: 0.885 });
+const WEB = buildWeb({ cx: 200, cy: 372, spokes: 16, rings: 8, r0: 44, rMax: 520, sag: 0.885 });
 const HEAD_WEB = buildWeb({ cx: 100, cy: 104, spokes: 18, rings: 8, r0: 12, rMax: 200, sag: 0.955 });
 
 export default function Spiderman({
@@ -117,6 +117,9 @@ export default function Spiderman({
       </div>
       <div className="sp-glow" aria-hidden />
 
+      {/* the hub lights first — one hit, before the first thread is out */}
+      <div className="sp-burst" aria-hidden />
+
       {/* ---- the web, spun outward from the hub ----
 
            Every path carries pathLength="1", so one dash rule draws all of
@@ -129,6 +132,11 @@ export default function Spiderman({
            the rings on a fixed stagger instead looked like six separate
            circles appearing, because the outer ones are so much longer. */}
       <svg className="sp-web" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden>
+        {/* The front, racing a little ahead of the silk. Outside the displaced
+            group on purpose: it is a clean ring, and it must not be re-filtered
+            on every frame of its own expansion. */}
+        <circle className="sp-shock" cx="200" cy="372" r="0" />
+
         <g filter="url(#sp-thread)">
           {WEB.spokes.map((d, i) => (
             <path key={`s${i}`} className="sp-spoke" d={d} pathLength="1" style={{ "--i": i }} />

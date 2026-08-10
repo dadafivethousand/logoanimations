@@ -40,9 +40,11 @@
      overhangs the top of the mark box by about 6.7vw. */
   --fall: 80vh;
 
-  /* how long the wavefront takes to reach the spokes' full reach */
-  --spin: 1000ms;
-  --spin-ease: cubic-bezier(0.24, 0.62, 0.36, 1);
+  /* How long the wavefront takes to reach the spokes' full reach. The easing
+     is nearly all front-loaded: the silk is THROWN out and then decelerates
+     hard, which is what separates a web being shot from a web being drawn. */
+  --spin: 1150ms;
+  --spin-ease: cubic-bezier(0.2, 0.72, 0.3, 1);
 
   /* Transparent over the artwork's head, opaque over the wordmark — see the
      knockout note further down. The cut lands at 58%, inside the empty band
@@ -170,34 +172,138 @@
      matter how long the individual thread is */
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
+  stroke-width: var(--w);
+  opacity: 0;
 }
 
 .sp-spoke {
-  stroke-width: 1.15;
-  opacity: 0.42;
-  transition: stroke-dashoffset var(--spin) var(--spin-ease);
-  transition-delay: calc(var(--i) * 16ms);
+  --w: 1.25;
+  --rest: 0.48;
 }
 
 /* the spiral is the thread that actually catches things — brighter than the
    anchor spokes it is strung between */
 .sp-ring {
-  stroke-width: 1.5;
-  opacity: 0.6;
+  --w: 1.65;
+  --rest: 0.68;
   filter: drop-shadow(0 0 0.5vw rgba(180, 210, 255, 0.28));
-  transition: stroke-dashoffset 620ms var(--spin-ease);
-  transition-delay: calc(var(--t) * var(--spin));
+}
+
+/* Each thread FLASHES as it is laid and then settles back — it comes in white
+   and heavy and thins into its resting weight. A plain dash reveal at the
+   final opacity is legible but inert; the flash is what gives the spread its
+   snap, and it costs one keyframe because --w and --rest resolve per element. */
+@keyframes sp-lay {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+    stroke-width: calc(var(--w) * 2.7);
+  }
+  10% {
+    opacity: 1;
+  }
+  62% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: var(--rest);
+    stroke-width: var(--w);
+  }
 }
 
 .sp-p1 .sp-spoke,
 .sp-p2 .sp-spoke,
 .sp-p3 .sp-spoke,
-.sp-p4 .sp-spoke,
+.sp-p4 .sp-spoke {
+  animation: sp-lay var(--spin) var(--spin-ease) both;
+  animation-delay: calc(var(--i) * 12ms);
+}
 .sp-p1 .sp-ring,
 .sp-p2 .sp-ring,
 .sp-p3 .sp-ring,
 .sp-p4 .sp-ring {
-  stroke-dashoffset: 0;
+  animation: sp-lay calc(var(--spin) * 0.62) var(--spin-ease) both;
+  animation-delay: calc(var(--t) * var(--spin));
+}
+
+/* ---- the front ---- */
+
+/* Races just ahead of the silk and burns out as it goes. Its whole job is to
+   tell you the web has a DIRECTION: without it the threads all arrive at once
+   and the spread reads as a fade-in. */
+.sp-shock {
+  fill: none;
+  stroke: #eaf3ff;
+  stroke-width: 0;
+  opacity: 0;
+  filter: drop-shadow(0 0 1.4vw rgba(150, 200, 255, 0.7));
+}
+.sp-p1 .sp-shock,
+.sp-p2 .sp-shock,
+.sp-p3 .sp-shock,
+.sp-p4 .sp-shock {
+  animation: sp-shock calc(var(--spin) * 0.95) var(--spin-ease) both;
+}
+@keyframes sp-shock {
+  0% {
+    r: 10;
+    stroke-width: 11;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.95;
+  }
+  62% {
+    opacity: 0.5;
+  }
+  100% {
+    r: 660;
+    stroke-width: 0.8;
+    opacity: 0;
+  }
+}
+
+/* one hit at the hub before the first thread is out */
+.sp-burst {
+  position: absolute;
+  left: 50%;
+  /* the web's hub: 46.5% down its viewBox, and the slice fit maps that
+     straight onto the frame for any portrait taller than 1:2 */
+  top: 46.5%;
+  z-index: 11;
+  width: 30vw;
+  height: 30vw;
+  margin: -15vw 0 0 -15vw;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(190, 220, 255, 0.5) 34%,
+    transparent 72%
+  );
+  opacity: 0;
+  transform: scale(0.15);
+}
+.sp-p1 .sp-burst,
+.sp-p2 .sp-burst,
+.sp-p3 .sp-burst,
+.sp-p4 .sp-burst {
+  animation: sp-burst 620ms cubic-bezier(0.15, 0.8, 0.3, 1) both;
+}
+@keyframes sp-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.15);
+  }
+  18% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
 }
 
 /* ====================================================================
@@ -556,6 +662,8 @@
 .sp.is-static .sp-spoke,
 .sp.is-static .sp-ring {
   stroke-dashoffset: 0;
+  opacity: var(--rest);
+  stroke-width: var(--w);
 }
 .sp.is-static .sp-bricks {
   opacity: 0.5;
@@ -581,6 +689,8 @@
   .sp .sp-spoke,
   .sp .sp-ring {
     stroke-dashoffset: 0;
+    opacity: var(--rest);
+    stroke-width: var(--w);
   }
   .sp .sp-bricks {
     opacity: 0.5;
