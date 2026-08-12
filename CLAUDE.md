@@ -51,6 +51,47 @@ hover states. Size layout in `vw`/`vh`; reserve `px` for hairlines that must sta
 hairlines (bevel rims, rules). Keep everything meaningful inside `--safe-x` /
 `--safe-y` — the recording crop eats the edges.
 
+## Centre the composition — never spread it to the safe line
+
+The crop is **unpredictable and can come off any edge**, so `--safe-x` /
+`--safe-y` are a **floor, not a target**. Every theme must read as one block of
+content **concentrated in the centre of the frame with clear space on all four
+sides**. Existing themes are inconsistent here (`--safe-y` ranges from 4.7vh to
+12vh); new work uses the floors below.
+
+```css
+.xx-stage {
+  --safe-x: max(45px, 11vw);   /* px floor is the minimum; the vw/vh term lets */
+  --safe-y: max(40px, 6vh);    /* the guard grow with the screen              */
+}
+
+.xx-card {
+  position: absolute;
+  inset: var(--safe-y) var(--safe-x);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;     /* <- the whole group, centred together */
+  gap: <a fixed value>;
+}
+```
+
+**Anti-pattern:** giving one flex child `flex: 1` so it eats the free space.
+That justifies its siblings out to both edges instead of centring them
+together — the leftover room then sits *inside* the composition as a stretched
+gap rather than *outside* it as crop margin. Whatever is left over belongs
+around the content, split evenly.
+
+Two consequences:
+
+- An entrance that slides something in from off-screen can no longer assume a
+  fixed offset like `translateY(calc(100% + 40px))`, because the element is not
+  pinned to the card edge any more. Use `translateY(calc(100% + 50vh))` — the
+  gap below a centred block can never exceed half the card plus the guard, so
+  half a viewport always clears it on any phone, with nothing to measure.
+- Expect the mark plus its lockup to occupy roughly a third to a half of the
+  screen height. That is correct. Sparse and safe beats full-bleed and cropped.
+
 ## Layout & structure
 
 - One theme = **one component in `src/Components/` + one stylesheet in
