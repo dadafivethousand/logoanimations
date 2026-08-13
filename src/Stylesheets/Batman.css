@@ -42,6 +42,27 @@
   /* the one knob the composition scales from */
   --mark-w: 52vw;
   --cape-w: calc(var(--mark-w) * 1.18);
+  --cowl-w: 39%;
+
+  /* THE FACE'S OWN AXIS, and it is not the mark box's.
+
+     Scanned off the artwork's pixels: the head occupies columns 32.62-61.95%
+     of the trimmed mark, so it centres at 47.3% — while the wordmark below it
+     runs the full width and centres at 49.97%. The lockup is drawn that way.
+
+     Anything that belongs to the HEAD hangs off this line, not off 50%: the
+     cowl and the cape both. Centring the cape on the mark box instead put its
+     wings 2.7% of the mark's width to the right of the face, which is exactly
+     what it looked like. Two things reading off one variable cannot drift
+     apart again. */
+  --face-x: 47.3%;
+
+  /* the same offset expressed against the FRAME rather than the mark box, for
+     the things that are positioned in the frame: the beam and its lamp. The
+     light points at the face, not at the middle of the phone — with the beam
+     left on 50% the head sits visibly off its axis, which is the same
+     misalignment as the cape's, one layer out. */
+  --face-off: calc(var(--mark-w) * -0.027);
 
   /* how long the beam takes to swing onto the mark */
   --sweep: 1000ms;
@@ -134,7 +155,7 @@
 
 .bm-beam {
   position: absolute;
-  left: 50%;
+  left: calc(50% + var(--face-off));
   bottom: 6vh;
   z-index: 2;
   width: 170vw;
@@ -209,7 +230,7 @@
 /* the lamp itself, blooming over the rooftops */
 .bm-lamp {
   position: absolute;
-  left: 50%;
+  left: calc(50% + var(--face-off));
   bottom: 9vh;
   z-index: 5;
   width: 34vw;
@@ -334,7 +355,7 @@
 .bm-markwrap {
   position: absolute;
   left: 50%;
-  top: calc(50% + 4vw);
+  top: calc(50% + 5.4vw);
   width: var(--mark-w);
   transform: translate(-50%, -50%);
   z-index: 20;
@@ -366,7 +387,7 @@
 
 .bm-cape {
   position: absolute;
-  left: 50%;
+  left: var(--face-x);
   top: calc(var(--mark-w) * -0.17);
   width: var(--cape-w);
   transform: translateX(-50%);
@@ -549,9 +570,11 @@
 
 .bm-cowl {
   position: absolute;
-  left: 30.35%;
-  bottom: 45%;
-  width: 34%;
+  /* both terms resolve against the same box, so the cowl stays centred on the
+     face's axis at any width */
+  left: calc(var(--face-x) - var(--cowl-w) / 2);
+  bottom: 43.5%;
+  width: var(--cowl-w);
   aspect-ratio: 200 / 240;
   pointer-events: none;
 }
