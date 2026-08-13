@@ -215,29 +215,111 @@ function Cowl() {
           </clipPath>
         </defs>
 
+        {/* the base material */}
         <path className="bm-cowl-shape" d={COWL_D} />
 
+        {/* ---- everything that models the form, clipped to the silhouette ----
+
+            Order is the order light works in: the broad planes first, then
+            the features that sit on them, then the shadow side over the lot,
+            then texture. A highlight painted after the falloff floats. */}
         <g clipPath="url(#bm-cowlclip)">
-          {/* form: the jaw and the right cheek fall away from the beam */}
-          <path className="bm-cowl-shade" d={COWL_D} />
+          {/* the crown of the skull takes the sky */}
+          <ellipse className="bm-skull-hi" cx="76" cy="86" rx="52" ry="34" filter="url(#bm-soft2)" />
+
           {/* the brow is a MASS above the eyes, dipping toward the middle —
               a pair of eyebrows laid on the face reads as cheesy (Hulk) */}
           <path className="bm-brow" d={BROW_D} />
+
+          {/* The nose is UNDER the cowl, moulded rather than exposed: a lit
+              plane on the key side of the ridge, a shadow on the other, and
+              the tip's own shadow where it turns under. Cutting a nose hole
+              in the mask reads as a costume; moulding it reads as one piece
+              of rubber pulled over a face. */}
+          <path className="bm-nose-lit" d={NOSE_LIT_D} filter="url(#bm-soft)" />
+          <path className="bm-nose-dark" d={NOSE_DARK_D} filter="url(#bm-soft)" />
+          <ellipse className="bm-nose-tip" cx="100" cy="172" rx="19" ry="7" filter="url(#bm-soft)" />
+
+          {/* cheekbones: the only thing standing between the brow and the jaw,
+              and without them the middle of the face is a flat panel */}
+          <ellipse className="bm-cheek bm-cheek-l" cx="52" cy="146" rx="23" ry="16" filter="url(#bm-soft2)" />
+          <ellipse className="bm-cheek bm-cheek-r" cx="150" cy="148" rx="20" ry="14" filter="url(#bm-soft2)" />
+
+          {/* the shadow side, and the general falloff toward the jaw */}
+          <rect className="bm-sideshade" x="0" y="0" width="200" height="240" />
+          <path className="bm-cowl-shade" d={COWL_D} />
+
+          {/* matte rubber, not vinyl: a little desaturated grain over
+              everything is most of what separates a moulded surface from a
+              gradient */}
+          <rect className="bm-cowl-tex" x="0" y="0" width="200" height="240" filter="url(#bm-grain)" />
         </g>
 
-        {/* the silhouette's own edge, drawn last so nothing can break it. The
-            beam is up and to the left of the mark, so the rim is too. */}
+        {/* ---- the exposed lower face ----
+
+            The single biggest thing making the earlier pass read as a balloon
+            with eyes on it: a cowl is worn BY somebody, and the jaw and mouth
+            below its edge are what say so. */}
+        <g clipPath="url(#bm-cowlclip)">
+          <path className="bm-face" d={FACE_D} />
+          {/* the cowl's own edge casts onto the skin just under it */}
+          <path className="bm-face-occl" d={FACE_D} filter="url(#bm-soft)" />
+          <ellipse className="bm-chin-hi" cx="100" cy="218" rx="18" ry="11" filter="url(#bm-soft)" />
+          <ellipse className="bm-jaw-shade" cx="100" cy="236" rx="30" ry="14" filter="url(#bm-soft)" />
+          <path className="bm-lip-lo" d={LIP_LO_D} filter="url(#bm-soft)" />
+          <path className="bm-philtrum" d={PHILTRUM_D} filter="url(#bm-soft)" />
+          {/* the mouth is set, and its corners turn DOWN — a level line reads
+              as neutral and a lifted one reads as a smirk */}
+          {/* the fold from the nose to the corner of the mouth. Two short
+              strokes, and the lower face stops being a blank panel. */}
+          <path className="bm-fold" d={FOLD_D} filter="url(#bm-soft)" />
+          <path className="bm-mouth" d={MOUTH_D} />
+          <path className="bm-face-edge" d={FACE_EDGE_D} />
+        </g>
+
+        {/* ---- the ears ----
+            Each one gets an inner plane, so it has thickness. A flat spike is
+            clip-art whatever else is going on around it. */}
+        <path className="bm-ear-facet" d={EAR_FACET_D} />
+        <g transform="translate(200,0) scale(-1,1)">
+          <path className="bm-ear-facet" d={EAR_FACET_D} />
+        </g>
+
+        {/* the silhouette's own edge, drawn last so nothing can break it */}
         <path className="bm-cowl-edge" d={COWL_D} />
+        {/* the key, up and to the left */}
         <path className="bm-cowl-rim" d={RIM_D} />
+        {/* and the beam itself, behind the mark: a cold rim down the shadow
+            side. Two lights of different colour is the whole difference
+            between a drawing of a head and a photograph of one. */}
+        <path className="bm-cowl-backrim" d={BACKRIM_D} />
+
+        {/* ---- the eyes ----
+            The sockets are cut whether or not the eyes are lit, so the beats
+            before ignition read as empty holes rather than as a blank face. */}
+        <g clipPath="url(#bm-cowlclip)">
+          <path className="bm-socket" d={SOCKET_D} filter="url(#bm-soft)" />
+          <g transform="translate(200,0) scale(-1,1)">
+            <path className="bm-socket" d={SOCKET_D} filter="url(#bm-soft)" />
+          </g>
+        </g>
 
         <g className="bm-eye-l">
           <path className="bm-eye-glow" d={EYE_D} />
           <path className="bm-eye" d={EYE_D} />
+          {/* the brow overhangs the lens and lands on the top of it */}
+          <path className="bm-eye-occl" d={EYE_D} />
         </g>
+        {/* The right eye is the left one mirrored, so the pair can never drift
+            out of symmetry. The mirror MUST sit on its own wrapper: a CSS
+            transform on an SVG element replaces the transform attribute
+            outright, so animating this same <g> would cancel the flip and
+            draw both eyes in one socket. */}
         <g transform="translate(200,0) scale(-1,1)">
           <g className="bm-eye-r">
             <path className="bm-eye-glow" d={EYE_D} />
             <path className="bm-eye" d={EYE_D} />
+            <path className="bm-eye-occl" d={EYE_D} />
           </g>
         </g>
       </svg>
@@ -250,23 +332,68 @@ function Cowl() {
    hangs on, so they are a fifth of the box tall and they lean very slightly
    outward — dead-vertical ears read as a jester's cap. */
 const COWL_D =
-  "M40 8 C 44 40, 50 62, 63 78 C 74 66, 86 60, 100 60 C 114 60, 126 66, 137 78 C 150 62, 156 40, 160 8 C 174 38, 183 72, 182 105 C 180 150, 159 191, 127 215 C 117 223, 109 229, 100 229 C 91 229, 83 223, 73 215 C 41 191, 20 150, 18 105 C 17 72, 26 38, 40 8 Z";
+  "M40 8 C 44 40, 50 62, 63 78 C 74 66, 86 60, 100 60 C 114 60, 126 66, 137 78 C 150 62, 156 40, 160 8 C 174 38, 183 72, 182 105 C 181 148, 166 186, 133 212 C 122 222, 110 230, 100 230 C 90 230, 78 222, 67 212 C 34 186, 19 148, 18 105 C 17 72, 26 38, 40 8 Z";
 
 /* the brow mass, inside the skin rather than sitting on it */
 const BROW_D =
   "M18 96 C 46 84, 76 82, 100 92 C 124 82, 154 84, 182 96 C 182 118, 176 132, 168 138 C 140 122, 118 116, 100 116 C 82 116, 60 122, 32 138 C 24 132, 18 118, 18 96 Z";
 
-/* the rim the searchlight puts on the upper-left edge — its own open path so
-   the light stops where the form turns away, instead of ringing the whole
-   silhouette like a sticker outline */
+/* the ridge of the nose, moulded under the mask: lit on the key side, dark on
+   the other, meeting on the centre line */
+const NOSE_LIT_D = "M100 118 C 92 136, 86 152, 83 166 C 90 172, 100 174, 100 174 Z";
+const NOSE_DARK_D = "M100 118 C 108 136, 114 152, 117 166 C 110 172, 100 174, 100 174 Z";
+
+/* The opening: mouth and chin, cheek to cheek, running all the way DOWN to
+   the silhouette's own chin. The first pass stopped it short of the jaw and
+   floated it in the middle of the face, which read as a pale pill stuck on —
+   the same failure CLAUDE.md records for a lighter-coloured muzzle. Skin that
+   reaches the edge of the head is the face; skin that doesn't is a patch.
+   The top edge dips at the centre: a cowl comes down over the cheeks and
+   crosses under the nose, so its cut line is a shallow M, not an arc. */
+const FACE_D =
+  "M58 176 C 68 166, 78 161, 88 162 C 93 168, 97 170, 100 170 C 103 170, 107 168, 112 162 C 122 161, 132 166, 142 176 C 143 197, 133 214, 118 224 C 111 228, 105 231, 100 231 C 95 231, 89 228, 82 224 C 67 214, 57 197, 58 176 Z";
+
+/* just the top of that opening — the cowl's cut edge lying on the skin */
+const FACE_EDGE_D =
+  "M58 176 C 68 166, 78 161, 88 162 C 93 168, 97 170, 100 170 C 103 170, 107 168, 112 162 C 122 161, 132 166, 142 176";
+
+/* The mouth takes most of the opening's width and its corners turn DOWN. A
+   short line in the middle of all that skin reads as a stitched-on smile;
+   what makes a mouth is width, weight and the shadow under the lower lip. */
+const MOUTH_D = "M73 195 C 83 189, 92 187, 100 188 C 108 187, 117 189, 127 195";
+const LIP_LO_D = "M78 203 C 88 208, 112 208, 122 203 C 114 213, 86 213, 78 203 Z";
+/* the groove under the nose, and the crease above the chin — small, and the
+   two things that stop the lower face being a blank panel */
+const FOLD_D = "M86 178 C 80 186, 76 192, 75 199 M114 178 C 120 186, 124 192, 125 199";
+const PHILTRUM_D = "M96 172 C 96 178, 96 182, 97 186 M104 172 C 104 178, 104 182, 103 186";
+
+/* a thin lens of light down the inner edge of the ear, where the plane turns */
+const EAR_FACET_D = "M40 8 C 44 40, 50 62, 63 78 C 52 62, 44 36, 40 8 Z";
+
+/* The rim the searchlight puts on the upper-left edge. Every segment here is
+   LIFTED VERBATIM out of COWL_D (reversed where the direction differs) — an
+   eyeballed near-copy of a curve does not sit on it, and the miss reads as a
+   stray pencil line beside the head rather than as light on its edge. That is
+   exactly what the first pass of this shipped as, down the right ear. */
 const RIM_D =
-  "M40 8 C 44 40, 50 62, 63 78 M18 105 C 17 72, 26 38, 40 8 M20 130 C 26 160, 44 190, 70 210";
+  "M40 8 C 44 40, 50 62, 63 78 M18 105 C 17 72, 26 38, 40 8 M18 105 C 18.7 133, 25.2 158.8, 38.8 180.6";
+
+/* the beam is behind the mark, so it puts a warmer, thinner line down the
+   shadow side — two lights of different colour, which is most of what makes a
+   head read as photographed rather than drawn */
+const BACKRIM_D =
+  "M160 8 C 174 38, 183 72, 182 105 C 181 148, 166 186, 133 212";
 
 /* One eye, drawn in the left half and mirrored for the other. It slants DOWN
    toward the nose and tapers to a point there — an eye level with the brow, or
    one tapering the other way, reads as surprised rather than as a threat. */
 const EYE_D =
-  "M31 113 C 45 107, 68 119, 94 138 C 88 149, 68 147, 48 139 C 35 133, 28 122, 31 113 Z";
+  "M33 114 C 46 107, 66 119, 92 138 C 87 147, 68 143, 49 136 C 38 131, 30 122, 33 114 Z";
+
+/* the socket the lens sits in: the same shape, opened out, so the eye is a
+   hole in a solid head rather than a decal on it */
+const SOCKET_D =
+  "M26 107 C 42 98, 68 113, 98 139 C 92 154, 66 150, 44 142 C 30 136, 22 118, 26 107 Z";
 
 /* One cape wing, drawn to the right of centre and mirrored. The scalloped
    lower edge is the whole signature: two hanging points with concave sweeps
@@ -290,9 +417,68 @@ function BatmanDefs() {
         {/* the cowl's material: keyed from the upper left, and never run down
             to black at the edge or the jaw dissolves into the sky */}
         <linearGradient id="bm-cowlfill" x1="0.18" y1="0" x2="0.86" y2="1">
-          <stop offset="0%" stopColor="#5b6b85" />
-          <stop offset="38%" stopColor="#2f3b4f" />
-          <stop offset="100%" stopColor="#141b26" />
+          <stop offset="0%" stopColor="#66788f" />
+          <stop offset="34%" stopColor="#38455b" />
+          <stop offset="100%" stopColor="#161d29" />
+        </linearGradient>
+
+        {/* Two soft-blur kernels. The filter region has to be opened right
+            out: the default box is 120% of the object's own bounds, which
+            crops a wide blur on a small ellipse into a rectangle with visible
+            corners. */}
+        <filter id="bm-soft" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="4" />
+        </filter>
+        <filter id="bm-soft2" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="10" />
+        </filter>
+
+        {/* Moulded rubber. The turbulence MUST be desaturated — left in
+            colour it is confetti over the face, not grain (the same note
+            Pokemon's paper fibre carries). */}
+        <filter id="bm-grain" x="0%" y="0%" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7" />
+          <feColorMatrix type="saturate" values="0" />
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.5" intercept="0" />
+          </feComponentTransfer>
+        </filter>
+
+        {/* the shadow side, taken across the whole head in one pass rather
+            than painted onto each feature */}
+        <linearGradient id="bm-sideshade" x1="0" y1="0" x2="1" y2="0.16">
+          <stop offset="0%" stopColor="#04080f" stopOpacity="0" />
+          <stop offset="40%" stopColor="#04080f" stopOpacity="0" />
+          <stop offset="100%" stopColor="#04080f" stopOpacity="0.62" />
+        </linearGradient>
+
+        {/* skin, cooled right down: this is a face lit by a searchlight in the
+            rain, and a warm one would read as pasted on */}
+        <linearGradient id="bm-skinfill" x1="0.22" y1="0" x2="0.8" y2="1">
+          <stop offset="0%" stopColor="#ab8571" />
+          <stop offset="44%" stopColor="#7d5c4d" />
+          <stop offset="100%" stopColor="#3b2b27" />
+        </linearGradient>
+
+        {/* the cowl's cut edge lying on the skin below it */}
+        <linearGradient id="bm-faceoccl" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#1c120e" stopOpacity="0.72" />
+          <stop offset="34%" stopColor="#1c120e" stopOpacity="0" />
+          <stop offset="100%" stopColor="#1c120e" stopOpacity="0" />
+        </linearGradient>
+
+        {/* the lens: brightest at the outer lobe, where the light in it is */}
+        <linearGradient id="bm-lensfill" x1="0.1" y1="0.1" x2="0.9" y2="0.9">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="52%" stopColor="#eef6ff" />
+          <stop offset="100%" stopColor="#b9d2ee" />
+        </linearGradient>
+
+        {/* the brow landing on the top of the lens */}
+        <linearGradient id="bm-eyeoccl" x1="0" y1="0" x2="0.25" y2="1">
+          <stop offset="0%" stopColor="#0d1826" stopOpacity="0.5" />
+          <stop offset="46%" stopColor="#0d1826" stopOpacity="0" />
+          <stop offset="100%" stopColor="#0d1826" stopOpacity="0" />
         </linearGradient>
 
         {/* form shading over the jaw and the shadow cheek */}
@@ -305,9 +491,9 @@ function BatmanDefs() {
         {/* the brow reads as a mass because it is lit along its top and dark
             underneath, not because it is a darker shape */}
         <linearGradient id="bm-browfill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#8494ad" stopOpacity="0.5" />
-          <stop offset="46%" stopColor="#2b3648" stopOpacity="0" />
-          <stop offset="100%" stopColor="#05080e" stopOpacity="0.62" />
+          <stop offset="0%" stopColor="#94a6c2" stopOpacity="0.6" />
+          <stop offset="44%" stopColor="#2b3648" stopOpacity="0" />
+          <stop offset="100%" stopColor="#05080e" stopOpacity="0.82" />
         </linearGradient>
 
         {/* cape: sailcloth-heavy, and lifted well clear of black so the

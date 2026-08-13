@@ -571,8 +571,91 @@
 .bm-cowl-shade {
   fill: url(#bm-cowlshade);
 }
+.bm-sideshade {
+  fill: url(#bm-sideshade);
+}
 .bm-brow {
   fill: url(#bm-browfill);
+}
+
+/* ---- the planes of the head ----
+   All of these are soft and low-contrast on purpose. Modelling that can be
+   pointed at as a shape reads as make-up; what you want is for the head to
+   simply look round. */
+
+.bm-skull-hi {
+  fill: rgba(178, 200, 232, 0.22);
+}
+.bm-cheek {
+  fill: rgba(186, 208, 238, 0.2);
+}
+.bm-cheek-r {
+  fill: rgba(186, 208, 238, 0.07);
+}
+.bm-nose-lit {
+  fill: rgba(190, 212, 240, 0.3);
+}
+.bm-nose-dark {
+  fill: rgba(4, 8, 16, 0.55);
+}
+.bm-nose-tip {
+  fill: rgba(4, 8, 16, 0.46);
+}
+
+/* matte rubber rather than vinyl */
+.bm-cowl-tex {
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+}
+
+/* ---- the exposed lower face ---- */
+
+.bm-face {
+  fill: url(#bm-skinfill);
+}
+.bm-face-occl {
+  fill: url(#bm-faceoccl);
+}
+.bm-chin-hi {
+  fill: rgba(255, 226, 202, 0.14);
+}
+/* under the jaw, where the head turns away from everything */
+.bm-jaw-shade {
+  fill: rgba(6, 8, 14, 0.5);
+}
+.bm-fold {
+  fill: none;
+  stroke: rgba(34, 18, 15, 0.34);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.bm-philtrum {
+  fill: none;
+  stroke: rgba(40, 22, 18, 0.4);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+.bm-lip-lo {
+  fill: rgba(255, 218, 196, 0.3);
+}
+.bm-mouth {
+  fill: none;
+  stroke: rgba(30, 15, 12, 0.86);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+/* the cut edge of the mask, sitting ON the skin — a hairline here is what
+   stops the jaw looking painted on */
+.bm-face-edge {
+  fill: none;
+  stroke: rgba(10, 14, 22, 0.66);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+/* the inner plane of each ear, so it has thickness */
+.bm-ear-facet {
+  fill: rgba(150, 176, 212, 0.16);
 }
 .bm-cowl-edge {
   fill: none;
@@ -583,15 +666,35 @@
 /* the searchlight's rim, on the upper-left edge only */
 .bm-cowl-rim {
   fill: none;
-  stroke: rgba(196, 216, 244, 0.6);
+  stroke: rgba(210, 228, 250, 0.66);
   stroke-width: 2.6;
+  stroke-linecap: round;
+}
+/* the beam behind the mark, colder and thinner */
+.bm-cowl-backrim {
+  fill: none;
+  stroke: rgba(255, 230, 192, 0.26);
+  stroke-width: 1.8;
   stroke-linecap: round;
 }
 
 /* ---- the eyes ----
    White slits, lit from inside. They come on as one hit and STAY on — an eye
-   that pulses reads as a status LED. */
-.bm-eye,
+   that pulses reads as a status LED. The socket is cut whether or not they
+   are lit. */
+.bm-socket {
+  fill: rgba(3, 6, 12, 0.72);
+}
+.bm-eye {
+  fill: url(#bm-lensfill);
+  opacity: 0;
+  transition: opacity 420ms ease;
+}
+.bm-eye-occl {
+  fill: url(#bm-eyeoccl);
+  opacity: 0;
+  transition: opacity 420ms ease;
+}
 .bm-eye-glow {
   fill: var(--eye);
   opacity: 0;
@@ -601,7 +704,9 @@
   filter: blur(1.1vw);
 }
 .bm-p4 .bm-eye,
-.bm-p5 .bm-eye {
+.bm-p5 .bm-eye,
+.bm-p4 .bm-eye-occl,
+.bm-p5 .bm-eye-occl {
   opacity: 1;
 }
 .bm-p4 .bm-eye-glow,
@@ -725,7 +830,8 @@
 .bm.is-static .bm-mark {
   filter: none;
 }
-.bm.is-static .bm-eye {
+.bm.is-static .bm-eye,
+.bm.is-static .bm-eye-occl {
   opacity: 1;
 }
 .bm.is-static .bm-eye-glow {
@@ -776,7 +882,8 @@
   .bm .bm-mark {
     filter: none;
   }
-  .bm .bm-eye {
+  .bm .bm-eye,
+  .bm .bm-eye-occl {
     opacity: 1;
   }
   .bm .bm-eye-glow {
