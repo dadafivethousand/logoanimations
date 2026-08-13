@@ -10,10 +10,11 @@ import "./Stylesheets/App.css";
 // import SoundOn from "./Components/SoundOn";
 // import Pokemon from "./Components/Pokemon";
 // import Newspaper from "./Components/Newspaper";
-import Spiderman from "./Components/Spiderman";
+// import Spiderman from "./Components/Spiderman";
+import Batman from "./Components/Batman";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Spiderman mode="animated" />;
+  return <Batman mode="animated" />;
 }
 export default App;

@@ -1,0 +1,792 @@
+/* Batman — a searchlight comes up over the city, sweeps onto the mark, and
+   the light does the reveal. Portrait phone only (~390x844), screen-recorded.
+   Layout sized in vw/vh; px is reserved for hairlines that must stay
+   hairlines. */
+
+.bm {
+  /* Palette. Gotham blue-steel and one hot amber light — the theme's own
+     colour story, kept off Spiderman's near-black brick and off Robotics'
+     graphite/green. Every dark value is lifted well clear of #000: the cowl,
+     the cape and the armour all sit against a dark sky, and a stop that runs
+     to black takes the jaw and the scallops with it. */
+  --sky-hi: #24374f;
+  --sky: #111c2c;
+  --sky-lo: #070c14;
+  --city: #060a12;
+
+  --beam: 255, 224, 178;
+  --beam-hot: 255, 246, 228;
+
+  /* The cape hangs directly behind the wordmark, so "NINJAS" is dark-on-dark
+     unless the armour is lifted a long way off black — the same trap Hulk's
+     hood fell into. Contrast beats fidelity: a physically-correct gunmetal
+     disappears here. */
+  --steel-hi: #dbe6f4;
+  --steel: #97a8c0;
+  --steel-lo: #5c6c86;
+
+  --brand-blue: #3fb3ee;
+  --code-hi: #6fcbf6;
+  --code: #2f8fd0;
+  --code-lo: #17558f;
+
+  --brand-red: #e4002b;
+  --eye: #eaf4ff;
+  --ink: #e9f0fa;
+
+  /* screen-recording crop: a floor, not a target. Everything that carries the
+     composition sits well inside this. */
+  --safe-x: max(45px, 11vw);
+  --safe-y: max(40px, 6vh);
+
+  /* the one knob the composition scales from */
+  --mark-w: 52vw;
+  --cape-w: calc(var(--mark-w) * 1.18);
+
+  /* how long the beam takes to swing onto the mark */
+  --sweep: 1000ms;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #05080e;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  isolation: isolate;
+}
+
+.bm-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   THE NIGHT
+
+   Frame zero is nearly black. The sky's own ground is the blank screen; its
+   gradient, the clouds, the city and the rain all come up with the lamp, so
+   the scene assembles rather than cutting in.
+   ==================================================================== */
+
+.bm-sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 1500ms ease;
+  background:
+    radial-gradient(90% 46% at 50% 62%, var(--sky-hi) 0%, var(--sky) 44%, var(--sky-lo) 100%),
+    linear-gradient(176deg, #0a121e 0%, #101b2b 56%, #05080e 100%);
+}
+.bm-p1 .bm-sky,
+.bm-p2 .bm-sky,
+.bm-p3 .bm-sky,
+.bm-p4 .bm-sky,
+.bm-p5 .bm-sky {
+  opacity: 1;
+}
+
+/* Two soft banks of cloud for the beam to bite into. A searchlight with
+   nothing in the air above it is a triangle; the light needs something to
+   land on to read as a volume. */
+.bm-cloud {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(4vw);
+  transition: opacity 1800ms 200ms ease;
+}
+.bm-p1 .bm-cloud,
+.bm-p2 .bm-cloud,
+.bm-p3 .bm-cloud,
+.bm-p4 .bm-cloud,
+.bm-p5 .bm-cloud {
+  opacity: 1;
+}
+.bm-cloud-a {
+  left: -18%;
+  top: 2%;
+  width: 96%;
+  height: 30%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(96, 124, 162, 0.4), transparent 74%);
+}
+.bm-cloud-b {
+  right: -24%;
+  top: 16%;
+  width: 88%;
+  height: 26%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(70, 96, 132, 0.34), transparent 76%);
+}
+
+/* ====================================================================
+   THE BEAM — the only thing on the clock until the mark lights
+
+   A trapezoid clipped out of a soft gradient, pivoting about the lamp below
+   the skyline. Two copies of the same shape: a wide blurred haze and a
+   narrower hot core, so the light has an axis instead of being one flat
+   wedge.
+   ==================================================================== */
+
+.bm-beam {
+  position: absolute;
+  left: 50%;
+  bottom: 6vh;
+  z-index: 2;
+  width: 170vw;
+  height: 152vh;
+  margin-left: -85vw;
+  pointer-events: none;
+  transform-origin: 50% 100%;
+  /* thrown off to the left when it strikes; p2 swings it onto the mark */
+  transform: rotate(-27deg);
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition:
+    transform var(--sweep) cubic-bezier(0.32, 0.86, 0.3, 1),
+    opacity 420ms ease;
+}
+.bm-p1 .bm-beam,
+.bm-p2 .bm-beam,
+.bm-p3 .bm-beam,
+.bm-p4 .bm-beam,
+.bm-p5 .bm-beam {
+  opacity: 1;
+}
+.bm-p2 .bm-beam,
+.bm-p3 .bm-beam,
+.bm-p4 .bm-beam,
+.bm-p5 .bm-beam {
+  transform: rotate(0deg);
+}
+
+/* the carbon arc is never steady — a shallow flicker is what keeps the beam
+   from reading as a painted wedge on the held frame */
+.bm-p1 .bm-beam,
+.bm-p2 .bm-beam,
+.bm-p3 .bm-beam,
+.bm-p4 .bm-beam,
+.bm-p5 .bm-beam {
+  animation: bm-flicker 2600ms ease-in-out infinite;
+}
+@keyframes bm-flicker {
+  0%, 100% { opacity: 1; }
+  38% { opacity: 0.9; }
+  44% { opacity: 0.99; }
+  71% { opacity: 0.93; }
+}
+
+.bm-beam-haze,
+.bm-beam-core {
+  position: absolute;
+  inset: 0;
+}
+.bm-beam-haze {
+  clip-path: polygon(45.4% 100%, 54.6% 100%, 89% 0, 11% 0);
+  background: linear-gradient(
+    0deg,
+    rgba(var(--beam), 0.26) 0%,
+    rgba(var(--beam), 0.1) 42%,
+    rgba(var(--beam), 0) 76%
+  );
+  filter: blur(2.6vw);
+}
+.bm-beam-core {
+  clip-path: polygon(48.4% 100%, 51.6% 100%, 79% 0, 21% 0);
+  background: linear-gradient(
+    0deg,
+    rgba(var(--beam-hot), 0.44) 0%,
+    rgba(var(--beam), 0.2) 40%,
+    rgba(var(--beam), 0) 74%
+  );
+  filter: blur(1vw);
+}
+
+/* the lamp itself, blooming over the rooftops */
+.bm-lamp {
+  position: absolute;
+  left: 50%;
+  bottom: 9vh;
+  z-index: 5;
+  width: 34vw;
+  height: 34vw;
+  margin-left: -17vw;
+  pointer-events: none;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    closest-side,
+    rgba(var(--beam-hot), 0.9) 0%,
+    rgba(var(--beam), 0.42) 26%,
+    rgba(var(--beam), 0) 72%
+  );
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 500ms ease, transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bm-p1 .bm-lamp,
+.bm-p2 .bm-lamp,
+.bm-p3 .bm-lamp,
+.bm-p4 .bm-lamp,
+.bm-p5 .bm-lamp {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ====================================================================
+   THE CITY — one silhouette, not a row of boxes
+   ==================================================================== */
+
+.bm-skyline {
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: 0;
+  height: 26vh;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1600ms 260ms ease;
+}
+.bm-p1 .bm-skyline,
+.bm-p2 .bm-skyline,
+.bm-p3 .bm-skyline,
+.bm-p4 .bm-skyline,
+.bm-p5 .bm-skyline {
+  opacity: 1;
+}
+.bm-skyline svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.bm-city {
+  fill: var(--city);
+}
+/* distant windows, out of focus — warm against all that blue */
+.bm-win {
+  position: absolute;
+  border-radius: 0.1vw;
+  background: #ffd79a;
+  filter: blur(0.32vw);
+}
+
+/* ====================================================================
+   RAIN — twice: a cold sheet everywhere, and a bright copy where the light is
+   ==================================================================== */
+
+.bm-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='200'><g stroke='%23cfe2ff' stroke-width='1.25' stroke-linecap='round' fill='none'><line x1='14' y1='2' x2='6' y2='40'/><line x1='46' y1='22' x2='38' y2='58'/><line x1='88' y1='8' x2='80' y2='50'/><line x1='112' y1='40' x2='104' y2='78'/><line x1='28' y1='68' x2='20' y2='104'/><line x1='68' y1='84' x2='60' y2='120'/><line x1='100' y1='104' x2='92' y2='142'/><line x1='8' y1='120' x2='0' y2='158'/><line x1='52' y1='140' x2='44' y2='178'/><line x1='84' y1='160' x2='76' y2='198'/><line x1='118' y1='150' x2='110' y2='188'/><line x1='34' y1='176' x2='26' y2='214'/></g></svg>");
+  background-size: 26vw 43vw;
+  transition: opacity 1400ms 200ms ease;
+}
+.bm-p1 .bm-rain,
+.bm-p2 .bm-rain,
+.bm-p3 .bm-rain,
+.bm-p4 .bm-rain,
+.bm-p5 .bm-rain {
+  opacity: 0.15;
+  /* one whole tile per cycle, so the loop has no seam */
+  animation: bm-rain 620ms linear infinite;
+}
+@keyframes bm-rain {
+  from { background-position: 0 0; }
+  to { background-position: 0 43vw; }
+}
+
+/* the same rain, brighter, gated to the middle of the frame where the beam
+   comes to rest — rain only lights up inside the light, and that contrast is
+   the whole reason to have rain at all */
+.bm-rain-lit {
+  z-index: 7;
+  mix-blend-mode: screen;
+  -webkit-mask-image: radial-gradient(46% 42% at 50% 52%, #000 0%, rgba(0, 0, 0, 0.45) 58%, transparent 88%);
+  mask-image: radial-gradient(46% 42% at 50% 52%, #000 0%, rgba(0, 0, 0, 0.45) 58%, transparent 88%);
+}
+.bm-p1 .bm-rain-lit,
+.bm-p2 .bm-rain-lit,
+.bm-p3 .bm-rain-lit,
+.bm-p4 .bm-rain-lit,
+.bm-p5 .bm-rain-lit {
+  opacity: 0.5;
+  animation: bm-rain 620ms linear infinite;
+}
+
+/* ====================================================================
+   THE LOCKUP
+
+   The cowl's ears overhang the top of the mark box by about 8vw and the
+   wrapper's box does not grow to include them, so centring the wrapper hangs
+   the composition about 4vw too high. Push it back down by hand.
+   ==================================================================== */
+
+.bm-markwrap {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 4vw);
+  width: var(--mark-w);
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.bm-p1 .bm-markwrap,
+.bm-p2 .bm-markwrap,
+.bm-p3 .bm-markwrap,
+.bm-p4 .bm-markwrap,
+.bm-p5 .bm-markwrap {
+  opacity: 1;
+}
+
+/* nothing flies in: the mark is already standing there. All it does on the
+   light hit is settle a hair, which reads as weight. */
+.bm-lift {
+  position: relative;
+  transform: translateY(0.9vw);
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bm-p3 .bm-lift,
+.bm-p4 .bm-lift,
+.bm-p5 .bm-lift {
+  transform: translateY(0);
+}
+
+/* ---- the cape ---- */
+
+.bm-cape {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--mark-w) * -0.17);
+  width: var(--cape-w);
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+}
+/* The unfurl is on the <svg>, not on .bm-cape — the wrapper carries the
+   centring translate and animating the same property would fight it. */
+.bm-cape svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transform-origin: 50% 9%;
+  transform: scaleX(0.05) scaleY(0.62);
+  opacity: 0;
+  filter: drop-shadow(0 1.4vw 2.4vw rgba(2, 5, 10, 0.6));
+  transition:
+    transform 860ms cubic-bezier(0.2, 0.86, 0.26, 1),
+    opacity 420ms ease;
+}
+.bm-p3 .bm-cape svg,
+.bm-p4 .bm-cape svg,
+.bm-p5 .bm-cape svg {
+  transform: none;
+  opacity: 1;
+}
+
+.bm-wing-fill {
+  fill: url(#bm-capefill);
+}
+/* the beam is behind and above, so the cloth catches a line along its top
+   edge — without it the cape is a hole in the frame */
+.bm-wing-edge {
+  fill: none;
+  stroke: rgba(150, 176, 210, 0.5);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+/* ---- the mark ---- */
+
+.bm-markbox {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.bm-halo {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 118%;
+  height: 250%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(3, 6, 12, 0.8), rgba(3, 6, 12, 0.34) 54%, transparent 78%);
+  filter: blur(2vw);
+}
+
+/* Unlit until the beam is on it. One filter on the whole mark takes the
+   wordmark and the cowl up together, so the light lands on one object rather
+   than on two layers that happen to be adjacent. */
+.bm-mark {
+  position: relative;
+  width: 100%;
+  /* measured from the trimmed mark at load, so any logo lands on register */
+  aspect-ratio: var(--logo-aspect, 2.17);
+  filter: brightness(0.24) contrast(1.05);
+  transition: filter 950ms cubic-bezier(0.3, 0.9, 0.3, 1);
+}
+.bm-p3 .bm-mark,
+.bm-p4 .bm-mark,
+.bm-p5 .bm-mark {
+  filter: none;
+}
+
+/* Shows only the band below the artwork's head. The cut is at 58%, inside the
+   empty band the artwork already has between its head (rows 0-54%) and its
+   wordmark (rows 62-89%) — see Batman.js. */
+.bm-word {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 58%;
+  bottom: 0;
+  overflow: hidden;
+}
+
+/* Rebuilds the full mark box inside the clip, anchored to the same bottom
+   edge, so every masked layer inside still registers with the artwork. */
+.bm-wordbox {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  aspect-ratio: var(--logo-aspect, 2.17);
+}
+
+/* every material layer is the same box, masked by the artwork */
+.bm-layer,
+.bm-plate {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-image: var(--logo);
+  mask-image: var(--logo);
+}
+
+.bm-cast {
+  background: rgba(0, 0, 0, 0.7);
+  filter: blur(2.1vw);
+  transform: translateY(1.5vw) scale(1.01);
+  opacity: 0.36;
+}
+
+/* hood + "NINJAS" — cold gunmetal. The hood half of this region is clipped
+   away by bm-word; what shows is the wordmark. */
+.bm-plate-steel {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+  /* The stops are pushed down the box on purpose. Only rows 62-89% of this
+     layer are ever visible — everything above is the hood, clipped away — so
+     a gradient spread evenly over the whole box spends its bright end on
+     nothing and paints the letters out of its dark tail, which is exactly how
+     "NINJAS" came out reading as a shadow of the cape. */
+  background: linear-gradient(
+    172deg,
+    var(--steel-hi) 0%,
+    var(--steel-hi) 62%,
+    var(--steel) 76%,
+    var(--steel-lo) 100%
+  );
+  /* and a hard edge under it, so the letterforms hold their shape where the
+     cape passes behind them */
+  filter: drop-shadow(0 0.16vw 0.2vw rgba(3, 6, 12, 0.9));
+}
+
+/* the skin band across the eyes — above the clip, so in practice this paints
+   nothing. Kept so a replaced logo whose band reaches below the head never
+   leaves a bare patch. */
+.bm-plate-face {
+  -webkit-mask-image: var(--logo-light, none);
+  mask-image: var(--logo-light, none);
+  background: linear-gradient(178deg, #b8c6da 0%, #7b8ba4 52%, #39455a 100%);
+}
+
+/* "CODE" keeps the brand's blue, pitched cold for the night */
+.bm-plate-code {
+  -webkit-mask-image: var(--logo-accent, none);
+  mask-image: var(--logo-accent, none);
+  background: linear-gradient(178deg, var(--code-hi) 0%, var(--code) 48%, var(--code-lo) 100%);
+}
+
+/* the beam is up and to the left, so one broad key runs down from that corner
+   — this is what stops the letters reading as flat vector fill */
+.bm-key {
+  background: linear-gradient(
+    154deg,
+    rgba(255, 236, 206, 0.32) 0%,
+    rgba(255, 236, 206, 0.08) 22%,
+    transparent 48%,
+    rgba(0, 0, 0, 0.16) 100%
+  );
+}
+
+/* ====================================================================
+   THE COWL — drawn, not masked
+
+   Its chin sits about where the artwork's chin sat and it is centred on the
+   artwork's head (columns 32.7-62.0%), so the lockup keeps the spacing it was
+   drawn with. Its HEIGHT comes from aspect-ratio rather than from a
+   percentage of the mark: a percentage height is measured against the logo's
+   aspect, so replacing the logo file would stretch the cowl.
+   ==================================================================== */
+
+.bm-cowl {
+  position: absolute;
+  left: 30.35%;
+  bottom: 45%;
+  width: 34%;
+  aspect-ratio: 200 / 240;
+  pointer-events: none;
+}
+.bm-cowl svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  filter:
+    drop-shadow(0 0.3vw 0.5vw rgba(2, 5, 11, 0.7))
+    drop-shadow(0 1vw 1.8vw rgba(1, 3, 7, 0.45));
+}
+
+.bm-cowl-shape {
+  fill: url(#bm-cowlfill);
+}
+.bm-cowl-shade {
+  fill: url(#bm-cowlshade);
+}
+.bm-brow {
+  fill: url(#bm-browfill);
+}
+.bm-cowl-edge {
+  fill: none;
+  stroke: rgba(8, 12, 20, 0.6);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+/* the searchlight's rim, on the upper-left edge only */
+.bm-cowl-rim {
+  fill: none;
+  stroke: rgba(196, 216, 244, 0.6);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+/* ---- the eyes ----
+   White slits, lit from inside. They come on as one hit and STAY on — an eye
+   that pulses reads as a status LED. */
+.bm-eye,
+.bm-eye-glow {
+  fill: var(--eye);
+  opacity: 0;
+  transition: opacity 420ms ease;
+}
+.bm-eye-glow {
+  filter: blur(1.1vw);
+}
+.bm-p4 .bm-eye,
+.bm-p5 .bm-eye {
+  opacity: 1;
+}
+.bm-p4 .bm-eye-glow,
+.bm-p5 .bm-eye-glow {
+  opacity: 0.8;
+}
+/* the strike itself: a short overbright flare on the ignition beat */
+.bm-p4 .bm-eye-l,
+.bm-p5 .bm-eye-l {
+  animation: bm-ignite 760ms ease-out both;
+}
+.bm-p4 .bm-eye-r,
+.bm-p5 .bm-eye-r {
+  animation: bm-ignite 760ms 90ms ease-out both;
+}
+@keyframes bm-ignite {
+  0% { filter: brightness(1); }
+  22% { filter: brightness(2.6) drop-shadow(0 0 1.6vw rgba(180, 220, 255, 0.9)); }
+  100% { filter: brightness(1); }
+}
+
+/* ====================================================================
+   TYPE — WOODBRIDGE reads as the lockup's second line
+   ==================================================================== */
+
+.bm-type {
+  position: relative;
+  z-index: 2;
+  margin-top: 2vw;
+  text-align: center;
+}
+
+.bm-caption {
+  font-size: 4.8vw;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: var(--ink);
+  text-shadow: 0 0.4vw 1.4vw rgba(2, 5, 11, 0.85);
+  opacity: 0;
+  transform: translateY(1vw);
+  transition: opacity 620ms ease, transform 780ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bm-p5 .bm-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* the brand's red, the one warm line in a cold frame */
+.bm-rule {
+  width: 0;
+  height: 2px;
+  margin: 1.6vw auto 0;
+  background: linear-gradient(90deg, transparent, var(--brand-red) 50%, transparent);
+  transition: width 820ms 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bm-p5 .bm-rule {
+  width: 82%;
+}
+
+/* ====================================================================
+   GRADE
+   ==================================================================== */
+
+.bm-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
+  background-size: 160px 160px;
+}
+
+.bm-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 41;
+  background: radial-gradient(76% 56% at 50% 46%, transparent 36%, rgba(0, 0, 0, 0.76) 100%);
+}
+
+/* ====================================================================
+   STATIC MODE — the poster: lit, caped, eyes on, beam landed
+   ==================================================================== */
+
+.bm.is-static *,
+.bm.is-static *::before,
+.bm.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.bm.is-static .bm-sky,
+.bm.is-static .bm-cloud,
+.bm.is-static .bm-skyline,
+.bm.is-static .bm-markwrap {
+  opacity: 1;
+}
+.bm.is-static .bm-beam {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+.bm.is-static .bm-lamp {
+  opacity: 1;
+  transform: scale(1);
+}
+.bm.is-static .bm-rain {
+  opacity: 0.15;
+}
+.bm.is-static .bm-rain-lit {
+  opacity: 0.5;
+}
+.bm.is-static .bm-lift {
+  transform: none;
+}
+.bm.is-static .bm-cape svg {
+  transform: none;
+  opacity: 1;
+}
+.bm.is-static .bm-mark {
+  filter: none;
+}
+.bm.is-static .bm-eye {
+  opacity: 1;
+}
+.bm.is-static .bm-eye-glow {
+  opacity: 0.8;
+}
+.bm.is-static .bm-caption {
+  opacity: 1;
+  transform: none;
+}
+.bm.is-static .bm-rule {
+  width: 82%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bm *,
+  .bm *::before,
+  .bm *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .bm .bm-sky,
+  .bm .bm-cloud,
+  .bm .bm-skyline,
+  .bm .bm-markwrap {
+    opacity: 1;
+  }
+  .bm .bm-beam {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+  .bm .bm-lamp {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .bm .bm-rain {
+    opacity: 0.15;
+  }
+  .bm .bm-rain-lit {
+    opacity: 0.5;
+  }
+  .bm .bm-lift {
+    transform: none;
+  }
+  .bm .bm-cape svg {
+    transform: none;
+    opacity: 1;
+  }
+  .bm .bm-mark {
+    filter: none;
+  }
+  .bm .bm-eye {
+    opacity: 1;
+  }
+  .bm .bm-eye-glow {
+    opacity: 0.8;
+  }
+  .bm .bm-caption {
+    opacity: 1;
+    transform: none;
+  }
+  .bm .bm-rule {
+    width: 82%;
+  }
+}
