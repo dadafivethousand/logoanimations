@@ -1,0 +1,883 @@
+/* Wolverine — three claws rake across a dark, forge-lit space and the cut is
+   what brings the mark up. Portrait phone only (~390x844), screen-recorded.
+   Layout sized in vw/vh; px is reserved for hairlines that must stay
+   hairlines. */
+
+.wv {
+  /* Palette: the brown-and-tan suit, adamantium, and one ember. Deliberately
+     warm — Batman owns the blue-steel night, Robotics the graphite and green,
+     Samurai the washi cream. Every dark value is lifted well clear of #000:
+     the hood, the cowl's shadow side and the ground are all dark together, and
+     a stop that runs to black takes the wings with it. */
+  --ground-hi: #33200f;
+  --ground: #170d07;
+  --ground-lo: #070403;
+
+  --tan-hi: #f4cd6a;
+  --tan: #d29a33;
+  --tan-lo: #8d5a19;
+
+  --hide-hi: #8a4c25;
+  --hide: #4a2211;
+  --hide-lo: #24100a;
+
+  /* "NINJAS" sits on a dark ground in a dark frame, so the adamantium is
+     pitched bright and kept bright — contrast beats fidelity, the same trap
+     Hulk's hood fell into. */
+  --ada-hi: #f7fbff;
+  --ada: #cbd7e4;
+  --ada-lo: #7b8899;
+
+  --ember: 255, 122, 36;
+  --hot: 255, 242, 210;
+
+  --code-hi: #6fc6ee;
+  --code: #3490bf;
+  --code-lo: #1a5a86;
+
+  --brand-red: #e4002b;
+  --ink: #f6ece0;
+
+  /* screen-recording crop: a floor, not a target. Everything that carries the
+     composition sits well inside this. */
+  --safe-x: max(45px, 11vw);
+  --safe-y: max(40px, 6vh);
+
+  /* the one knob the composition scales from */
+  --mark-w: 56vw;
+
+  /* The head is a CIRCLE inscribed in the square x 37.4-62.6%, y 0-54.76% of
+     the mark box — measured, see Wolverine.js. The cowl is pinned to that
+     square and stated in head radii, so the two cannot drift apart. */
+  --head-x: 37.4%;
+  --head-w: 25.2%;
+
+  /* how long the blades take to cross the frame */
+  --rake: 460ms;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #060302;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  isolation: isolate;
+}
+
+.wv-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   THE SPACE — one volume with a single warm key, not a stack of bands
+
+   Frame zero is nearly black. The ground, the key, the haze and the surface
+   all come up together on p1, so the scene assembles rather than cutting in.
+   ==================================================================== */
+
+.wv-ground,
+.wv-key,
+.wv-haze,
+.wv-scored {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1500ms ease;
+}
+.wv-p1 .wv-ground, .wv-p2 .wv-ground, .wv-p3 .wv-ground, .wv-p4 .wv-ground, .wv-p5 .wv-ground,
+.wv-p1 .wv-scored, .wv-p2 .wv-scored, .wv-p3 .wv-scored, .wv-p4 .wv-scored, .wv-p5 .wv-scored {
+  opacity: 1;
+}
+
+.wv-ground {
+  z-index: 0;
+  background:
+    radial-gradient(86% 50% at 34% 68%, var(--ground-hi) 0%, var(--ground) 46%, var(--ground-lo) 100%),
+    linear-gradient(172deg, #120a06 0%, #1b0f08 58%, #060302 100%);
+}
+
+/* the key itself, low and to the left — everything in the frame is lit from
+   there, including the cowl's rim and the blades' bevel */
+.wv-key {
+  z-index: 1;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    46% 34% at 22% 78%,
+    rgba(var(--ember), 0.36) 0%,
+    rgba(var(--ember), 0.12) 44%,
+    rgba(var(--ember), 0) 78%
+  );
+  transition: opacity 1700ms 150ms ease;
+}
+.wv-p1 .wv-key, .wv-p2 .wv-key, .wv-p3 .wv-key, .wv-p4 .wv-key, .wv-p5 .wv-key {
+  opacity: 1;
+}
+
+/* two soft banks for the light to sit in — a key with nothing in the air is a
+   gradient, and the haze is what gives the volume depth */
+.wv-haze {
+  z-index: 2;
+  filter: blur(5vw);
+  transition: opacity 1900ms 250ms ease;
+}
+.wv-p1 .wv-haze, .wv-p2 .wv-haze, .wv-p3 .wv-haze, .wv-p4 .wv-haze, .wv-p5 .wv-haze {
+  opacity: 1;
+}
+.wv-haze-a {
+  background: radial-gradient(38% 20% at 26% 62%, rgba(196, 122, 52, 0.3), transparent 74%);
+}
+.wv-haze-b {
+  background: radial-gradient(44% 22% at 76% 30%, rgba(120, 82, 48, 0.24), transparent 76%);
+}
+
+/* the surface the claws tear. Held at a shallower angle than the cut so the
+   two don't read as one hatch. */
+.wv-scored {
+  z-index: 3;
+  opacity: 0;
+  background-image: repeating-linear-gradient(
+    -20deg,
+    rgba(226, 190, 150, 0.05) 0 1px,
+    rgba(0, 0, 0, 0) 1px 9px
+  );
+  transition: opacity 1800ms 300ms ease;
+}
+.wv-p1 .wv-scored, .wv-p2 .wv-scored, .wv-p3 .wv-scored, .wv-p4 .wv-scored, .wv-p5 .wv-scored {
+  opacity: 0.5;
+}
+
+/* ====================================================================
+   THE GASHES — what the frame keeps
+
+   The blades leave; these stay, and they are the theme's signature on the held
+   frame. Each opens from its left end as the cut passes over it, white-hot,
+   then cools to ember over the following beat.
+   ==================================================================== */
+
+.wv-gashes {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+.wv-gashes svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.wv-gash {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(0);
+  opacity: 0;
+  transition:
+    transform 340ms var(--d) cubic-bezier(0.16, 0.9, 0.28, 1),
+    opacity 120ms var(--d) linear;
+}
+.wv-p3 .wv-gash, .wv-p4 .wv-gash, .wv-p5 .wv-gash {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+/* what is behind the surface: nothing */
+.wv-gash-void {
+  fill: #070301;
+}
+/* the cut still glowing. Screen-blended so it sits IN the tear rather than on
+   top of it, and dimmed once the metal has cooled. */
+.wv-gash-hot {
+  fill: url(#wv-hot);
+  mix-blend-mode: screen;
+  /* squeezed down the tear's own middle, so the light is a line inside the cut
+     rather than a fill of it */
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scaleY(0.4);
+  opacity: 0.95;
+  transition: opacity 1500ms ease;
+}
+.wv-p4 .wv-gash-hot, .wv-p5 .wv-gash-hot {
+  opacity: 0.44;
+  animation: wv-emberflicker 3400ms ease-in-out infinite;
+}
+@keyframes wv-emberflicker {
+  0%, 100% { opacity: 0.44; }
+  37% { opacity: 0.34; }
+  64% { opacity: 0.52; }
+}
+
+/* the torn lip, catching light along the edge of the cut */
+.wv-gash-lip {
+  fill: none;
+  stroke: rgba(255, 186, 118, 0.45);
+  stroke-width: 0.9;
+  transition: stroke 1500ms ease;
+}
+.wv-p4 .wv-gash-lip, .wv-p5 .wv-gash-lip {
+  stroke: rgba(255, 176, 108, 0.46);
+}
+
+/* what the cut throws onto the surface around it */
+/* What the cut throws onto the surface. Kept small and dim on purpose: the
+   first pass blurred this by 14 viewBox units at half opacity and the three of
+   them washed the whole lower half of the frame brown. */
+.wv-gash-glow {
+  fill: rgba(var(--ember), 0.34);
+  filter: url(#wv-glow);
+  mix-blend-mode: screen;
+  opacity: 0.8;
+  transition: opacity 1500ms ease;
+}
+.wv-p4 .wv-gash-glow, .wv-p5 .wv-gash-glow {
+  opacity: 0.26;
+}
+
+/* ====================================================================
+   SPARKS — one pass, off the cut, and then gone
+   ==================================================================== */
+
+.wv-sparks {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+}
+.wv-spark {
+  position: absolute;
+  width: 0.5vw;
+  height: 0.5vw;
+  border-radius: 50%;
+  background: #fff0cf;
+  box-shadow: 0 0 0.9vw rgba(var(--ember), 0.9);
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.wv-p3 .wv-spark, .wv-p4 .wv-spark, .wv-p5 .wv-spark {
+  animation: wv-spark 820ms var(--d) cubic-bezier(0.12, 0.7, 0.3, 1) both;
+}
+@keyframes wv-spark {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.2); }
+  12% { opacity: 1; transform: translate(calc(var(--dx) * 0.2), calc(var(--dy) * 0.12)) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.3); }
+}
+
+/* ====================================================================
+   THE BLADES
+
+   They unsheathe on p2, hold for a beat, then cross the frame and leave. The
+   travel is (0.839, -0.545) — the same -33deg axis the gashes are laid on, and
+   the blades are spaced to the same 60 units — so the rake and the marks it
+   leaves are one event rather than two that overlap.
+   ==================================================================== */
+
+.wv-claws {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.wv-claws svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.wv-p2 .wv-claws {
+  opacity: 1;
+}
+/* One animation carries the whole rake — translate, motion blur and the exit —
+   because a transition can't blur mid-travel and land clean. `both` holds the
+   final frame, so p4 and p5 keep the blades gone. */
+.wv-p3 .wv-claws, .wv-p4 .wv-claws, .wv-p5 .wv-claws {
+  opacity: 1;
+  animation: wv-rake var(--rake) cubic-bezier(0.5, 0.02, 0.62, 1) both;
+}
+@keyframes wv-rake {
+  0% { transform: translate(0, 0); filter: none; opacity: 1; }
+  16% { filter: blur(0.9vw); }
+  72% { transform: translate(112vw, -72.6vw); filter: blur(0.7vw); opacity: 1; }
+  100% { transform: translate(142vw, -92vw); filter: blur(0.4vw); opacity: 0; }
+}
+
+/* the unsheathe: the blade grows out of its base. Staggered by 45ms so it
+   reads as three, not one wide one. */
+.wv-blade {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: scaleY(0);
+  transition: transform 210ms var(--d) cubic-bezier(0.18, 0.92, 0.24, 1);
+}
+.wv-p2 .wv-blade, .wv-p3 .wv-blade, .wv-p4 .wv-blade, .wv-p5 .wv-blade {
+  transform: scaleY(var(--len));
+}
+
+.wv-blade-root {
+  fill: url(#wv-root);
+}
+.wv-blade-body {
+  fill: url(#wv-bladefill);
+  stroke: rgba(10, 14, 20, 0.55);
+  stroke-width: 0.8;
+}
+.wv-blade-ridge {
+  fill: rgba(246, 251, 255, 0.72);
+}
+/* the glint that comes off them the moment they clear the hand */
+.wv-blade-flash {
+  fill: #ffffff;
+  opacity: 0;
+}
+.wv-p2 .wv-blade-flash, .wv-p3 .wv-blade-flash, .wv-p4 .wv-blade-flash, .wv-p5 .wv-blade-flash {
+  animation: wv-glint 560ms var(--d) ease-out both;
+}
+@keyframes wv-glint {
+  0% { opacity: 0; }
+  26% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ====================================================================
+   THE LOCKUP
+
+   The cowl's wings overhang the top of the mark box by 12.6% of the mark's
+   width and the wrapper's box does not grow to include them, so centring the
+   wrapper hangs the composition about half that too high. Push it back down.
+   ==================================================================== */
+
+.wv-markwrap {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 3.5vw);
+  width: var(--mark-w);
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.wv-p1 .wv-markwrap, .wv-p2 .wv-markwrap, .wv-p3 .wv-markwrap, .wv-p4 .wv-markwrap, .wv-p5 .wv-markwrap {
+  opacity: 1;
+}
+
+/* nothing flies in: the mark is already standing there in the dark. All it
+   does when the cut passes is settle a hair, which reads as weight. */
+.wv-lift {
+  position: relative;
+  transform: translateY(0.8vw);
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wv-p3 .wv-lift, .wv-p4 .wv-lift, .wv-p5 .wv-lift {
+  transform: translateY(0);
+}
+
+.wv-markbox {
+  position: relative;
+  width: 100%;
+}
+
+/* The pool the lockup stands in. It is doing more work here than in the other
+   themes: two of the three gashes clip the corners of the block, and this is
+   what keeps them reading as BEHIND the mark rather than across it. */
+.wv-halo {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 138%;
+  height: 320%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(5, 3, 1, 0.94), rgba(5, 3, 1, 0.6) 46%, transparent 80%);
+  filter: blur(2.4vw);
+}
+
+/* Unlit until the cut passes. One filter on the whole mark takes the wordmark,
+   the hood and the cowl up together, so the light lands on one object rather
+   than on three layers that happen to be adjacent. */
+.wv-mark {
+  position: relative;
+  width: 100%;
+  /* measured from the trimmed mark at load, so any logo lands on register */
+  aspect-ratio: var(--logo-aspect, 2.17);
+  filter: brightness(0.22) saturate(0.55);
+  transition: filter 620ms cubic-bezier(0.3, 0.9, 0.3, 1);
+}
+.wv-p3 .wv-mark, .wv-p4 .wv-mark, .wv-p5 .wv-mark {
+  filter: none;
+}
+
+/* every material layer is the same box, masked by the artwork */
+.wv-layer,
+.wv-plate {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-image: var(--logo);
+  mask-image: var(--logo);
+}
+
+/* the whole mark's cast shadow — outside both clips, so it is one shadow */
+.wv-cast {
+  background: rgba(0, 0, 0, 0.72);
+  filter: blur(2.1vw);
+  transform: translateY(1.4vw) scale(1.01);
+  opacity: 0.4;
+}
+
+/* ---- the two halves of the dark region ----
+
+   useLogo hands out ONE mask for the hood and "NINJAS" together, and they need
+   two different materials. So the plate is rendered twice into complementary
+   clips, split at 58% — inside the artwork's own empty band (54.88-61.62%), so
+   the cut lands on nothing. A clip rather than a mask knockout: a knockout
+   leaves a hairline of the material down both edges of the box once the layers
+   stack. Each clip rebuilds the full mark box inside itself, anchored to the
+   edge it shares with the artwork, so every masked layer stays in register. */
+
+.wv-word {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 58%;
+  bottom: 0;
+  overflow: hidden;
+}
+.wv-wordbox {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  aspect-ratio: var(--logo-aspect, 2.17);
+}
+
+.wv-head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 58%;
+  overflow: hidden;
+}
+.wv-headbox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  aspect-ratio: var(--logo-aspect, 2.17);
+}
+
+/* ---- the wordmark: adamantium ---- */
+
+/* The stops are pushed down the box on purpose. Only rows 61.8-89.8% of this
+   layer are ever visible — everything above is the hood, clipped away — so a
+   gradient spread evenly over the whole box spends its bright end on nothing
+   and paints the letters out of its dark tail. */
+.wv-plate-ada {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+  background: linear-gradient(
+    172deg,
+    var(--ada-hi) 0%,
+    var(--ada-hi) 62%,
+    var(--ada) 78%,
+    var(--ada-lo) 100%
+  );
+  /* a hard edge under it, so the letterforms hold against the dark ground */
+  filter: drop-shadow(0 0.16vw 0.22vw rgba(4, 2, 1, 0.92));
+}
+
+/* brushed, not chrome: directional grain along the letters */
+.wv-plate-grain {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+  background-image: repeating-linear-gradient(
+    92deg,
+    rgba(255, 255, 255, 0.16) 0 1px,
+    rgba(20, 28, 38, 0.14) 1px 2px
+  );
+  opacity: 0.5;
+}
+
+/* The specular. NEVER transform a masked layer to move a highlight — the mask
+   travels with it and the sweep passes outside the mark. Scroll an oversized
+   background behind a fixed mask instead. This one keeps running on the held
+   frame; ambient motion is not a restart. */
+.wv-plate-spec {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+  background-image: linear-gradient(
+    104deg,
+    transparent 34%,
+    rgba(255, 255, 255, 0.5) 46%,
+    rgba(255, 255, 255, 0.86) 50%,
+    rgba(255, 255, 255, 0.5) 54%,
+    transparent 66%
+  );
+  background-size: 320% 100%;
+  background-position: 120% 0;
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.wv-p4 .wv-plate-spec, .wv-p5 .wv-plate-spec {
+  opacity: 1;
+  animation: wv-spec 5200ms 200ms linear infinite;
+}
+@keyframes wv-spec {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+
+/* "CODE" keeps the brand's blue — the theme's material would have no business
+   overwriting it, and it is the one cool thing in a warm frame */
+.wv-plate-code {
+  -webkit-mask-image: var(--logo-accent, none);
+  mask-image: var(--logo-accent, none);
+  background: linear-gradient(178deg, var(--code-hi) 0%, var(--code) 48%, var(--code-lo) 100%);
+}
+
+/* the key is low and to the left, so one broad wash runs up from that corner —
+   this is what stops the letters reading as flat vector fill */
+.wv-key-word {
+  background: linear-gradient(
+    22deg,
+    rgba(255, 186, 118, 0.3) 0%,
+    rgba(255, 186, 118, 0.08) 24%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+/* ---- the head: hide under the cowl, and the eye band ---- */
+
+.wv-plate-hide {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+  background: linear-gradient(
+    28deg,
+    var(--hide-hi) 0%,
+    var(--hide) 42%,
+    var(--hide-lo) 100%
+  );
+}
+
+/* The eye band, lit warm. The artwork's own slits are part of the dark region,
+   so they come through as the eyes — no drawn eye can register with a raster
+   as well as the raster's own. */
+.wv-plate-band {
+  -webkit-mask-image: var(--logo-light, none);
+  mask-image: var(--logo-light, none);
+  background: linear-gradient(178deg, #ffe3ae 0%, #e5b268 54%, #9a672c 100%);
+}
+
+/* ====================================================================
+   THE COWL — pinned to the head circle
+
+   Its box IS the circle's bounding square (x 37.4-62.6%, y 0-54.76% of the
+   mark), so the viewBox's 100x100 is the head's own diameter and every feature
+   is stated in head radii. Its HEIGHT comes from aspect-ratio rather than a
+   percentage: a percentage height resolves against the mark's aspect, so
+   replacing the logo file would stretch the cowl.
+   ==================================================================== */
+
+.wv-cowl {
+  position: absolute;
+  left: var(--head-x);
+  top: 0;
+  width: var(--head-w);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+.wv-cowl svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* the wings run off the top of the box */
+  overflow: visible;
+  filter:
+    drop-shadow(0 0.24vw 0.4vw rgba(6, 3, 1, 0.72))
+    drop-shadow(0 0.9vw 1.6vw rgba(4, 2, 1, 0.5));
+}
+
+.wv-crown {
+  fill: url(#wv-crownfill);
+}
+.wv-crown-shade {
+  fill: url(#wv-crownshade);
+}
+.wv-browshade {
+  fill: url(#wv-browfill);
+}
+
+/* All the modelling is soft and low-contrast on purpose. Anything that can be
+   pointed at as a shape reads as make-up; what you want is for the cowl to
+   simply look like it is wrapped around something. */
+.wv-crown-hi {
+  fill: rgba(255, 233, 178, 0.28);
+}
+.wv-wing-facet {
+  fill: rgba(255, 236, 186, 0.2);
+}
+.wv-temple {
+  fill: rgba(40, 18, 6, 0.34);
+}
+.wv-crown-tex {
+  mix-blend-mode: overlay;
+  opacity: 0.3;
+}
+
+.wv-crown-edge {
+  fill: none;
+  stroke: rgba(34, 15, 5, 0.7);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+/* the key's rim, on the lower-left edge only */
+.wv-crown-rim {
+  fill: none;
+  stroke: rgba(255, 226, 160, 0.72);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+/* the cut edge of the cowl, sitting ON the hood — a hairline here is what
+   stops it looking painted on */
+.wv-crown-lip {
+  fill: none;
+  stroke: rgba(255, 214, 140, 0.42);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+/* ====================================================================
+   TYPE — WOODBRIDGE reads as the lockup's second line
+   ==================================================================== */
+
+.wv-type {
+  position: relative;
+  z-index: 2;
+  margin-top: 2vw;
+  text-align: center;
+}
+
+.wv-caption {
+  font-size: 4.8vw;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: var(--ink);
+  text-shadow: 0 0.4vw 1.4vw rgba(6, 3, 1, 0.9);
+  opacity: 0;
+  transform: translateY(1vw);
+  transition: opacity 620ms ease, transform 780ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wv-p5 .wv-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* the brand's red — the one thing in the frame that is neither tan nor steel */
+.wv-rule {
+  width: 0;
+  height: 2px;
+  margin: 1.6vw auto 0;
+  background: linear-gradient(90deg, transparent, var(--brand-red) 50%, transparent);
+  transition: width 820ms 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wv-p5 .wv-rule {
+  width: 82%;
+}
+
+/* ====================================================================
+   GRADE
+   ==================================================================== */
+
+.wv-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
+  background-size: 160px 160px;
+}
+
+.wv-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 41;
+  background: radial-gradient(74% 54% at 50% 46%, transparent 34%, rgba(0, 0, 0, 0.78) 100%);
+}
+
+/* ====================================================================
+   AMBIENT — motes lifting through the key, on the held frame
+   ==================================================================== */
+
+.wv-motes {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1800ms 400ms ease;
+}
+.wv-p1 .wv-motes, .wv-p2 .wv-motes, .wv-p3 .wv-motes, .wv-p4 .wv-motes, .wv-p5 .wv-motes {
+  opacity: 1;
+}
+.wv-ember {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 190, 120, 0.9);
+  filter: blur(0.14vw);
+  mix-blend-mode: screen;
+  animation-name: wv-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+/* the drift is long and shallow — an ember that visibly races reads as a bug
+   crossing the lens */
+@keyframes wv-drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(2.4vw, -26vh); }
+  100% { transform: translate(-1.6vw, -52vh); }
+}
+
+/* ====================================================================
+   STATIC MODE — the poster: the cut has happened, the blades are gone, the
+   gashes have cooled, the mark is lit
+   ==================================================================== */
+
+.wv.is-static *,
+.wv.is-static *::before,
+.wv.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.wv.is-static .wv-ground,
+.wv.is-static .wv-key,
+.wv.is-static .wv-haze,
+.wv.is-static .wv-markwrap {
+  opacity: 1;
+}
+.wv.is-static .wv-scored {
+  opacity: 0.5;
+}
+.wv.is-static .wv-motes {
+  opacity: 1;
+}
+.wv.is-static .wv-gash {
+  transform: scaleX(1);
+  opacity: 1;
+}
+.wv.is-static .wv-gash-hot {
+  opacity: 0.44;
+}
+.wv.is-static .wv-gash-glow {
+  opacity: 0.26;
+}
+.wv.is-static .wv-gash-lip {
+  stroke: rgba(255, 176, 108, 0.46);
+}
+/* one-pass effects with no resting state: they are over */
+.wv.is-static .wv-spark {
+  opacity: 0;
+}
+.wv.is-static .wv-claws {
+  opacity: 0;
+}
+.wv.is-static .wv-blade-flash {
+  opacity: 0;
+}
+/* the specular has to be frozen somewhere it is actually ON the letters */
+.wv.is-static .wv-plate-spec {
+  opacity: 1;
+  background-position: 26% 0;
+}
+.wv.is-static .wv-lift {
+  transform: none;
+}
+.wv.is-static .wv-mark {
+  filter: none;
+}
+.wv.is-static .wv-caption {
+  opacity: 1;
+  transform: none;
+}
+.wv.is-static .wv-rule {
+  width: 82%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wv *,
+  .wv *::before,
+  .wv *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .wv .wv-ground,
+  .wv .wv-key,
+  .wv .wv-haze,
+  .wv .wv-markwrap {
+    opacity: 1;
+  }
+  .wv .wv-scored {
+    opacity: 0.5;
+  }
+  .wv .wv-motes {
+    opacity: 1;
+  }
+  .wv .wv-gash {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  .wv .wv-gash-hot {
+    opacity: 0.44;
+  }
+  .wv .wv-gash-glow {
+    opacity: 0.26;
+  }
+  .wv .wv-gash-lip {
+    stroke: rgba(255, 176, 108, 0.46);
+  }
+  .wv .wv-spark {
+    opacity: 0;
+  }
+  .wv .wv-claws {
+    opacity: 0;
+  }
+  .wv .wv-blade-flash {
+    opacity: 0;
+  }
+  .wv .wv-plate-spec {
+    opacity: 1;
+    background-position: 26% 0;
+  }
+  .wv .wv-lift {
+    transform: none;
+  }
+  .wv .wv-mark {
+    filter: none;
+  }
+  .wv .wv-caption {
+    opacity: 1;
+    transform: none;
+  }
+  .wv .wv-rule {
+    width: 82%;
+  }
+}

@@ -11,10 +11,11 @@ import "./Stylesheets/App.css";
 // import Pokemon from "./Components/Pokemon";
 // import Newspaper from "./Components/Newspaper";
 // import Spiderman from "./Components/Spiderman";
-import Batman from "./Components/Batman";
+// import Batman from "./Components/Batman";
+import Wolverine from "./Components/Wolverine";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Batman mode="animated" />;
+  return <Wolverine mode="animated" />;
 }
 export default App;
