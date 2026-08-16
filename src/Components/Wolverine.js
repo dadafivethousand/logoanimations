@@ -75,7 +75,7 @@ import maskPng from "../Images/wolverine-mask.png";
 //
 // Plays ONCE and holds — loopAt is null. The embers, the gash flicker and the
 // specular travel keep the held frame alive; that is ambient, not a restart.
-const CUES = [160, 1480, 2420, 3320, 4560, 5460];
+const CUES = [160, 1480, 2420, 3160, 3820, 4460];
 
 // Slow motes lifting through the key light — the one thing keeping the held
 // frame from reading as a still. [left%, top%, size in vw, opacity, duration
@@ -119,68 +119,40 @@ const EMBERS = [
  * travel. Change a length and its tear moves with it. */
 const PASSES = [
   {
-    // The first pass starts with its TIPS just inside the frame rather than
-    // fully off it, because p2 is the SNIKT — the blades unsheathe and hold on
-    // this bundle, and a bundle parked at x -70 unsheathes where nobody can
-    // see it. Three blades poking in from the left edge is the beat.
-    deg: 14,
-    at: "translate(-177 207) rotate(104)",
-    tx: 159.2, ty: 39.7,
-    phase: 3, delay: 0,
-    tears: [[35, 198], [30, 258], [9, 315]],
-  },
-  {
-    deg: 196,
-    at: "translate(660 529) rotate(286)",
-    tx: -157.7, ty: -45.2,
-    phase: 4, delay: 0,
-    tears: [[447, 530], [455, 470], [477, 414]],
-  },
-  {
-    deg: -24,
-    at: "translate(-264 787) rotate(66)",
-    tx: 149.9, ty: -66.7,
-    phase: 5, delay: 0,
-    tears: [[-103, 649], [-70, 700], [-51, 757]],
-  },
-  {
-    deg: 162,
-    at: "translate(657 104) rotate(252)",
-    tx: -156.1, ty: 50.7,
-    phase: 6, delay: 0,
-    tears: [[482, 224], [455, 170], [442, 111]],
-  },
-  {
-    deg: 30,
-    at: "translate(-254 439) rotate(120)",
-    tx: 142.1, ty: 82.1,
-    phase: 6, delay: 520,
-    tears: [[-48, 488], [-70, 545], [-105, 594]],
+    // Low, and slightly uphill. The hand enters from off the left, drags three
+    // cuts along the bottom of the frame and carries on out of the right —
+    // 700 units of travel against 330 of cut, so the tips lead the tears for
+    // the first half and then lift off.
+    //
+    // Nothing goes near the lockup, which sits y 342-502: the marks live
+    // between y 700 and 820. One pass, three marks, at the bottom.
+    deg: -8,
+    at: "translate(-241 790) rotate(82)",
+    tx: 177.7, ty: -24.9,
+    tears: [[-48, 702], [-30, 760], [-28, 821]],
   },
 ];
 
-/* The tear path is drawn 700 long; the hand travels 640. */
-const TEAR_SCALE = 640 / 700;
+/* The tear path is drawn 700 long; the hand travels 330. */
+const TEAR_SCALE = 330 / 700;
 
 // Sparks off the cut, strung along the middle tear's line — which runs from
 // (0, 819) to (390, 566), so y falls 0.3% of the frame for every 1% of x.
 // Fixed rather than random so every take is identical.
 // [left%, top%, dx in vw, dy in vw, delay in ms]
 const SPARKS = [
-  [14, 92.8, -5.5, 4.2, 0],
-  [20, 91.0, 3.4, 5.6, 30],
-  [26, 89.2, -4.2, 5.2, 60],
-  [33, 87.1, 4.8, 4.4, 80],
-  [39, 85.3, -3.6, 6.1, 110],
-  [45, 83.5, 5.4, 3.6, 130],
-  [52, 81.4, -5.1, 4.8, 160],
-  [58, 79.6, 3.2, 6.4, 190],
-  [64, 77.8, -4.6, 3.9, 210],
-  [71, 75.7, 5.8, 5.1, 240],
-  [77, 73.9, -3.1, 5.7, 260],
-  [83, 72.1, 4.4, 4.1, 290],
-  [89, 70.3, -5.6, 5.4, 310],
+  [6, 89.2, -4.8, 3.2, 0],
+  [13, 88.7, 3.4, 4.0, 32],
+  [20, 88.2, -4.1, 4.8, 64],
+  [28, 87.8, 4.6, 5.6, 96],
+  [35, 87.3, -3.2, 3.2, 128],
+  [42, 86.8, 5.1, 4.0, 160],
+  [49, 86.4, -4.4, 4.8, 192],
+  [56, 85.9, 2.9, 5.6, 224],
+  [64, 85.4, -4.0, 3.2, 256],
+  [71, 84.9, 4.7, 4.0, 288],
 ];
+
 
 export default function Wolverine({
   mode = "animated",
@@ -229,7 +201,7 @@ export default function Wolverine({
                 key={i}
                 transform={`translate(${x} ${y}) rotate(${p.deg}) scale(${TEAR_SCALE} 1)`}
               >
-                <g className="wv-gash" style={{ "--d": `${p.delay + i * 18}ms` }}>
+                <g className="wv-gash" style={{ "--d": `${i * 18}ms` }}>
                   <path className="wv-gash-glow" d={GASH_D} />
                   <path className="wv-gash-void" d={GASH_D} filter="url(#wv-tear)" />
                   {/* the hot core is the same tear squeezed down its own
@@ -310,12 +282,9 @@ export default function Wolverine({
           key={pi}
           cls={`wv-hand wv-hand-${pi}`}
           at={p.at}
-          style={{ "--tx": `${p.tx}vw`, "--ty": `${p.ty}vw`, "--sd": `${p.delay}ms` }}
+          style={{ "--tx": `${p.tx}vw`, "--ty": `${p.ty}vw` }}
         />
       ))}
-
-      {/* the one bundle that does not leave — see .wv-claws-hero */}
-      <Claws cls="wv-claws-hero" at="translate(430 900) rotate(-37) scale(1.25)" />
 
       <div className="wv-grain" aria-hidden />
       <div className="wv-vignette" aria-hidden />
