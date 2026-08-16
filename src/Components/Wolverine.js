@@ -178,31 +178,43 @@ const SPARKS_B = [
  * frame, and the logo stays clean on top of them. That is the only reason
  * "everywhere" is affordable here.
  *
+ * EVERY TEAR IS TIMED TO THE BLADE THAT MAKES IT. Each delay below is its
+ * streak's delay plus about 190ms — the beat between a blade crossing a piece
+ * of ground and that ground opening. They used to run as one continuous
+ * cascade of their own, 38ms apart, while the five streaks went past in half
+ * the time: marks appearing on their own with claws somewhere else in the
+ * frame. Now the claw arrives, cuts, and the next one follows.
+ *
  * Fixed rather than random, like the sparks: the ad is screen-recorded, and a
  * finale that is different in every take is one you cannot re-shoot.
  *
  * [x, y, angle, length scale, opening delay in ms] — x, y is the left-hand end
  * of the tear, same convention as the other two bundles. */
 const FLURRY = [
-  [86, 12, 62, 0.7, 0],
-  [12, -10, 62, 0.42, 38],
-  [-63, -33, 62, 0.63, 76],
-  [60, 962, -70, 0.56, 114],
-  [168, 826, -70, 0.77, 152],
-  [201, 896, -70, 0.49, 190],
-  [-262, 119, 6, 0.42, 228],
-  [-323, 168, 6, 0.63, 266],
-  [-164, 240, 6, 0.84, 304],
-  [586, 240, 152, 0.77, 342],
-  [609, 166, 152, 0.49, 380],
-  [632, 91, 152, 0.7, 418],
-  [-185, 712, -18, 0.63, 456],
-  [-221, 781, -18, 0.84, 494],
-  [-256, 850, -18, 0.56, 532],
+  [86, 12, 62, 0.7, 170],
+  [12, -10, 62, 0.42, 210],
+  [-63, -33, 62, 0.63, 250],
+  [60, 962, -70, 0.56, 430],
+  [168, 826, -70, 0.77, 470],
+  [201, 896, -70, 0.49, 510],
+  [-262, 119, 6, 0.42, 690],
+  [-323, 168, 6, 0.63, 730],
+  [-164, 240, 6, 0.84, 770],
+  [586, 240, 152, 0.77, 950],
+  [609, 166, 152, 0.49, 990],
+  [632, 91, 152, 0.7, 1030],
+  [-185, 712, -18, 0.63, 1210],
+  [-221, 781, -18, 0.84, 1250],
+  [-256, 850, -18, 0.56, 1290],
 ];
 
-/* The blades that leave them. One streak per angle, and each carries its own
- * travel vector as --tx/--ty so a single keyframe serves all five.
+/* The blades that leave them — the SAME three-blade bundle as the opening
+ * rake, coming back five more times rather than the tears arriving by
+ * themselves. That is the whole reason they are spaced 260ms apart instead of
+ * 95: at 95 they were one blurred event and the marks looked self-inflicted.
+ *
+ * One streak per angle, and each carries its own travel vector as --tx/--ty so
+ * a single keyframe serves all five.
  *
  * The bundle rotation is the same 48deg crossing the other two use: a blade
  * drawn pointing up sits at (R - 90) degrees, so R = travel + 42 puts it 48
@@ -211,10 +223,10 @@ const FLURRY = [
  * [travel angle, transform, tx in vw, ty in vw, delay in ms] */
 const STREAKS = [
   [62, "translate(-40 -120) rotate(104)", 66.7, 125.4, 0],
-  [-70, "translate(300 1010) rotate(-28)", 48.6, -133.4, 95],
-  [6, "translate(-190 250) rotate(48)", 141.2, 14.8, 190],
-  [152, "translate(560 150) rotate(194)", -125.4, 66.7, 285],
-  [-18, "translate(-150 760) rotate(24)", 135.1, -43.9, 380],
+  [-70, "translate(300 1010) rotate(-28)", 48.6, -133.4, 260],
+  [6, "translate(-190 250) rotate(48)", 141.2, 14.8, 520],
+  [152, "translate(560 150) rotate(194)", -125.4, 66.7, 780],
+  [-18, "translate(-150 760) rotate(24)", 135.1, -43.9, 1040],
 ];
 
 const SPARKS = [

@@ -259,7 +259,7 @@
 }
 .wv-p6 .wv-claws-hero {
   opacity: 1;
-  animation: wv-hero 700ms 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: wv-hero 700ms 1560ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @keyframes wv-hero {
   0% { transform: translate(64vw, 44vw); filter: blur(1.1vw); opacity: 0; }
@@ -292,7 +292,7 @@
 }
 .wv-p6 .wv-claws-c {
   opacity: 1;
-  animation: wv-streak 380ms var(--sd) cubic-bezier(0.4, 0.02, 0.6, 1) both;
+  animation: wv-streak 520ms var(--sd) cubic-bezier(0.4, 0.02, 0.6, 1) both;
 }
 @keyframes wv-streak {
   0% { transform: translate(0, 0); filter: none; opacity: 1; }
@@ -655,7 +655,10 @@
 .wv-mask {
   position: absolute;
   left: 50%;
-  top: -8%;
+  /* -8% is where it registers against the mark box; the 20px is asked-for, on
+     top of that, and stays a flat 20px at every viewport rather than scaling
+     with the composition — which is what "20px higher" means. */
+  top: calc(-8% - 20px);
   height: 66%;
   width: auto;
   aspect-ratio: 194 / 253;
@@ -690,6 +693,11 @@
   transform: translateY(1vw);
   transition: opacity 620ms ease, transform 780ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+/* p3, with the mark. It used to wait until p5, two whole beats after the
+   thing it is the second line of — so the lockup stood there incomplete
+   through both rakes and then grew a word. It is part of CODE NINJAS, and it
+   arrives when CODE NINJAS does. */
+.wv-p3 .wv-caption, .wv-p4 .wv-caption,
 .wv-p5 .wv-caption, .wv-p6 .wv-caption {
   opacity: 1;
   transform: translateY(0);
@@ -703,6 +711,7 @@
   background: linear-gradient(90deg, transparent, var(--brand-red) 50%, transparent);
   transition: width 820ms 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+.wv-p3 .wv-rule, .wv-p4 .wv-rule,
 .wv-p5 .wv-rule, .wv-p6 .wv-rule {
   width: 82%;
 }
