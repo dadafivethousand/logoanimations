@@ -191,7 +191,8 @@
    speed; the "grows under the tip" version was a correction nobody asked
    for. */
 .wv-p3 .wv-cut-0 .wv-gash, .wv-p4 .wv-cut-0 .wv-gash,
-.wv-p5 .wv-cut-0 .wv-gash, .wv-p6 .wv-cut-0 .wv-gash {
+.wv-p5 .wv-cut-0 .wv-gash, .wv-p6 .wv-cut-0 .wv-gash,
+.wv-p4 .wv-cut-1 .wv-gash, .wv-p5 .wv-cut-1 .wv-gash, .wv-p6 .wv-cut-1 .wv-gash {
   transform: scaleX(1);
   opacity: 1;
 }
@@ -279,7 +280,8 @@
 .wv-p2 .wv-hand-0 {
   opacity: 1;
 }
-.wv-p3 .wv-hand-0, .wv-p4 .wv-hand-0, .wv-p5 .wv-hand-0, .wv-p6 .wv-hand-0 {
+.wv-p3 .wv-hand-0, .wv-p4 .wv-hand-0, .wv-p5 .wv-hand-0, .wv-p6 .wv-hand-0,
+.wv-p4 .wv-hand-1, .wv-p5 .wv-hand-1, .wv-p6 .wv-hand-1 {
   opacity: 1;
   animation: wv-swipe var(--rake) cubic-bezier(0.5, 0.02, 0.62, 1) both;
 }

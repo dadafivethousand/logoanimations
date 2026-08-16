@@ -116,6 +116,25 @@ const PASSES = [
     tx: 142, ty: -92,
     tears: [[-11, 747], [22, 797], [55, 848]],
   },
+  /* A second one across the bottom, the other way — the first mirrored about
+   * x = 195. Every number below is that mirror and nothing else: origins at
+   * 390 - x, travel at -tx, and rotate(-57) because a blade axis of
+   * (sin R, -cos R) hits (-0.839, -0.545) at R = -57.
+   *
+   * Its tears are listed bottom-first. The bundle's local +x is -n here rather
+   * than +n, so the offsets run the other way down the knuckles, and pairing
+   * blade -60 with the far tear keeps each blade on the cut it makes — the
+   * outer two are 1.22 and 1.26 long, so getting them the wrong way round puts
+   * both slightly off their lines.
+   *
+   * It passes UNDER the lockup, which sits x 86-306, y 342-502: across that
+   * span the highest of the three runs y 542 to 685. */
+  {
+    deg: 213,
+    at: "translate(309 759) rotate(-57)",
+    tx: -142, ty: -92,
+    tears: [[335, 848], [368, 797], [401, 747]],
+  },
 ];
 
 /* the tear path is drawn at its full length here — this is the original */
