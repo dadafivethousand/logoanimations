@@ -182,10 +182,44 @@
     transform 340ms var(--d) cubic-bezier(0.16, 0.9, 0.28, 1),
     opacity 120ms var(--d) linear;
 }
-.wv-p3 .wv-gashes-a .wv-gash, .wv-p4 .wv-gashes-a .wv-gash, .wv-p5 .wv-gashes-a .wv-gash, .wv-p6 .wv-gashes-a .wv-gash,
-.wv-p4 .wv-gashes-b .wv-gash, .wv-p5 .wv-gashes-b .wv-gash, .wv-p6 .wv-gashes-b .wv-gash {
+/* THE CUT GROWS UNDER THE BLADE. Same duration and same easing as the swipe
+   that makes it, starting at the same instant, so the open end of the tear
+   stays beneath the tip the whole way across instead of racing ahead of it.
+   That is the entire trick, and it is why every one of these is --rake long.
+
+   One rule per pass, and each stays open on every phase after its own — the
+   cuts accumulate, which is the point of swiping five times. */
+.wv-cut-0 .wv-gash,
+.wv-cut-1 .wv-gash,
+.wv-cut-2 .wv-gash,
+.wv-cut-3 .wv-gash,
+.wv-cut-4 .wv-gash {
+  transition:
+    transform var(--rake) var(--d) cubic-bezier(0.5, 0.02, 0.62, 1),
+    opacity 90ms var(--d) linear;
+}
+
+.wv-p3 .wv-cut-0 .wv-gash, .wv-p4 .wv-cut-0 .wv-gash,
+.wv-p5 .wv-cut-0 .wv-gash, .wv-p6 .wv-cut-0 .wv-gash,
+.wv-p4 .wv-cut-1 .wv-gash, .wv-p5 .wv-cut-1 .wv-gash, .wv-p6 .wv-cut-1 .wv-gash,
+.wv-p5 .wv-cut-2 .wv-gash, .wv-p6 .wv-cut-2 .wv-gash,
+.wv-p6 .wv-cut-3 .wv-gash,
+.wv-p6 .wv-cut-4 .wv-gash {
   transform: scaleX(1);
   opacity: 1;
+}
+
+/* The first three cool a beat after they are made; the rest stay hot, because
+   nothing follows them. */
+.wv-p5 .wv-cut-0 .wv-gash-hot, .wv-p6 .wv-cut-0 .wv-gash-hot,
+.wv-p6 .wv-cut-1 .wv-gash-hot {
+  opacity: 0.44;
+  animation: wv-emberflicker 3400ms ease-in-out infinite;
+}
+.wv-cut-2 .wv-gash-hot,
+.wv-cut-3 .wv-gash-hot,
+.wv-cut-4 .wv-gash-hot {
+  animation: wv-emberflicker 2600ms ease-in-out infinite;
 }
 
 /* what is behind the surface: nothing */
@@ -205,11 +239,6 @@
   opacity: 0.95;
   transition: opacity 1500ms ease;
 }
-.wv-p4 .wv-gashes-a .wv-gash-hot, .wv-p5 .wv-gashes-a .wv-gash-hot, .wv-p6 .wv-gashes-a .wv-gash-hot,
-.wv-p5 .wv-gashes-b .wv-gash-hot, .wv-p6 .wv-gashes-b .wv-gash-hot {
-  opacity: 0.44;
-  animation: wv-emberflicker 3400ms ease-in-out infinite;
-}
 @keyframes wv-emberflicker {
   0%, 100% { opacity: 0.44; }
   37% { opacity: 0.34; }
@@ -223,8 +252,9 @@
   stroke-width: 0.9;
   transition: stroke 1500ms ease;
 }
-.wv-p4 .wv-gashes-a .wv-gash-lip, .wv-p5 .wv-gashes-a .wv-gash-lip, .wv-p6 .wv-gashes-a .wv-gash-lip,
-.wv-p5 .wv-gashes-b .wv-gash-lip, .wv-p6 .wv-gashes-b .wv-gash-lip {
+
+/* the lip and the glow settle together on the last beat, for every cut */
+.wv-p6 .wv-gash-lip {
   stroke: rgba(255, 176, 108, 0.46);
 }
 
@@ -239,65 +269,59 @@
   opacity: 0.8;
   transition: opacity 1500ms ease;
 }
-.wv-p4 .wv-gashes-a .wv-gash-glow, .wv-p5 .wv-gashes-a .wv-gash-glow, .wv-p6 .wv-gashes-a .wv-gash-glow,
-.wv-p5 .wv-gashes-b .wv-gash-glow, .wv-p6 .wv-gashes-b .wv-gash-glow {
+/* every cut's glow settles on the last beat */
+.wv-p6 .wv-gash-glow {
   opacity: 0.26;
 }
 
-/* ---- the bundle that stays ----
-   Every other set of claws leaves — that is what a rake is. But the frame was
-   ending on marks alone, so this one arrives last, out of the bottom right,
-   and comes to rest across the lower corner instead of exiting. It is the one
-   thing here with no exit in its keyframes.
+/* ---- the hand ----
+   One keyframe for all five swipes. Each carries its own travel as --tx/--ty
+   and its own beat as --sd, which beats five near-identical keyframes that
+   drift apart the first time one of them is tuned.
 
-   Placed at rotate(-37) with its tips reaching (303, 730): below the lockup's
-   502 and well clear of it, so the blades read against the torn ground rather
-   than across the wordmark. Scaled 1.25 because it is the hero of the last
-   frame rather than a thing passing through it. */
+   It leaves the frame at the end of every pass. That is what a swipe is: the
+   hand goes past, the cut stays. */
+.wv-hand {
+  opacity: 0;
+}
+@keyframes wv-swipe {
+  0% { transform: translate(0, 0); filter: none; opacity: 1; }
+  14% { filter: blur(0.8vw); }
+  86% { filter: blur(0.7vw); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)); filter: blur(0.4vw); opacity: 0; }
+}
+
+.wv-p2 .wv-hand-0 {
+  opacity: 1;
+}
+.wv-p3 .wv-hand-0, .wv-p4 .wv-hand-0, .wv-p5 .wv-hand-0, .wv-p6 .wv-hand-0,
+.wv-p4 .wv-hand-1, .wv-p5 .wv-hand-1, .wv-p6 .wv-hand-1,
+.wv-p5 .wv-hand-2, .wv-p6 .wv-hand-2,
+.wv-p6 .wv-hand-3,
+.wv-p6 .wv-hand-4 {
+  opacity: 1;
+  animation: wv-swipe var(--rake) var(--sd) cubic-bezier(0.5, 0.02, 0.62, 1) both;
+}
+
+/* ---- the bundle that stays ----
+   Every swipe leaves — that is what a swipe is. But the frame was ending on
+   marks with nothing that made them, so this one arrives after the last pass
+   and comes to rest across the lower corner instead of exiting. It is the one
+   set of blades here with no exit in its keyframes.
+
+   Tips reach (303, 730): below the lockup's 502 and well clear of it, so they
+   read against the torn ground rather than across the wordmark. */
 .wv-claws-hero {
   opacity: 0;
 }
 .wv-p6 .wv-claws-hero {
   opacity: 1;
-  animation: wv-hero 700ms 1560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: wv-hero 700ms 1180ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @keyframes wv-hero {
   0% { transform: translate(64vw, 44vw); filter: blur(1.1vw); opacity: 0; }
   22% { opacity: 1; }
   100% { transform: translate(0, 0); filter: blur(0); opacity: 1; }
-}
-
-/* ---- p6: the flurry ----
-   Fifteen more tears, all over the frame, opening in a fast cascade. They are
-   NOT scoped away from the lockup like the other two bundles: this layer is
-   z-index 8 and the mark is 20, so a tear can run straight through the middle
-   of the composition and pass behind the logo.
-
-   They stay hot. Nothing follows p6, so there is no beat left to cool them in
-   — and a frame that ends white-hot is the point of ending on this rather than
-   on a fade. The flicker keeps them alive on the held frame. */
-.wv-p6 .wv-gashes-c .wv-gash {
-  transform: scaleX(1);
-  opacity: 1;
-}
-.wv-p6 .wv-gashes-c .wv-gash-hot {
-  animation: wv-emberflicker 2600ms ease-in-out infinite;
-}
-
-/* the blades that leave them. One keyframe for all five, because each streak
-   carries its own travel as --tx/--ty — the alternative is five near-identical
-   keyframes that drift apart the first time one of them is tuned. */
-.wv-claws-c {
-  opacity: 0;
-}
-.wv-p6 .wv-claws-c {
-  opacity: 1;
-  animation: wv-streak 520ms var(--sd) cubic-bezier(0.4, 0.02, 0.6, 1) both;
-}
-@keyframes wv-streak {
-  0% { transform: translate(0, 0); filter: none; opacity: 1; }
-  18% { filter: blur(1.1vw); }
-  100% { transform: translate(var(--tx), var(--ty)); filter: blur(0.6vw); opacity: 0; }
 }
 
 /* ====================================================================
@@ -321,9 +345,6 @@
   mix-blend-mode: screen;
 }
 .wv-p3 .wv-sparks-a .wv-spark, .wv-p4 .wv-sparks-a .wv-spark, .wv-p5 .wv-sparks-a .wv-spark, .wv-p6 .wv-sparks-a .wv-spark,
-.wv-p4 .wv-sparks-b .wv-spark, .wv-p5 .wv-sparks-b .wv-spark, .wv-p6 .wv-sparks-b .wv-spark {
-  animation: wv-spark 820ms var(--d) cubic-bezier(0.12, 0.7, 0.3, 1) both;
-}
 @keyframes wv-spark {
   0% { opacity: 0; transform: translate(0, 0) scale(0.2); }
   12% { opacity: 1; transform: translate(calc(var(--dx) * 0.2), calc(var(--dy) * 0.12)) scale(1); }
@@ -333,10 +354,10 @@
 /* ====================================================================
    THE BLADES
 
-   They unsheathe on p2, hold for a beat, then cross the frame and leave. The
-   travel is (0.839, -0.545) — the same -33deg axis the gashes are laid on, and
-   the blades are spaced to the same 60 units — so the rake and the marks it
-   leaves are one event rather than two that overlap.
+   They unsheathe on p2, hold a beat, and then the hand swipes: five passes,
+   one per beat from p3 on, each crossing the frame and leaving. The blades
+   point along the travel and the cuts drag out directly behind them — see
+   PASSES in the component, and .wv-hand below for the swipe itself.
    ==================================================================== */
 
 .wv-claws {
@@ -354,38 +375,6 @@
   height: 100%;
   display: block;
   overflow: visible;
-}
-/* only the first bundle unsheathes on camera. The second arrives already
-   drawn, mid-swing, on p4 — a second SNIKT would be the same beat twice and
-   would tell the viewer to expect a third. */
-.wv-p2 .wv-claws-a {
-  opacity: 1;
-}
-/* One animation carries the whole rake — translate, motion blur and the exit —
-   because a transition can't blur mid-travel and land clean. `both` holds the
-   final frame, so p4 and p5 keep the blades gone. */
-.wv-p3 .wv-claws-a, .wv-p4 .wv-claws-a, .wv-p5 .wv-claws-a, .wv-p6 .wv-claws-a {
-  opacity: 1;
-  animation: wv-rake var(--rake) cubic-bezier(0.5, 0.02, 0.62, 1) both;
-}
-
-/* the second bundle, on the +26deg axis. Same 142vw of travel, resolved onto
-   that axis instead: 142 x (0.8988, 0.4384). */
-.wv-p4 .wv-claws-b, .wv-p5 .wv-claws-b, .wv-p6 .wv-claws-b {
-  opacity: 1;
-  animation: wv-rake-b var(--rake) cubic-bezier(0.5, 0.02, 0.62, 1) both;
-}
-@keyframes wv-rake-b {
-  0% { transform: translate(0, 0); filter: none; opacity: 1; }
-  16% { filter: blur(0.9vw); }
-  72% { transform: translate(100.7vw, 49.1vw); filter: blur(0.7vw); opacity: 1; }
-  100% { transform: translate(127.6vw, 62.3vw); filter: blur(0.4vw); opacity: 0; }
-}
-@keyframes wv-rake {
-  0% { transform: translate(0, 0); filter: none; opacity: 1; }
-  16% { filter: blur(0.9vw); }
-  72% { transform: translate(112vw, -72.6vw); filter: blur(0.7vw); opacity: 1; }
-  100% { transform: translate(142vw, -92vw); filter: blur(0.4vw); opacity: 0; }
 }
 
 /* the unsheathe: the blade grows out of its base. Staggered by 45ms so it
@@ -817,9 +806,6 @@
 }
 /* the flurry is part of the finished frame; the blades that made it are not —
    except the one that stayed, which is the whole point of it */
-.wv.is-static .wv-gashes-c .wv-gash-hot {
-  opacity: 0.95;
-}
 .wv.is-static .wv-claws-hero {
   opacity: 1;
   transform: none;

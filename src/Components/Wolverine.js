@@ -93,142 +93,79 @@ const EMBERS = [
   [91, 84, 0.35, 0.3, 11200, 1900],
 ];
 
-// The three gashes, and the blades that leave them, all laid on one axis.
-//
-// THE BUNDLE GOES BESIDE THE LOCKUP, NOT THROUGH IT — and that is arithmetic,
-// not taste, because claw marks have to stay PARALLEL AND EVENLY SPACED or
-// they stop reading as claw marks. Working in the 390x844 viewBox: the block
-// centres on (196, 422) and measures about 220 x 160, the cut runs at -33deg,
-// so its perpendicular is n = (0.545, 0.839). Projecting the parts of the
-// composition onto n, measured from the block's centre:
-//
-//     the cowl          -92 .. +45
-//     "CODE NINJAS"     -53 .. +100
-//     WOODBRIDGE + rule   -1 .. +119
-//
-// That union has no gap in it, so no evenly-spaced trio can straddle the mark
-// without crossing something — two earlier placements proved it the slow way,
-// one through "NINJAS" and one through the cowl. The whole bundle therefore
-// sits at +160, +220 and +280, raking the lower third: 41 units clear of the
-// rule at the near edge, and inside the warm key, which is what the ember
-// glow wants to sit in.
-//
-// Each entry is the left-hand END of that tear, i.e. the point on its line
-// 350 units back along the cut. [x, y, opening delay in ms]
-const GASHES_A = [
-  [-11, 747, 0],
-  [22, 797, 55],
-  [55, 848, 110],
+/* FIVE SWIPES. The hand crosses the frame, the blades point where it is going,
+ * and the cuts drag out directly behind them. That is the whole model.
+ *
+ * It used to be cleverer and worse. The blades were held at 48deg ACROSS their
+ * own travel so they would visibly cross their marks, on the theory that a
+ * blade lying along its own tear hides it. What that actually produced was a
+ * hand skidding sideways, and it needed solved-not-chosen knuckle offsets to
+ * keep three tips on three lines. Point the blades where the hand is going and
+ * all of that goes away: a local +x offset IS the perpendicular, so the
+ * offsets are just the tear spacing, 60 apart, and every tip sits on its own
+ * line by construction.
+ *
+ * Each pass carries:
+ *   deg    the direction the hand travels
+ *   at     the bundle's placement — rotate(90 + deg) turns a blade drawn
+ *          pointing UP to point along the travel
+ *   tx/ty  that travel, 640 units resolved onto the axis and put in vw
+ *   tears  where each blade's TIP starts, which is the rear end of the cut it
+ *          leaves; the tear runs 640 forward from there at the same angle
+ *   phase  which beat it lands on, and its delay within that beat
+ *
+ * The tears are computed from the blade geometry rather than placed by eye —
+ * knuckle, plus the offset across, plus that blade's own length along the
+ * travel. Change a length and its tear moves with it. */
+const PASSES = [
+  {
+    // The first pass starts with its TIPS just inside the frame rather than
+    // fully off it, because p2 is the SNIKT — the blades unsheathe and hold on
+    // this bundle, and a bundle parked at x -70 unsheathes where nobody can
+    // see it. Three blades poking in from the left edge is the beat.
+    deg: 14,
+    at: "translate(-177 207) rotate(104)",
+    tx: 159.2, ty: 39.7,
+    phase: 3, delay: 0,
+    tears: [[35, 198], [30, 258], [9, 315]],
+  },
+  {
+    deg: 196,
+    at: "translate(660 529) rotate(286)",
+    tx: -157.7, ty: -45.2,
+    phase: 4, delay: 0,
+    tears: [[447, 530], [455, 470], [477, 414]],
+  },
+  {
+    deg: -24,
+    at: "translate(-264 787) rotate(66)",
+    tx: 149.9, ty: -66.7,
+    phase: 5, delay: 0,
+    tears: [[-103, 649], [-70, 700], [-51, 757]],
+  },
+  {
+    deg: 162,
+    at: "translate(657 104) rotate(252)",
+    tx: -156.1, ty: 50.7,
+    phase: 6, delay: 0,
+    tears: [[482, 224], [455, 170], [442, 111]],
+  },
+  {
+    deg: 30,
+    at: "translate(-254 439) rotate(120)",
+    tx: 142.1, ty: 82.1,
+    phase: 6, delay: 520,
+    tears: [[-48, 488], [-70, 545], [-105, 594]],
+  },
 ];
 
-/* THE SECOND RAKE, and the reason the ending has anything left to do.
- *
- * One set of three is a cut. Two sets crossing is a mauling — and crucially it
- * gives the last beat an event of its own instead of a slow cool-down, which
- * is what the frame was ending on.
- *
- * It runs at +26deg, the other way, so the two bundles make an X rather than a
- * hatch. Where they cross is chosen, not left to chance: the intersection of
- * the first tears with these lands at about (176, 625) — under the lockup,
- * which sits roughly x 86-306, y 342-502, and inside the warm key where the
- * ember glow wants to be. The nearest of these passes the lockup's lower edge
- * with about 80 units to spare.
- *
- * Perpendicular here is n = (-0.4384, 0.8988), and they are 60 apart along it
- * for the same reason the first three are: claw marks that are not parallel
- * and evenly spaced stop reading as claw marks. Same left-end-first
- * convention. */
-const GASHES_B = [
-  [-40, 520, 0],
-  [-66, 574, 55],
-  [-92, 628, 110],
-];
+/* The tear path is drawn 700 long; the hand travels 640. */
+const TEAR_SCALE = 640 / 700;
 
 // Sparks off the cut, strung along the middle tear's line — which runs from
 // (0, 819) to (390, 566), so y falls 0.3% of the frame for every 1% of x.
 // Fixed rather than random so every take is identical.
 // [left%, top%, dx in vw, dy in vw, delay in ms]
-/* and the same again along the second cut, which runs (-66, 574) to (589, 827)
-   — y falls 0.225% of the frame for every 1% of x */
-const SPARKS_B = [
-  [12.0, 74.5, -5.2, 3.4, 0],
-  [18.3, 75.9, 3.6, 4.1, 24],
-  [24.6, 77.4, -4.4, 4.8, 48],
-  [30.9, 78.8, 5.0, 5.5, 72],
-  [37.2, 80.2, -3.4, 6.2, 96],
-  [43.5, 81.6, 5.6, 3.4, 120],
-  [49.8, 83.0, -4.9, 4.1, 144],
-  [56.1, 84.5, 3.0, 4.8, 168],
-  [62.4, 85.9, -4.4, 5.5, 192],
-  [68.7, 87.3, 5.9, 6.2, 216],
-  [75.0, 88.7, -3.3, 3.4, 240],
-  [81.3, 90.1, 4.2, 4.1, 264],
-  [87.6, 91.6, -5.4, 4.8, 288],
-];
-
-/* ---- p6: the flurry ----
- *
- * Five more passes at wildly different angles, three tears each, all over the
- * frame. Where the first two rakes are deliberate — parallel, evenly spaced,
- * placed clear of the lockup — this is the opposite on purpose: the point is
- * that it stops being a technique and becomes damage.
- *
- * IT PASSES BEHIND THE MARK. The gash layer is z-index 8 and the lockup is 20,
- * so the tears can run anywhere at all, straight through the middle of the
- * frame, and the logo stays clean on top of them. That is the only reason
- * "everywhere" is affordable here.
- *
- * EVERY TEAR IS TIMED TO THE BLADE THAT MAKES IT. Each delay below is its
- * streak's delay plus about 190ms — the beat between a blade crossing a piece
- * of ground and that ground opening. They used to run as one continuous
- * cascade of their own, 38ms apart, while the five streaks went past in half
- * the time: marks appearing on their own with claws somewhere else in the
- * frame. Now the claw arrives, cuts, and the next one follows.
- *
- * Fixed rather than random, like the sparks: the ad is screen-recorded, and a
- * finale that is different in every take is one you cannot re-shoot.
- *
- * [x, y, angle, length scale, opening delay in ms] — x, y is the left-hand end
- * of the tear, same convention as the other two bundles. */
-const FLURRY = [
-  [86, 12, 62, 0.7, 170],
-  [12, -10, 62, 0.42, 210],
-  [-63, -33, 62, 0.63, 250],
-  [60, 962, -70, 0.56, 430],
-  [168, 826, -70, 0.77, 470],
-  [201, 896, -70, 0.49, 510],
-  [-262, 119, 6, 0.42, 690],
-  [-323, 168, 6, 0.63, 730],
-  [-164, 240, 6, 0.84, 770],
-  [586, 240, 152, 0.77, 950],
-  [609, 166, 152, 0.49, 990],
-  [632, 91, 152, 0.7, 1030],
-  [-185, 712, -18, 0.63, 1210],
-  [-221, 781, -18, 0.84, 1250],
-  [-256, 850, -18, 0.56, 1290],
-];
-
-/* The blades that leave them — the SAME three-blade bundle as the opening
- * rake, coming back five more times rather than the tears arriving by
- * themselves. That is the whole reason they are spaced 260ms apart instead of
- * 95: at 95 they were one blurred event and the marks looked self-inflicted.
- *
- * One streak per angle, and each carries its own travel vector as --tx/--ty so
- * a single keyframe serves all five.
- *
- * The bundle rotation is the same 48deg crossing the other two use: a blade
- * drawn pointing up sits at (R - 90) degrees, so R = travel + 42 puts it 48
- * across whatever direction it is going.
- *
- * [travel angle, transform, tx in vw, ty in vw, delay in ms] */
-const STREAKS = [
-  [62, "translate(-40 -120) rotate(104)", 66.7, 125.4, 0],
-  [-70, "translate(300 1010) rotate(-28)", 48.6, -133.4, 260],
-  [6, "translate(-190 250) rotate(48)", 141.2, 14.8, 520],
-  [152, "translate(560 150) rotate(194)", -125.4, 66.7, 780],
-  [-18, "translate(-150 760) rotate(24)", 135.1, -43.9, 1040],
-];
-
 const SPARKS = [
   [14, 92.8, -5.5, 4.2, 0],
   [20, 91.0, 3.4, 5.6, 30],
@@ -279,26 +216,32 @@ export default function Wolverine({
            Torn rather than drawn: feTurbulence displaces the edges, because a
            clean lens reads as a highlighter stroke. Each one opens from its
            left end as the blades pass over it. */}
-      <Gashes cls="wv-gashes-a" gashes={GASHES_A} deg={-33} />
-      <Gashes cls="wv-gashes-b" gashes={GASHES_B} deg={26} />
-
-      {/* the finale, behind the mark */}
-      <div className="wv-gashes wv-gashes-c" aria-hidden>
-        <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
-          {FLURRY.map(([x, y, deg, sc, d], i) => (
-            // scale AFTER rotate, so it shortens the tear along its own axis
-            // and leaves the thickness alone
-            <g key={i} transform={`translate(${x} ${y}) rotate(${deg}) scale(${sc} 1)`}>
-              <g className="wv-gash" style={{ "--d": `${d}ms` }}>
-                <path className="wv-gash-glow" d={GASH_D} />
-                <path className="wv-gash-void" d={GASH_D} filter="url(#wv-tear)" />
-                <path className="wv-gash-hot" d={GASH_D} filter="url(#wv-tear)" />
-                <path className="wv-gash-lip" d={GASH_D} filter="url(#wv-tear)" />
+      {/* the cuts. Each one is drawn from where its blade's tip started and
+          runs 640 forward at the pass's own angle, so it lies exactly under
+          the path that blade takes. */}
+      {PASSES.map((p, pi) => (
+        <div className={`wv-gashes wv-cut-${pi}`} key={pi} aria-hidden>
+          <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
+            {p.tears.map(([x, y], i) => (
+              // the placement lives on the OUTER g: a CSS transform on an
+              // element carrying a transform attribute replaces it outright
+              <g
+                key={i}
+                transform={`translate(${x} ${y}) rotate(${p.deg}) scale(${TEAR_SCALE} 1)`}
+              >
+                <g className="wv-gash" style={{ "--d": `${p.delay + i * 18}ms` }}>
+                  <path className="wv-gash-glow" d={GASH_D} />
+                  <path className="wv-gash-void" d={GASH_D} filter="url(#wv-tear)" />
+                  {/* the hot core is the same tear squeezed down its own
+                      middle, so the light sits INSIDE the cut */}
+                  <path className="wv-gash-hot" d={GASH_D} filter="url(#wv-tear)" />
+                  <path className="wv-gash-lip" d={GASH_D} filter="url(#wv-tear)" />
+                </g>
               </g>
-            </g>
-          ))}
-        </svg>
-      </div>
+            ))}
+          </svg>
+        </div>
+      ))}
 
       {/* motes lifting through the key — the one thing keeping the held frame
           from reading as a still */}
@@ -321,7 +264,6 @@ export default function Wolverine({
       </div>
 
       <Sparks cls="wv-sparks-a" sparks={SPARKS} />
-      <Sparks cls="wv-sparks-b" sparks={SPARKS_B} />
 
       {/* ---- the mark, lit by the cut ---- */}
       <div className="wv-markwrap">
@@ -362,20 +304,18 @@ export default function Wolverine({
         </div>
       </div>
 
-      <Claws cls="wv-claws-a" at="translate(157 898) rotate(9)" />
-      <Claws cls="wv-claws-b" at="translate(-84 741) rotate(68)" />
+      {/* the hand, once per pass */}
+      {PASSES.map((p, pi) => (
+        <Claws
+          key={pi}
+          cls={`wv-hand wv-hand-${pi}`}
+          at={p.at}
+          style={{ "--tx": `${p.tx}vw`, "--ty": `${p.ty}vw`, "--sd": `${p.delay}ms` }}
+        />
+      ))}
 
       {/* the one bundle that does not leave — see .wv-claws-hero */}
       <Claws cls="wv-claws-hero" at="translate(430 900) rotate(-37) scale(1.25)" />
-
-      {STREAKS.map(([deg, at, tx, ty, d]) => (
-        <Claws
-          key={deg}
-          cls="wv-claws-c"
-          at={at}
-          style={{ "--tx": `${tx}vw`, "--ty": `${ty}vw`, "--sd": `${d}ms` }}
-        />
-      ))}
 
       <div className="wv-grain" aria-hidden />
       <div className="wv-vignette" aria-hidden />
@@ -509,30 +449,15 @@ const CLAW_RIDGE_D =
    blade is the long one, which is the only thing that stops three parallel
    spikes reading as a fork.
 
-   THE OFFSETS ARE NOT EVEN, AND THEY CANNOT BE. Each tip still has to land on
-   its own tear, and the tears are 60 apart along n = (0.5446, 0.8387). While
-   the blades pointed along the cut that was trivial — a local +x offset was
-   exactly +n, so 60 apart in the table meant 60 apart on the ground. Now that
-   they stand across it, a blade's tip position depends on its LENGTH as well
-   as its offset, because the blade axis has an n-component of about -0.74. A
-   4% length difference moves a tip 8 units off its line; the three lengths
-   below span 4.5%.
-
-   So the offsets are solved rather than chosen. With x_hat . n = 0.6691 and
-   a_hat(phi) . n = sin(phi) 0.5446 - cos(phi) 0.8387:
-
-     middle  d 0   L 212.8  phi 9    ->  n = -158.1
-     left    d ?   L 203.7  phi 6    ->  n = -158.1 - 60  ->  d = -89.4
-     right   d ?   L 206.7  phi 12   ->  n = -158.1 + 60  ->  d = +71.8
-
-   which lands all three within 0.2 units of their tears. Change a length here
-   and the offset beside it has to be re-solved, or that blade drifts off the
-   cut it is making. The lengths are kept within 4.5% of each other precisely
-   to keep that correction small enough to read as a natural fan. */
+   60 APART BECAUSE THE TEARS ARE. With the blades pointing along the travel,
+   the bundle's local +x axis IS the perpendicular to it, so an offset here is
+   the same number on the ground and every tip rides its own cut by
+   construction. No splay, for the same reason: a fanned tip walks off its line
+   over the length of the blade. */
 const CLAWS = [
-  [-89, -3, 1.34],
+  [-60, 0, 1.34],
   [0, 0, 1.4],
-  [72, 3, 1.36],
+  [60, 0, 1.36],
 ];
 
 /* One tear, 700 long and about 15 across at its widest, pointed at both ends.
