@@ -50,13 +50,19 @@ import useLogo from "../Utils/useLogo";
 // p2 SNIKT — three blades unsheathe at the lower left and hold, glinting
 // p3 the rake: they cross the frame and exit, three gashes tear open behind
 //    them, sparks come off the cut, and the mark lights as the slash passes
-// p4 the metal settles — adamantium specular travels the wordmark, the gashes
-//    cool from white-hot down to ember
-// p5 WOODBRIDGE
+// p4 THE SECOND RAKE, the other way: three more tear open across the first
+//    three, their own sparks come off them, and the first three cool to ember
+//    underneath while these are still white-hot
+// p5 the metal settles — adamantium specular travels the wordmark, the second
+//    cut cools, WOODBRIDGE
+//
+// The second rake is what the ending was missing. One set of three is a cut;
+// two crossing is a mauling, and it gives the last beat an EVENT instead of a
+// slow cool-down, which is what the frame used to end on.
 //
 // Plays ONCE and holds — loopAt is null. The embers, the gash flicker and the
 // specular travel keep the held frame alive; that is ambient, not a restart.
-const CUES = [160, 1480, 2420, 3320, 4060];
+const CUES = [160, 1480, 2420, 3320, 4560];
 
 // Slow motes lifting through the key light — the one thing keeping the held
 // frame from reading as a still. [left%, top%, size in vw, opacity, duration
@@ -96,16 +102,57 @@ const EMBERS = [
 //
 // Each entry is the left-hand END of that tear, i.e. the point on its line
 // 350 units back along the cut. [x, y, opening delay in ms]
-const GASHES = [
+const GASHES_A = [
   [-11, 747, 0],
   [22, 797, 55],
   [55, 848, 110],
+];
+
+/* THE SECOND RAKE, and the reason the ending has anything left to do.
+ *
+ * One set of three is a cut. Two sets crossing is a mauling — and crucially it
+ * gives the last beat an event of its own instead of a slow cool-down, which
+ * is what the frame was ending on.
+ *
+ * It runs at +26deg, the other way, so the two bundles make an X rather than a
+ * hatch. Where they cross is chosen, not left to chance: the intersection of
+ * the first tears with these lands at about (176, 625) — under the lockup,
+ * which sits roughly x 86-306, y 342-502, and inside the warm key where the
+ * ember glow wants to be. The nearest of these passes the lockup's lower edge
+ * with about 80 units to spare.
+ *
+ * Perpendicular here is n = (-0.4384, 0.8988), and they are 60 apart along it
+ * for the same reason the first three are: claw marks that are not parallel
+ * and evenly spaced stop reading as claw marks. Same left-end-first
+ * convention. */
+const GASHES_B = [
+  [-40, 520, 0],
+  [-66, 574, 55],
+  [-92, 628, 110],
 ];
 
 // Sparks off the cut, strung along the middle tear's line — which runs from
 // (0, 819) to (390, 566), so y falls 0.3% of the frame for every 1% of x.
 // Fixed rather than random so every take is identical.
 // [left%, top%, dx in vw, dy in vw, delay in ms]
+/* and the same again along the second cut, which runs (-66, 574) to (589, 827)
+   — y falls 0.225% of the frame for every 1% of x */
+const SPARKS_B = [
+  [12.0, 74.5, -5.2, 3.4, 0],
+  [18.3, 75.9, 3.6, 4.1, 24],
+  [24.6, 77.4, -4.4, 4.8, 48],
+  [30.9, 78.8, 5.0, 5.5, 72],
+  [37.2, 80.2, -3.4, 6.2, 96],
+  [43.5, 81.6, 5.6, 3.4, 120],
+  [49.8, 83.0, -4.9, 4.1, 144],
+  [56.1, 84.5, 3.0, 4.8, 168],
+  [62.4, 85.9, -4.4, 5.5, 192],
+  [68.7, 87.3, 5.9, 6.2, 216],
+  [75.0, 88.7, -3.3, 3.4, 240],
+  [81.3, 90.1, 4.2, 4.1, 264],
+  [87.6, 91.6, -5.4, 4.8, 288],
+];
+
 const SPARKS = [
   [14, 92.8, -5.5, 4.2, 0],
   [20, 91.0, 3.4, 5.6, 30],
@@ -156,25 +203,8 @@ export default function Wolverine({
            Torn rather than drawn: feTurbulence displaces the edges, because a
            clean lens reads as a highlighter stroke. Each one opens from its
            left end as the blades pass over it. */}
-      <div className="wv-gashes" aria-hidden>
-        <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
-          {GASHES.map(([x, y, d], i) => (
-            // the placement lives on the OUTER g: a CSS transform on an
-            // element carrying a transform attribute replaces it outright, so
-            // animating this same node would throw the tear to the origin
-            <g key={i} transform={`translate(${x} ${y}) rotate(-33)`}>
-              <g className="wv-gash" style={{ "--d": `${d}ms` }}>
-                <path className="wv-gash-glow" d={GASH_D} />
-                <path className="wv-gash-void" d={GASH_D} filter="url(#wv-tear)" />
-                {/* the hot core is the same tear squeezed down its own middle,
-                    so the light sits INSIDE the cut instead of filling it */}
-                <path className="wv-gash-hot" d={GASH_D} filter="url(#wv-tear)" />
-                <path className="wv-gash-lip" d={GASH_D} filter="url(#wv-tear)" />
-              </g>
-            </g>
-          ))}
-        </svg>
-      </div>
+      <Gashes cls="wv-gashes-a" gashes={GASHES_A} deg={-33} />
+      <Gashes cls="wv-gashes-b" gashes={GASHES_B} deg={26} />
 
       {/* motes lifting through the key — the one thing keeping the held frame
           from reading as a still */}
@@ -196,15 +226,8 @@ export default function Wolverine({
         ))}
       </div>
 
-      <div className="wv-sparks" aria-hidden>
-        {SPARKS.map(([l, t, dx, dy, d], i) => (
-          <span
-            key={i}
-            className="wv-spark"
-            style={{ left: `${l}%`, top: `${t}%`, "--dx": `${dx}vw`, "--dy": `${dy}vw`, "--d": `${d}ms` }}
-          />
-        ))}
-      </div>
+      <Sparks cls="wv-sparks-a" sparks={SPARKS} />
+      <Sparks cls="wv-sparks-b" sparks={SPARKS_B} />
 
       {/* ---- the mark, lit by the cut ---- */}
       <div className="wv-markwrap">
@@ -248,11 +271,66 @@ export default function Wolverine({
         </div>
       </div>
 
-      {/* ---- the blades ----
-           Three of them, no hand: a fist drawn at this size is four knuckles
-           of mud, and the blades are the whole read anyway. */}
-      <div className="wv-claws" aria-hidden>
-        <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
+      <Claws cls="wv-claws-a" at="translate(157 898) rotate(9)" />
+      <Claws cls="wv-claws-b" at="translate(-84 741) rotate(68)" />
+
+      <div className="wv-grain" aria-hidden />
+      <div className="wv-vignette" aria-hidden />
+    </div>
+  );
+}
+
+/* One bundle of three tears. The placement lives on the OUTER g: a CSS
+   transform on an element carrying a transform attribute replaces it outright,
+   so animating this same node would throw the tear back to the origin. */
+function Gashes({ cls, gashes, deg }) {
+  return (
+    <div className={`wv-gashes ${cls}`} aria-hidden>
+      <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
+        {gashes.map(([x, y, d], i) => (
+          <g key={i} transform={`translate(${x} ${y}) rotate(${deg})`}>
+            <g className="wv-gash" style={{ "--d": `${d}ms` }}>
+              <path className="wv-gash-glow" d={GASH_D} />
+              <path className="wv-gash-void" d={GASH_D} filter="url(#wv-tear)" />
+              {/* the hot core is the same tear squeezed down its own middle,
+                  so the light sits INSIDE the cut instead of filling it */}
+              <path className="wv-gash-hot" d={GASH_D} filter="url(#wv-tear)" />
+              <path className="wv-gash-lip" d={GASH_D} filter="url(#wv-tear)" />
+            </g>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function Sparks({ cls, sparks }) {
+  return (
+    <div className={`wv-sparks ${cls}`} aria-hidden>
+      {sparks.map(([l, t, dx, dy, d], i) => (
+        <span
+          key={i}
+          className="wv-spark"
+          style={{ left: `${l}%`, top: `${t}%`, "--dx": `${dx}vw`, "--dy": `${dy}vw`, "--d": `${d}ms` }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ---- the blades ----
+     Three of them, no hand: a fist drawn at this size is four knuckles of mud,
+     and the blades are the whole read anyway.
+
+     Both bundles use the SAME offsets, which is not luck. The solve depends
+     only on the angle between the blade axis and the cut, and on the blade
+     lengths — and the second bundle crosses its cut at the same 48deg with the
+     same three lengths, so it comes out at the same -89 / 0 / +72. Change the
+     crossing angle on one and its offsets stop matching the other's. */
+function Claws({ cls, at }) {
+  return (
+    <div className={`wv-claws ${cls}`} aria-hidden>
+      <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
           {/* rotate(9), not 57. At 57 the blade axis lay exactly ALONG the cut
               — each blade sat on top of the very tear it was supposed to be
               opening, and three blades travelling point-first down their own
@@ -269,8 +347,10 @@ export default function Wolverine({
               off the bottom edge and the blades rise into shot. The middle
               blade's tip lands at (190.3, 687.8), which is 200.7 units along
               the middle tear from its origin and 0.1 units off its centre
-              line. */}
-          <g transform="translate(157 898) rotate(9)">
+              line. The second bundle is the same construction on the +26deg
+              cut: rotate(68), knuckle at (-84, 741), which is off the left
+              edge. */}
+          <g transform={at}>
             {CLAWS.map(([dx, rot, len], i) => (
               <g key={i} transform={`translate(${dx} 0) rotate(${rot})`}>
                 {/* the unsheathe scales this inner g from its base; the
@@ -291,11 +371,7 @@ export default function Wolverine({
                 than the flat cuts it was hiding. */}
             <ellipse className="wv-blade-root" cx="-8" cy="18" rx="140" ry="54" />
           </g>
-        </svg>
-      </div>
-
-      <div className="wv-grain" aria-hidden />
-      <div className="wv-vignette" aria-hidden />
+      </svg>
     </div>
   );
 }
@@ -306,10 +382,20 @@ export default function Wolverine({
  * register with the artwork. The wings run off the top of the box on purpose;
  * the element is overflow: visible.
  *
- * Everything that says "wolverine" here is silhouette: two long wings flaring
- * up and outward from the temples, a shallow notch between them, and a lower
- * edge that comes to a point over the bridge of the nose. The colour is doing
- * far less work than the outline.
+ * IT IS THE WHOLE HEAD NOW, not a cowl worn over the ninja's. The note at the
+ * top of this file used to say the mask dresses the mark rather than replacing
+ * it, and for the head that is no longer true by request: a tan shape sitting
+ * on a black hood reads as a ninja in a Wolverine hat, and what was wanted was
+ * Wolverine. So the mask covers the skull, and the eyes are ITS openings
+ * rather than the artwork's slits showing through a gap in it.
+ *
+ * The rest of the lockup is untouched — "CODE NINJAS" is still the artwork's
+ * own three regions in adamantium and brand blue, which is what keeps this a
+ * themed logo rather than a drawing of somebody else's character.
+ *
+ * Everything that says "wolverine" here is silhouette: two wings flaring up
+ * and outward from the temples, a shallow notch between them, and the swept
+ * openings. The colour is doing far less work than the outline.
  */
 function Cowl() {
   return (
@@ -319,17 +405,7 @@ function Cowl() {
           <clipPath id="wv-crownclip">
             <path d={CROWN_D} />
           </clipPath>
-          <clipPath id="wv-headclip">
-            <circle cx="50" cy="50" r="50" />
-          </clipPath>
         </defs>
-
-        {/* the shadow the cowl throws onto the hood below its edge. Clipped to
-            the head, and a gradient rather than a flat band so it dies out
-            before it reaches the eyes and turns them into a squint. */}
-        <g clipPath="url(#wv-headclip)">
-          <path className="wv-browshade" d={BROW_SHADE_D} />
-        </g>
 
         <path className="wv-crown" d={CROWN_D} />
 
@@ -361,8 +437,16 @@ function Cowl() {
             near-copy of a curve does not sit on it, and the miss reads as a
             stray pencil line beside the head. */}
         <path className="wv-crown-rim" d={RIM_D} />
-        {/* and the cowl's cut edge lying on the hood */}
-        <path className="wv-crown-lip" d={LIP_D} />
+
+        {/* ---- the openings ----
+            Cut after the modelling and after the edge, so nothing washes over
+            them: these are holes in the mask and holes do not take a
+            highlight. The bridge between them is the mask's own material
+            catching a little light, which is what keeps the two eyes reading
+            as one piece rather than as two stickers. */}
+        <path className="wv-eye" d={EYE_L_D} />
+        <path className="wv-eye" d={EYE_R_D} />
+        <path className="wv-bridge" d={BRIDGE_D} />
       </svg>
     </div>
   );
@@ -400,26 +484,30 @@ function Cowl() {
    over the slits themselves it stays at y 35-40, and the centre point at 43
    drops between them, not onto them. */
 const CROWN_D =
-  "M4 60 C1 52, -0.5 46, 0 40 C0.6 32, 2 27, 4 23 C0 8, -8 -12, -16 -31 C-4 -22, 14 -10, 30 -3 C37 -1, 45 -2, 50 -5 C55 -2, 63 -1, 70 -3 C86 -10, 104 -22, 116 -31 C108 -12, 100 8, 96 23 C98 27, 99.4 32, 100 40 C100.5 46, 99 52, 96 60 C93 50, 89 44, 82 40 C74 36, 64 35, 57 37 C53 38, 51 40, 50 43 C49 40, 47 38, 43 37 C36 35, 26 36, 18 40 C11 44, 7 50, 4 60 Z";
+  "M4 66 C1 58, -0.5 50, 0 42 C0.6 34, 2 28, 4 24 C0 8, -8 -12, -16 -31 C-4 -22, 14 -10, 30 -3 C37 -1, 45 -2, 50 -5 C55 -2, 63 -1, 70 -3 C86 -10, 104 -22, 116 -31 C108 -12, 100 8, 96 24 C98 28, 99.4 34, 100 42 C100.5 50, 99 58, 96 66 C92 77, 84 85, 74 89 C66 92, 58 93, 50 93 C42 93, 34 92, 26 89 C16 85, 8 77, 4 66 Z";
 
-/* just the lower edge of it, to lay a hairline on the hood */
-const LIP_D =
-  "M4 60 C7 50, 11 44, 18 40 C26 36, 36 35, 43 37 C47 38, 49 40, 50 43 C51 40, 53 38, 57 37 C64 35, 74 36, 82 40 C89 44, 93 50, 96 60";
+/* The mask's own eye openings. Swept almonds — outer corner high and out,
+   inner corner low and pointed — because that slant IS the expression; a level
+   opening is a domino mask and reads as a raccoon.
 
-/* The band of shadow the cowl throws below that edge. Its lower boundary runs
-   from y 71 at the temples up to y 57 at the centre, so the shape's box tops
-   out at y 35 and the gradient — most of its fall inside the first third —
-   is spent by about y 47. The eye slits start at 47.5. It reaches the band and
-   dies exactly as it gets there, which is what stops the ninja squinting. */
-const BROW_SHADE_D =
-  "M4 60 C7 50, 11 44, 18 40 C26 36, 36 35, 43 37 C47 38, 49 40, 50 43 C51 40, 53 38, 57 37 C64 35, 74 36, 82 40 C89 44, 93 50, 96 60 C95 67, 92 70, 89 71 C77 62, 63 58, 50 57 C37 58, 23 62, 11 71 C8 70, 5 67, 4 60 Z";
+   They sit over the artwork's own slits (x 21.8-33.7 and 64.7-76.2, y 47.5-57.5)
+   but they are wider and steeper than those, so the shape you read is the
+   mask's and not the ninja's showing through it. */
+const EYE_L_D =
+  "M10 40 C22 40, 34 45, 43 53 C44 54.5, 43.5 56, 41 55.5 C29 54, 17 50, 11 46 C9 44, 8.6 41, 10 40 Z";
+const EYE_R_D =
+  "M90 40 C78 40, 66 45, 57 53 C56 54.5, 56.5 56, 59 55.5 C71 54, 83 50, 89 46 C91 44, 91.4 41, 90 40 Z";
+
+/* the ridge between them, holding a little of the key — it is what keeps the
+   two openings reading as one mask rather than as two stickers */
+const BRIDGE_D = "M50 44 C51.6 49, 52 54, 50 60 C48 54, 48.4 49, 50 44 Z";
 
 /* the lit inner plane of the left wing, mirrored for the right */
 const WING_FACET_D = "M-16 -31 C-4 -22, 14 -10, 30 -3 C16 -9, -2 -20, -16 -31 Z";
 
 /* the key rim: the left silhouette and the left wing's outer edge, verbatim */
 const RIM_D =
-  "M4 60 C1 52, -0.5 46, 0 40 C0.6 32, 2 27, 4 23 C0 8, -8 -12, -16 -31";
+  "M4 66 C1 58, -0.5 50, 0 42 C0.6 34, 2 28, 4 24 C0 8, -8 -12, -16 -31";
 
 /* One blade, base at the origin, pointing up, 152 long and 34 across, scaled
    to about 200 by the length factors below. The taper is nearly all in the

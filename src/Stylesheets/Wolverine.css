@@ -182,7 +182,8 @@
     transform 340ms var(--d) cubic-bezier(0.16, 0.9, 0.28, 1),
     opacity 120ms var(--d) linear;
 }
-.wv-p3 .wv-gash, .wv-p4 .wv-gash, .wv-p5 .wv-gash {
+.wv-p3 .wv-gashes-a .wv-gash, .wv-p4 .wv-gashes-a .wv-gash, .wv-p5 .wv-gashes-a .wv-gash,
+.wv-p4 .wv-gashes-b .wv-gash, .wv-p5 .wv-gashes-b .wv-gash {
   transform: scaleX(1);
   opacity: 1;
 }
@@ -204,7 +205,8 @@
   opacity: 0.95;
   transition: opacity 1500ms ease;
 }
-.wv-p4 .wv-gash-hot, .wv-p5 .wv-gash-hot {
+.wv-p4 .wv-gashes-a .wv-gash-hot, .wv-p5 .wv-gashes-a .wv-gash-hot,
+.wv-p5 .wv-gashes-b .wv-gash-hot {
   opacity: 0.44;
   animation: wv-emberflicker 3400ms ease-in-out infinite;
 }
@@ -221,7 +223,8 @@
   stroke-width: 0.9;
   transition: stroke 1500ms ease;
 }
-.wv-p4 .wv-gash-lip, .wv-p5 .wv-gash-lip {
+.wv-p4 .wv-gashes-a .wv-gash-lip, .wv-p5 .wv-gashes-a .wv-gash-lip,
+.wv-p5 .wv-gashes-b .wv-gash-lip {
   stroke: rgba(255, 176, 108, 0.46);
 }
 
@@ -236,7 +239,8 @@
   opacity: 0.8;
   transition: opacity 1500ms ease;
 }
-.wv-p4 .wv-gash-glow, .wv-p5 .wv-gash-glow {
+.wv-p4 .wv-gashes-a .wv-gash-glow, .wv-p5 .wv-gashes-a .wv-gash-glow,
+.wv-p5 .wv-gashes-b .wv-gash-glow {
   opacity: 0.26;
 }
 
@@ -260,7 +264,8 @@
   opacity: 0;
   mix-blend-mode: screen;
 }
-.wv-p3 .wv-spark, .wv-p4 .wv-spark, .wv-p5 .wv-spark {
+.wv-p3 .wv-sparks-a .wv-spark, .wv-p4 .wv-sparks-a .wv-spark, .wv-p5 .wv-sparks-a .wv-spark,
+.wv-p4 .wv-sparks-b .wv-spark, .wv-p5 .wv-sparks-b .wv-spark {
   animation: wv-spark 820ms var(--d) cubic-bezier(0.12, 0.7, 0.3, 1) both;
 }
 @keyframes wv-spark {
@@ -294,15 +299,31 @@
   display: block;
   overflow: visible;
 }
-.wv-p2 .wv-claws {
+/* only the first bundle unsheathes on camera. The second arrives already
+   drawn, mid-swing, on p4 — a second SNIKT would be the same beat twice and
+   would tell the viewer to expect a third. */
+.wv-p2 .wv-claws-a {
   opacity: 1;
 }
 /* One animation carries the whole rake — translate, motion blur and the exit —
    because a transition can't blur mid-travel and land clean. `both` holds the
    final frame, so p4 and p5 keep the blades gone. */
-.wv-p3 .wv-claws, .wv-p4 .wv-claws, .wv-p5 .wv-claws {
+.wv-p3 .wv-claws-a, .wv-p4 .wv-claws-a, .wv-p5 .wv-claws-a {
   opacity: 1;
   animation: wv-rake var(--rake) cubic-bezier(0.5, 0.02, 0.62, 1) both;
+}
+
+/* the second bundle, on the +26deg axis. Same 142vw of travel, resolved onto
+   that axis instead: 142 x (0.8988, 0.4384). */
+.wv-p4 .wv-claws-b, .wv-p5 .wv-claws-b {
+  opacity: 1;
+  animation: wv-rake-b var(--rake) cubic-bezier(0.5, 0.02, 0.62, 1) both;
+}
+@keyframes wv-rake-b {
+  0% { transform: translate(0, 0); filter: none; opacity: 1; }
+  16% { filter: blur(0.9vw); }
+  72% { transform: translate(100.7vw, 49.1vw); filter: blur(0.7vw); opacity: 1; }
+  100% { transform: translate(127.6vw, 62.3vw); filter: blur(0.4vw); opacity: 0; }
 }
 @keyframes wv-rake {
   0% { transform: translate(0, 0); filter: none; opacity: 1; }
@@ -619,8 +640,16 @@
 .wv-crown-shade {
   fill: url(#wv-crownshade);
 }
-.wv-browshade {
-  fill: url(#wv-browfill);
+/* The mask's openings. Not "dark tan" — actual holes, so they have to be the
+   darkest thing on the head by a clear margin or the mask reads as painted
+   rather than worn. Nothing is drawn over them: they are cut after the
+   modelling and after the silhouette edge, because a hole does not take a
+   highlight. */
+.wv-eye {
+  fill: #0d0906;
+}
+.wv-bridge {
+  fill: rgba(141, 90, 25, 0.55);
 }
 
 /* All the modelling is soft and low-contrast on purpose. Anything that can be
@@ -653,14 +682,11 @@
   stroke-width: 1.6;
   stroke-linecap: round;
 }
-/* the cut edge of the cowl, sitting ON the hood — a hairline here is what
-   stops it looking painted on */
-.wv-crown-lip {
-  fill: none;
-  stroke: rgba(255, 214, 140, 0.42);
-  stroke-width: 1.1;
-  stroke-linecap: round;
-}
+/* .wv-crown-lip and .wv-browshade lived here. Both existed to sit the cowl ON
+   the ninja's hood — a hairline along its cut edge and a band of shadow under
+   it. The mask covers the whole head now, so there is no hood under it to
+   throw anything onto, and a lip drawn across the middle of a full mask is a
+   seam where the material has none. */
 
 /* ====================================================================
    TYPE — WOODBRIDGE reads as the lockup's second line
