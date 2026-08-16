@@ -253,11 +253,24 @@ export default function Wolverine({
            of mud, and the blades are the whole read anyway. */}
       <div className="wv-claws" aria-hidden>
         <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
-          {/* rotate(57) takes a blade drawn pointing UP round to the -33deg
-              cut, so the tips lead the travel. The knuckle sits on the MIDDLE
-              tear's line, 280 units back along it, so the hand is where the
-              cut it leaves is. */}
-          <g transform="translate(81 759) rotate(57)">
+          {/* rotate(9), not 57. At 57 the blade axis lay exactly ALONG the cut
+              — each blade sat on top of the very tear it was supposed to be
+              opening, and three blades travelling point-first down their own
+              grooves is a thrust with three spears, not a rake. Nobody draws a
+              slash that way, because the mark is invisible behind the thing
+              that made it.
+
+              At 9 the blades stand nearly upright and cross the cut at 48deg,
+              which is the image everybody recognises. The travel is unchanged
+              — still the -33deg axis — so the tips still drag along their own
+              tears; they just no longer hide them.
+
+              The knuckle is at (157, 898), below the 844 frame, so the hand is
+              off the bottom edge and the blades rise into shot. The middle
+              blade's tip lands at (190.3, 687.8), which is 200.7 units along
+              the middle tear from its origin and 0.1 units off its centre
+              line. */}
+          <g transform="translate(157 898) rotate(9)">
             {CLAWS.map(([dx, rot, len], i) => (
               <g key={i} transform={`translate(${dx} 0) rotate(${rot})`}>
                 {/* the unsheathe scales this inner g from its base; the
@@ -276,7 +289,7 @@ export default function Wolverine({
                 the first pass used: a rect's own edges showed as a hard dark
                 slab lying across the lower corner, which is a worse artefact
                 than the flat cuts it was hiding. */}
-            <ellipse className="wv-blade-root" cx="0" cy="18" rx="124" ry="54" />
+            <ellipse className="wv-blade-root" cx="-8" cy="18" rx="140" ry="54" />
           </g>
         </svg>
       </div>
@@ -359,44 +372,54 @@ function Cowl() {
    and the crown are a single silhouette — two shapes butted together always
    show their seam once anything is drawn over them.
 
-   Four things separate this from the CROWN the first pass shipped, and they
-   are all silhouette rather than colour:
+   Four things separate this from the version before it, and they are all
+   silhouette rather than colour:
 
-   1. The wings are SWEPT, not stood up. Their tips are at (-30, -34) and
-      (130, -34) — further out to the side than up — so the head reads broad.
-      The first pass had them at 24 out and 40 up and it was a tiara.
-   2. The cowl comes DOWN THE SIDES to y = 72, well past the widest point of
-      the head, so it wraps the skull instead of sitting on top of it. A tan
-      shape that stops above the eyes is a hat.
-   3. The lower edge is a double scallop: a cheek piece down at each temple, up
-      over each eye, and down to a point at y = 52 on the bridge of the nose.
+   1. THE CROWN COVERS THE SKULL. The head is a circle r 50 at (50, 50), so its
+      top edge is y = 0 at x = 50 and y = 2.6 at x = 34. The old notch bottomed
+      out at y = 15, which is below both — it left a dark lens of bare head
+      sitting between the wings, and a mask with a hole in the top of it is a
+      pair of horns. This one bottoms out at y = -5 and clears the circle the
+      whole way across.
+   2. THE WINGS SPRING FROM THE TEMPLES. Their inner edges start around x = 30
+      and 70; the old ones started at 32 and 68 but ran from tips 30 units
+      outside the head, so each wing was a triangle spanning half the skull and
+      the pair read as a moth. Tips are at (-16, -31) and (116, -31) now: 16
+      past the head rather than 30, and shorter than they are wide-set.
+   3. The cowl comes DOWN THE SIDES to y = 60, past the widest point of the
+      head, so it wraps the skull instead of sitting on top of it. A tan shape
+      that stops above the eyes is a hat.
+   4. The lower edge is a double scallop: a cheek piece down at each temple, up
+      over each eye, and down to a point at y = 43 on the bridge of the nose.
       That centre point is the most recognisable line on the mask.
-   4. The notch between the wings is shallow and wide (down to y = 15 across
-      x 32-68) rather than a narrow deep V, which is what a crown has.
 
-   The artwork's eye SLITS are at x 21.8-33.7 and 64.7-76.2, y 47.5-57.5 —
-   narrower than the light band around them, which is why the edge can run down
-   to y = 48 at x = 14 and still leave the eyes completely clear. It crosses
-   above them at about y 42, which reads as a brow overhanging the eyes. */
+   THE EYES ARE THE CONSTRAINT. The artwork's light band spans x 7.98-91.8,
+   y 40.4-60, and the SLITS inside it are x 21.8-33.7 and 64.7-76.2, y 47.5-57.5
+   — narrower than the band around them. So the mask may come down to y = 60 at
+   x = 4 and 96, outboard of both slits, and still leave the eyes untouched;
+   over the slits themselves it stays at y 35-40, and the centre point at 43
+   drops between them, not onto them. */
 const CROWN_D =
-  "M6 72 C2.4 67, 0.4 60, 0 52 C0 46, 1.4 38, 4 30 C-2 14, -15 -12, -30 -34 C-10 -24, 14 -6, 32 2 C39 5, 46 9, 50 15 C54 9, 61 5, 68 2 C86 -6, 110 -24, 130 -34 C115 -12, 102 14, 96 30 C98.6 38, 100 46, 100 52 C100 60, 97.6 67, 94 72 C93 62, 91 54, 86 48 C82 44, 74 41, 66 42 C60 44, 54 47, 50 52 C46 47, 40 44, 34 42 C26 41, 18 44, 14 48 C9 54, 7 62, 6 72 Z";
+  "M4 60 C1 52, -0.5 46, 0 40 C0.6 32, 2 27, 4 23 C0 8, -8 -12, -16 -31 C-4 -22, 14 -10, 30 -3 C37 -1, 45 -2, 50 -5 C55 -2, 63 -1, 70 -3 C86 -10, 104 -22, 116 -31 C108 -12, 100 8, 96 23 C98 27, 99.4 32, 100 40 C100.5 46, 99 52, 96 60 C93 50, 89 44, 82 40 C74 36, 64 35, 57 37 C53 38, 51 40, 50 43 C49 40, 47 38, 43 37 C36 35, 26 36, 18 40 C11 44, 7 50, 4 60 Z";
 
 /* just the lower edge of it, to lay a hairline on the hood */
 const LIP_D =
-  "M6 72 C7 62, 9 54, 14 48 C18 44, 26 41, 34 42 C40 44, 46 47, 50 52 C54 47, 60 44, 66 42 C74 41, 82 44, 86 48 C91 54, 93 62, 94 72";
+  "M4 60 C7 50, 11 44, 18 40 C26 36, 36 35, 43 37 C47 38, 49 40, 50 43 C51 40, 53 38, 57 37 C64 35, 74 36, 82 40 C89 44, 93 50, 96 60";
 
-/* the band of shadow the cowl throws below that edge. It reaches the eye band
-   on purpose and dies out inside it — the fill is a gradient with most of its
-   fall in the first sixth, not a flat tone, or the ninja is squinting. */
+/* The band of shadow the cowl throws below that edge. Its lower boundary runs
+   from y 71 at the temples up to y 57 at the centre, so the shape's box tops
+   out at y 35 and the gradient — most of its fall inside the first third —
+   is spent by about y 47. The eye slits start at 47.5. It reaches the band and
+   dies exactly as it gets there, which is what stops the ninja squinting. */
 const BROW_SHADE_D =
-  "M6 72 C7 62, 9 54, 14 48 C18 44, 26 41, 34 42 C40 44, 46 47, 50 52 C54 47, 60 44, 66 42 C74 41, 82 44, 86 48 C91 54, 93 62, 94 72 C93 78, 90 81, 87 82 C75 72, 62 68, 50 66 C38 68, 25 72, 13 82 C10 81, 7 78, 6 72 Z";
+  "M4 60 C7 50, 11 44, 18 40 C26 36, 36 35, 43 37 C47 38, 49 40, 50 43 C51 40, 53 38, 57 37 C64 35, 74 36, 82 40 C89 44, 93 50, 96 60 C95 67, 92 70, 89 71 C77 62, 63 58, 50 57 C37 58, 23 62, 11 71 C8 70, 5 67, 4 60 Z";
 
 /* the lit inner plane of the left wing, mirrored for the right */
-const WING_FACET_D = "M-30 -34 C-10 -24, 14 -6, 32 2 C18 -4, -2 -18, -30 -34 Z";
+const WING_FACET_D = "M-16 -31 C-4 -22, 14 -10, 30 -3 C16 -9, -2 -20, -16 -31 Z";
 
 /* the key rim: the left silhouette and the left wing's outer edge, verbatim */
 const RIM_D =
-  "M6 72 C2.4 67, 0.4 60, 0 52 C0 46, 1.4 38, 4 30 C-2 14, -15 -12, -30 -34";
+  "M4 60 C1 52, -0.5 46, 0 40 C0.6 32, 2 27, 4 23 C0 8, -8 -12, -16 -31";
 
 /* One blade, base at the origin, pointing up, 152 long and 34 across, scaled
    to about 200 by the length factors below. The taper is nearly all in the
@@ -413,16 +436,30 @@ const CLAW_RIDGE_D =
    blade is the long one, which is the only thing that stops three parallel
    spikes reading as a fork.
 
-   The offsets are 60 apart because THE GASHES ARE 60 APART. In the rotated
-   frame a local +x offset is exactly +n, so each blade rides the tear it cuts;
-   with the blades 20 apart and the tears 72, as the first pass had it, the
-   rake and its marks were two unrelated events that happened to overlap. The
-   splay is kept to 3deg for the same reason — at this spacing a bigger fan
-   pulls the outer tips off their lines by the end of the blade. */
+   THE OFFSETS ARE NOT EVEN, AND THEY CANNOT BE. Each tip still has to land on
+   its own tear, and the tears are 60 apart along n = (0.5446, 0.8387). While
+   the blades pointed along the cut that was trivial — a local +x offset was
+   exactly +n, so 60 apart in the table meant 60 apart on the ground. Now that
+   they stand across it, a blade's tip position depends on its LENGTH as well
+   as its offset, because the blade axis has an n-component of about -0.74. A
+   4% length difference moves a tip 8 units off its line; the three lengths
+   below span 4.5%.
+
+   So the offsets are solved rather than chosen. With x_hat . n = 0.6691 and
+   a_hat(phi) . n = sin(phi) 0.5446 - cos(phi) 0.8387:
+
+     middle  d 0   L 212.8  phi 9    ->  n = -158.1
+     left    d ?   L 203.7  phi 6    ->  n = -158.1 - 60  ->  d = -89.4
+     right   d ?   L 206.7  phi 12   ->  n = -158.1 + 60  ->  d = +71.8
+
+   which lands all three within 0.2 units of their tears. Change a length here
+   and the offset beside it has to be re-solved, or that blade drifts off the
+   cut it is making. The lengths are kept within 4.5% of each other precisely
+   to keep that correction small enough to read as a natural fan. */
 const CLAWS = [
-  [-60, -3, 1.22],
+  [-89, -3, 1.34],
   [0, 0, 1.4],
-  [60, 3, 1.26],
+  [72, 3, 1.36],
 ];
 
 /* One tear, 700 long and about 15 across at its widest, pointed at both ends.
