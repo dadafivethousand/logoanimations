@@ -244,6 +244,29 @@
   opacity: 0.26;
 }
 
+/* ---- the bundle that stays ----
+   Every other set of claws leaves — that is what a rake is. But the frame was
+   ending on marks alone, so this one arrives last, out of the bottom right,
+   and comes to rest across the lower corner instead of exiting. It is the one
+   thing here with no exit in its keyframes.
+
+   Placed at rotate(-37) with its tips reaching (303, 730): below the lockup's
+   502 and well clear of it, so the blades read against the torn ground rather
+   than across the wordmark. Scaled 1.25 because it is the hero of the last
+   frame rather than a thing passing through it. */
+.wv-claws-hero {
+  opacity: 0;
+}
+.wv-p6 .wv-claws-hero {
+  opacity: 1;
+  animation: wv-hero 700ms 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes wv-hero {
+  0% { transform: translate(64vw, 44vw); filter: blur(1.1vw); opacity: 0; }
+  22% { opacity: 1; }
+  100% { transform: translate(0, 0); filter: blur(0); opacity: 1; }
+}
+
 /* ---- p6: the flurry ----
    Fifteen more tears, all over the frame, opening in a fast cascade. They are
    NOT scoped away from the lockup like the other two bundles: this layer is
@@ -518,21 +541,6 @@
   aspect-ratio: var(--logo-aspect, 2.17);
 }
 
-.wv-head {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 58%;
-  overflow: hidden;
-}
-.wv-headbox {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  aspect-ratio: var(--logo-aspect, 2.17);
-}
 
 /* ---- the wordmark: adamantium ---- */
 
@@ -616,110 +624,49 @@
   );
 }
 
-/* ---- the head: hide under the cowl, and the eye band ---- */
+/* .wv-head / .wv-headbox / .wv-plate-hide / .wv-plate-band lived here — the
+   artwork's hood in dark hide and its eye band lit warm, the top half of the
+   --logo-dark split at 58%. Nothing renders them any more: the mask is the
+   head. The wordmark's half of that split is still below.
 
-.wv-plate-hide {
-  -webkit-mask-image: var(--logo-dark, var(--logo));
-  mask-image: var(--logo-dark, var(--logo));
-  background: linear-gradient(
-    28deg,
-    var(--hide-hi) 0%,
-    var(--hide) 42%,
-    var(--hide-lo) 100%
-  );
-}
-
-/* The eye band, lit warm. The artwork's own slits are part of the dark region,
-   so they come through as the eyes — no drawn eye can register with a raster
-   as well as the raster's own. */
-.wv-plate-band {
-  -webkit-mask-image: var(--logo-light, none);
-  mask-image: var(--logo-light, none);
-  background: linear-gradient(178deg, #ffe3ae 0%, #e5b268 54%, #9a672c 100%);
-}
+   Note for anyone reusing this file as a starting point: the repo rule about
+   giving the eye band and "CODE" their own masks still stands. It is waived
+   HERE only because the region it protects is not drawn at all. */
 
 /* ====================================================================
-   THE COWL — pinned to the head circle
+   THE MASK
 
-   Its box IS the circle's bounding square (x 37.4-62.6%, y 0-54.76% of the
-   mark), so the viewBox's 100x100 is the head's own diameter and every feature
-   is stated in head radii. Its HEIGHT comes from aspect-ratio rather than a
-   percentage: a percentage height resolves against the mark's aspect, so
-   replacing the logo file would stretch the cowl.
+   A supplied image, not a drawing. Four passes of bezier work went into a
+   vector cowl and every one of them read as a near-miss: a mask is a
+   LIKENESS, and a likeness assembled out of guessed curves looks like a
+   drawing of the thing rather than the thing. The artwork's own hood and eye
+   band are not rendered at all underneath it — they would only peek out
+   around a silhouette that is not a circle.
+
+   Sized off the mark's HEIGHT rather than its width, because that is what a
+   percentage resolves against here and the head is 54.76% of it. 66% gives
+   the ears somewhere to go; -8% top lets them rise past the top of the mark
+   box, and the foot lands at 58%, clear of the wordmark at 61.8%.
+
+   The aspect ratio is the trimmed file's own, so replacing the image with a
+   differently-proportioned one cannot squash it.
    ==================================================================== */
 
-.wv-cowl {
+.wv-mask {
   position: absolute;
-  left: var(--head-x);
-  top: 0;
-  width: var(--head-w);
-  aspect-ratio: 1;
+  left: 50%;
+  top: -8%;
+  height: 66%;
+  width: auto;
+  aspect-ratio: 194 / 253;
+  transform: translateX(-50%);
+  object-fit: contain;
   pointer-events: none;
-}
-.wv-cowl svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  /* the wings run off the top of the box */
-  overflow: visible;
+  /* it is a lit object sitting in a dark room, so it gets the room's shadow */
   filter:
-    drop-shadow(0 0.24vw 0.4vw rgba(6, 3, 1, 0.72))
-    drop-shadow(0 0.9vw 1.6vw rgba(4, 2, 1, 0.5));
+    drop-shadow(0 0.24vw 0.4vw rgba(6, 3, 1, 0.7))
+    drop-shadow(0 0.9vw 1.6vw rgba(4, 2, 1, 0.48));
 }
-
-.wv-crown {
-  fill: url(#wv-crownfill);
-}
-.wv-crown-shade {
-  fill: url(#wv-crownshade);
-}
-/* The mask's openings. Not "dark tan" — actual holes, so they have to be the
-   darkest thing on the head by a clear margin or the mask reads as painted
-   rather than worn. Nothing is drawn over them: they are cut after the
-   modelling and after the silhouette edge, because a hole does not take a
-   highlight. */
-.wv-eye {
-  fill: #0d0906;
-}
-.wv-bridge {
-  fill: rgba(141, 90, 25, 0.55);
-}
-
-/* All the modelling is soft and low-contrast on purpose. Anything that can be
-   pointed at as a shape reads as make-up; what you want is for the cowl to
-   simply look like it is wrapped around something. */
-.wv-crown-hi {
-  fill: rgba(255, 233, 178, 0.28);
-}
-.wv-wing-facet {
-  fill: rgba(255, 236, 186, 0.2);
-}
-.wv-temple {
-  fill: rgba(40, 18, 6, 0.34);
-}
-.wv-crown-tex {
-  mix-blend-mode: overlay;
-  opacity: 0.3;
-}
-
-.wv-crown-edge {
-  fill: none;
-  stroke: rgba(34, 15, 5, 0.7);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-}
-/* the key's rim, on the lower-left edge only */
-.wv-crown-rim {
-  fill: none;
-  stroke: rgba(255, 226, 160, 0.72);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-}
-/* .wv-crown-lip and .wv-browshade lived here. Both existed to sit the cowl ON
-   the ninja's hood — a hairline along its cut edge and a band of shadow under
-   it. The mask covers the whole head now, so there is no hood under it to
-   throw anything onto, and a lip drawn across the middle of a full mask is a
-   seam where the material has none. */
 
 /* ====================================================================
    TYPE — WOODBRIDGE reads as the lockup's second line
@@ -859,9 +806,14 @@
 .wv.is-static .wv-claws {
   opacity: 0;
 }
-/* the flurry is part of the finished frame; the blades that made it are not */
+/* the flurry is part of the finished frame; the blades that made it are not —
+   except the one that stayed, which is the whole point of it */
 .wv.is-static .wv-gashes-c .wv-gash-hot {
   opacity: 0.95;
+}
+.wv.is-static .wv-claws-hero {
+  opacity: 1;
+  transform: none;
 }
 .wv.is-static .wv-blade-flash {
   opacity: 0;
@@ -922,6 +874,10 @@
   }
   .wv .wv-claws {
     opacity: 0;
+  }
+  .wv .wv-claws-hero {
+    opacity: 1;
+    transform: none;
   }
   .wv .wv-blade-flash {
     opacity: 0;

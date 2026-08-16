@@ -52,6 +52,8 @@ import "../Stylesheets/Wolverine.css";
 import usePhases from "../Utils/usePhases";
 import useLogo from "../Utils/useLogo";
 
+import maskPng from "../Images/wolverine-mask.png";
+
 // p1 the space comes up: hide-brown dark, one warm key low and left, haze
 // p2 SNIKT — three blades unsheathe at the lower left and hold, glinting
 // p3 the rake: they cross the frame and exit, three gashes tear open behind
@@ -331,15 +333,12 @@ export default function Wolverine({
                 </div>
               </div>
 
-              {/* --- above it: the hood and the eye band --- */}
-              <div className="wv-head">
-                <div className="wv-headbox">
-                  <div className="wv-plate wv-plate-hide" aria-hidden />
-                  <div className="wv-plate wv-plate-band" aria-hidden />
-                </div>
-              </div>
-
-              <Cowl />
+              {/* --- above it: the mask, which IS the head now ---
+                  The artwork's own hood and eye band are not rendered at all.
+                  They used to sit under a drawn cowl; with a supplied mask on
+                  top of them they would only ever peek out around its
+                  silhouette, and the silhouette is not a circle. */}
+              <img className="wv-mask" src={maskPng} alt="" aria-hidden />
             </div>
           </div>
 
@@ -353,6 +352,9 @@ export default function Wolverine({
 
       <Claws cls="wv-claws-a" at="translate(157 898) rotate(9)" />
       <Claws cls="wv-claws-b" at="translate(-84 741) rotate(68)" />
+
+      {/* the one bundle that does not leave — see .wv-claws-hero */}
+      <Claws cls="wv-claws-hero" at="translate(430 900) rotate(-37) scale(1.25)" />
 
       {STREAKS.map(([deg, at, tx, ty, d]) => (
         <Claws
@@ -465,138 +467,20 @@ function Claws({ cls, at, style }) {
   );
 }
 
-/**
- * The cowl, in a 100x100 box that IS the head circle (cx 50, cy 50, r 50) — so
- * every feature below is stated in head radii and nothing can drift out of
- * register with the artwork. The wings run off the top of the box on purpose;
- * the element is overflow: visible.
- *
- * IT IS THE WHOLE HEAD NOW, not a cowl worn over the ninja's. The note at the
- * top of this file used to say the mask dresses the mark rather than replacing
- * it, and for the head that is no longer true by request: a tan shape sitting
- * on a black hood reads as a ninja in a Wolverine hat, and what was wanted was
- * Wolverine. So the mask covers the skull, and the eyes are ITS openings
- * rather than the artwork's slits showing through a gap in it.
- *
- * The rest of the lockup is untouched — "CODE NINJAS" is still the artwork's
- * own three regions in adamantium and brand blue, which is what keeps this a
- * themed logo rather than a drawing of somebody else's character.
- *
- * Everything that says "wolverine" here is silhouette: two wings flaring up
- * and outward from the temples, a shallow notch between them, and the swept
- * openings. The colour is doing far less work than the outline.
- */
-function Cowl() {
-  return (
-    <div className="wv-cowl" aria-hidden>
-      <svg viewBox="0 0 100 100">
-        <defs>
-          <clipPath id="wv-crownclip">
-            <path d={CROWN_D} />
-          </clipPath>
-        </defs>
+/* The drawn cowl lived here — a hundred lines of silhouette, modelling,
+   rim light and grain in a 100x100 box pinned to the artwork's head circle,
+   plus CROWN_D, LIP_D, BROW_SHADE_D, WING_FACET_D, RIM_D, the eye openings
+   and the nose ridge. All of it is gone: the mask is a supplied image now.
 
-        <path className="wv-crown" d={CROWN_D} />
+   Worth saying why, since it was four passes of work. The problem was never
+   the modelling, it was that a mask is a LIKENESS, and a likeness assembled
+   out of bezier guesses reads as a near-miss of something everybody already
+   knows by heart. The wings can be the right length and the eyes the right
+   slant and it still looks like a drawing of a Wolverine mask rather than
+   one. A photograph of the object does not have that problem.
 
-        {/* ---- modelling, clipped to the silhouette ----
-            Broad planes first, then the facets that sit on them, then the
-            falloff over the lot, then grain. A highlight painted after the
-            falloff floats. */}
-        <g clipPath="url(#wv-crownclip)">
-          {/* the crown takes the key, which is low and to the left */}
-          <ellipse className="wv-crown-hi" cx="26" cy="26" rx="36" ry="28" filter="url(#wv-soft2)" />
-          {/* each wing gets its inner plane so it has thickness — a flat spike
-              is clip-art whatever else is going on around it */}
-          <path className="wv-wing-facet" d={WING_FACET_D} />
-          <g transform="translate(100,0) scale(-1,1)">
-            <path className="wv-wing-facet" d={WING_FACET_D} />
-          </g>
-          {/* the temple, where the cowl turns away from the light */}
-          <ellipse className="wv-temple" cx="90" cy="44" rx="24" ry="34" filter="url(#wv-soft2)" />
-          <rect className="wv-crown-shade" x="-40" y="-70" width="180" height="180" />
-          {/* worn hide, not vinyl: the turbulence MUST be desaturated or it is
-              confetti over the cowl rather than grain */}
-          <rect className="wv-crown-tex" x="-40" y="-70" width="180" height="180" filter="url(#wv-grain)" />
-        </g>
-
-        {/* the silhouette's own edge, drawn last so nothing can break it */}
-        <path className="wv-crown-edge" d={CROWN_D} />
-        {/* The key's rim, up the left side and out to the wing tip. Every
-            segment here is LIFTED VERBATIM out of CROWN_D — an eyeballed
-            near-copy of a curve does not sit on it, and the miss reads as a
-            stray pencil line beside the head. */}
-        <path className="wv-crown-rim" d={RIM_D} />
-
-        {/* ---- the openings ----
-            Cut after the modelling and after the edge, so nothing washes over
-            them: these are holes in the mask and holes do not take a
-            highlight. The bridge between them is the mask's own material
-            catching a little light, which is what keeps the two eyes reading
-            as one piece rather than as two stickers. */}
-        <path className="wv-eye" d={EYE_L_D} />
-        <path className="wv-eye" d={EYE_R_D} />
-        <path className="wv-bridge" d={BRIDGE_D} />
-      </svg>
-    </div>
-  );
-}
-
-/* The cowl. Written symmetric about x = 50 and stated as one path so the wings
-   and the crown are a single silhouette — two shapes butted together always
-   show their seam once anything is drawn over them.
-
-   Four things separate this from the version before it, and they are all
-   silhouette rather than colour:
-
-   1. THE CROWN COVERS THE SKULL. The head is a circle r 50 at (50, 50), so its
-      top edge is y = 0 at x = 50 and y = 2.6 at x = 34. The old notch bottomed
-      out at y = 15, which is below both — it left a dark lens of bare head
-      sitting between the wings, and a mask with a hole in the top of it is a
-      pair of horns. This one bottoms out at y = -5 and clears the circle the
-      whole way across.
-   2. THE WINGS SPRING FROM THE TEMPLES. Their inner edges start around x = 30
-      and 70; the old ones started at 32 and 68 but ran from tips 30 units
-      outside the head, so each wing was a triangle spanning half the skull and
-      the pair read as a moth. Tips are at (-16, -31) and (116, -31) now: 16
-      past the head rather than 30, and shorter than they are wide-set.
-   3. The cowl comes DOWN THE SIDES to y = 60, past the widest point of the
-      head, so it wraps the skull instead of sitting on top of it. A tan shape
-      that stops above the eyes is a hat.
-   4. The lower edge is a double scallop: a cheek piece down at each temple, up
-      over each eye, and down to a point at y = 43 on the bridge of the nose.
-      That centre point is the most recognisable line on the mask.
-
-   THE EYES ARE THE CONSTRAINT. The artwork's light band spans x 7.98-91.8,
-   y 40.4-60, and the SLITS inside it are x 21.8-33.7 and 64.7-76.2, y 47.5-57.5
-   — narrower than the band around them. So the mask may come down to y = 60 at
-   x = 4 and 96, outboard of both slits, and still leave the eyes untouched;
-   over the slits themselves it stays at y 35-40, and the centre point at 43
-   drops between them, not onto them. */
-const CROWN_D =
-  "M8 74 C3 66, 0 58, 0 48 C0 40, 1 33, 3 27 C-3 8, -11 -13, -20 -35 C-4 -26, 14 -12, 30 -2 C38 0, 45 0, 50 -3 C55 0, 62 0, 70 -2 C86 -12, 104 -26, 120 -35 C111 -13, 103 8, 97 27 C99 33, 100 40, 100 48 C100 58, 97 66, 92 74 C86 66, 76 62, 66 62 C60 62, 54 60, 50 56 C46 60, 40 62, 34 62 C24 62, 14 66, 8 74 Z";
-
-/* The mask's own eye openings. Swept almonds — outer corner high and out,
-   inner corner low and pointed — because that slant IS the expression; a level
-   opening is a domino mask and reads as a raccoon.
-
-   They sit over the artwork's own slits (x 21.8-33.7 and 64.7-76.2, y 47.5-57.5)
-   but they are wider and steeper than those, so the shape you read is the
-   mask's and not the ninja's showing through it. */
-const EYE_L_D =
-  "M4 35 C18 34, 34 41, 46 53 C47.5 54.5, 47 57, 44 56.5 C28 54, 11 47, 4.5 41 C2.5 39, 2 36, 4 35 Z";
-const EYE_R_D =
-  "M96 35 C82 34, 66 41, 54 53 C52.5 54.5, 53 57, 56 56.5 C72 54, 89 47, 95.5 41 C97.5 39, 98 36, 96 35 Z";
-
-/* the ridge between them, holding a little of the key — it is what keeps the
-   two openings reading as one mask rather than as two stickers */
-const BRIDGE_D = "M50 51 C52 57, 52.5 63, 50 69 C47.5 63, 48 57, 50 51 Z";
-
-/* the lit inner plane of the left wing, mirrored for the right */
-const WING_FACET_D = "M-20 -35 C-4 -26, 14 -12, 30 -2 C14 -8, -4 -22, -20 -35 Z";
-
-/* the key rim: the left silhouette and the left wing's outer edge, verbatim */
-const RIM_D =
-  "M8 74 C3 66, 0 58, 0 48 C0 40, 1 33, 3 27 C-3 8, -11 -13, -20 -35";
+   If it ever has to go back to vector, the geometry is in the history at
+   82f1ceb. */
 
 /* One blade, base at the origin, pointing up, 152 long and 34 across, scaled
    to about 200 by the length factors below. The taper is nearly all in the
