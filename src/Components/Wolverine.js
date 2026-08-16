@@ -1,8 +1,8 @@
-// Wolverine.js — three adamantium claws rake across a dark forge-lit space and
-// the slash is what brings the mark up. What stays on the held frame is the
-// pair of signatures anybody reads at thumbnail size: three parallel gashes
-// torn across the ground, and a tan mask with two long flared wings sitting on
-// the ninja's hood.
+// Wolverine.js — adamantium claws rake across a dark forge-lit space and the
+// slash is what brings the mark up. Three passes: one cut, one crossing it,
+// then a flurry that shreds the whole frame. What stays on the held frame is
+// the pair of signatures anybody reads at thumbnail size: a torn-up ground,
+// and the winged mask on the head of the mark.
 //
 // Genre, not franchise. No studio mark, no chest emblem, no team logo — the
 // registered devices are exactly the ones left out. What carries the theme is
@@ -14,10 +14,16 @@
 // they pass. Nothing else flies in on that beat, so the frame has one thing
 // happening at a time.
 //
-// THE MASK DRESSES THE MARK, it does not replace it. Hulk had to be drawn
-// because a hulk needs a different skull; a wolverine needs a piece of
-// HEADGEAR, which is Pirates' problem, not Hulk's — so the ninja keeps their
-// own head and wears the cowl over it, positioned off the artwork's pixels.
+// THE MASK REPLACES THE HEAD, and only the head. This started as Pirates'
+// problem — headgear worn over the ninja's own skull — and a tan shape sitting
+// on a black hood reads as a ninja in a Wolverine hat. It is the mask now: it
+// covers the skull, and the eyes are ITS openings rather than the artwork's
+// slits showing through a gap in it. Still positioned off the artwork's own
+// pixels, so it cannot drift.
+//
+// "CODE NINJAS" is untouched — the artwork's three regions in adamantium and
+// brand blue. That is the line: the head is dressed, the wordmark is ours, and
+// nothing here is a drawing of somebody else's character.
 //
 // MEASURED OFF THE ARTWORK, scanned on the trimmed mark (1916x882, aspect
 // 2.1723). The head is a CIRCLE and the numbers are exact:
@@ -56,13 +62,18 @@ import useLogo from "../Utils/useLogo";
 // p5 the metal settles — adamantium specular travels the wordmark, the second
 //    cut cools, WOODBRIDGE
 //
-// The second rake is what the ending was missing. One set of three is a cut;
-// two crossing is a mauling, and it gives the last beat an EVENT instead of a
-// slow cool-down, which is what the frame used to end on.
+// p6 THE FLURRY — five more passes at wild angles, fifteen more tears, all
+//    over the frame and behind the mark
+//
+// The ending used to be a cool-down. It escalates instead: one deliberate cut,
+// a second crossing it, and then a mauling that gives up on placement
+// altogether. The first two bundles are parallel, evenly spaced and routed
+// clear of the lockup; the flurry is none of those things on purpose, because
+// the point of the last beat is that it stops being a technique.
 //
 // Plays ONCE and holds — loopAt is null. The embers, the gash flicker and the
 // specular travel keep the held frame alive; that is ambient, not a restart.
-const CUES = [160, 1480, 2420, 3320, 4560];
+const CUES = [160, 1480, 2420, 3320, 4560, 5460];
 
 // Slow motes lifting through the key light — the one thing keeping the held
 // frame from reading as a still. [left%, top%, size in vw, opacity, duration
@@ -153,6 +164,57 @@ const SPARKS_B = [
   [87.6, 91.6, -5.4, 4.8, 288],
 ];
 
+/* ---- p6: the flurry ----
+ *
+ * Five more passes at wildly different angles, three tears each, all over the
+ * frame. Where the first two rakes are deliberate — parallel, evenly spaced,
+ * placed clear of the lockup — this is the opposite on purpose: the point is
+ * that it stops being a technique and becomes damage.
+ *
+ * IT PASSES BEHIND THE MARK. The gash layer is z-index 8 and the lockup is 20,
+ * so the tears can run anywhere at all, straight through the middle of the
+ * frame, and the logo stays clean on top of them. That is the only reason
+ * "everywhere" is affordable here.
+ *
+ * Fixed rather than random, like the sparks: the ad is screen-recorded, and a
+ * finale that is different in every take is one you cannot re-shoot.
+ *
+ * [x, y, angle, length scale, opening delay in ms] — x, y is the left-hand end
+ * of the tear, same convention as the other two bundles. */
+const FLURRY = [
+  [86, 12, 62, 0.7, 0],
+  [12, -10, 62, 0.42, 38],
+  [-63, -33, 62, 0.63, 76],
+  [60, 962, -70, 0.56, 114],
+  [168, 826, -70, 0.77, 152],
+  [201, 896, -70, 0.49, 190],
+  [-262, 119, 6, 0.42, 228],
+  [-323, 168, 6, 0.63, 266],
+  [-164, 240, 6, 0.84, 304],
+  [586, 240, 152, 0.77, 342],
+  [609, 166, 152, 0.49, 380],
+  [632, 91, 152, 0.7, 418],
+  [-185, 712, -18, 0.63, 456],
+  [-221, 781, -18, 0.84, 494],
+  [-256, 850, -18, 0.56, 532],
+];
+
+/* The blades that leave them. One streak per angle, and each carries its own
+ * travel vector as --tx/--ty so a single keyframe serves all five.
+ *
+ * The bundle rotation is the same 48deg crossing the other two use: a blade
+ * drawn pointing up sits at (R - 90) degrees, so R = travel + 42 puts it 48
+ * across whatever direction it is going.
+ *
+ * [travel angle, transform, tx in vw, ty in vw, delay in ms] */
+const STREAKS = [
+  [62, "translate(-40 -120) rotate(104)", 66.7, 125.4, 0],
+  [-70, "translate(300 1010) rotate(-28)", 48.6, -133.4, 95],
+  [6, "translate(-190 250) rotate(48)", 141.2, 14.8, 190],
+  [152, "translate(560 150) rotate(194)", -125.4, 66.7, 285],
+  [-18, "translate(-150 760) rotate(24)", 135.1, -43.9, 380],
+];
+
 const SPARKS = [
   [14, 92.8, -5.5, 4.2, 0],
   [20, 91.0, 3.4, 5.6, 30],
@@ -205,6 +267,24 @@ export default function Wolverine({
            left end as the blades pass over it. */}
       <Gashes cls="wv-gashes-a" gashes={GASHES_A} deg={-33} />
       <Gashes cls="wv-gashes-b" gashes={GASHES_B} deg={26} />
+
+      {/* the finale, behind the mark */}
+      <div className="wv-gashes wv-gashes-c" aria-hidden>
+        <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
+          {FLURRY.map(([x, y, deg, sc, d], i) => (
+            // scale AFTER rotate, so it shortens the tear along its own axis
+            // and leaves the thickness alone
+            <g key={i} transform={`translate(${x} ${y}) rotate(${deg}) scale(${sc} 1)`}>
+              <g className="wv-gash" style={{ "--d": `${d}ms` }}>
+                <path className="wv-gash-glow" d={GASH_D} />
+                <path className="wv-gash-void" d={GASH_D} filter="url(#wv-tear)" />
+                <path className="wv-gash-hot" d={GASH_D} filter="url(#wv-tear)" />
+                <path className="wv-gash-lip" d={GASH_D} filter="url(#wv-tear)" />
+              </g>
+            </g>
+          ))}
+        </svg>
+      </div>
 
       {/* motes lifting through the key — the one thing keeping the held frame
           from reading as a still */}
@@ -274,6 +354,15 @@ export default function Wolverine({
       <Claws cls="wv-claws-a" at="translate(157 898) rotate(9)" />
       <Claws cls="wv-claws-b" at="translate(-84 741) rotate(68)" />
 
+      {STREAKS.map(([deg, at, tx, ty, d]) => (
+        <Claws
+          key={deg}
+          cls="wv-claws-c"
+          at={at}
+          style={{ "--tx": `${tx}vw`, "--ty": `${ty}vw`, "--sd": `${d}ms` }}
+        />
+      ))}
+
       <div className="wv-grain" aria-hidden />
       <div className="wv-vignette" aria-hidden />
     </div>
@@ -327,9 +416,9 @@ function Sparks({ cls, sparks }) {
      lengths — and the second bundle crosses its cut at the same 48deg with the
      same three lengths, so it comes out at the same -89 / 0 / +72. Change the
      crossing angle on one and its offsets stop matching the other's. */
-function Claws({ cls, at }) {
+function Claws({ cls, at, style }) {
   return (
-    <div className={`wv-claws ${cls}`} aria-hidden>
+    <div className={`wv-claws ${cls}`} style={style} aria-hidden>
       <svg viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice">
           {/* rotate(9), not 57. At 57 the blade axis lay exactly ALONG the cut
               — each blade sat on top of the very tear it was supposed to be
@@ -484,7 +573,7 @@ function Cowl() {
    over the slits themselves it stays at y 35-40, and the centre point at 43
    drops between them, not onto them. */
 const CROWN_D =
-  "M4 66 C1 58, -0.5 50, 0 42 C0.6 34, 2 28, 4 24 C0 8, -8 -12, -16 -31 C-4 -22, 14 -10, 30 -3 C37 -1, 45 -2, 50 -5 C55 -2, 63 -1, 70 -3 C86 -10, 104 -22, 116 -31 C108 -12, 100 8, 96 24 C98 28, 99.4 34, 100 42 C100.5 50, 99 58, 96 66 C92 77, 84 85, 74 89 C66 92, 58 93, 50 93 C42 93, 34 92, 26 89 C16 85, 8 77, 4 66 Z";
+  "M8 74 C3 66, 0 58, 0 48 C0 40, 1 33, 3 27 C-3 8, -11 -13, -20 -35 C-4 -26, 14 -12, 30 -2 C38 0, 45 0, 50 -3 C55 0, 62 0, 70 -2 C86 -12, 104 -26, 120 -35 C111 -13, 103 8, 97 27 C99 33, 100 40, 100 48 C100 58, 97 66, 92 74 C86 66, 76 62, 66 62 C60 62, 54 60, 50 56 C46 60, 40 62, 34 62 C24 62, 14 66, 8 74 Z";
 
 /* The mask's own eye openings. Swept almonds — outer corner high and out,
    inner corner low and pointed — because that slant IS the expression; a level
@@ -494,20 +583,20 @@ const CROWN_D =
    but they are wider and steeper than those, so the shape you read is the
    mask's and not the ninja's showing through it. */
 const EYE_L_D =
-  "M10 40 C22 40, 34 45, 43 53 C44 54.5, 43.5 56, 41 55.5 C29 54, 17 50, 11 46 C9 44, 8.6 41, 10 40 Z";
+  "M4 35 C18 34, 34 41, 46 53 C47.5 54.5, 47 57, 44 56.5 C28 54, 11 47, 4.5 41 C2.5 39, 2 36, 4 35 Z";
 const EYE_R_D =
-  "M90 40 C78 40, 66 45, 57 53 C56 54.5, 56.5 56, 59 55.5 C71 54, 83 50, 89 46 C91 44, 91.4 41, 90 40 Z";
+  "M96 35 C82 34, 66 41, 54 53 C52.5 54.5, 53 57, 56 56.5 C72 54, 89 47, 95.5 41 C97.5 39, 98 36, 96 35 Z";
 
 /* the ridge between them, holding a little of the key — it is what keeps the
    two openings reading as one mask rather than as two stickers */
-const BRIDGE_D = "M50 44 C51.6 49, 52 54, 50 60 C48 54, 48.4 49, 50 44 Z";
+const BRIDGE_D = "M50 51 C52 57, 52.5 63, 50 69 C47.5 63, 48 57, 50 51 Z";
 
 /* the lit inner plane of the left wing, mirrored for the right */
-const WING_FACET_D = "M-16 -31 C-4 -22, 14 -10, 30 -3 C16 -9, -2 -20, -16 -31 Z";
+const WING_FACET_D = "M-20 -35 C-4 -26, 14 -12, 30 -2 C14 -8, -4 -22, -20 -35 Z";
 
 /* the key rim: the left silhouette and the left wing's outer edge, verbatim */
 const RIM_D =
-  "M4 66 C1 58, -0.5 50, 0 42 C0.6 34, 2 28, 4 24 C0 8, -8 -12, -16 -31";
+  "M8 74 C3 66, 0 58, 0 48 C0 40, 1 33, 3 27 C-3 8, -11 -13, -20 -35";
 
 /* One blade, base at the origin, pointing up, 152 long and 34 across, scaled
    to about 200 by the length factors below. The taper is nearly all in the
