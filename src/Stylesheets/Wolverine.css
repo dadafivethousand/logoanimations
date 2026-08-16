@@ -74,8 +74,11 @@
 /* ====================================================================
    THE SPACE — one volume with a single warm key, not a stack of bands
 
-   Frame zero is nearly black. The ground, the key, the haze and the surface
-   all come up together on p1, so the scene assembles rather than cutting in.
+   The ground, the key, the haze and the surface come up together on p1 over
+   about a fifth of a second. They used to take 1.5 to 1.9 seconds with
+   staggered delays, which meant the frame was still arriving when the claws
+   went through it. The scene is simply lit now, and the cut is the only event
+   in it.
    ==================================================================== */
 
 .wv-ground,
@@ -86,7 +89,7 @@
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 1500ms ease;
+  transition: opacity 220ms ease;
 }
 .wv-p1 .wv-ground, .wv-p2 .wv-ground, .wv-p3 .wv-ground, .wv-p4 .wv-ground, .wv-p5 .wv-ground, .wv-p6 .wv-ground,
 .wv-p1 .wv-scored, .wv-p2 .wv-scored, .wv-p3 .wv-scored, .wv-p4 .wv-scored, .wv-p5 .wv-scored, .wv-p6 .wv-scored {
@@ -111,7 +114,7 @@
     rgba(var(--ember), 0.12) 44%,
     rgba(var(--ember), 0) 78%
   );
-  transition: opacity 1700ms 150ms ease;
+  transition: opacity 240ms ease;
 }
 .wv-p1 .wv-key, .wv-p2 .wv-key, .wv-p3 .wv-key, .wv-p4 .wv-key, .wv-p5 .wv-key, .wv-p6 .wv-key {
   opacity: 1;
@@ -122,7 +125,7 @@
 .wv-haze {
   z-index: 2;
   filter: blur(5vw);
-  transition: opacity 1900ms 250ms ease;
+  transition: opacity 260ms ease;
 }
 .wv-p1 .wv-haze, .wv-p2 .wv-haze, .wv-p3 .wv-haze, .wv-p4 .wv-haze, .wv-p5 .wv-haze, .wv-p6 .wv-haze {
   opacity: 1;
@@ -144,7 +147,7 @@
     rgba(226, 190, 150, 0.05) 0 1px,
     rgba(0, 0, 0, 0) 1px 9px
   );
-  transition: opacity 1800ms 300ms ease;
+  transition: opacity 280ms ease;
 }
 .wv-p1 .wv-scored, .wv-p2 .wv-scored, .wv-p3 .wv-scored, .wv-p4 .wv-scored, .wv-p5 .wv-scored, .wv-p6 .wv-scored {
   opacity: 0.5;
@@ -182,26 +185,18 @@
     transform 340ms var(--d) cubic-bezier(0.16, 0.9, 0.28, 1),
     opacity 120ms var(--d) linear;
 }
-/* THE CUT GROWS UNDER THE BLADE. Same duration, same easing and the same
-   start instant as the swipe that makes it, so the open end of the tear stays
-   beneath the tip the whole way across instead of racing ahead of it.
-
-   0.47 of the swipe, not all of it: the cuts are 330 units long and the hand
-   travels 700, so the tips lead the tears for the first half and then run on
-   ahead and off the frame — which is what lifting off at the end of a swipe
-   looks like. If either number changes, this ratio is 330/700. */
-.wv-cut-0 .wv-gash {
-  transition:
-    transform calc(var(--rake) * 0.47) var(--d) cubic-bezier(0.5, 0.02, 0.62, 1),
-    opacity 90ms var(--d) linear;
-}
+/* The original opening: 340ms from the left end, staggered 55ms a tear, while
+   the rake takes 460 — so the cut runs a little ahead of the blade that makes
+   it rather than exactly under it. That is how it was, and it reads fine at
+   speed; the "grows under the tip" version was a correction nobody asked
+   for. */
 .wv-p3 .wv-cut-0 .wv-gash, .wv-p4 .wv-cut-0 .wv-gash,
 .wv-p5 .wv-cut-0 .wv-gash, .wv-p6 .wv-cut-0 .wv-gash {
   transform: scaleX(1);
   opacity: 1;
 }
 
-/* they cool a beat after they are cut, and flicker from there */
+/* white-hot when cut, ember from the next beat */
 .wv-p5 .wv-gash-hot, .wv-p6 .wv-gash-hot {
   opacity: 0.44;
   animation: wv-emberflicker 3400ms ease-in-out infinite;
@@ -266,20 +261,18 @@
 
    It leaves the frame at the end of every pass. That is what a swipe is: the
    hand goes past, the cut stays. */
-/* ONE SWIPE, AND IT LEAVES. It enters from off the left, drags its three cuts
-   along the bottom and carries on out of the right.
-
-   It was made to stop in frame for a pass, so blades would be in the held
-   picture. They ended up parked on top of their own marks — a bundle is ~210
-   units long and the cuts are 330, so the hand covered most of what it had
-   just done. What stays is the marks. */
+/* One rake, the original one: up and to the right on the -33deg axis, tips
+   leading. 112vw of the 142 is covered by 72% of the duration, which is the
+   ease-out that makes it read as a swing rather than a slide — kept here as a
+   fraction of --tx so the travel stays one number. */
 .wv-hand {
   opacity: 0;
 }
 @keyframes wv-swipe {
   0% { transform: translate(0, 0); filter: none; opacity: 1; }
   16% { filter: blur(0.9vw); }
-  74% { filter: blur(0.7vw); opacity: 1; }
+  72% { transform: translate(calc(var(--tx) * 0.789), calc(var(--ty) * 0.789));
+        filter: blur(0.7vw); opacity: 1; }
   100% { transform: translate(var(--tx), var(--ty)); filter: blur(0.4vw); opacity: 0; }
 }
 
@@ -441,11 +434,11 @@
   width: 100%;
   /* measured from the trimmed mark at load, so any logo lands on register */
   aspect-ratio: var(--logo-aspect, 2.17);
-  filter: brightness(0.22) saturate(0.55);
-  transition: filter 620ms cubic-bezier(0.3, 0.9, 0.3, 1);
-}
-.wv-p3 .wv-mark, .wv-p4 .wv-mark, .wv-p5 .wv-mark, .wv-p6 .wv-mark {
-  filter: none;
+  /* LIT FROM FRAME ONE. This used to sit at brightness(0.22) saturate(0.55)
+     until p3 and come up as the cut passed — the mark waiting in the dark for
+     the claws to reveal it. It is the whole reason the opening felt like
+     waiting, and it is not worth what it bought: the mark is the thing anybody
+     is here to look at, and the swing still lands on it via .wv-lift. */
 }
 
 /* every material layer is the same box, masked by the artwork */

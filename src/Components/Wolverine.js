@@ -93,65 +93,54 @@ const EMBERS = [
   [91, 84, 0.35, 0.3, 11200, 1900],
 ];
 
-/* FIVE SWIPES. The hand crosses the frame, the blades point where it is going,
- * and the cuts drag out directly behind them. That is the whole model.
+/* THE ORIGINAL BUNDLE, restored. Three tears on one axis at -33deg, laid in
+ * the lower third, and the blades pointing along that axis so the tips lead
+ * the travel.
  *
- * It used to be cleverer and worse. The blades were held at 48deg ACROSS their
- * own travel so they would visibly cross their marks, on the theory that a
- * blade lying along its own tear hides it. What that actually produced was a
- * hand skidding sideways, and it needed solved-not-chosen knuckle offsets to
- * keep three tips on three lines. Point the blades where the hand is going and
- * all of that goes away: a local +x offset IS the perpendicular, so the
- * offsets are just the tear spacing, 60 apart, and every tip sits on its own
- * line by construction.
+ * THE BUNDLE GOES BESIDE THE LOCKUP, NOT THROUGH IT, and that is arithmetic
+ * rather than taste, because claw marks have to stay PARALLEL AND EVENLY
+ * SPACED or they stop reading as claw marks. In the 390x844 viewBox the block
+ * centres on (196, 422) and measures about 220 x 160; the cut's perpendicular
+ * is n = (0.545, 0.839). Projected onto n from the block's centre, the mask
+ * runs -92..+45, "CODE NINJAS" -53..+100, and WOODBRIDGE with its rule
+ * -1..+119. That union has no gap in it, so no evenly-spaced trio can straddle
+ * the mark without crossing something. The bundle therefore sits at +160,
+ * +220 and +280 — 41 units clear of the rule at the near edge, and inside the
+ * warm key, which is where the ember glow wants to be.
  *
- * Each pass carries:
- *   deg    the direction the hand travels
- *   at     the bundle's placement — rotate(90 + deg) turns a blade drawn
- *          pointing UP to point along the travel
- *   tx/ty  that travel, 640 units resolved onto the axis and put in vw
- *   tears  where each blade's TIP starts, which is the rear end of the cut it
- *          leaves; the tear runs 640 forward from there at the same angle
- *   phase  which beat it lands on, and its delay within that beat
- *
- * The tears are computed from the blade geometry rather than placed by eye —
- * knuckle, plus the offset across, plus that blade's own length along the
- * travel. Change a length and its tear moves with it. */
+ * Each entry is the left-hand END of its tear. [x, y, opening delay in ms] */
 const PASSES = [
   {
-    // Low, and slightly uphill. The hand enters from off the left, drags three
-    // cuts along the bottom of the frame and carries on out of the right —
-    // 700 units of travel against 330 of cut, so the tips lead the tears for
-    // the first half and then lift off.
-    //
-    // Nothing goes near the lockup, which sits y 342-502: the marks live
-    // between y 700 and 820. One pass, three marks, at the bottom.
-    deg: -8,
-    at: "translate(-241 790) rotate(82)",
-    tx: 177.7, ty: -24.9,
-    tears: [[-48, 702], [-30, 760], [-28, 821]],
+    deg: -33,
+    at: "translate(81 759) rotate(57)",
+    tx: 142, ty: -92,
+    tears: [[-11, 747], [22, 797], [55, 848]],
   },
 ];
 
-/* The tear path is drawn 700 long; the hand travels 330. */
-const TEAR_SCALE = 330 / 700;
+/* the tear path is drawn at its full length here — this is the original */
+const TEAR_SCALE = 1;
 
 // Sparks off the cut, strung along the middle tear's line — which runs from
 // (0, 819) to (390, 566), so y falls 0.3% of the frame for every 1% of x.
 // Fixed rather than random so every take is identical.
 // [left%, top%, dx in vw, dy in vw, delay in ms]
 const SPARKS = [
-  [6, 89.2, -4.8, 3.2, 0],
-  [13, 88.7, 3.4, 4.0, 32],
-  [20, 88.2, -4.1, 4.8, 64],
-  [28, 87.8, 4.6, 5.6, 96],
-  [35, 87.3, -3.2, 3.2, 128],
-  [42, 86.8, 5.1, 4.0, 160],
-  [49, 86.4, -4.4, 4.8, 192],
-  [56, 85.9, 2.9, 5.6, 224],
-  [64, 85.4, -4.0, 3.2, 256],
-  [71, 84.9, 4.7, 4.0, 288],
+  [14, 92.8, -5.5, 4.2, 0],
+  [20, 91.0, 3.4, 5.6, 30],
+  [26, 89.2, -4.2, 5.2, 60],
+  [33, 87.1, 4.8, 4.4, 80],
+  [39, 85.3, -3.6, 6.1, 110],
+  [45, 83.5, 5.4, 3.6, 130],
+  [52, 81.4, -5.1, 4.8, 160],
+  [58, 79.6, 3.2, 6.4, 190],
+  [64, 77.8, -4.6, 3.9, 210],
+  [71, 75.7, 5.8, 5.1, 240],
+  [77, 73.9, -3.1, 5.7, 260],
+  [83, 72.1, 4.4, 4.1, 290],
+  [89, 70.3, -5.6, 5.4, 310],
 ];
+
 
 
 export default function Wolverine({
@@ -201,7 +190,7 @@ export default function Wolverine({
                 key={i}
                 transform={`translate(${x} ${y}) rotate(${p.deg}) scale(${TEAR_SCALE} 1)`}
               >
-                <g className="wv-gash" style={{ "--d": `${i * 18}ms` }}>
+                <g className="wv-gash" style={{ "--d": `${i * 55}ms` }}>
                   <path className="wv-gash-glow" d={GASH_D} />
                   <path className="wv-gash-void" d={GASH_D} filter="url(#wv-tear)" />
                   {/* the hot core is the same tear squeezed down its own
@@ -418,15 +407,15 @@ const CLAW_RIDGE_D =
    blade is the long one, which is the only thing that stops three parallel
    spikes reading as a fork.
 
-   60 APART BECAUSE THE TEARS ARE. With the blades pointing along the travel,
-   the bundle's local +x axis IS the perpendicular to it, so an offset here is
-   the same number on the ground and every tip rides its own cut by
-   construction. No splay, for the same reason: a fanned tip walks off its line
-   over the length of the blade. */
+   The offsets are 60 apart because THE TEARS ARE 60 APART. With the blades
+   pointing along the cut, the bundle's local +x offset is exactly its
+   perpendicular, so each blade rides the tear it makes. The splay is kept to
+   3deg for the same reason — at this spacing a wider fan pulls the outer tips
+   off their lines by the end of the blade. */
 const CLAWS = [
-  [-60, 0, 1.34],
+  [-60, -3, 1.22],
   [0, 0, 1.4],
-  [60, 0, 1.36],
+  [60, 3, 1.26],
 ];
 
 /* One tear, 700 long and about 15 across at its widest, pointed at both ends.
