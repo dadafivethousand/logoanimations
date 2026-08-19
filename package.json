@@ -8,7 +8,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "logo": "node scripts/import-logo.js",
-    "deploy": "CI=true react-scripts build && wrangler pages deploy build --project-name logoanimations --branch main --commit-dirty=true"
+    "deploy": "CI=true react-scripts build && npx --yes wrangler@4 pages deploy build --project-name logoanimations --branch main --commit-dirty=true"
   },
   "author": "",
   "license": "ISC",
