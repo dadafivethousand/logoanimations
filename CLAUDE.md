@@ -363,3 +363,22 @@ is the artwork's own arrangement with the name set in the theme's lettering.
 
 Commit and push after each change (per user preference). The remote is SSH —
 the machine's stored HTTPS credential for GitHub 403s on push.
+
+**Then deploy — GitHub is not the deliverable.** The user watches this repo at
+**https://logoanimations.pages.dev**, so a change that is pushed but not
+deployed is a change they cannot see. There is no Git integration on this Pages
+project: it is direct-upload, and nothing ships until something runs
+
+```bash
+npm run deploy      # CI=true build, then wrangler pages deploy build
+```
+
+Two things about that, both learned the hard way on the sibling repo:
+
+- **A "Success!" line is not a working site.** A fresh deploy can serve the
+  bundle and 522 or 404 an image for a minute or so afterwards. Curl the root
+  *and* every file in `build/static/media/` before reporting it live; if one is
+  bad, wait and re-check rather than assuming the upload dropped it.
+- `--branch main` is not decoration. `main` is the project's production branch,
+  so anything else uploads as a **preview** on its own URL and
+  logoanimations.pages.dev does not move.

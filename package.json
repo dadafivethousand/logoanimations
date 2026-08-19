@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "logo": "node scripts/import-logo.js"
+    "logo": "node scripts/import-logo.js",
+    "deploy": "CI=true react-scripts build && wrangler pages deploy build --project-name logoanimations --branch main --commit-dirty=true"
   },
   "author": "",
   "license": "ISC",
