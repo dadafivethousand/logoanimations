@@ -451,8 +451,7 @@
 
 /* It comes in from the hoist side, which is the side a flag is actually waved
    from, and it arrives AFTER the name — a chequered flag is the end of a race,
-   so waving it over the launch would be a nice piece of motion and complete
-   nonsense. */
+   so waving it over the launch would be nice motion and complete nonsense. */
 .f1-flagwrap {
   position: absolute;
   left: 0;
@@ -461,8 +460,8 @@
      150px of clear frame above the lockup against 58px below the flag. The
      flag is full-bleed on purpose — it is environment, like the kerb, and a
      waved flag runs off frame — but the BLOCK still has to sit centred. */
-  bottom: 18%;
-  height: 25%;
+  bottom: 17%;
+  height: 26%;
   z-index: 12;
   opacity: 0;
   transform: translateX(-114%);
@@ -475,46 +474,83 @@
   transform: none;
 }
 
+/* Static, and behind the cloth. A drop-shadow filter on the flag itself would
+   re-render fifty-six animated children into a filter region every frame, and
+   the capture frame rate is what pays for it. */
+.f1-flagshadow {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: 24%;
+  bottom: -14%;
+  background: radial-gradient(60% 50% at 50% 50%, rgba(0, 0, 0, 0.6) 0%, transparent 72%);
+  filter: blur(8px);
+}
+
 .f1-flag {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 2vw 3vw rgba(0, 0, 0, 0.6));
 }
 
-.f1-chequer { fill: url(#f1-check); }
-.f1-folds   { fill: url(#f1-foldband); }
-.f1-sheen   { fill: url(#f1-sheenpat); mix-blend-mode: screen; }
+/* Each strip carries its slice of the check and its slice of the light.
 
-/* The bands travel one full period and repeat, so there is no jump. This is the
-   single strongest "it is waving" cue in the file. */
-.f1-p5 .f1-folds,
-.f1-p6 .f1-folds {
-  animation: f1Fold 3200ms linear infinite;
+   Two dead ends are worth not repeating. Per-strip overlay PLATES left a seam no
+   overlap value could fix: too much and every boundary was painted twice, too
+   little and the antialiased gap let the unshaded check through as a bright
+   line. A per-strip brightness() FILTER fixed the seam and replaced it with a
+   ~3% brightness step at each of the 120 column boundaries, which read as
+   corduroy woven into the cloth — flat-shading a strip is the problem, and no
+   amount of tuning the strip count hides it. A filter has no seam to get wrong, it shades the
+   overlap along with everything else, and it took 360 elements down to 120. */
+.f1-strip {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
-.f1-p5 .f1-sheen,
-.f1-p6 .f1-sheen {
-  animation: f1Fold 3200ms linear infinite;
-  animation-delay: -1500ms;
+.f1-strip-check { fill: url(#f1-check); }
+.f1-strip-light { fill: url(#f1-light); }
+
+/* ONE keyframe for all the strips; each is offset in time by its own
+   phase (a negative animation-delay set per strip), which is what makes the
+   wave TRAVEL rather than the whole flag pulsing in place.
+
+   Displacement is sin, shear is -cos, light is cos. A quarter cycle apart is
+   not a look — the surface normal tilts most where the cloth is steepest, so
+   the lit face genuinely does lead the crest. Break that relationship and the
+   cloth immediately goes back to looking printed.
+
+   Eight stops rather than four: at four the linear interpolation between them
+   is visible as a kink at each crest. */
+.f1-p5 .f1-strip,
+.f1-p6 .f1-strip {
+  animation: f1Wave 2600ms linear infinite;
 }
 
-@keyframes f1Fold {
-  from { transform: translateX(0); }
-  to   { transform: translateX(130px); }
+@keyframes f1Wave {
+  0%    { transform: translateY(calc(var(--a) * 0px))      skewY(calc(var(--a) * 20.29deg))  scaleY(1.045); }
+  12.5% { transform: translateY(calc(var(--a) * 12.02px))  skewY(calc(var(--a) * 14.35deg))  scaleY(1.032); }
+  25%   { transform: translateY(calc(var(--a) * 17px))     skewY(calc(var(--a) * 0deg))      scaleY(1.000); }
+  37.5% { transform: translateY(calc(var(--a) * 12.02px))  skewY(calc(var(--a) * -14.35deg)) scaleY(0.968); }
+  50%   { transform: translateY(calc(var(--a) * 0px))      skewY(calc(var(--a) * -20.29deg)) scaleY(0.955); }
+  62.5% { transform: translateY(calc(var(--a) * -12.02px)) skewY(calc(var(--a) * -14.35deg)) scaleY(0.968); }
+  75%   { transform: translateY(calc(var(--a) * -17px))    skewY(calc(var(--a) * 0deg))      scaleY(1.000); }
+  87.5% { transform: translateY(calc(var(--a) * -12.02px)) skewY(calc(var(--a) * 14.35deg))  scaleY(1.032); }
+  100%  { transform: translateY(calc(var(--a) * 0px))      skewY(calc(var(--a) * 20.29deg))  scaleY(1.045); }
 }
 
-/* The whole cloth breathing, under the bands. Smallest of the three cues and
-   the one to cut first if it ever fights the fold timing. */
+/* The whole cloth breathing under the wave. Smallest of the cues and the first
+   to cut if it ever fights the wave timing. */
 .f1-p5 .f1-cloth,
 .f1-p6 .f1-cloth {
-  animation: f1Billow 3600ms ease-in-out infinite;
+  animation: f1Billow 5200ms ease-in-out infinite;
 }
 
 @keyframes f1Billow {
-  0%, 100% { transform: translateY(0) skewY(0deg) scaleY(1); }
-  50%      { transform: translateY(-1.2%) skewY(-0.7deg) scaleY(1.03); }
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50%      { transform: translateY(-1%) scaleY(1.025); }
 }
 
 /* ---------- grain and vignette ------------------------------------------- */
@@ -576,10 +612,13 @@
   transform: none;
 }
 
-/* Frozen mid-travel rather than at zero: at zero a fold band sits exactly on
-   the hoist edge and the cloth looks pressed. */
-.f1.is-static .f1-folds { transform: translateX(58px); }
-.f1.is-static .f1-sheen { transform: translateX(96px); }
+/* Killing the animation would leave every strip at its UNTRANSFORMED position,
+   which is a perfectly flat flag — the one thing this rebuild exists to avoid.
+   Each strip carries its own frozen pose, computed from the same three curves
+   in the component, so the still is a real moment of the wave. */
+.f1.is-static .f1-strip {
+  transform: translateY(var(--sy)) skewY(var(--sk)) scaleY(var(--sc));
+}
 
 /* The clear coat has already passed. */
 .f1.is-static .f1-spec { background-position: -46% 0; }
@@ -605,7 +644,6 @@
   }
   .f1 .f1-rule { width: 84%; }
   .f1 .f1-flagwrap { opacity: 1; transform: none; }
-  .f1 .f1-folds { transform: translateX(58px); }
-  .f1 .f1-sheen { transform: translateX(96px); }
+  .f1 .f1-strip { transform: translateY(var(--sy)) skewY(var(--sk)) scaleY(var(--sc)); }
   .f1 .f1-spec { background-position: -46% 0; }
 }

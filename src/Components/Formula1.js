@@ -88,7 +88,7 @@ export default function Formula1({
       style={logoVar}
       key={run}
     >
-      <F1Defs />
+      <F1Defs still={isStatic} />
 
       {/* ---- one space: night asphalt, lit from above by the gantry ---- */}
       <div className="f1-asphalt" aria-hidden />
@@ -168,32 +168,71 @@ export default function Formula1({
       </div>
 
       {/* ---- the flag ----
-          Cloth, not a grid: the chequer is displaced by turbulence so its
-          squares bend, and a band of folds travels across it. A flat
-          black-and-white check at this size is a tablecloth. */}
+          Rebuilt as a surface rather than a picture of one. See STRIPS and the
+          note above it: the silhouette is not a shape with a texture inside it,
+          it is what the strips leave behind as they ride the wave. */}
       <div className="f1-flagwrap" aria-hidden>
-        <svg className="f1-flag" viewBox="0 0 390 210" preserveAspectRatio="xMidYMid slice">
-          {/* placement on the outer g, animation on the inner one: a CSS
-              transform REPLACES an SVG transform attribute outright */}
-          <g transform="translate(0 6)">
-            <g className="f1-cloth">
-              {/* ONE filter over the lot, so the folds bend with the squares
-                  they are shading. Warping the check and the shadows
-                  separately gives two cloths in the same place. */}
-              <g filter="url(#f1-ripple)">
-                <path className="f1-chequer" d={FLAG_D} />
-                {/* The travelling shadow is a WIDE RECT CLIPPED TO THE FLAG,
-                    not a gradient on the flag path: a gradient is anchored to
-                    its shape's bounding box, so moving the shape moves the
-                    shading with it and nothing appears to travel. Sliding an
-                    over-wide tiled rect underneath a fixed clip is what makes
-                    the folds run along the cloth. */}
-                <g clipPath="url(#f1-clip)">
-                  <rect className="f1-folds" x="-280" y="-30" width="960" height="280" />
-                  <rect className="f1-sheen" x="-280" y="-30" width="960" height="280" />
-                </g>
-              </g>
-            </g>
+        {/* Its shadow is a static blur behind it, NOT a drop-shadow filter on
+            the cloth: that filter would re-render the whole flag every frame
+            for fifty-six animated children, and the recorder's frame rate is
+            the first thing to pay for it. */}
+        <div className="f1-flagshadow" aria-hidden />
+        <svg
+          className="f1-flag"
+          viewBox="0 0 390 180"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <g className="f1-cloth">
+            {STRIPS.map((st, i) => (
+              <g
+                className="f1-strip"
+                key={i}
+                style={{
+                  // amplitude at this point along the flag, and the phase the
+                  // strip sits at — one number drives its position, its shear
+                  // and its shading, which is the whole point
+                  "--a": st.a,
+                  animationDelay: `${st.delay}ms`,
+                  // the frozen pose, for static and reduced motion
+                  "--sy": `${st.sy}px`,
+                  "--sk": `${st.sk}deg`,
+                  "--sc": st.sc,
+                }}
+              >
+                {/* THE OVERLAP IS WHAT KILLS THE CORDUROY, and a hairline of it
+                    is not enough. Each strip is antialiased against its
+                    neighbours, and a 0.15-unit overlap left the partially
+                    covered edge pixel still partially covered — 120 grey lines
+                    down a white square, 120 pale ones down a black. The overlap
+                    has to be wider than the antialiased edge itself so the seam
+                    is buried under the next strip's opaque body.
+
+                    It cannot go much past this: the strips are displaced
+                    relative to each other, so whatever one strip overdraws into
+                    the next column peeks out at the silhouette as a ledge, and
+                    the ledge grows with the overlap. 0.8 units is ~2px of cover
+                    against ~0.3px of ledge. */}
+                <rect
+                  className="f1-strip-check"
+                  x={st.x}
+                  y={FLAG_TOP}
+                  width={STRIP_W + 0.8}
+                  height={FLAG_H}
+                />
+                {/* The light. Its fill is ONE pattern anchored in user space, so
+                    every strip samples the same continuous field and the value
+                    varies smoothly ACROSS a strip instead of being flat within
+                    it. That is the whole fix: flat-shading each strip stepped
+                    the brightness ~3% at every column boundary, and 120 of
+                    those steps read as corduroy woven into the flag. */}
+                <rect
+                  className="f1-strip-light"
+                  x={st.x}
+                  y={FLAG_TOP}
+                  width={STRIP_W + 0.8}
+                  height={FLAG_H}
+                />              </g>
+            ))}
           </g>
         </svg>
       </div>
@@ -204,106 +243,187 @@ export default function Formula1({
   );
 }
 
-// The cloth. A rectangle with both long edges cut as waves and the hoist edge
-// (left) straight, because that is the edge that is held. The wave amplitude
-// grows toward the fly end — a flag is stiff where it is gripped and loose
-// where it is not, and a banner rippling evenly along its whole length reads as
-// a ribbon.
-const FLAG_D = [
-  "M -10 18",
-  "C 60 4, 130 34, 200 20",
-  "C 268 6, 330 44, 400 22",
-  "L 400 176",
-  "C 330 198, 268 160, 200 174",
-  "C 130 188, 60 158, -10 172",
-  "Z",
-].join(" ");
+// ── The cloth ────────────────────────────────────────────────────────────────
+//
+// The first version of this flag was a fixed wavy PATH filled with the chequer,
+// with bands of shadow sliding across it. It read as printed cloth, and the
+// reason is worth keeping: the geometry and the lighting disagreed. The shape
+// said the cloth was one thing and the travelling shadows said it was doing
+// something else, so the eye resolved it as a pattern with a shadow on top.
+//
+// So the flag is now a SURFACE. Fifty-six vertical strips, each one a slice of
+// the same chequer, and each strip's position, shear and shading all come from
+// ONE number — its phase along a travelling wave:
+//
+//   vertical position   ∝ sin(phase)      where the cloth is
+//   shear               ∝ -cos(phase)     the slope it is on, which is the
+//                                         derivative — this is what turns a
+//                                         56-step staircase into a continuous
+//                                         surface, and without it the check
+//                                         boundaries visibly stair
+//   brightness          ∝ cos(phase)      the surface normal tilts with the
+//                                         slope, so the lit face is a quarter
+//                                         cycle off the displacement
+//
+// Being a quarter cycle apart is not a look, it is the physics, and it is the
+// single thing that makes this read as cloth rather than as a texture.
+//
+// There is no silhouette path any more. The flag's wavy top and bottom edges
+// are simply where the strips ended up, which is why the edges now agree with
+// the folds instead of merely resembling them.
 
-function F1Defs() {
+// 120, not 56. Each strip is flat-shaded, so the strip count IS the resolution
+// of the lighting: at 56 the shading stepped visibly from column to column and
+// the cloth came out corrugated, like a folded fan rather than a flag. At 120
+// there are ~9 strips per check square and the steps disappear.
+const STRIP_N = 120;
+// The cloth occupies well under the full viewBox height, and that is the
+// framing fix, not a detail: at 126 of 210 the flag filled its box edge to edge
+// and read as a chequered WALL — there was no sky above the crest or floor
+// below the trough for the wave to be a wave against. The viewBox is 390x180 to
+// match the wrapper's own aspect, so nothing is cropped by the slice either.
+const FLAG_TOP = 42;
+const FLAG_H = 96;
+const STRIP_W = 390 / STRIP_N;
+const LAMBDA = 390 / 1.35;   // one wavelength, in viewBox units
+
+// How many crests are on the flag at once, how far the cloth travels, and how
+// hard it shears. WAVES below ~1.5 reads as a slow banner; above ~2.2 it reads
+// as a ripple in water.
+// Lazier and shallower than the first pass, which read as corrugated iron.
+const WAVES = 1.35;
+const AMP = 17;
+const SKEW = 8;
+const WAVE_MS = 2600;
+
+// Amplitude jitter, so the crest line is not a machined sine. It must be SMOOTH
+// across neighbours, not per-strip random: white noise here gave adjacent
+// strips amplitudes 6% apart, and since the silhouette is just where the strips
+// ended up, that came out as a sawtooth along the top and bottom edges. Two
+// slow sines vary over tens of strips instead, which is how cloth actually
+// varies — and being deterministic, it does not reshuffle on re-render.
+function jitter(i) {
+  return 1 + 0.055 * Math.sin(i * 0.11) + 0.03 * Math.sin(i * 0.27 + 1.7);
+}
+
+const STRIPS = Array.from({ length: STRIP_N }, (_, i) => {
+  const t = STRIP_N === 1 ? 0 : i / (STRIP_N - 1);
+  // A flag is stiff where it is held and loose where it is not. The exponent is
+  // what keeps the hoist edge quiet — a banner rippling evenly along its whole
+  // length reads as a ribbon.
+  const a = (0.1 + 0.9 * Math.pow(t, 1.5)) * jitter(i);
+  const phase = t * WAVES * Math.PI * 2;
+  const cos = Math.cos(phase);
+  return {
+    x: i * STRIP_W,
+    a: a.toFixed(4),
+    // negative delay: the wave is already running at t=0, so the flag arrives
+    // mid-wave instead of starting flat and building
+    delay: -Math.round((phase / (Math.PI * 2)) * WAVE_MS),
+    // the frozen pose for static / reduced motion, from the same three curves
+    sy: (a * AMP * Math.sin(phase)).toFixed(2),
+    sk: (a * SKEW * cos).toFixed(2),
+    // cloth stretches over a crest and gathers in a trough
+    sc: (1 + 0.045 * cos).toFixed(3),
+  };
+});
+
+function F1Defs({ still }) {
   return (
     <svg className="f1-defs" aria-hidden focusable="false">
       <defs>
-        {/* The check itself. 26 units at this viewBox is about eight squares
-            across the flag — few enough to read as a chequered flag at
-            thumbnail size, where a fine check turns into grey. */}
+        {/* The check. 26 units is about eight squares across the flag — few
+            enough to still read as a chequered flag at thumbnail size, where a
+            fine check turns into grey. Anchored in user space, so every strip
+            draws its slice of ONE pattern and the squares line up across all
+            fifty-six of them. */}
         <pattern
           id="f1-check"
           width="52"
           height="52"
           patternUnits="userSpaceOnUse"
         >
-          <rect width="52" height="52" fill="#f2f3f5" />
-          <rect width="26" height="26" fill="#0b0b0d" />
-          <rect x="26" y="26" width="26" height="26" fill="#0b0b0d" />
+          {/* The black is lifted to #191a1e and the white pulled off paper
+              white, because the fold shading is now a brightness() on the whole
+              strip and brightness has nothing to work with at either end of the
+              range: #0b0b0d at 1.4x is still #0f0f11, so pure-black squares
+              would sit flat and unlit while the white ones folded around
+              them. */}
+          <rect width="52" height="52" fill="#eceef1" />
+          <rect width="26" height="26" fill="#191a1e" />
+          <rect x="26" y="26" width="26" height="26" fill="#191a1e" />
         </pattern>
 
-        {/* Folds: soft dark bands, travelling. This is the single strongest
-            "it is waving" cue in the file — more than the geometry, more than
-            the ripple filter. Both band gradients run to ZERO at 0% and 100%
-            so the tile is seamless and no seam walks across the flag. */}
-        <linearGradient
-          id="f1-fold"
-          gradientUnits="userSpaceOnUse"
-          x1="0"
-          y1="0"
-          x2="130"
-          y2="0"
+        {/* THE LIGHT, as one travelling field.
+
+            Wavelength is the flag's own — 390/WAVES — and it translates exactly
+            one wavelength per wave period, which is what keeps the lit face
+            locked to the crest. Derivation, so the numbers are not folklore:
+            the strips displace by sin(φ(x) + ωt), the light must be
+            cos(φ(x) + ωt), and a pattern sampled at (x − dx) gives that when
+            dx = −λ·t/T.
+
+            patternTransform is animated with SMIL rather than CSS because CSS
+            cannot reach it — which also means `animation: none` does NOT stop
+            it, so the static pose renders no <animateTransform> at all and
+            carries a fixed offset instead. */}
+        <pattern
+          id="f1-light"
+          patternUnits="userSpaceOnUse"
+          x="0"
+          y={FLAG_TOP}
+          width={LAMBDA}
+          height={FLAG_H}
+          patternTransform={still ? `translate(${-LAMBDA * 0.34} 0)` : undefined}
         >
-          <stop offset="0%" stopColor="#000" stopOpacity="0" />
-          <stop offset="16%" stopColor="#000" stopOpacity="0.46" />
-          <stop offset="34%" stopColor="#000" stopOpacity="0" />
-          <stop offset="58%" stopColor="#000" stopOpacity="0.5" />
-          <stop offset="82%" stopColor="#000" stopOpacity="0" />
-          <stop offset="100%" stopColor="#000" stopOpacity="0" />
+          <rect width={LAMBDA} height={FLAG_H} fill="url(#f1-lightband)" />
+          {/* The hem tint rides in the same pattern rather than as a rect of
+              its own over the cloth. The rect version used mix-blend-mode:
+              multiply, and multiply against a TRANSPARENT backdrop falls back
+              to source-over — so above and below the flag, where there is no
+              cloth to multiply with, it painted its gradient as opaque white
+              and laid a white band across the frame. Inside the pattern it is
+              clipped to the strips for free, and a horizontal translation
+              cannot disturb a vertical gradient. */}
+          <rect width={LAMBDA} height={FLAG_H} fill="url(#f1-bounce)" />
+          {!still && (
+            <animateTransform
+              attributeName="patternTransform"
+              type="translate"
+              from="0 0"
+              to={`${-LAMBDA} 0`}
+              dur="2.6s"
+              repeatCount="indefinite"
+            />
+          )}
+        </pattern>
+
+        {/* One period of it. The explicit zero-alpha stops at 20% and 80% are
+            the crossover: without them the gradient interpolates from a white
+            stop straight to a black one and drags a grey wash through the
+            middle of every crest. */}
+        <linearGradient id="f1-lightband" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#fff" stopOpacity="0.30" />
+          <stop offset="12.5%" stopColor="#fff" stopOpacity="0.21" />
+          <stop offset="20%" stopColor="#fff" stopOpacity="0" />
+          <stop offset="25%" stopColor="#000" stopOpacity="0.04" />
+          <stop offset="37.5%" stopColor="#000" stopOpacity="0.33" />
+          <stop offset="50%" stopColor="#000" stopOpacity="0.46" />
+          <stop offset="62.5%" stopColor="#000" stopOpacity="0.33" />
+          <stop offset="75%" stopColor="#000" stopOpacity="0.04" />
+          <stop offset="80%" stopColor="#000" stopOpacity="0" />
+          <stop offset="87.5%" stopColor="#fff" stopOpacity="0.21" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0.30" />
         </linearGradient>
 
-        <linearGradient
-          id="f1-sheenband"
-          gradientUnits="userSpaceOnUse"
-          x1="0"
-          y1="0"
-          x2="130"
-          y2="0"
-        >
-          <stop offset="0%" stopColor="#fff" stopOpacity="0" />
-          <stop offset="26%" stopColor="#fff" stopOpacity="0.26" />
-          <stop offset="44%" stopColor="#fff" stopOpacity="0" />
-          <stop offset="70%" stopColor="#fff" stopOpacity="0.2" />
-          <stop offset="92%" stopColor="#fff" stopOpacity="0" />
-          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        {/* Red bounce off the tarmac, strongest at the hem. Multiplied, because
+            this is light the white squares are REFLECTING, not light being
+            added on top of them. */}
+        <linearGradient id="f1-bounce" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ff9d90" stopOpacity="0" />
+          <stop offset="70%" stopColor="#ff9d90" stopOpacity="0" />
+          <stop offset="100%" stopColor="#ff9d90" stopOpacity="0.17" />
         </linearGradient>
-
-        {/* One period of each band, tiled. 130 units is about two and a half
-            squares — folds that land every square read as a printing moire. */}
-        <pattern id="f1-foldband" width="130" height="280" patternUnits="userSpaceOnUse">
-          <rect width="130" height="280" fill="url(#f1-fold)" />
-        </pattern>
-        <pattern id="f1-sheenpat" width="130" height="280" patternUnits="userSpaceOnUse">
-          <rect width="130" height="280" fill="url(#f1-sheenband)" />
-        </pattern>
-
-        <clipPath id="f1-clip">
-          <path d={FLAG_D} />
-        </clipPath>
-
-        {/* Cloth irregularity. Low frequency and a big scale: this is a bedsheet
-            in wind, not sandpaper. */}
-        <filter id="f1-ripple" x="-15%" y="-30%" width="130%" height="160%">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.006 0.02"
-            numOctaves="2"
-            seed="7"
-            result="n"
-          />
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="n"
-            scale="14"
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
       </defs>
     </svg>
   );
