@@ -1,0 +1,611 @@
+/* ============================================================
+   Formula1 — the lights, and then the flag.
+
+   Five red lamps come on one at a time, they go out, the mark arrives down a
+   straight, the name sets, and a chequered flag takes the bottom of the frame.
+   The whole theme is those two images and the four seconds between them.
+
+   ── ONE RED ──
+
+   #e10600 is Formula 1's. The brand's own is #e4002b. They are three degrees
+   apart and they read as a printing error side by side, so this file contains
+   exactly ONE red and it is the F1 one — it is what the theme was asked for and
+   it is what does the work: the lamps, the kerb, the rule under the name. Do not
+   reintroduce the brand red here "for the rule"; pick one or the other.
+
+   ── THE MARK IS LIT, NOT REPAINTED ──
+
+   No livery. Pirates already proved where that goes — several passes rendering
+   the lockup in gold and the user asking why. So the environment carries the
+   theme and the mark keeps its own colours: the hood stays black (it gets a
+   carbon weave, which is a material on black rather than a recolour), the eye
+   band keeps its tone, and CODE keeps the brand blue. What the theme gives the
+   mark is a wet clear coat and one specular pass — the same lockup, under the
+   pit lane at night.
+
+   ── THE FLAG ──
+
+   Cloth, not a grid. Three things in order of how much each buys: the
+   TRAVELLING FOLD BANDS (most of it), the displacement filter that bends the
+   squares, and the billow on the whole group (least). A flat check at phone
+   size is a tablecloth.
+
+   Portrait phone (~390x844), screen-recorded.
+   ============================================================ */
+
+.f1 {
+  --red: #e10600;          /* Formula 1 red — the only red in the file */
+  --red-hi: #ff4a3d;
+  --red-lo: #6b0300;
+
+  /* Night asphalt. Every dark value is lifted clear of #000 so the frame has
+     air in it and the vignette has somewhere to go. */
+  --tar-hi: #26282e;
+  --tar: #131417;
+  --tar-lo: #08090b;
+
+  --white: #f2f3f5;
+  --ink: #e8eaee;
+
+  /* the mark's own colours, kept */
+  --code: #3490bf;
+  --code-hi: #7fd0f2;
+  --code-lo: #1d5f85;
+  --face: #d7c19b;
+  --face-hi: #f3e6ca;
+  --face-lo: #a8905f;
+
+  /* The one knob the composition scales from. 62vw leaves ~68px of clear
+     space each side at the recording width — the crop guard is a floor, and
+     the lockup has no business anywhere near it. */
+  --mark-w: 70vw;
+
+  --safe-x: max(45px, 11vw);
+  --safe-y: max(40px, 6vh);
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--tar-lo);
+  color: var(--ink);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.f1 *,
+.f1 *::before,
+.f1 *::after {
+  box-sizing: border-box;
+}
+
+.f1-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* ---------- the space ---------------------------------------------------- */
+
+/* One volume, not a set of bands: tarmac falling away from a light that hangs
+   where the gantry is. */
+.f1-asphalt {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(120% 62% at 50% 104%, var(--tar-hi) 0%, transparent 62%),
+    linear-gradient(180deg, var(--tar-lo) 0%, var(--tar) 46%, var(--tar-lo) 100%);
+}
+
+/* The gantry light. It sits where the lamps are and stays after they have gone
+   out, which is what keeps the mark lit when it arrives underneath it. */
+.f1-key {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(58% 34% at 50% 30%, rgba(255, 244, 236, 0.13) 0%, transparent 70%);
+}
+
+/* THE KERB. Red and white on the diagonal is as much a Formula 1 signal as the
+   flag, and it costs one element. Dim and low: it is the ground the frame
+   stands on, not a stripe across it. */
+.f1-kerb {
+  position: absolute;
+  left: -22%;
+  right: -22%;
+  /* Was bottom:-6%, which put most of it past the bottom edge — it read as a
+     stripe getting cut off rather than as the edge of a track. */
+  bottom: 1%;
+  height: 11%;
+  z-index: 1;
+  transform: rotate(-6deg);
+  /* It is the closest thing to the camera, so it is the most motion-blurred —
+     a razor-sharp kerb under a flag that is waving reads as a sticker. */
+  opacity: 0.42;
+  filter: blur(2.2px);
+  /* Narrower and dimmer than the first pass, which read as caution tape across
+     the bottom of the frame rather than the edge of a track. */
+  background: repeating-linear-gradient(
+    116deg,
+    var(--red) 0 3.4vw,
+    #c9ccd2 3.4vw 6.8vw
+  );
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+}
+
+/* THE RED HAS TO BE IN THE ROOM, not just on the rule. The first pass put F1
+   red on a 2px line, a dim kerb and a glow behind the mark, and the frame read
+   black-white-steel — which is a paddock at night, not Formula 1. This is the
+   tarmac lit from below the flag: tail lights on a wet straight. It is the
+   largest area of red in the film and the reason the palette lands. */
+.f1-haze {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(86% 30% at 50% 92%, rgba(225, 6, 0, 0.34) 0%, rgba(225, 6, 0, 0.1) 44%, transparent 74%),
+    radial-gradient(70% 26% at 50% 78%, rgba(255, 236, 226, 0.06), transparent 72%);
+}
+
+/* ---------- the start lights --------------------------------------------- */
+
+/* They hold the centre of the frame while the mark is not in it, and they are
+   gone by the time it is. The film hands the middle of the frame from one to
+   the other — that handover is what makes the launch land. */
+.f1-lights {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  z-index: 14;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 460ms ease;
+}
+
+.f1-p1 .f1-lights,
+.f1-p2 .f1-lights {
+  opacity: 1;
+}
+
+.f1-gantry {
+  display: flex;
+  align-items: center;
+  gap: 2.4vw;
+  padding: 2.4vw 3.2vw;
+  border-radius: 2.6vw;
+  background: linear-gradient(180deg, #1b1d22 0%, #0b0c0f 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.8),
+    0 2.4vw 5vw rgba(0, 0, 0, 0.66);
+}
+
+/* The housing. Unlit it is a hole, not a grey disc — a lens with nothing
+   behind it is dark and slightly wet. */
+.f1-lamp {
+  position: relative;
+  display: block;
+  width: 6.6vw;
+  height: 6.6vw;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 34%, #191b1f 0%, #0a0b0d 74%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 0.7vw 1.2vw rgba(0, 0, 0, 0.9);
+}
+
+.f1-lens {
+  position: absolute;
+  inset: 13%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, var(--red-hi) 0%, var(--red) 46%, var(--red-lo) 100%);
+  opacity: 0;
+}
+
+/* Each lamp lights 280ms after the one before it, and the last lands ~1.4s into
+   the beat — leaving a held moment of all five lit before they go. THAT PAUSE
+   IS THE WHOLE TENSION OF AN F1 START; if this ever needs tightening, take it
+   out of another beat.
+
+   Lights-out needs no rule of its own: the sequence is keyed to .f1-p1, so when
+   p2 arrives the selector stops matching and all five drop at once — which is
+   exactly how it happens, instantly and together. */
+.f1-p1 .f1-lens {
+  animation: f1LampOn 200ms ease forwards;
+  animation-delay: calc(var(--i) * 280ms);
+}
+
+@keyframes f1LampOn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* The lamps throw light on the tarmac, and it goes out with them. */
+.f1-p1 .f1-key {
+  background: radial-gradient(58% 34% at 50% 30%, rgba(255, 120, 100, 0.2) 0%, transparent 70%);
+}
+
+/* ---------- the launch --------------------------------------------------- */
+
+.f1-streaks {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+
+/* Hand-placed rather than random, so none of them run through the mark's box
+   where they would read as scratches on it rather than speed past it. */
+/* Opacity comes from --o, NOT from an inline `opacity`. It used to be inline,
+   which beat the stylesheet's `opacity: 0` and left eight white lines lying
+   across the frame through the entire light sequence — the streaks ARE the
+   launch, and they must not exist before it. */
+.f1-streak {
+  position: absolute;
+  display: block;
+  opacity: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.92), transparent);
+  filter: blur(0.6px);
+}
+
+.f1-p3 .f1-streak {
+  animation-name: f1Rip;
+  animation-duration: 620ms;
+  animation-timing-function: cubic-bezier(0.3, 0.7, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+@keyframes f1Rip {
+  from { opacity: var(--o, 0.5); transform: translateX(0); }
+  85%  { opacity: var(--o, 0.5); }
+  to   { opacity: 0; transform: translateX(190vw); }
+}
+
+/* ---------- the lockup --------------------------------------------------- */
+
+.f1-markwrap {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: var(--mark-w);
+  z-index: 20;
+  transform: translate(-50%, -50%);
+}
+
+/* The arrival. Scale and a resolving blur, not a slide: the mark is coming AT
+   the camera down a straight, and something that slides in from the side is a
+   graphic being moved across a frame. */
+.f1-launch {
+  opacity: 0;
+  transform: scale(0.68);
+  filter: blur(10px);
+  transition:
+    transform 940ms var(--ease),
+    filter 620ms ease,
+    opacity 420ms ease;
+}
+
+.f1-p3 .f1-launch,
+.f1-p4 .f1-launch,
+.f1-p5 .f1-launch,
+.f1-p6 .f1-launch {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.f1-markbox {
+  position: relative;
+  width: 100%;
+}
+
+/* The red behind the mark — the only thing separating a black hood from black
+   tarmac on its shadow side. */
+.f1-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 132%;
+  height: 210%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(225, 6, 0, 0.46) 0%, rgba(225, 6, 0, 0.13) 46%, transparent 74%);
+  filter: blur(6px);
+}
+
+/* THE BEVEL CHAIN LIVES HERE, on the wrapper — drop-shadow takes its shape from
+   alpha, so on an empty masked box it casts nothing. */
+.f1-mark {
+  position: relative;
+  width: 100%;
+  /* measured off the trimmed artwork at load; never hard-code a ratio or the
+     next logo lands off register */
+  aspect-ratio: var(--logo-aspect, 2.17);
+  filter:
+    drop-shadow(0 0.22vw 0 rgba(255, 255, 255, 0.16))
+    drop-shadow(0 -0.18vw 0 rgba(0, 0, 0, 0.6))
+    drop-shadow(0 1.4vw 2.2vw rgba(0, 0, 0, 0.62));
+}
+
+.f1-layer {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-image: var(--logo);
+  mask-image: var(--logo);
+}
+
+/* Hood and NINJAS. Two crossed hatches make the twill; the gradient under them
+   is what stops it reading as graph paper. Falls back to the whole-mark mask if
+   segmentation failed, so the mark is never unpainted. */
+.f1-carbon {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+  /* LIFTED WELL CLEAR OF BLACK, and this is not a taste call. The first pass
+     ran this down to #050609 on near-black tarmac and "NINJAS" simply was not
+     there — the same failure Hulk shipped once and the user caught. Carbon
+     fibre is a MID GREY with a hard specular anyway; a black hood on a black
+     ground is not moody, it is missing. */
+  background-color: #2b2f36;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.13) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.3) 0 1px, transparent 1px 4px),
+    linear-gradient(168deg, #4d545f 0%, #2b2f36 48%, #16181d 100%);
+}
+
+/* The eye band. Its own tone, lifted by the key — a face painted white loses
+   the ninja. */
+.f1-face {
+  -webkit-mask-image: var(--logo-light, var(--logo));
+  mask-image: var(--logo-light, var(--logo));
+  background: linear-gradient(170deg, var(--face-hi) 0%, var(--face) 58%, var(--face-lo) 100%);
+}
+
+/* CODE. The brand's blue, glossed rather than replaced. */
+.f1-code {
+  -webkit-mask-image: var(--logo-accent, var(--logo));
+  mask-image: var(--logo-accent, var(--logo));
+  background: linear-gradient(170deg, var(--code-hi) 0%, var(--code) 56%, var(--code-lo) 100%);
+}
+
+/* One pass of clear coat across the whole mark. NOT a transform — the mask
+   travels with a transformed layer and the highlight leaves the letterforms
+   entirely; an oversized background scrolls behind a fixed mask instead. */
+.f1-spec {
+  background-image: linear-gradient(
+    104deg,
+    transparent 34%,
+    rgba(255, 255, 255, 0.5) 46%,
+    rgba(255, 255, 255, 0.06) 52%,
+    transparent 62%
+  );
+  background-size: 320% 100%;
+  background-position: 128% 0;
+  mix-blend-mode: screen;
+}
+
+.f1-p5 .f1-spec,
+.f1-p6 .f1-spec {
+  animation: f1Sweep 1500ms var(--ease) 120ms both;
+}
+
+@keyframes f1Sweep {
+  from { background-position: 128% 0; }
+  to   { background-position: -46% 0; }
+}
+
+/* ---------- the name ----------------------------------------------------- */
+
+/* A flow sibling of the mark inside the wrapper — never positioned
+   independently, or it drifts off down the frame the moment anything moves. */
+.f1-type {
+  position: relative;
+  z-index: 2;
+  margin-top: 3.4vw;
+  text-align: center;
+}
+
+.f1-caption {
+  font-size: 5.2vw;
+  font-weight: 900;
+  letter-spacing: 0.36em;
+  /* the tracking sits on the right of the last letter too, which walks the
+     word off centre by half of it */
+  text-indent: 0.36em;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(1.6vw);
+  transition: opacity 620ms ease, transform 760ms var(--ease);
+}
+
+.f1-p4 .f1-caption,
+.f1-p5 .f1-caption,
+.f1-p6 .f1-caption {
+  opacity: 1;
+  transform: none;
+}
+
+.f1-rule {
+  width: 0;
+  height: 3px;
+  margin: 2.4vw auto 0;
+  background: linear-gradient(90deg, transparent, var(--red) 50%, transparent);
+  transition: width 820ms 160ms var(--ease);
+}
+
+.f1-p4 .f1-rule,
+.f1-p5 .f1-rule,
+.f1-p6 .f1-rule {
+  width: 84%;
+}
+
+/* ---------- the flag ----------------------------------------------------- */
+
+/* It comes in from the hoist side, which is the side a flag is actually waved
+   from, and it arrives AFTER the name — a chequered flag is the end of a race,
+   so waving it over the launch would be a nice piece of motion and complete
+   nonsense. */
+.f1-flagwrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Sat at bottom 9% / height 27% and the composition came out bottom-heavy:
+     150px of clear frame above the lockup against 58px below the flag. The
+     flag is full-bleed on purpose — it is environment, like the kerb, and a
+     waved flag runs off frame — but the BLOCK still has to sit centred. */
+  bottom: 18%;
+  height: 25%;
+  z-index: 12;
+  opacity: 0;
+  transform: translateX(-114%);
+  transition: transform 1180ms var(--ease), opacity 380ms ease;
+}
+
+.f1-p5 .f1-flagwrap,
+.f1-p6 .f1-flagwrap {
+  opacity: 1;
+  transform: none;
+}
+
+.f1-flag {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 2vw 3vw rgba(0, 0, 0, 0.6));
+}
+
+.f1-chequer { fill: url(#f1-check); }
+.f1-folds   { fill: url(#f1-foldband); }
+.f1-sheen   { fill: url(#f1-sheenpat); mix-blend-mode: screen; }
+
+/* The bands travel one full period and repeat, so there is no jump. This is the
+   single strongest "it is waving" cue in the file. */
+.f1-p5 .f1-folds,
+.f1-p6 .f1-folds {
+  animation: f1Fold 3200ms linear infinite;
+}
+
+.f1-p5 .f1-sheen,
+.f1-p6 .f1-sheen {
+  animation: f1Fold 3200ms linear infinite;
+  animation-delay: -1500ms;
+}
+
+@keyframes f1Fold {
+  from { transform: translateX(0); }
+  to   { transform: translateX(130px); }
+}
+
+/* The whole cloth breathing, under the bands. Smallest of the three cues and
+   the one to cut first if it ever fights the fold timing. */
+.f1-p5 .f1-cloth,
+.f1-p6 .f1-cloth {
+  animation: f1Billow 3600ms ease-in-out infinite;
+}
+
+@keyframes f1Billow {
+  0%, 100% { transform: translateY(0) skewY(0deg) scaleY(1); }
+  50%      { transform: translateY(-1.2%) skewY(-0.7deg) scaleY(1.03); }
+}
+
+/* ---------- grain and vignette ------------------------------------------- */
+
+.f1-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>");
+  background-size: 160px 160px;
+}
+
+.f1-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 31;
+  pointer-events: none;
+  background: radial-gradient(108% 76% at 50% 42%, transparent 52%, rgba(0, 0, 0, 0.62) 100%);
+}
+
+/* ---------- static ------------------------------------------------------- */
+
+/* The poster frame: everything the film ends on, with nothing left mid-move.
+   Every effect that has no resting state is forced off here, and everything
+   that should persist is given a frozen value — a theme is not done until this
+   block is as finished as the animated one. */
+.f1.is-static *,
+.f1.is-static *::before,
+.f1.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* the race is over: the gantry is dark and the streaks are long gone */
+.f1.is-static .f1-lights,
+.f1.is-static .f1-streak {
+  opacity: 0;
+}
+
+.f1.is-static .f1-launch {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.f1.is-static .f1-caption {
+  opacity: 1;
+  transform: none;
+}
+
+.f1.is-static .f1-rule {
+  width: 84%;
+}
+
+.f1.is-static .f1-flagwrap {
+  opacity: 1;
+  transform: none;
+}
+
+/* Frozen mid-travel rather than at zero: at zero a fold band sits exactly on
+   the hoist edge and the cloth looks pressed. */
+.f1.is-static .f1-folds { transform: translateX(58px); }
+.f1.is-static .f1-sheen { transform: translateX(96px); }
+
+/* The clear coat has already passed. */
+.f1.is-static .f1-spec { background-position: -46% 0; }
+
+/* ---------- reduced motion ----------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .f1 *,
+  .f1 *::before,
+  .f1 *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .f1 .f1-lights,
+  .f1 .f1-streak {
+    opacity: 0;
+  }
+  .f1 .f1-launch,
+  .f1 .f1-caption {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .f1 .f1-rule { width: 84%; }
+  .f1 .f1-flagwrap { opacity: 1; transform: none; }
+  .f1 .f1-folds { transform: translateX(58px); }
+  .f1 .f1-sheen { transform: translateX(96px); }
+  .f1 .f1-spec { background-position: -46% 0; }
+}
