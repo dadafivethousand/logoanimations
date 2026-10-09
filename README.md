@@ -92,8 +92,9 @@ the page at all — the brand is carried by the photograph, which has CODE NINJA
 WOODBRIDGE on the wall behind the students. The wording is placeholder, but it
 is written rather than greeked: a page of type has a texture grey bars don't.
 
-**Thanksgiving** — a holiday-hours notice. Candlelit parchment falling off to
-pumpkin and burgundy, maple leaves coming down through it, the mark in its own
-colours. "Happy Thanksgiving" writes on above it, a garland of leaves and
-cranberries fans out under WOODBRIDGE, and a card swings in: WE'RE CLOSED ·
-Monday, October 12. The date is the `date` prop.
+**Thanksgiving** — a generic holiday-hours notice with **no logo and no
+business name**, so anyone can post it. Candlelit dusk with golden bokeh; a gust
+of maple leaves blows through, then leaves fly in from every direction and lock
+into a slowly turning harvest wreath. A gold-foil "Happy Thanksgiving" tracks in
+across it with a shimmer, CLOSED slams in letter by letter, and the date opens
+out between gold rules. Every string is a prop (`date` among them).
