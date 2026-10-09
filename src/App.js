@@ -13,10 +13,11 @@ import "./Stylesheets/App.css";
 // import Spiderman from "./Components/Spiderman";
 // import Batman from "./Components/Batman";
 // import Wolverine from "./Components/Wolverine";
-import Formula1 from "./Components/Formula1";
+// import Formula1 from "./Components/Formula1";
+import Thanksgiving from "./Components/Thanksgiving";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Formula1 mode="animated" />;
+  return <Thanksgiving mode="animated" />;
 }
 export default App;

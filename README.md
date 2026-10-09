@@ -91,3 +91,9 @@ full depth of the page in three columns. No logo file: the lockup is not set on
 the page at all — the brand is carried by the photograph, which has CODE NINJAS
 WOODBRIDGE on the wall behind the students. The wording is placeholder, but it
 is written rather than greeked: a page of type has a texture grey bars don't.
+
+**Thanksgiving** — a holiday-hours notice. Candlelit parchment falling off to
+pumpkin and burgundy, maple leaves coming down through it, the mark in its own
+colours. "Happy Thanksgiving" writes on above it, a garland of leaves and
+cranberries fans out under WOODBRIDGE, and a card swings in: WE'RE CLOSED ·
+Monday, October 12. The date is the `date` prop.
