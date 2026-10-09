@@ -96,5 +96,5 @@ is written rather than greeked: a page of type has a texture grey bars don't.
 business name**, so anyone can post it. Candlelit dusk with golden bokeh; a gust
 of maple leaves blows through, then leaves fly in from every direction and lock
 into a slowly turning harvest wreath. A gold-foil "Happy Thanksgiving" tracks in
-across it with a shimmer, CLOSED slams in letter by letter, and the date opens
+across it with a shimmer, CLOSED drops in letter by letter, and the date opens
 out between gold rules. Every string is a prop (`date` among them).

@@ -1,7 +1,7 @@
 // Thanksgiving.js — a generic holiday-hours notice any business can post: no
 // logo, no name. Candlelit dusk, golden bokeh, a gust of maple leaves, then the
 // leaves fly in from every direction and lock into a harvest wreath. A gold-foil
-// "Happy Thanksgiving" tracks in across it, and CLOSED slams in letter by letter
+// "Happy Thanksgiving" tracks in across it, and CLOSED drops in letter by letter
 // with the date under it. Canadian Thanksgiving, so the leaves are maple.
 //
 // Like Patriot and Hulk this uses no logo file at all. Every string is a prop;
@@ -91,7 +91,7 @@ export default function Thanksgiving({
   kicker = "We’re",
   closed = "Closed",
   date = "Monday · October 12",
-  loopAt = 12000,
+  loopAt = 22000,
 }) {
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
 
@@ -127,7 +127,7 @@ export default function Thanksgiving({
 
       {/* ---- the lockup ---- */}
       <div className="tg-markwrap">
-        <div className="tg-shake">
+        <div className="tg-stack">
           <div className="tg-wreathbox">
             <div className="tg-wreath-glow" aria-hidden />
             <div className="tg-wreath" aria-hidden>

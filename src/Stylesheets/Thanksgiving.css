@@ -186,7 +186,7 @@
   justify-content: center;
   z-index: 20;
 }
-.tg-shake {
+.tg-stack {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -222,7 +222,7 @@
   inset: 0;
 }
 .tg:is(.tg-p3, .tg-p4, .tg-p5, .tg-p6) .tg-wreath {
-  animation: tg-turn 200s linear infinite;
+  animation: tg-turn 70s linear infinite;
 }
 @keyframes tg-turn {
   to { transform: rotate(360deg); }
@@ -413,19 +413,6 @@
   0% { opacity: 0; transform: translateY(-9vw) scale(1.9); filter: blur(1vw); }
   45% { opacity: 1; filter: blur(0); }
   100% { opacity: 1; transform: none; }
-}
-
-/* the impact: once the last letter is down, the whole lockup takes the hit */
-.tg-p4 .tg-shake {
-  animation: tg-shake 420ms ease-out 900ms both;
-}
-@keyframes tg-shake {
-  0% { transform: translate(0, 0); }
-  20% { transform: translate(-0.8vw, 0.6vw); }
-  40% { transform: translate(0.7vw, -0.4vw); }
-  60% { transform: translate(-0.4vw, 0.3vw); }
-  80% { transform: translate(0.2vw, -0.1vw); }
-  100% { transform: none; }
 }
 
 .tg-date {
