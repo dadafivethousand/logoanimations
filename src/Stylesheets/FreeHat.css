@@ -77,35 +77,37 @@
   opacity: 1;
 }
 
-/* the sunburst — a square bigger than the screen's diagonal, turning slowly */
+/* The sunburst. It has to cover the screen's diagonal at every angle, which
+   needs a ~118vmax square — but a layer that size is tens of megabytes of
+   texture on a retina screen and the compositor chokes on it. So it is painted
+   at half that and scaled up 2x: a quarter of the pixels, and soft rays do not
+   show the difference. */
 .fh-rays {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 240vmax;
-  height: 240vmax;
-  margin: -120vmax 0 0 -120vmax;
+  width: 60vmax;
+  height: 60vmax;
+  margin: -30vmax 0 0 -30vmax;
   background: repeating-conic-gradient(rgba(255, 255, 255, 0.2) 0deg 7.5deg, rgba(255, 255, 255, 0) 7.5deg 15deg);
+  will-change: transform;
   animation: fh-turn 48s linear infinite;
 }
 
 .fh-dots {
   background-image: radial-gradient(rgba(255, 255, 255, 0.34) 22%, transparent 24%);
   background-size: calc(var(--u) * 5) calc(var(--u) * 5);
-  -webkit-mask-image: linear-gradient(180deg, transparent 20%, #000 100%);
-  mask-image: linear-gradient(180deg, transparent 20%, #000 100%);
-  animation: fh-slide 6s linear infinite;
+  opacity: 0.6;
+  /* deliberately still: scrolling a background-position repaints the whole
+     screen every frame, and nothing else on this layer needs a repaint */
 }
 
 @keyframes fh-turn {
-  to {
-    transform: rotate(360deg);
+  from {
+    transform: scale(2) rotate(0deg);
   }
-}
-
-@keyframes fh-slide {
   to {
-    background-position: calc(var(--u) * 5) calc(var(--u) * -5);
+    transform: scale(2) rotate(360deg);
   }
 }
 
@@ -622,11 +624,9 @@
   0%,
   100% {
     transform: scale(1) rotate(0);
-    filter: drop-shadow(0 calc(var(--u) * 1) 0 var(--ink)) brightness(1);
   }
   40% {
-    transform: scale(1.22) rotate(10deg);
-    filter: drop-shadow(0 calc(var(--u) * 1) 0 var(--ink)) brightness(1.35);
+    transform: scale(1.25) rotate(10deg);
   }
 }
 
@@ -825,8 +825,8 @@
   margin: calc(var(--u) * var(--s) * -0.5);
   background: #fff;
   clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
-  filter: drop-shadow(0 0 calc(var(--u) * 1) #fff);
   transform: scale(0);
+  will-change: transform;
   animation: fh-glint 1.9s var(--d) infinite ease-in-out;
 }
 
@@ -863,24 +863,35 @@
   margin: calc(var(--u) * -1.45) 0 0 calc(var(--u) * -1.45);
   border-radius: 50%;
   background: #7d5a14;
+}
+
+/* The lit bulb is painted once and switched with opacity. Animating the
+   box-shadow itself repaints a hundred glows three times a second. */
+.fh-bulb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #fffbe0;
+  box-shadow: 0 0 calc(var(--u) * 1.4) calc(var(--u) * 0.5) #ffe14d, 0 0 calc(var(--u) * 4) calc(var(--u) * 1.2) rgba(255, 190, 0, 0.75);
+  opacity: 0;
+  will-change: opacity;
   animation: fh-bulb 0.9s steps(1) infinite;
 }
 
-.fh-bulb-1 {
+.fh-bulb-1::after {
   animation-delay: -0.3s;
 }
-.fh-bulb-2 {
+.fh-bulb-2::after {
   animation-delay: -0.6s;
 }
 
 @keyframes fh-bulb {
   0% {
-    background: #fffbe0;
-    box-shadow: 0 0 calc(var(--u) * 1.4) calc(var(--u) * 0.5) #ffe14d, 0 0 calc(var(--u) * 4) calc(var(--u) * 1.2) rgba(255, 190, 0, 0.75);
+    opacity: 1;
   }
   33.4% {
-    background: #7d5a14;
-    box-shadow: none;
+    opacity: 0;
   }
 }
 
@@ -897,7 +908,6 @@
   transform: scale(0.8);
 }
 
-.is-static .fh-bulb-0 {
-  background: #fffbe0;
-  box-shadow: 0 0 calc(var(--u) * 1.4) calc(var(--u) * 0.5) #ffe14d, 0 0 calc(var(--u) * 4) calc(var(--u) * 1.2) rgba(255, 190, 0, 0.75);
+.is-static .fh-bulb-0::after {
+  opacity: 1;
 }

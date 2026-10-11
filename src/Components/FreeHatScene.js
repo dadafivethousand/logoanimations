@@ -344,8 +344,21 @@ const softDisc = () => {
 };
 
 export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isStatic = false } = {}) {
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
+
+  // The canvas is the whole screen, so on a retina display "device pixels" is
+  // six million of them, multisampled, every frame. Render to a fixed pixel
+  // BUDGET instead, and if the machine still cannot hold the frame rate, give
+  // resolution back (then the shadows) until it can. Smooth beats sharp here.
+  const BUDGET = 2.2e6;
+  let cssW = 0;
+  let cssH = 0;
+  let quality = 1;
+  const applyResolution = () => {
+    const fit = Math.sqrt((BUDGET * quality) / (cssW * cssH));
+    renderer.setPixelRatio(Math.max(0.5, Math.min(window.devicePixelRatio || 1, 2, fit)));
+    renderer.setSize(cssW, cssH, false);
+  };
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.15;
   renderer.shadowMap.enabled = true;
@@ -364,7 +377,7 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
 
   const key = new THREE.DirectionalLight("#fff3df", 2.6);
   key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.mapSize.set(512, 512);
   key.shadow.radius = 6;
   key.shadow.bias = -0.0015;
   key.shadow.normalBias = 0.03;
@@ -547,12 +560,28 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
     renderer.render(scene, camera);
   };
 
+  let frames = 0;
+  let slow = 0;
   const loop = (ms) => {
     if (dead) return;
     const t = ms / 1000;
-    const dt = Math.min(0.05, last ? t - last : 0.016);
+    const real = last ? t - last : 0.016;
+    const dt = Math.min(0.05, real);
     last = t;
     now += dt;
+
+    // every 40 frames, once the shaders have compiled: are we holding ~45fps?
+    if (!isStatic && ++frames > 90) {
+      slow += real;
+      if (frames % 40 === 0) {
+        if (slow / 40 > 0.022 && quality > 0.2) {
+          quality *= 0.7;
+          applyResolution();
+          if (quality < 0.45) key.castShadow = false;
+        }
+        slow = 0;
+      }
+    }
     if (!isStatic || dirty) {
       dirty = false;
       frame(dt);
@@ -564,7 +593,9 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
     /** w/h: canvas CSS size. zone: the layout box the cap should sit in, in canvas px. */
     resize(w, h, zone) {
       if (!w || !h) return;
-      renderer.setSize(w, h, false);
+      cssW = w;
+      cssH = h;
+      applyResolution();
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       viewW = viewH * camera.aspect;
