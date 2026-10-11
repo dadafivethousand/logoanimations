@@ -14,10 +14,11 @@ import "./Stylesheets/App.css";
 // import Batman from "./Components/Batman";
 // import Wolverine from "./Components/Wolverine";
 // import Formula1 from "./Components/Formula1";
-import Thanksgiving from "./Components/Thanksgiving";
+// import Thanksgiving from "./Components/Thanksgiving";
+import FreeHat from "./Components/FreeHat";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Thanksgiving mode="animated" />;
+  return <FreeHat mode="animated" />;
 }
 export default App;
