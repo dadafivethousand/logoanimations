@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Lilita+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=League+Spartan:wght@800&family=Lilita+One&display=swap");
 
 /* FreeHat — a fair-booth sign. Carnival daylight: a different saturated sky per
    scene, white type with a deep-violet outline, marquee bulbs round the frame.
@@ -146,7 +146,7 @@
   inset: calc(var(--u) * 9.5);
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: auto calc(var(--u) * 52) calc(var(--u) * 66);
+  grid-template-rows: auto calc(var(--u) * 50) calc(var(--u) * 72);
   grid-template-areas: "head" "hat" "panel";
   align-content: center;
   justify-items: center;
@@ -174,7 +174,7 @@
   position: relative;
   z-index: 3;
   width: min(100%, calc(var(--u) * 84));
-  height: calc(var(--u) * 66);
+  height: calc(var(--u) * 72);
 }
 
 @media (orientation: landscape) {
@@ -303,6 +303,11 @@
   inset: -22% -12%;
   background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.55) 34%, rgba(255, 255, 255, 0) 100%);
   animation: fh-halo 1.3s ease-in-out infinite alternate;
+}
+
+/* a white cap on a white spotlight disappears — give it a deep pool to sit on */
+.fh-hat-white .fh-halo {
+  background: radial-gradient(closest-side, rgba(22, 10, 60, 0.62) 0%, rgba(22, 10, 60, 0.3) 45%, rgba(22, 10, 60, 0) 100%);
 }
 
 .fh-p0 .fh-halo {
@@ -480,8 +485,112 @@
 
 .fh-star {
   display: block;
-  width: calc(var(--u) * 14);
+  width: calc(var(--u) * 11.5);
   filter: drop-shadow(0 calc(var(--u) * 1) 0 var(--ink));
+}
+
+/* the directions: what to type, and what to press */
+.fh-s-2 .fh-title {
+  line-height: 1.32;
+}
+
+.fh-google {
+  display: inline-block;
+  margin-right: 0.1em;
+  padding: 0.12em 0.2em 0;
+  font-size: 0.86em;
+  line-height: 1;
+  vertical-align: 0.02em;
+  border-radius: 0.22em;
+  background: #fff;
+  box-shadow: 0 0 0 calc(var(--u) * 0.7) var(--ink), 0 calc(var(--u) * 1.6) 0 var(--ink);
+  font-family: "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+}
+
+.fh-s-2 {
+  gap: calc(var(--u) * 2);
+}
+
+.fh-how {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--u) * 0.9);
+}
+
+.fh-how-label {
+  font-size: calc(var(--u) * 5);
+  line-height: 1;
+  letter-spacing: 0.03em;
+  -webkit-text-stroke: calc(var(--u) * 0.85) var(--ink);
+  paint-order: stroke fill;
+}
+
+.fh-how-label b {
+  color: var(--sun);
+  font-weight: 400;
+}
+
+.fh-searchbar {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.8);
+  padding: calc(var(--u) * 0.9) calc(var(--u) * 4.5) calc(var(--u) * 0.6) calc(var(--u) * 2.6);
+  border: calc(var(--u) * 0.7) solid var(--ink);
+  border-radius: 99vmax;
+  background: #fff;
+  box-shadow: 0 calc(var(--u) * 1.1) 0 var(--ink);
+  color: #202124;
+  font-family: "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--u) * 5.1);
+  line-height: 1.25;
+}
+
+.fh-searchbar i {
+  display: block;
+  width: calc(var(--u) * 5.4);
+}
+
+.fh-searchbar svg {
+  display: block;
+  width: 100%;
+}
+
+/* typed out one character at a time, with a caret */
+.fh-typed {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: calc(var(--u) * 0.6) solid #4285f4;
+  padding-right: calc(var(--u) * 0.5);
+}
+
+.fh-p3 .fh-typed {
+  animation: fh-type 1.5s 1.3s steps(22) both, fh-caret 0.6s steps(1) infinite;
+}
+
+.fh-p3 .fh-searchbar {
+  animation: fh-thump 0.7s 3s infinite alternate ease-in-out;
+}
+
+@keyframes fh-type {
+  from {
+    max-width: 0;
+  }
+  to {
+    max-width: 30em;
+  }
+}
+
+@keyframes fh-caret {
+  50% {
+    border-right-color: transparent;
+  }
 }
 
 .fh-star path,
@@ -610,7 +719,7 @@
   color: var(--ink);
   font-family: "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
   font-weight: 700;
-  font-size: calc(var(--u) * 5.1);
+  font-size: calc(var(--u) * 4.9);
   line-height: 1.05;
   text-align: left;
 }
@@ -660,30 +769,80 @@
 
 .fh-brand {
   display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 2.4);
-  margin-top: calc(var(--u) * 0.6);
-  padding: calc(var(--u) * 1.2) calc(var(--u) * 4) calc(var(--u) * 1.4) calc(var(--u) * 3);
-  overflow: hidden;
+  flex-direction: column;
+  align-items: stretch;
+  margin-top: calc(var(--u) * 0.4);
+  padding: calc(var(--u) * 2) calc(var(--u) * 6) calc(var(--u) * 1.5);
   border: calc(var(--u) * 0.7) solid var(--ink);
-  border-radius: calc(var(--u) * 3.4);
+  border-radius: calc(var(--u) * 4);
   background: #fff;
   box-shadow: 0 calc(var(--u) * 1.1) 0 var(--ink);
-  color: var(--ink);
-  font-size: calc(var(--u) * 6.2);
-  letter-spacing: 0.06em;
+}
+
+/* WOODBRIDGE sits under the lockup, spaced out to exactly its width, in a
+   geometric heavy close to the wordmark's own lettering */
+.fh-brand-mark {
+  overflow: hidden;
+}
+
+.fh-brand-town {
+  display: flex;
+  justify-content: space-between;
+  margin-top: calc(var(--u) * 1.3);
+  padding: 0 0.1em;
+  color: #000;
+  font-family: "League Spartan", "Futura", "Century Gothic", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--u) * 4.5);
+  line-height: 1;
 }
 
 /* the lockup file carries ~17% of empty canvas above the ninja */
 .fh-brand img {
   display: block;
-  height: calc(var(--u) * 16);
+  height: calc(var(--u) * 19);
   width: auto;
-  margin-top: calc(var(--u) * -2.9);
+  margin-top: calc(var(--u) * -3.4);
 }
 
 .fh-p5 .fh-brand {
   animation: fh-row-in 0.55s 1.4s both cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+/* ---- glints ------------------------------------------------------------ */
+
+.fh-glints {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.fh-glints i {
+  position: absolute;
+  width: calc(var(--u) * var(--s));
+  height: calc(var(--u) * var(--s));
+  margin: calc(var(--u) * var(--s) * -0.5);
+  background: #fff;
+  clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+  filter: drop-shadow(0 0 calc(var(--u) * 1) #fff);
+  transform: scale(0);
+  animation: fh-glint 1.9s var(--d) infinite ease-in-out;
+}
+
+.fh-p0 .fh-glints {
+  visibility: hidden;
+}
+
+@keyframes fh-glint {
+  0%,
+  55%,
+  100% {
+    transform: scale(0) rotate(0);
+  }
+  28% {
+    transform: scale(1) rotate(90deg);
+  }
 }
 
 /* ---- marquee bulbs ----------------------------------------------------- */
@@ -732,6 +891,10 @@
 .is-static *::after {
   animation: none !important;
   transition: none !important;
+}
+
+.is-static .fh-glints i:nth-child(odd) {
+  transform: scale(0.8);
 }
 
 .is-static .fh-bulb-0 {

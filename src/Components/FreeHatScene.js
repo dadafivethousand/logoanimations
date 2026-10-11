@@ -19,6 +19,7 @@ const BRIM_THICK = 0.045;
 
 // [crown, under-brim, stitching, button + eyelets]
 export const HATS = {
+  white: ["#d9d8d4", "#cfced0", "#9a9eab", "#d9d8d4"],
   black: ["#23252e", "#e4002b", "#f4f1e8", "#e4002b"],
   blue: ["#2f8fd0", "#12314f", "#ffffff", "#ffffff"],
   red: ["#e4002b", "#1b1c22", "#ffffff", "#1b1c22"],
@@ -50,7 +51,7 @@ function shapeCrown(v) {
   const r = v.length() || 1;
   const front = Math.max(0, v.z / r);
   const h = v.y / r;
-  v.y = v.y * (0.98 + 0.13 * front); // taller at the front
+  v.y = v.y * (0.9 + 0.2 * front); // taller at the front
   v.z = v.z * CROWN_Z + 0.1 * r * front * Math.sin(Math.PI * h); // front panel stands up
   return v;
 }
@@ -75,8 +76,8 @@ function reshape(geo) {
 /** a: -1..1 across the brim, t: 0 (crown edge) .. 1 (front lip) */
 function brimPoint(a, t, lift = 0) {
   const th = a * BRIM_HALF;
-  const reach = 0.96 * Math.pow(Math.cos((a * Math.PI) / 2), 0.62);
-  const x = Math.sin(th) * (0.985 + 0.08 * t);
+  const reach = 1.02 * Math.pow(Math.cos((a * Math.PI) / 2), 0.62);
+  const x = Math.sin(th) * (0.985 + 0.13 * t);
   const z = Math.cos(th) * CROWN_Z * 0.985 + reach * t;
   // tips down toward the lip, and rolls down at the sides like a curved peak
   const y = 0.02 - reach * t * (0.07 + 0.15 * x * x) + lift;
@@ -142,7 +143,7 @@ function twillTexture() {
 // The front patch: a white woven badge with a stitched border and the ninja's
 // head cropped out of the lockup. Drawn empty first, filled in when the image
 // decodes — `onReady` lets the caller repaint a static frame.
-function patchTexture(logoSrc, stitch, onReady) {
+function patchTexture(logoSrc, stitch, onReady, badge = true) {
   const S = 512;
   const c = document.createElement("canvas");
   c.width = c.height = S;
@@ -153,6 +154,7 @@ function patchTexture(logoSrc, stitch, onReady) {
 
   const paint = (img) => {
     g.clearRect(0, 0, S, S);
+    if (badge) {
     g.beginPath();
     g.arc(S / 2, S / 2, S * 0.47, 0, TAU);
     g.fillStyle = "#fbfaf6";
@@ -167,7 +169,19 @@ function patchTexture(logoSrc, stitch, onReady) {
     g.strokeStyle = stitch;
     g.stroke();
     g.setLineDash([]);
-    if (img) {
+    }
+    if (img && !badge) {
+      // a white cap carries the whole lockup, embroidered straight onto the
+      // cloth: the ninja with CODE NINJAS under it. The lockup is everything
+      // below the top ~17% of the file. The patch is wider than it is tall, so
+      // the square texture is stretched sideways — WIDE undoes that.
+      const WIDE = 1.3;
+      const sy = img.naturalHeight * 0.17;
+      const sh = img.naturalHeight - sy;
+      const w = S * 0.97;
+      const h = ((w * sh) / img.naturalWidth) * WIDE;
+      g.drawImage(img, 0, sy, img.naturalWidth, sh, (S - w) / 2, (S - h) / 2, w, h);
+    } else if (img) {
       // the head sits in the top-middle of the 1920x1080 lockup; fractions so a
       // re-exported logo at another size still crops the same region
       const sx = img.naturalWidth * 0.318;
@@ -210,7 +224,7 @@ function buildHat(palette, logoSrc, onReady) {
   });
   const trim = new THREE.MeshStandardMaterial({ color: trimCol, roughness: 0.45 });
   const seam = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(crownCol).multiplyScalar(0.55),
+    color: new THREE.Color(crownCol).multiplyScalar(palette === HATS.white ? 0.62 : 0.55),
     roughness: 0.9,
   });
 
@@ -261,9 +275,13 @@ function buildHat(palette, logoSrc, onReady) {
 
   // front patch, on the same deformed sphere a hair proud of the cloth
   const patch = new THREE.Mesh(
-    reshape(new THREE.SphereGeometry(1.014, 40, 30, Math.PI / 2 - 0.46, 0.92, 0.56, 0.86)),
+    reshape(
+      palette === HATS.white
+        ? new THREE.SphereGeometry(1.014, 48, 30, Math.PI / 2 - 0.66, 1.32, 0.52, 0.88)
+        : new THREE.SphereGeometry(1.014, 40, 30, Math.PI / 2 - 0.46, 0.92, 0.56, 0.86)
+    ),
     new THREE.MeshStandardMaterial({
-      map: patchTexture(logoSrc, palette[1] === "#e4002b" ? "#e4002b" : "#3490bf", onReady),
+      map: patchTexture(logoSrc, palette[1] === "#e4002b" ? "#e4002b" : "#3490bf", onReady, palette !== HATS.white),
       transparent: true,
       roughness: 0.75,
       depthWrite: false,
@@ -325,7 +343,7 @@ const softDisc = () => {
   return new THREE.CanvasTexture(c);
 };
 
-export default function createFreeHatScene(canvas, { logoSrc, hat = "black", isStatic = false } = {}) {
+export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isStatic = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -368,7 +386,7 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "black", isS
   tilt.add(spin);
 
   let dirty = true;
-  spin.add(buildHat(HATS[hat] || HATS.black, logoSrc, () => (dirty = true)));
+  spin.add(buildHat(HATS[hat] || HATS.white, logoSrc, () => (dirty = true)));
   spin.position.y = -0.26; // turn about the cap's visual middle, not its base
 
   const shadow = new THREE.Mesh(
@@ -483,6 +501,8 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "black", isS
     bob.scale.set(wide, squash, wide);
     spin.rotation.y = 0.62 + 0.3 * Math.sin(idle * 0.75) + turn;
     tilt.rotation.z = 0.07 * Math.sin(idle * 1.1 + 1);
+    // nods back every few seconds, far enough to flash the under-brim
+    tilt.rotation.x = isStatic ? 0.16 : 0.1 - 0.3 * Math.pow(Math.max(0, Math.sin(idle * 0.9)), 3);
     const lift = Math.min(1, Math.max(0, bob.position.y / 3));
     shadow.scale.set(3.1 * (1 - lift * 0.6), 0.42 * (1 - lift * 0.6), 1);
     shadow.material.opacity = 1 - lift * 0.8;

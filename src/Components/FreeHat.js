@@ -17,7 +17,7 @@
 // is the user's own brief (follow, 5-star review, book a free session).
 //
 // URL switches, for whoever is setting the screen up:
-//   ?hat=black|blue|red   the cap's colourway
+//   ?hat=white|black|blue|red   the cap's colourway (the real one is white)
 //   ?scene=1..5           hold on one scene instead of cycling
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../Stylesheets/FreeHat.css";
@@ -70,6 +70,29 @@ const Gamepad = () => (
   </svg>
 );
 
+const Search = () => (
+  <svg viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="42" cy="42" r="27" fill="none" stroke="#4285f4" strokeWidth="13" />
+    <path d="M63 63l26 26" stroke="#4285f4" strokeWidth="14" strokeLinecap="round" />
+  </svg>
+);
+
+// "Google" in its own four colours, set as type — the word people look for
+const GOOGLE = [["G", "#4285f4"], ["o", "#ea4335"], ["o", "#fbbc05"], ["g", "#4285f4"], ["l", "#34a853"], ["e", "#ea4335"]];
+const Google = () => (
+  <span className="fh-google" aria-label="Google">
+    {GOOGLE.map(([ch, c], i) => (
+      <span key={i} style={{ color: c }}>{ch}</span>
+    ))}
+  </span>
+);
+
+// four-point glints scattered over the frame: [left %, top %, size u, delay s]
+const GLINTS = [
+  [13, 17, 7, 0], [88, 14, 9, 0.5], [47, 9, 6, 1.1], [93, 52, 7, 0.3], [8, 58, 8, 0.9],
+  [56, 47, 6, 1.4], [27, 88, 8, 0.6], [72, 90, 7, 1.2], [38, 34, 5, 0.2], [82, 76, 6, 0.8],
+];
+
 const Tick = () => (
   <svg viewBox="0 0 100 100" aria-hidden="true">
     <path d="M22 53l19 19 38-44" fill="none" stroke="#fff" strokeWidth="15" strokeLinecap="round" strokeLinejoin="round" />
@@ -110,7 +133,7 @@ function FreeHat({
   const still = mode === "static" || reduced;
   const { phase: live } = usePhases(CUES, { mode: still ? "static" : "animated", loopAt: LOOP_AT });
   const phase = held ? Math.min(5, Math.max(1, held)) : live;
-  const hat = HATS[query.get("hat")] ? query.get("hat") : "black";
+  const hat = HATS[query.get("hat")] ? query.get("hat") : "white";
 
   const stageRef = useRef(null);
   const canvasRef = useRef(null);
@@ -180,7 +203,7 @@ function FreeHat({
   return (
     <div
       ref={stageRef}
-      className={`fh-stage fh-p${phase}${still ? " is-static" : ""}`}
+      className={`fh-stage fh-p${phase} fh-hat-${hat}${still ? " is-static" : ""}`}
       onClick={goFullscreen}
     >
       <div className="fh-bg" aria-hidden="true">
@@ -249,8 +272,15 @@ function FreeHat({
               ))}
             </div>
             <h2 className="fh-title">
-              LEAVE US A<br />5-STAR REVIEW
+              LEAVE A 5-STAR<br /><Google /> REVIEW:
             </h2>
+            <div className="fh-how">
+              <div className="fh-searchbar">
+                <i><Search /></i>
+                <span className="fh-typed">{place}</span>
+              </div>
+              <span className="fh-how-label">then tap <b>Write a review</b></span>
+            </div>
           </div>
 
           <div className="fh-scene fh-s-3">
@@ -272,7 +302,7 @@ function FreeHat({
               </li>
               <li style={{ "--i": 1 }}>
                 <i className="fh-tick"><Tick /></i>
-                <span>Leave a <b>5-star review</b></span>
+                <span>Leave a <b>5-star Google review</b> for {place}</span>
               </li>
               <li style={{ "--i": 2 }}>
                 <i className="fh-tick"><Tick /></i>
@@ -280,11 +310,23 @@ function FreeHat({
               </li>
             </ul>
             <div className="fh-brand">
-              <img src={logoSrc} alt="Code Ninjas" />
-              <span>WOODBRIDGE</span>
+              <div className="fh-brand-mark">
+                <img src={logoSrc} alt="Code Ninjas" />
+              </div>
+              <div className="fh-brand-town" aria-label="Woodbridge">
+                {"WOODBRIDGE".split("").map((ch, i) => (
+                  <span key={i}>{ch}</span>
+                ))}
+              </div>
             </div>
           </div>
         </section>
+      </div>
+
+      <div className="fh-glints" aria-hidden="true">
+        {GLINTS.map(([l, t, s, d], i) => (
+          <i key={i} style={{ left: `${l}%`, top: `${t}%`, "--s": s, "--d": `${d}s` }} />
+        ))}
       </div>
 
       <Bulbs w={size.w} h={size.h} />
