@@ -14,7 +14,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 
 const TAU = Math.PI * 2;
 const CROWN_Z = 1.1; // the crown is a little longer front-to-back than wide
-const BRIM_HALF = 0.98; // radians of crown edge the visor wraps, each side of centre
+const BRIM_HALF = 1.04; // radians of crown edge the visor wraps, each side of centre
 const BRIM_THICK = 0.022;
 
 // [crown, under-brim, stitching, button + eyelets]
@@ -54,11 +54,11 @@ function shapeCrown(v) {
   // A hemisphere reads as a helmet. A cap has near-upright walls that turn
   // over late, so swap the circular profile for a squarer superellipse.
   const round = Math.sqrt(Math.max(1e-6, 1 - h * h));
-  const boxy = Math.pow(Math.max(0, 1 - Math.pow(h, 2.7)), 1 / 2.7);
+  const boxy = Math.pow(Math.max(0, 1 - Math.pow(h, 2.45)), 1 / 2.45);
   const wall = h > 0.999 ? 1 : boxy / round;
   v.x *= wall;
   v.z *= wall;
-  v.y = v.y * (0.84 + 0.14 * front); // taller at the front
+  v.y = v.y * (0.7 + 0.12 * front); // taller at the front
   v.z = v.z * CROWN_Z + 0.04 * r * front * Math.sin(Math.PI * h); // front panel stands up
   return v;
 }
@@ -85,7 +85,7 @@ function brimPoint(a, t, lift = 0) {
   const th = a * BRIM_HALF;
   // The visor is NARROWER than the crown and joins it across the front only —
   // run it round to the sides and the cap turns into a sun hat.
-  const reach = 0.86 * Math.pow(Math.cos((a * Math.PI) / 2), 0.5);
+  const reach = 1.0 * Math.pow(Math.cos((a * Math.PI) / 2), 0.5);
   const x = Math.sin(th) * (0.98 + 0.03 * t);
   const z = Math.cos(th) * CROWN_Z * 0.98 + reach * t;
   // tips down toward the lip, and rolls down at the sides like a curved peak
@@ -184,7 +184,7 @@ function patchTexture(logoSrc, stitch, onReady, badge = true) {
       // cloth: the ninja with CODE NINJAS under it. The lockup is everything
       // below the top ~17% of the file. The patch is wider than it is tall, so
       // the square texture is stretched sideways — WIDE undoes that.
-      const WIDE = 1.3;
+      const WIDE = 1.1;
       const sy = img.naturalHeight * 0.17;
       const sh = img.naturalHeight - sy;
       const w = S * 0.97;
@@ -424,7 +424,7 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
 
   let dirty = true;
   spin.add(buildHat(HATS[hat] || HATS.white, logoSrc, () => (dirty = true)));
-  spin.position.y = -0.3; // turn about the cap's visual middle, not its base
+  spin.position.y = -0.22; // turn about the cap's visual middle, not its base
 
   const shadow = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1),
@@ -624,7 +624,7 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
       camera.updateProjectionMatrix();
       viewW = viewH * camera.aspect;
       const perPx = viewH / h;
-      const s = Math.min((zone.width * perPx) / 2.75, (zone.height * perPx) / 1.75);
+      const s = Math.min((zone.width * perPx) / 2.9, (zone.height * perPx) / 1.6);
       root.scale.setScalar(s);
       root.position.set((zone.left + zone.width / 2 - w / 2) * perPx, -(zone.top + zone.height / 2 - h / 2) * perPx, 0);
       key.position.set(root.position.x - 3, root.position.y + 5, 5);
