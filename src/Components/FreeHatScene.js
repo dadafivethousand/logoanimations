@@ -14,12 +14,12 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 
 const TAU = Math.PI * 2;
 const CROWN_Z = 1.1; // the crown is a little longer front-to-back than wide
-const BRIM_HALF = 1.32; // radians of crown edge the brim wraps, each side of centre
-const BRIM_THICK = 0.045;
+const BRIM_HALF = 0.98; // radians of crown edge the visor wraps, each side of centre
+const BRIM_THICK = 0.022;
 
 // [crown, under-brim, stitching, button + eyelets]
 export const HATS = {
-  white: ["#d9d8d4", "#cfced0", "#9a9eab", "#d9d8d4"],
+  white: ["#c6c6c4", "#a4a7b2", "#7d8291", "#c6c6c4"],
   black: ["#23252e", "#e4002b", "#f4f1e8", "#e4002b"],
   blue: ["#2f8fd0", "#12314f", "#ffffff", "#ffffff"],
   red: ["#e4002b", "#1b1c22", "#ffffff", "#1b1c22"],
@@ -51,8 +51,15 @@ function shapeCrown(v) {
   const r = v.length() || 1;
   const front = Math.max(0, v.z / r);
   const h = v.y / r;
-  v.y = v.y * (0.9 + 0.2 * front); // taller at the front
-  v.z = v.z * CROWN_Z + 0.1 * r * front * Math.sin(Math.PI * h); // front panel stands up
+  // A hemisphere reads as a helmet. A cap has near-upright walls that turn
+  // over late, so swap the circular profile for a squarer superellipse.
+  const round = Math.sqrt(Math.max(1e-6, 1 - h * h));
+  const boxy = Math.pow(Math.max(0, 1 - Math.pow(h, 2.7)), 1 / 2.7);
+  const wall = h > 0.999 ? 1 : boxy / round;
+  v.x *= wall;
+  v.z *= wall;
+  v.y = v.y * (0.84 + 0.14 * front); // taller at the front
+  v.z = v.z * CROWN_Z + 0.04 * r * front * Math.sin(Math.PI * h); // front panel stands up
   return v;
 }
 
@@ -76,11 +83,13 @@ function reshape(geo) {
 /** a: -1..1 across the brim, t: 0 (crown edge) .. 1 (front lip) */
 function brimPoint(a, t, lift = 0) {
   const th = a * BRIM_HALF;
-  const reach = 1.02 * Math.pow(Math.cos((a * Math.PI) / 2), 0.62);
-  const x = Math.sin(th) * (0.985 + 0.13 * t);
-  const z = Math.cos(th) * CROWN_Z * 0.985 + reach * t;
+  // The visor is NARROWER than the crown and joins it across the front only —
+  // run it round to the sides and the cap turns into a sun hat.
+  const reach = 0.86 * Math.pow(Math.cos((a * Math.PI) / 2), 0.5);
+  const x = Math.sin(th) * (0.98 + 0.03 * t);
+  const z = Math.cos(th) * CROWN_Z * 0.98 + reach * t;
   // tips down toward the lip, and rolls down at the sides like a curved peak
-  const y = 0.02 - reach * t * (0.07 + 0.15 * x * x) + lift;
+  const y = 0.012 - reach * t * (0.07 + 0.42 * x * x) + lift;
   return new THREE.Vector3(x, y, z);
 }
 
@@ -219,7 +228,7 @@ function buildHat(palette, logoSrc, onReady) {
   });
   const under = new THREE.MeshStandardMaterial({ color: underCol, roughness: 0.7, side: THREE.DoubleSide });
   const stitch = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(stitchCol).lerp(new THREE.Color(crownCol), 0.55),
+    color: new THREE.Color(stitchCol).lerp(new THREE.Color(crownCol), 0.7),
     roughness: 0.6,
   });
   const trim = new THREE.MeshStandardMaterial({ color: trimCol, roughness: 0.45 });
@@ -270,8 +279,20 @@ function buildHat(palette, logoSrc, onReady) {
   // brim: top skin, under skin, a rolled lip, and three rows of stitching
   add(brimSurface(0, false), cloth);
   add(brimSurface(-BRIM_THICK, true), under);
-  add(brimLine(1, -BRIM_THICK / 2, BRIM_THICK / 2 + 0.004), cloth);
-  [0.3, 0.55, 0.8].forEach((t) => add(brimLine(t, 0.003, 0.005), stitch));
+  add(brimLine(1, -BRIM_THICK / 2, BRIM_THICK / 2 + 0.001), cloth);
+  // stitching sits IN the cloth: proud rows read as a stack of plates
+  [0.42, 0.7, 0.9].forEach((t) => add(brimLine(t, 0.0005, 0.0032), stitch));
+
+  // the opening at the back, and the strap across it
+  const gap = new THREE.Mesh(
+    reshape(new THREE.SphereGeometry(1.004, 24, 12, -Math.PI / 2 - 0.36, 0.72, 1.2, Math.PI / 2 - 1.2)),
+    new THREE.MeshStandardMaterial({ color: "#2a2c36", roughness: 0.95 })
+  );
+  hat.add(gap);
+  const strap = [];
+  for (let i = 0; i <= 16; i++) strap.push(onCrown(-Math.PI / 2 - 0.4 + (i / 16) * 0.8, 1.5, 1.012));
+  const band = add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(strap), 32, 0.03, 8, false), cloth);
+  band.scale.y = 1.6;
 
   // front patch, on the same deformed sphere a hair proud of the cloth
   const patch = new THREE.Mesh(
@@ -368,14 +389,17 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
   const pmrem = new THREE.PMREMGenerator(renderer);
   const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   scene.environment = env;
-  scene.environmentIntensity = 0.7;
+  // white cloth clips to a flat cut-out under the full rig; hold it back so
+  // the crown keeps its shading and the visor separates from it
+  const isWhite = (HATS[hat] || HATS.white) === HATS.white;
+  scene.environmentIntensity = isWhite ? 0.5 : 0.7;
 
   const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
   camera.position.set(0, 0, 12);
   const viewH = 2 * 12 * Math.tan((28 * Math.PI) / 360);
   let viewW = viewH;
 
-  const key = new THREE.DirectionalLight("#fff3df", 2.6);
+  const key = new THREE.DirectionalLight("#fff3df", isWhite ? 2.1 : 2.6);
   key.castShadow = true;
   key.shadow.mapSize.set(512, 512);
   key.shadow.radius = 6;
@@ -383,8 +407,8 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
   key.shadow.normalBias = 0.03;
   Object.assign(key.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: 0.5, far: 20 });
   const fill = new THREE.DirectionalLight("#bcd7ff", 0.9);
-  const rim = new THREE.DirectionalLight(RIM[0], 4.5);
-  scene.add(key, key.target, fill, rim, rim.target, new THREE.HemisphereLight("#ffffff", "#5a3bd6", 0.55));
+  const rim = new THREE.DirectionalLight(RIM[0], isWhite ? 2.2 : 4.5);
+  scene.add(key, key.target, fill, rim, rim.target, new THREE.HemisphereLight("#ffffff", "#5a3bd6", isWhite ? 0.4 : 0.55));
 
   // root follows the layout box · bob carries the bounce and the squash ·
   // tilt shows the top of the cap · spin is the turntable
@@ -400,7 +424,7 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
 
   let dirty = true;
   spin.add(buildHat(HATS[hat] || HATS.white, logoSrc, () => (dirty = true)));
-  spin.position.y = -0.26; // turn about the cap's visual middle, not its base
+  spin.position.y = -0.3; // turn about the cap's visual middle, not its base
 
   const shadow = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1),
@@ -517,7 +541,7 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
     // nods back every few seconds, far enough to flash the under-brim
     tilt.rotation.x = isStatic ? 0.16 : 0.1 - 0.3 * Math.pow(Math.max(0, Math.sin(idle * 0.9)), 3);
     const lift = Math.min(1, Math.max(0, bob.position.y / 3));
-    shadow.scale.set(3.1 * (1 - lift * 0.6), 0.42 * (1 - lift * 0.6), 1);
+    shadow.scale.set(2.7 * (1 - lift * 0.6), 0.38 * (1 - lift * 0.6), 1);
     shadow.material.opacity = 1 - lift * 0.8;
 
     rim.color.lerp(rimTarget, isStatic ? 1 : 1 - Math.exp(-dt * 5));
@@ -600,7 +624,7 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
       camera.updateProjectionMatrix();
       viewW = viewH * camera.aspect;
       const perPx = viewH / h;
-      const s = Math.min((zone.width * perPx) / 3.1, (zone.height * perPx) / 1.9);
+      const s = Math.min((zone.width * perPx) / 2.75, (zone.height * perPx) / 1.75);
       root.scale.setScalar(s);
       root.position.set((zone.left + zone.width / 2 - w / 2) * perPx, -(zone.top + zone.height / 2 - h / 2) * perPx, 0);
       key.position.set(root.position.x - 3, root.position.y + 5, 5);
