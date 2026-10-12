@@ -1,5 +1,5 @@
-// FreeHat.js — a looping sign for a fair booth: FREE HAT, and the three things
-// that earn it. A modelled cap drops in, spins and is lit by each scene in
+// FreeHat.js — a looping sign for a fair booth: FREE HAT, and the one thing
+// that earns it. A modelled cap drops in, spins and is lit by each scene in
 // turn; confetti goes off on every beat; marquee bulbs chase round the frame.
 //
 // This one departs from the rest of the repo on purpose, because the user
@@ -14,28 +14,25 @@
 // CSS and the 3D follows, nothing to retune in the scene.
 //
 // Every string is a prop. They are an offer on a public sign — the wording here
-// is the user's own brief (follow, 5-star review, book a free session).
+// is the user's own brief: follow us on Instagram, get a free hat.
 //
 // URL switches, for whoever is setting the screen up:
-//   ?hat=white|black|blue|red   the cap's colourway (the real one is white)
-//   ?scene=1..5           hold on one scene instead of cycling
+//   ?hat=black|blue|red   the cap's colourway
+//   ?scene=1..3           hold on one scene instead of cycling
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../Stylesheets/FreeHat.css";
 import usePhases from "../Utils/usePhases";
 import createFreeHatScene, { HATS } from "./FreeHatScene";
 import logoSrc from "../logo";
 
-// p1 the cap drops in · p2 follow · p3 review · p4 book · p5 all three, held
-const CUES = [200, 4800, 10600, 16400, 22200];
-const LOOP_AT = 31000;
+// The offer is one step: follow us on Instagram, get a hat. Three beats, and
+// each keeps the number its sky and stylesheet rules were written for:
+//   1 the cap drops in · 2 follow · 5 the deal on one frame, held
+const CUES = [200, 4800, 12000];
+const LOOP_AT = 19500;
+const BEATS = [0, 1, 2, 5];
 
 const HEADLINE = ["F", "R", "E", "E", " ", "H", "A", "T", "!"];
-
-const Star = () => (
-  <svg viewBox="0 0 100 100" aria-hidden="true">
-    <path d="M50 5l13.6 29.2 32 4.1-23.5 22 6 31.7L50 76.300 21.900 92l6-31.700L4.400 38.300l32-4.100z" />
-  </svg>
-);
 
 const Instagram = () => (
   <svg viewBox="0 0 100 100" aria-hidden="true">
@@ -53,38 +50,6 @@ const Instagram = () => (
     <circle cx="50" cy="50" r="12.500" fill="none" stroke="#fff" strokeWidth="7" />
     <circle cx="65.500" cy="34.500" r="4.200" fill="#fff" />
   </svg>
-);
-
-const Gamepad = () => (
-  <svg viewBox="0 0 120 100" aria-hidden="true">
-    <path
-      d="M34 22h52c17 0 27 14 30 36 2 15-3 27-13 27-9 0-14-8-21-17H38c-7 9-12 17-21 17C7 85 2 73 4 58 7 36 17 22 34 22z"
-      fill="#fff"
-      stroke="#160a3c"
-      strokeWidth="6"
-      strokeLinejoin="round"
-    />
-    <path d="M30 41h10v-10h10v10h10v10H50v10H40V51H30z" fill="#160a3c" transform="translate(-8 0)" />
-    <circle cx="80" cy="52" r="6.500" fill="#ff2d55" />
-    <circle cx="94" cy="40" r="6.500" fill="#0a84ff" />
-  </svg>
-);
-
-const Search = () => (
-  <svg viewBox="0 0 100 100" aria-hidden="true">
-    <circle cx="42" cy="42" r="27" fill="none" stroke="#4285f4" strokeWidth="13" />
-    <path d="M63 63l26 26" stroke="#4285f4" strokeWidth="14" strokeLinecap="round" />
-  </svg>
-);
-
-// "Google" in its own four colours, set as type — the word people look for
-const GOOGLE = [["G", "#4285f4"], ["o", "#ea4335"], ["o", "#fbbc05"], ["g", "#4285f4"], ["l", "#34a853"], ["e", "#ea4335"]];
-const Google = () => (
-  <span className="fh-google" aria-label="Google">
-    {GOOGLE.map(([ch, c], i) => (
-      <span key={i} style={{ color: c }}>{ch}</span>
-    ))}
-  </span>
 );
 
 // four-point glints scattered over the frame: [left %, top %, size u, delay s]
@@ -122,7 +87,6 @@ function Bulbs({ w, h }) {
 function FreeHat({
   mode = "animated",
   handle = "@cn_woodbridge",
-  place = "Code Ninjas Woodbridge",
 }) {
   const query = useMemo(() => new URLSearchParams(window.location.search), []);
   const reduced = useMemo(
@@ -132,8 +96,8 @@ function FreeHat({
   const held = Number(query.get("scene")) || 0;
   const still = mode === "static" || reduced;
   const { phase: live } = usePhases(CUES, { mode: still ? "static" : "animated", loopAt: LOOP_AT });
-  const phase = held ? Math.min(5, Math.max(1, held)) : live;
-  const hat = HATS[query.get("hat")] ? query.get("hat") : "white";
+  const phase = BEATS[held ? Math.min(3, Math.max(1, held)) : live];
+  const hat = HATS[query.get("hat")] ? query.get("hat") : "black";
 
   const stageRef = useRef(null);
   const canvasRef = useRef(null);
@@ -242,19 +206,16 @@ function FreeHat({
           <div className="fh-scene fh-s-intro">
             <div className="fh-easy">
               <span>JUST</span>
-              <b>3</b>
-              <span>EASY STEPS</span>
+              <b>1</b>
+              <span>EASY STEP</span>
             </div>
             <div className="fh-trio">
               <i className="fh-mini fh-mini-1"><Instagram /></i>
-              <i className="fh-mini fh-mini-2"><Star /></i>
-              <i className="fh-mini fh-mini-3"><Gamepad /></i>
             </div>
           </div>
 
           <div className="fh-scene fh-s-1">
             <div className="fh-top">
-              <span className="fh-chip">STEP <b>1</b></span>
               <i className="fh-ico"><Instagram /></i>
             </div>
             <h2 className="fh-title">FOLLOW US</h2>
@@ -262,53 +223,14 @@ function FreeHat({
             <p className="fh-sub">on Instagram</p>
           </div>
 
-          <div className="fh-scene fh-s-2">
-            <div className="fh-top">
-              <span className="fh-chip">STEP <b>2</b></span>
-            </div>
-            <div className="fh-stars">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <i key={i} className="fh-star" style={{ "--i": i }}><Star /></i>
-              ))}
-            </div>
-            <h2 className="fh-title">
-              LEAVE A 5-STAR<br /><Google /> REVIEW:
-            </h2>
-            <div className="fh-how">
-              <div className="fh-searchbar">
-                <i><Search /></i>
-                <span className="fh-typed">{place}</span>
-              </div>
-              <span className="fh-how-label">then tap <b>Write a review</b></span>
-            </div>
-          </div>
-
-          <div className="fh-scene fh-s-3">
-            <div className="fh-top">
-              <span className="fh-chip">STEP <b>3</b></span>
-              <i className="fh-ico fh-ico-pad"><Gamepad /></i>
-            </div>
-            <h2 className="fh-title">
-              BOOK A <em>FREE</em><br />GAME BUILDING<br />SESSION
-            </h2>
-            <div className="fh-pill">at {place}</div>
-          </div>
-
           <div className="fh-scene fh-s-recap">
             <ul className="fh-list">
               <li style={{ "--i": 0 }}>
                 <i className="fh-tick"><Tick /></i>
-                <span>Follow <b>{handle}</b></span>
-              </li>
-              <li style={{ "--i": 1 }}>
-                <i className="fh-tick"><Tick /></i>
-                <span>Leave a <b>5-star Google review</b> for {place}</span>
-              </li>
-              <li style={{ "--i": 2 }}>
-                <i className="fh-tick"><Tick /></i>
-                <span>Book a <b>free game building session</b></span>
+                <span>Follow <b>{handle}</b> on Instagram</span>
               </li>
             </ul>
+            <div className="fh-equals">= FREE HAT!</div>
             <div className="fh-brand">
               <div className="fh-brand-mark">
                 <img src={logoSrc} alt="Code Ninjas" />

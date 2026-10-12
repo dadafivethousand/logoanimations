@@ -307,11 +307,6 @@
   animation: fh-halo 1.3s ease-in-out infinite alternate;
 }
 
-/* a white cap on a white spotlight disappears — give it a deep pool to sit on */
-.fh-hat-white .fh-halo {
-  background: radial-gradient(closest-side, rgba(22, 10, 60, 0.62) 0%, rgba(22, 10, 60, 0.3) 45%, rgba(22, 10, 60, 0) 100%);
-}
-
 .fh-p0 .fh-halo {
   visibility: hidden;
 }
@@ -378,7 +373,7 @@
 
 .fh-ico {
   display: block;
-  width: calc(var(--u) * 15);
+  width: calc(var(--u) * 20);
   filter: drop-shadow(0 calc(var(--u) * 0.9) 0 rgba(22, 10, 60, 0.5));
 }
 
@@ -491,146 +486,7 @@
   filter: drop-shadow(0 calc(var(--u) * 1) 0 var(--ink));
 }
 
-/* the directions: what to type, and what to press */
-.fh-s-2 .fh-title {
-  line-height: 1.32;
-}
-
-.fh-google {
-  display: inline-block;
-  margin-right: 0.1em;
-  padding: 0.12em 0.2em 0;
-  font-size: 0.86em;
-  line-height: 1;
-  vertical-align: 0.02em;
-  border-radius: 0.22em;
-  background: #fff;
-  box-shadow: 0 0 0 calc(var(--u) * 0.7) var(--ink), 0 calc(var(--u) * 1.6) 0 var(--ink);
-  font-family: "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  -webkit-text-stroke: 0;
-  text-shadow: none;
-}
-
-.fh-s-2 {
-  gap: calc(var(--u) * 2);
-}
-
-.fh-how {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: calc(var(--u) * 0.9);
-}
-
-.fh-how-label {
-  font-size: calc(var(--u) * 5);
-  line-height: 1;
-  letter-spacing: 0.03em;
-  -webkit-text-stroke: calc(var(--u) * 0.85) var(--ink);
-  paint-order: stroke fill;
-}
-
-.fh-how-label b {
-  color: var(--sun);
-  font-weight: 400;
-}
-
-.fh-searchbar {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 1.8);
-  padding: calc(var(--u) * 0.9) calc(var(--u) * 4.5) calc(var(--u) * 0.6) calc(var(--u) * 2.6);
-  border: calc(var(--u) * 0.7) solid var(--ink);
-  border-radius: 99vmax;
-  background: #fff;
-  box-shadow: 0 calc(var(--u) * 1.1) 0 var(--ink);
-  color: #202124;
-  font-family: "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
-  font-weight: 700;
-  font-size: calc(var(--u) * 5.1);
-  line-height: 1.25;
-}
-
-.fh-searchbar i {
-  display: block;
-  width: calc(var(--u) * 5.4);
-}
-
-.fh-searchbar svg {
-  display: block;
-  width: 100%;
-}
-
-/* typed out one character at a time, with a caret */
-.fh-typed {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  border-right: calc(var(--u) * 0.6) solid #4285f4;
-  padding-right: calc(var(--u) * 0.5);
-}
-
-.fh-p3 .fh-typed {
-  animation: fh-type 1.5s 1.3s steps(22) both, fh-caret 0.6s steps(1) infinite;
-}
-
-.fh-p3 .fh-searchbar {
-  animation: fh-thump 0.7s 3s infinite alternate ease-in-out;
-}
-
-@keyframes fh-type {
-  from {
-    max-width: 0;
-  }
-  to {
-    max-width: 30em;
-  }
-}
-
-@keyframes fh-caret {
-  50% {
-    border-right-color: transparent;
-  }
-}
-
-.fh-star path,
-.fh-mini-2 path {
-  fill: #ffd60a;
-  stroke: var(--ink);
-  stroke-width: 7;
-  stroke-linejoin: round;
-  paint-order: stroke fill;
-}
-
-.fh-p3 .fh-star {
-  animation: fh-star-in 0.5s calc(0.45s + var(--i) * 0.17s) both cubic-bezier(0.34, 1.7, 0.64, 1),
-    fh-twinkle 1.1s calc(1.8s + var(--i) * 0.12s) infinite ease-in-out;
-}
-
-@keyframes fh-star-in {
-  from {
-    opacity: 0;
-    transform: scale(3) rotate(-120deg);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes fh-twinkle {
-  0%,
-  100% {
-    transform: scale(1) rotate(0);
-  }
-  40% {
-    transform: scale(1.25) rotate(10deg);
-  }
-}
-
-/* intro — three steps, three icons */
+/* intro — one step, one icon */
 .fh-easy {
   display: flex;
   align-items: center;
@@ -662,7 +518,7 @@
 
 .fh-mini {
   display: block;
-  width: calc(var(--u) * 17);
+  width: calc(var(--u) * 24);
   filter: drop-shadow(0 calc(var(--u) * 0.9) 0 rgba(22, 10, 60, 0.5));
 }
 
@@ -719,7 +575,7 @@
   color: var(--ink);
   font-family: "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
   font-weight: 700;
-  font-size: calc(var(--u) * 4.9);
+  font-size: calc(var(--u) * 5.2);
   line-height: 1.05;
   text-align: left;
 }
@@ -765,6 +621,20 @@
   to {
     transform: scale(1);
   }
+}
+
+.fh-equals {
+  font-size: calc(var(--u) * 13);
+  line-height: 1;
+  color: var(--sun);
+  -webkit-text-stroke: calc(var(--u) * 1.3) var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0 calc(var(--u) * 0.6) 0 var(--ink), 0 calc(var(--u) * 1.2) 0 var(--ink);
+  white-space: nowrap;
+}
+
+.fh-p5 .fh-equals {
+  animation: fh-row-in 0.55s 0.9s both cubic-bezier(0.34, 1.4, 0.64, 1), fh-thump 0.6s 1.5s infinite alternate ease-in-out;
 }
 
 .fh-brand {

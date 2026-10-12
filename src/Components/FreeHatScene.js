@@ -1,5 +1,5 @@
 // FreeHatScene.js — the WebGL half of FreeHat: a modelled, lit baseball cap, the
-// props that orbit it (hearts, gold stars, game blocks) and the confetti.
+// hearts that orbit it and the confetti.
 //
 // Plain three.js behind one factory so the React component stays a phase
 // machine: it hands over a canvas, then calls setPhase / resize. Nothing in
@@ -10,16 +10,14 @@
 // change the crown's shape there and the patch and stitching follow.
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 
 const TAU = Math.PI * 2;
 const CROWN_Z = 1.1; // the crown is a little longer front-to-back than wide
-const BRIM_HALF = 1.04; // radians of crown edge the visor wraps, each side of centre
-const BRIM_THICK = 0.022;
+const BRIM_HALF = 1.32; // radians of crown edge the brim wraps, each side of centre
+const BRIM_THICK = 0.045;
 
 // [crown, under-brim, stitching, button + eyelets]
 export const HATS = {
-  white: ["#c6c6c4", "#a4a7b2", "#7d8291", "#c6c6c4"],
   black: ["#23252e", "#e4002b", "#f4f1e8", "#e4002b"],
   blue: ["#2f8fd0", "#12314f", "#ffffff", "#ffffff"],
   red: ["#e4002b", "#1b1c22", "#ffffff", "#1b1c22"],
@@ -51,15 +49,8 @@ function shapeCrown(v) {
   const r = v.length() || 1;
   const front = Math.max(0, v.z / r);
   const h = v.y / r;
-  // A hemisphere reads as a helmet. A cap has near-upright walls that turn
-  // over late, so swap the circular profile for a squarer superellipse.
-  const round = Math.sqrt(Math.max(1e-6, 1 - h * h));
-  const boxy = Math.pow(Math.max(0, 1 - Math.pow(h, 2.45)), 1 / 2.45);
-  const wall = h > 0.999 ? 1 : boxy / round;
-  v.x *= wall;
-  v.z *= wall;
-  v.y = v.y * (0.7 + 0.12 * front); // taller at the front
-  v.z = v.z * CROWN_Z + 0.04 * r * front * Math.sin(Math.PI * h); // front panel stands up
+  v.y = v.y * (0.98 + 0.13 * front); // taller at the front
+  v.z = v.z * CROWN_Z + 0.1 * r * front * Math.sin(Math.PI * h); // front panel stands up
   return v;
 }
 
@@ -83,13 +74,11 @@ function reshape(geo) {
 /** a: -1..1 across the brim, t: 0 (crown edge) .. 1 (front lip) */
 function brimPoint(a, t, lift = 0) {
   const th = a * BRIM_HALF;
-  // The visor is NARROWER than the crown and joins it across the front only —
-  // run it round to the sides and the cap turns into a sun hat.
-  const reach = 1.0 * Math.pow(Math.cos((a * Math.PI) / 2), 0.5);
-  const x = Math.sin(th) * (0.98 + 0.03 * t);
-  const z = Math.cos(th) * CROWN_Z * 0.98 + reach * t;
+  const reach = 0.96 * Math.pow(Math.cos((a * Math.PI) / 2), 0.62);
+  const x = Math.sin(th) * (0.985 + 0.08 * t);
+  const z = Math.cos(th) * CROWN_Z * 0.985 + reach * t;
   // tips down toward the lip, and rolls down at the sides like a curved peak
-  const y = 0.012 - reach * t * (0.07 + 0.42 * x * x) + lift;
+  const y = 0.02 - reach * t * (0.07 + 0.15 * x * x) + lift;
   return new THREE.Vector3(x, y, z);
 }
 
@@ -152,7 +141,7 @@ function twillTexture() {
 // The front patch: a white woven badge with a stitched border and the ninja's
 // head cropped out of the lockup. Drawn empty first, filled in when the image
 // decodes — `onReady` lets the caller repaint a static frame.
-function patchTexture(logoSrc, stitch, onReady, badge = true) {
+function patchTexture(logoSrc, stitch, onReady) {
   const S = 512;
   const c = document.createElement("canvas");
   c.width = c.height = S;
@@ -163,7 +152,6 @@ function patchTexture(logoSrc, stitch, onReady, badge = true) {
 
   const paint = (img) => {
     g.clearRect(0, 0, S, S);
-    if (badge) {
     g.beginPath();
     g.arc(S / 2, S / 2, S * 0.47, 0, TAU);
     g.fillStyle = "#fbfaf6";
@@ -178,19 +166,7 @@ function patchTexture(logoSrc, stitch, onReady, badge = true) {
     g.strokeStyle = stitch;
     g.stroke();
     g.setLineDash([]);
-    }
-    if (img && !badge) {
-      // a white cap carries the whole lockup, embroidered straight onto the
-      // cloth: the ninja with CODE NINJAS under it. The lockup is everything
-      // below the top ~17% of the file. The patch is wider than it is tall, so
-      // the square texture is stretched sideways — WIDE undoes that.
-      const WIDE = 1.1;
-      const sy = img.naturalHeight * 0.17;
-      const sh = img.naturalHeight - sy;
-      const w = S * 0.97;
-      const h = ((w * sh) / img.naturalWidth) * WIDE;
-      g.drawImage(img, 0, sy, img.naturalWidth, sh, (S - w) / 2, (S - h) / 2, w, h);
-    } else if (img) {
+    if (img) {
       // the head sits in the top-middle of the 1920x1080 lockup; fractions so a
       // re-exported logo at another size still crops the same region
       const sx = img.naturalWidth * 0.318;
@@ -228,12 +204,12 @@ function buildHat(palette, logoSrc, onReady) {
   });
   const under = new THREE.MeshStandardMaterial({ color: underCol, roughness: 0.7, side: THREE.DoubleSide });
   const stitch = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(stitchCol).lerp(new THREE.Color(crownCol), 0.7),
+    color: new THREE.Color(stitchCol).lerp(new THREE.Color(crownCol), 0.55),
     roughness: 0.6,
   });
   const trim = new THREE.MeshStandardMaterial({ color: trimCol, roughness: 0.45 });
   const seam = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(crownCol).multiplyScalar(palette === HATS.white ? 0.62 : 0.55),
+    color: new THREE.Color(crownCol).multiplyScalar(0.55),
     roughness: 0.9,
   });
 
@@ -279,30 +255,14 @@ function buildHat(palette, logoSrc, onReady) {
   // brim: top skin, under skin, a rolled lip, and three rows of stitching
   add(brimSurface(0, false), cloth);
   add(brimSurface(-BRIM_THICK, true), under);
-  add(brimLine(1, -BRIM_THICK / 2, BRIM_THICK / 2 + 0.001), cloth);
-  // stitching sits IN the cloth: proud rows read as a stack of plates
-  [0.42, 0.7, 0.9].forEach((t) => add(brimLine(t, 0.0005, 0.0032), stitch));
-
-  // the opening at the back, and the strap across it
-  const gap = new THREE.Mesh(
-    reshape(new THREE.SphereGeometry(1.004, 24, 12, -Math.PI / 2 - 0.36, 0.72, 1.2, Math.PI / 2 - 1.2)),
-    new THREE.MeshStandardMaterial({ color: "#2a2c36", roughness: 0.95 })
-  );
-  hat.add(gap);
-  const strap = [];
-  for (let i = 0; i <= 16; i++) strap.push(onCrown(-Math.PI / 2 - 0.4 + (i / 16) * 0.8, 1.5, 1.012));
-  const band = add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(strap), 32, 0.03, 8, false), cloth);
-  band.scale.y = 1.6;
+  add(brimLine(1, -BRIM_THICK / 2, BRIM_THICK / 2 + 0.004), cloth);
+  [0.3, 0.55, 0.8].forEach((t) => add(brimLine(t, 0.003, 0.005), stitch));
 
   // front patch, on the same deformed sphere a hair proud of the cloth
   const patch = new THREE.Mesh(
-    reshape(
-      palette === HATS.white
-        ? new THREE.SphereGeometry(1.014, 48, 30, Math.PI / 2 - 0.66, 1.32, 0.52, 0.88)
-        : new THREE.SphereGeometry(1.014, 40, 30, Math.PI / 2 - 0.46, 0.92, 0.56, 0.86)
-    ),
+    reshape(new THREE.SphereGeometry(1.014, 40, 30, Math.PI / 2 - 0.46, 0.92, 0.56, 0.86)),
     new THREE.MeshStandardMaterial({
-      map: patchTexture(logoSrc, palette[1] === "#e4002b" ? "#e4002b" : "#3490bf", onReady, palette !== HATS.white),
+      map: patchTexture(logoSrc, palette[1] === "#e4002b" ? "#e4002b" : "#3490bf", onReady),
       transparent: true,
       roughness: 0.75,
       depthWrite: false,
@@ -312,25 +272,6 @@ function buildHat(palette, logoSrc, onReady) {
   hat.add(patch);
 
   return hat;
-}
-
-function starGeometry() {
-  const s = new THREE.Shape();
-  for (let i = 0; i < 10; i++) {
-    const r = i % 2 ? 0.46 : 1;
-    const a = (i / 10) * TAU + Math.PI / 2;
-    s[i ? "lineTo" : "moveTo"](Math.cos(a) * r, Math.sin(a) * r);
-  }
-  s.closePath();
-  const g = new THREE.ExtrudeGeometry(s, {
-    depth: 0.22,
-    bevelEnabled: true,
-    bevelThickness: 0.12,
-    bevelSize: 0.1,
-    bevelSegments: 4,
-  });
-  g.center();
-  return g;
 }
 
 function heartGeometry() {
@@ -364,7 +305,7 @@ const softDisc = () => {
   return new THREE.CanvasTexture(c);
 };
 
-export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isStatic = false } = {}) {
+export default function createFreeHatScene(canvas, { logoSrc, hat = "black", isStatic = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
 
   // The canvas is the whole screen, so on a retina display "device pixels" is
@@ -389,17 +330,14 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
   const pmrem = new THREE.PMREMGenerator(renderer);
   const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   scene.environment = env;
-  // white cloth clips to a flat cut-out under the full rig; hold it back so
-  // the crown keeps its shading and the visor separates from it
-  const isWhite = (HATS[hat] || HATS.white) === HATS.white;
-  scene.environmentIntensity = isWhite ? 0.5 : 0.7;
+  scene.environmentIntensity = 0.7;
 
   const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
   camera.position.set(0, 0, 12);
   const viewH = 2 * 12 * Math.tan((28 * Math.PI) / 360);
   let viewW = viewH;
 
-  const key = new THREE.DirectionalLight("#fff3df", isWhite ? 2.1 : 2.6);
+  const key = new THREE.DirectionalLight("#fff3df", 2.6);
   key.castShadow = true;
   key.shadow.mapSize.set(512, 512);
   key.shadow.radius = 6;
@@ -407,8 +345,8 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
   key.shadow.normalBias = 0.03;
   Object.assign(key.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: 0.5, far: 20 });
   const fill = new THREE.DirectionalLight("#bcd7ff", 0.9);
-  const rim = new THREE.DirectionalLight(RIM[0], isWhite ? 2.2 : 4.5);
-  scene.add(key, key.target, fill, rim, rim.target, new THREE.HemisphereLight("#ffffff", "#5a3bd6", isWhite ? 0.4 : 0.55));
+  const rim = new THREE.DirectionalLight(RIM[0], 4.5);
+  scene.add(key, key.target, fill, rim, rim.target, new THREE.HemisphereLight("#ffffff", "#5a3bd6", 0.55));
 
   // root follows the layout box · bob carries the bounce and the squash ·
   // tilt shows the top of the cap · spin is the turntable
@@ -423,8 +361,8 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
   tilt.add(spin);
 
   let dirty = true;
-  spin.add(buildHat(HATS[hat] || HATS.white, logoSrc, () => (dirty = true)));
-  spin.position.y = -0.22; // turn about the cap's visual middle, not its base
+  spin.add(buildHat(HATS[hat] || HATS.black, logoSrc, () => (dirty = true)));
+  spin.position.y = -0.26; // turn about the cap's visual middle, not its base
 
   const shadow = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1),
@@ -434,11 +372,8 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
   root.add(shadow);
 
   // ---- props ---------------------------------------------------------------
-  const gold = new THREE.MeshStandardMaterial({ color: "#ffbe0b", metalness: 1, roughness: 0.22 });
   const candy = (c) => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.15 });
-  const starGeo = starGeometry();
   const heartGeo = heartGeometry();
-  const blockGeo = new RoundedBoxGeometry(1, 1, 1, 5, 0.2);
 
   const orbit = new THREE.Group();
   orbit.rotation.x = 0.42;
@@ -455,9 +390,7 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
       props.push({ m, i, n, size, phases, radius, s: 0 });
     }
   };
-  ring(6, heartGeo, (i) => candy(["#ff2d6f", "#ff5fd2", "#ff7a1a"][i % 3]), 0.2, [2], 2.05);
-  ring(5, starGeo, gold, 0.27, [3, 5], 2.1);
-  ring(6, blockGeo, (i) => candy(["#00d26a", "#0a84ff", "#ffd60a", "#ff2d55", "#bf5af2", "#ff9f0a"][i]), 0.34, [4], 2.1);
+  ring(6, heartGeo, (i) => candy(["#ff2d6f", "#ff5fd2", "#ff7a1a"][i % 3]), 0.2, [2, 5], 2.05);
 
   // ---- confetti ------------------------------------------------------------
   const N = 340;
@@ -538,10 +471,8 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
     bob.scale.set(wide, squash, wide);
     spin.rotation.y = 0.62 + 0.3 * Math.sin(idle * 0.75) + turn;
     tilt.rotation.z = 0.07 * Math.sin(idle * 1.1 + 1);
-    // nods back every few seconds, far enough to flash the under-brim
-    tilt.rotation.x = isStatic ? 0.16 : 0.1 - 0.3 * Math.pow(Math.max(0, Math.sin(idle * 0.9)), 3);
     const lift = Math.min(1, Math.max(0, bob.position.y / 3));
-    shadow.scale.set(2.7 * (1 - lift * 0.6), 0.38 * (1 - lift * 0.6), 1);
+    shadow.scale.set(3.1 * (1 - lift * 0.6), 0.42 * (1 - lift * 0.6), 1);
     shadow.material.opacity = 1 - lift * 0.8;
 
     rim.color.lerp(rimTarget, isStatic ? 1 : 1 - Math.exp(-dt * 5));
@@ -624,7 +555,7 @@ export default function createFreeHatScene(canvas, { logoSrc, hat = "white", isS
       camera.updateProjectionMatrix();
       viewW = viewH * camera.aspect;
       const perPx = viewH / h;
-      const s = Math.min((zone.width * perPx) / 2.9, (zone.height * perPx) / 1.6);
+      const s = Math.min((zone.width * perPx) / 3.1, (zone.height * perPx) / 1.9);
       root.scale.setScalar(s);
       root.position.set((zone.left + zone.width / 2 - w / 2) * perPx, -(zone.top + zone.height / 2 - h / 2) * perPx, 0);
       key.position.set(root.position.x - 3, root.position.y + 5, 5);
