@@ -1,29 +1,28 @@
-// MapleGear.js — Maple Jiu-Jitsu's free gear drop. Same family as FreeHat (a
-// promo, not a logo theme, and a loop that can also run on a booth screen),
-// but built for the 9:16 Reel first.
+// MapleGear.js — Maple Jiu-Jitsu's free gear drop, as a product-launch reel.
 //
-// The beat is a loot drop. Four mystery tiles, then one piece of gear at a time
-// slams into the stage with its price on a tag; the price is struck through, a
-// FREE stamp lands on it, and the running total ticks up. Each piece then drops
-// into its slot in the tray underneath, so by the time the gloves land the
-// viewer has watched $380 pile up. The last frame lays all four out together
-// with the sign-up line.
+// One lit stage: spotlight beams converging on a glowing pedestal, embers
+// rising through the light, and the item's name scrolling huge and outlined
+// behind it. Each beat the light changes colour (--c1/--c2 are registered
+// colours, so the whole set cross-grades instead of cutting), a piece spins in
+// onto the pedestal, its value lands as a gold pill and FREE slams in beside
+// it with a shockwave. Then it whips off frame for the next one.
 //
-// Cheapest first, so every beat beats the one before it: $40 → $80 → $120 →
-// $140, and the total climbs 40 → 120 → 240 → 380.
+//   1 the mark + "4 pieces of gear"   2 shirt   3 hoodie   4 gi   5 gloves
+//   6 all four, back on the pedestal   7 + the call to action
 //
-// Every item sits in ONE box the size of the stage and is moved by transform
-// alone — off (above the frame), hero (centre), tray (its slot) or grid (its
-// quadrant on the endcard). The positions are numbers in --u off the card's
-// own layout below, so the items never measure anything.
+// Prices are never struck through — the value is shown as a value, and FREE
+// sits next to it. There is no running total; the $380 is said twice, on the
+// hook and on the payoff.
 //
-// EVERY STRING AND PRICE IS A PROP. They are the club's claims on a public ad:
-// the values are the user's brief ($120 gi, $140 gloves, $80 hoodie, $40
-// shirt); the call to action and the site are placeholders until confirmed.
+// Items move between states by transform only: off (below), hero (pedestal),
+// gone (whipped off left) and grid (their quadrant on the payoff). The offsets
+// are in --u off the stage box in the stylesheet.
+//
+// EVERY STRING AND PRICE IS A PROP — the club's claims on a public ad. Values
+// are the user's brief; the call to action and site are as briefed so far.
 //
 // URL switches:
-//   ?theme=fight|maple   black + orange (the Muay Thai poster) or navy + red
-//   ?phase=1..7          hold on one beat instead of playing
+//   ?phase=1..7   hold on one beat instead of playing
 import React, { useMemo } from "react";
 import "../Stylesheets/MapleGear.css";
 import usePhases from "../Utils/usePhases";
@@ -31,124 +30,171 @@ import mapleLogo from "../Images/maple-logo.png";
 import giPhoto from "../Images/maple-gi.png";
 import glovesPhoto from "../Images/maple-gloves.png";
 
-//        hook  shirt hoodie  gi  gloves total  endcard
-const CUES = [200, 1900, 3700, 5500, 7300, 9300, 11500];
-const LOOP_AT = 17500;
+//         hook  shirt hoodie  gi  gloves  all  cta
+const CUES = [200, 2200, 4000, 5800, 7600, 9500, 11300];
+const LOOP_AT = 17000;
 
-const HEADLINE = ["F", "R", "E", "E", " ", "G", "E", "A", "R"];
-
-// tray slot centres, as offsets from the stage centre (u)
-const TRAY_X = [-30.375, -10.79, 8.79, 28.375];
-const TRAY_Y = 53.5;
-// endcard quadrants
+// payoff quadrants (u off the stage centre) and a little tilt each
 const GRID = [
-  [-15, -16],
-  [15, -16],
-  [-15, 13],
-  [15, 13],
+  [-15.5, -15.5, -6],
+  [15.5, -15.5, 5],
+  [-15.5, 12.5, 4],
+  [15.5, 12.5, -5],
 ];
 
+// [left %, size u, duration s, delay s, drift u]
+const EMBERS = Array.from({ length: 30 }, (_, i) => {
+  const r = (n) => {
+    const x = Math.sin(i * 127.1 + n * 311.7) * 43758.5453;
+    return x - Math.floor(x);
+  };
+  return [r(1) * 100, 0.5 + r(2) * 1.3, 4 + r(3) * 5, -r(4) * 9, (r(5) - 0.5) * 16];
+});
+
+/* Fabric lighting: blur the silhouette's alpha into a height field and light
+   it, so each panel of a garment puffs like cloth instead of sitting flat. */
+const Puff = ({ id, depth = 7, blur = 7 }) => (
+  <filter id={id} x="-5%" y="-5%" width="110%" height="110%" colorInterpolationFilters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation={blur} result="h" />
+    <feDiffuseLighting in="h" surfaceScale={depth} diffuseConstant="1.15" lightingColor="#fff" result="d">
+      <feDistantLight azimuth="235" elevation="58" />
+    </feDiffuseLighting>
+    <feComposite in="d" in2="SourceAlpha" operator="in" result="dm" />
+    <feBlend in="SourceGraphic" in2="dm" mode="multiply" result="lit" />
+    <feSpecularLighting in="h" surfaceScale={depth} specularConstant="0.55" specularExponent="16" lightingColor="#fff" result="s">
+      <feDistantLight azimuth="235" elevation="52" />
+    </feSpecularLighting>
+    <feComposite in="s" in2="SourceAlpha" operator="in" result="sm" />
+    <feComposite in="lit" in2="sm" operator="arithmetic" k2="1" k3="0.28" />
+  </filter>
+);
+
 function Hoodie() {
+  const fold = { fill: "none", stroke: "#15171d", strokeLinecap: "round", filter: "url(#mg-soft)" };
   return (
     <svg viewBox="0 0 200 200" className="mg-svg" aria-label="Hoodie">
       <defs>
-        <linearGradient id="mg-hd-body" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#23262e" />
-          <stop offset="0.3" stopColor="#3b404c" />
-          <stop offset="0.62" stopColor="#363a45" />
-          <stop offset="1" stopColor="#1b1d24" />
+        <Puff id="mg-hd-puff" />
+        <Puff id="mg-hd-puff-sm" depth={5} blur={4} />
+        <filter id="mg-soft">
+          <feGaussianBlur stdDeviation="1.6" />
+        </filter>
+        <linearGradient id="mg-hd" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#3a3f4c" />
+          <stop offset="0.45" stopColor="#5a6070" />
+          <stop offset="1" stopColor="#30343f" />
         </linearGradient>
-        <linearGradient id="mg-hd-sleeve" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#353944" />
-          <stop offset="1" stopColor="#22252c" />
+        <linearGradient id="mg-hd-dark" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#474c59" />
+          <stop offset="1" stopColor="#2c3039" />
         </linearGradient>
-        <radialGradient id="mg-hd-hole" cx="0.5" cy="0.35" r="0.6">
-          <stop offset="0" stopColor="#0a0b0e" />
-          <stop offset="1" stopColor="#1d2027" />
-        </radialGradient>
       </defs>
-      <g>
-        {/* sleeves, hanging a little off the body */}
-        <path d="M58 46 C40 52 31 70 27 98 L18 160 C17 166 21 170 27 170 L44 170 C49 170 51 166 51 161 L60 104 Z" fill="url(#mg-hd-sleeve)" />
-        <path d="M142 46 C160 52 169 70 173 98 L182 160 C183 166 179 170 173 170 L156 170 C151 170 149 166 149 161 L140 104 Z" fill="url(#mg-hd-sleeve)" />
-        {/* cuffs */}
-        <rect x="17" y="160" width="35" height="13" rx="5" fill="#1f2229" />
-        <rect x="148" y="160" width="35" height="13" rx="5" fill="#1f2229" />
-        {/* hood, lying back behind the neck */}
-        <path d="M64 50 C60 22 80 10 100 10 C120 10 140 22 136 50 Z" fill="#2c3039" />
-        {/* body */}
-        <path d="M58 44 C70 38 84 36 100 36 C116 36 130 38 142 44 L146 176 C146 181 142 184 137 184 L63 184 C58 184 54 181 54 176 Z" fill="url(#mg-hd-body)" />
-        {/* ribbed hem */}
-        <path d="M54 168 L146 168 L146 178 C146 182 143 185 138 185 L62 185 C57 185 54 182 54 178 Z" fill="#20232a" />
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((i) => (
-          <path key={i} d={`M${58 + i * 4.6} 170 V183`} stroke="#15171c" strokeWidth="1" opacity="0.7" />
-        ))}
-        {/* the hood's opening, and its two front edges crossing at the throat */}
-        <path d="M76 40 C76 26 88 18 100 18 C112 18 124 26 124 40 C118 56 110 66 100 70 C90 66 82 56 76 40 Z" fill="url(#mg-hd-hole)" />
-        <path d="M70 42 C72 58 86 70 100 74 C114 70 128 58 130 42" fill="none" stroke="#454a57" strokeWidth="6" strokeLinecap="round" />
-        {/* drawstrings */}
-        <path d="M92 70 C91 82 89 92 88 104" fill="none" stroke="#e9e6dd" strokeWidth="2.6" strokeLinecap="round" />
-        <path d="M108 70 C109 82 111 92 112 102" fill="none" stroke="#e9e6dd" strokeWidth="2.6" strokeLinecap="round" />
-        <rect x="86" y="102" width="4" height="8" rx="1.5" fill="#c8c4b8" />
-        <rect x="110" y="100" width="4" height="8" rx="1.5" fill="#c8c4b8" />
-        {/* kangaroo pocket */}
-        <path d="M70 132 L130 132 C134 144 138 156 140 166 L60 166 C62 156 66 144 70 132 Z" fill="#30343e" />
-        <path d="M70 132 L130 132" stroke="#262930" strokeWidth="2" />
-        <path d="M70 132 C66 144 62 156 60 166" fill="none" stroke="#1a1c22" strokeWidth="2.4" />
-        <path d="M130 132 C134 144 138 156 140 166" fill="none" stroke="#1a1c22" strokeWidth="2.4" />
-        {/* folds */}
-        <path d="M66 70 C70 92 68 116 64 136" fill="none" stroke="#1b1d23" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
-        <path d="M136 72 C131 96 133 116 137 134" fill="none" stroke="#1b1d23" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
-        <path d="M36 92 C40 112 40 132 36 150" fill="none" stroke="#4a4f5c" strokeWidth="2" opacity="0.5" strokeLinecap="round" />
+      {/* hood, behind */}
+      <g filter="url(#mg-hd-puff)">
+        <path d="M60 52 C54 22 76 6 100 6 C124 6 146 22 140 52 C126 46 114 44 100 44 C86 44 74 46 60 52 Z" fill="url(#mg-hd-dark)" />
       </g>
+      {/* sleeves */}
+      <g filter="url(#mg-hd-puff)">
+        <path d="M60 44 C40 50 30 68 26 98 L17 158 L50 162 L60 106 Z" fill="url(#mg-hd-dark)" />
+        <path d="M140 44 C160 50 170 68 174 98 L183 158 L150 162 L140 106 Z" fill="url(#mg-hd-dark)" />
+      </g>
+      <g filter="url(#mg-hd-puff-sm)">
+        <path d="M16 156 L51 160 L49 176 C49 179 46 181 43 181 L19 179 C16 179 14 176 14 173 Z" fill="#2d313b" />
+        <path d="M184 156 L149 160 L151 176 C151 179 154 181 157 181 L181 179 C184 179 186 176 186 173 Z" fill="#2d313b" />
+      </g>
+      {/* body */}
+      <g filter="url(#mg-hd-puff)">
+        <path d="M58 42 C72 36 86 34 100 34 C114 34 128 36 142 42 L147 172 L53 172 Z" fill="url(#mg-hd)" />
+      </g>
+      <g filter="url(#mg-hd-puff-sm)">
+        <path d="M53 170 L147 170 L147 182 C147 186 144 188 140 188 L60 188 C56 188 53 186 53 182 Z" fill="#30343e" />
+        {/* kangaroo pocket */}
+        <path d="M70 128 L130 128 C135 141 139 153 141 164 L59 164 C61 153 65 141 70 128 Z" fill="#525867" />
+      </g>
+      {Array.from({ length: 22 }, (_, i) => (
+        <path key={i} d={`M${56 + i * 4.1} 173 V186`} stroke="#1c1f26" strokeWidth="0.9" opacity="0.6" />
+      ))}
+      {/* hood opening */}
+      <path d="M80 42 C82 32 90 26 100 26 C110 26 118 32 120 42 C115 55 108 63 100 66 C92 63 85 55 80 42 Z" fill="#1b1e25" />
+      <path d="M84 42 C87 35 93 31 100 31 C107 31 113 35 116 42 C111 50 106 55 100 57 C94 55 89 50 84 42 Z" fill="#2a2e37" />
+      <path d="M68 40 C70 58 85 71 100 75 C115 71 130 58 132 40" fill="none" stroke="#636a7a" strokeWidth="6.5" strokeLinecap="round" filter="url(#mg-hd-puff-sm)" />
+      {/* drawstrings */}
+      <path d="M92 70 C91 82 89 94 88 106" fill="none" stroke="#f1eee6" strokeWidth="2.8" strokeLinecap="round" />
+      <path d="M108 70 C109 82 111 92 112 104" fill="none" stroke="#f1eee6" strokeWidth="2.8" strokeLinecap="round" />
+      <rect x="86" y="104" width="4.4" height="8" rx="1.6" fill="#c9c5ba" />
+      <rect x="110" y="102" width="4.4" height="8" rx="1.6" fill="#c9c5ba" />
+      {/* folds */}
+      <path d="M66 74 C70 96 68 118 63 138" strokeWidth="4" opacity="0.5" {...fold} />
+      <path d="M135 76 C130 98 132 118 137 136" strokeWidth="4" opacity="0.5" {...fold} />
+      <path d="M38 96 C42 116 42 136 37 152" strokeWidth="3" opacity="0.45" {...fold} />
+      <path d="M162 96 C158 116 158 136 163 152" strokeWidth="3" opacity="0.45" {...fold} />
+      <path d="M78 150 C90 146 110 146 122 150" strokeWidth="2.5" opacity="0.35" {...fold} />
       {/* chest print */}
-      <image href={mapleLogo} x="80" y="80" width="40" height="40" preserveAspectRatio="xMidYMid meet" />
+      <image href={mapleLogo} x="80" y="80" width="40" height="40" preserveAspectRatio="xMidYMid meet" opacity="0.96" />
     </svg>
   );
 }
 
 function Shirt() {
+  const fold = { fill: "none", stroke: "#9aa1ad", strokeLinecap: "round", filter: "url(#mg-soft2)" };
   return (
     <svg viewBox="0 0 200 200" className="mg-svg" aria-label="T-shirt">
       <defs>
-        <linearGradient id="mg-tee-body" x1="0" y1="0" x2="1" y2="0.2">
-          <stop offset="0" stopColor="#d9dce3" />
-          <stop offset="0.28" stopColor="#ffffff" />
-          <stop offset="0.7" stopColor="#f3f4f7" />
-          <stop offset="1" stopColor="#c3c7d0" />
-        </linearGradient>
-        <linearGradient id="mg-tee-sleeve" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#f6f7f9" />
-          <stop offset="1" stopColor="#cfd3db" />
+        <Puff id="mg-tee-puff" depth={6} />
+        <Puff id="mg-tee-puff-sm" depth={4} blur={3} />
+        <filter id="mg-soft2">
+          <feGaussianBlur stdDeviation="1.8" />
+        </filter>
+        <linearGradient id="mg-tee" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#e9ecf1" />
+          <stop offset="0.4" stopColor="#ffffff" />
+          <stop offset="1" stopColor="#dde1e8" />
         </linearGradient>
       </defs>
-      <g>
-        {/* sleeves */}
-        <path d="M66 30 L28 52 C22 56 20 62 22 68 L32 96 C34 101 39 103 44 101 L62 92 Z" fill="url(#mg-tee-sleeve)" />
-        <path d="M134 30 L172 52 C178 56 180 62 178 68 L168 96 C166 101 161 103 156 101 L138 92 Z" fill="url(#mg-tee-sleeve)" />
-        <path d="M24 74 L33 98 M176 74 L167 98" stroke="#b9bec8" strokeWidth="2.4" opacity="0.8" />
-        {/* body */}
-        <path d="M66 28 C76 25 86 24 100 24 C114 24 124 25 134 28 L140 60 L144 174 C144 180 140 184 134 184 L66 184 C60 184 56 180 56 174 L60 60 Z" fill="url(#mg-tee-body)" />
-        <path d="M57 176 H143" stroke="#c4c8d1" strokeWidth="2" />
-        {/* crew neck */}
-        <path d="M80 26 C84 40 92 46 100 46 C108 46 116 40 120 26" fill="none" stroke="#e1e4ea" strokeWidth="9" strokeLinecap="round" />
-        <path d="M84 26 C88 37 94 41 100 41 C106 41 112 37 116 26 Z" fill="#b7bcc6" />
-        {/* folds */}
-        <path d="M70 70 C74 100 72 140 68 168" fill="none" stroke="#b5bac4" strokeWidth="3" opacity="0.5" strokeLinecap="round" />
-        <path d="M132 78 C128 108 130 140 134 166" fill="none" stroke="#b5bac4" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
+      <g filter="url(#mg-tee-puff)">
+        <path d="M68 30 L30 50 C24 53 21 59 23 65 L34 96 L64 86 Z" fill="#f4f6f9" />
+        <path d="M132 30 L170 50 C176 53 179 59 177 65 L166 96 L136 86 Z" fill="#f4f6f9" />
       </g>
-      <image href={mapleLogo} x="74" y="62" width="52" height="52" preserveAspectRatio="xMidYMid meet" />
+      <g filter="url(#mg-tee-puff)">
+        <path d="M66 28 C78 24 88 22 100 22 C112 22 122 24 134 28 L140 64 L144 178 C144 183 141 186 136 186 L64 186 C59 186 56 183 56 178 L60 64 Z" fill="url(#mg-tee)" />
+      </g>
+      <path d="M57 178 H143" stroke="#c9ced7" strokeWidth="1.6" />
+      <path d="M26 76 L36 97 M174 76 L164 97" stroke="#c4c9d2" strokeWidth="2" />
+      {/* crew neck */}
+      <path d="M84 24 C88 36 94 41 100 41 C106 41 112 36 116 24 Z" fill="#aeb4bf" />
+      <path d="M80 24 C84 39 92 46 100 46 C108 46 116 39 120 24" fill="none" stroke="#eef1f5" strokeWidth="8" strokeLinecap="round" filter="url(#mg-tee-puff-sm)" />
+      {/* folds */}
+      <path d="M72 70 C76 100 74 140 69 170" strokeWidth="4" opacity="0.45" {...fold} />
+      <path d="M130 76 C126 106 128 140 133 168" strokeWidth="4" opacity="0.4" {...fold} />
+      <path d="M86 160 C96 156 108 156 118 162" strokeWidth="3" opacity="0.35" {...fold} />
+      <image href={mapleLogo} x="73" y="58" width="54" height="54" preserveAspectRatio="xMidYMid meet" />
     </svg>
   );
 }
 
-const Mystery = () => (
-  <svg viewBox="0 0 100 100" className="mg-q" aria-hidden="true">
-    <text x="50" y="72" textAnchor="middle">?</text>
-  </svg>
-);
-
-const Spark = ({ i }) => <i className="mg-spark" style={{ "--a": `${i * 45 + 22}deg` }} />;
+const Burst = () => {
+  const pts = [];
+  for (let k = 0; k < 32; k++) {
+    const r = k % 2 ? 41 : 50;
+    const a = (k / 32) * Math.PI * 2;
+    pts.push(`${(50 + r * Math.cos(a)).toFixed(2)},${(50 + r * Math.sin(a)).toFixed(2)}`);
+  }
+  return (
+    <svg viewBox="0 0 100 100" className="mg-burst-svg" aria-hidden="true">
+      <defs>
+        <radialGradient id="mg-burst" cx="40%" cy="35%" r="70%">
+          <stop offset="0" stopColor="#ff4d63" />
+          <stop offset="0.6" stopColor="#e4002b" />
+          <stop offset="1" stopColor="#9c0019" />
+        </radialGradient>
+      </defs>
+      <g className="mg-burst-star">
+        <polygon points={pts.join(" ")} fill="url(#mg-burst)" stroke="#fff" strokeWidth="3" strokeLinejoin="round" />
+      </g>
+      <text x="50" y="61" textAnchor="middle">FREE</text>
+    </svg>
+  );
+};
 
 function MapleGear({
   mode = "animated",
@@ -159,8 +205,8 @@ function MapleGear({
     { key: "gloves", name: "GLOVES", price: 140, photo: glovesPhoto },
   ],
   kicker = "MAPLE JIU-JITSU IS GIVING AWAY",
-  hook = "4 PIECES · $0",
-  allFree = "ALL OF IT. FREE.",
+  hookName = "4 PIECES OF GEAR",
+  allName = "ALL 4 PIECES",
   cta = "SIGN UP TODAY",
   site = "MAPLEBJJ.COM",
 }) {
@@ -173,28 +219,52 @@ function MapleGear({
   const { phase: live } = usePhases(CUES, { mode: still ? "static" : "animated", loopAt: LOOP_AT });
   const held = Number(query.get("phase")) || 0;
   const phase = held ? Math.min(7, Math.max(1, held)) : live;
-  const theme = query.get("theme") === "maple" ? "maple" : "fight";
 
   const total = items.reduce((sum, it) => sum + it.price, 0);
-  // running total: what has landed so far
-  const landed = items.slice(0, Math.max(0, Math.min(items.length, phase - 1)));
-  const running = landed.reduce((sum, it) => sum + it.price, 0);
 
   const stateOf = (i) => {
-    if (phase >= 7) return "grid";
+    if (phase >= 6) return "grid";
     if (phase < i + 2) return "off";
     if (phase === i + 2) return "hero";
-    return "tray";
+    return "gone";
   };
 
-  const lines = [hook, ...items.map((it) => `FREE ${it.name}`), allFree, `$${total} IN GEAR. $0.`];
+  // one caption per beat; the CTA beat keeps the payoff's caption
+  const caps = [
+    { name: hookName, value: `$${total} VALUE` },
+    ...items.map((it) => ({ name: it.name, value: `$${it.price} VALUE` })),
+    { name: allName, value: `$${total} VALUE` },
+  ];
+  const capBeat = Math.min(phase, 6);
+
+  const word = phase >= 2 && phase <= 5 ? items[phase - 2].name : "FREE GEAR";
+  const marquee = Array.from({ length: 6 }, () => word).join("  •  ");
 
   return (
-    <div className={`mg-stage mg-p${phase} mg-t-${theme}${still ? " is-static" : ""}`}>
+    <div className={`mg-stage mg-p${phase}${still ? " is-static" : ""}`}>
       <div className="mg-bg" aria-hidden="true">
-        <div className="mg-slab" />
-        <div className="mg-rays" />
-        <div className="mg-spot" />
+        <div className="mg-wash" />
+        <div className="mg-marquee" key={`mq-${word}`}>
+          <div className="mg-row mg-row-a">
+            <span>{marquee}</span>
+            <span>{marquee}</span>
+          </div>
+          <div className="mg-row mg-row-b">
+            <span>{marquee}</span>
+            <span>{marquee}</span>
+          </div>
+        </div>
+        <div className="mg-beams">
+          <i className="mg-beam mg-beam-1" />
+          <i className="mg-beam mg-beam-2" />
+          <i className="mg-beam mg-beam-3" />
+        </div>
+        <div className="mg-embers">
+          {EMBERS.map(([l, s, d, dl, dx], i) => (
+            <i key={i} style={{ left: `${l}%`, "--s": s, "--dur": `${d}s`, "--dl": `${dl}s`, "--dx": dx }} />
+          ))}
+        </div>
+        <div className="mg-vignette" />
         <svg className="mg-grain">
           <filter id="mg-noise">
             <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" />
@@ -204,114 +274,85 @@ function MapleGear({
         </svg>
       </div>
 
-      {!still && phase > 1 && <div key={phase} className="mg-flash" aria-hidden="true" />}
-
       <div className="mg-card">
-        <div className={`mg-shaker mg-shake-${phase % 2 ? "a" : "b"}`}>
-          <img className="mg-logo" src={mapleLogo} alt="Maple Jiu-Jitsu" />
-          <div className="mg-kicker">{kicker}</div>
-          <h1 className="mg-headline" aria-label="Free gear">
-            {HEADLINE.map((ch, i) =>
-              ch === " " ? (
-                <span key={i} className="mg-gap" />
-              ) : (
-                <span key={i} className="mg-letter" style={{ "--i": i }}>
-                  {ch}
-                </span>
-              )
-            )}
-          </h1>
+        <img className="mg-logo" src={mapleLogo} alt="Maple Jiu-Jitsu" />
+        <div className="mg-kicker">{kicker}</div>
+        <h1 className="mg-headline" aria-label="Free gear">
+          {"FREE GEAR".split("").map((ch, i) =>
+            ch === " " ? (
+              <span key={i} className="mg-gap" />
+            ) : (
+              <span key={i} className={`mg-letter${i < 4 ? " mg-hot" : ""}`} style={{ "--i": i }}>
+                {ch}
+              </span>
+            )
+          )}
+        </h1>
 
-          {/* the stage: mystery tiles on the hook, the total on its beat */}
-          <div className="mg-box">
-            <div className="mg-glow" />
-            <div className="mg-mystery">
-              {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="mg-tile" style={{ "--i": i }}>
-                  <Mystery />
+        <div className="mg-box">
+          <div className="mg-pool" />
+          <div className="mg-pedestal" />
+          <div className="mg-hook">
+            <img src={mapleLogo} alt="" />
+          </div>
+        </div>
+
+        {!still && phase > 0 && (
+          <div className="mg-fx" key={`fx-${phase}`} aria-hidden="true">
+            <i className="mg-ring" />
+            <i className="mg-ring mg-ring-2" />
+            <i className="mg-rays" />
+          </div>
+        )}
+
+        {items.map((it, i) => (
+          <div
+            key={it.key}
+            className={`mg-item mg-${stateOf(i)}`}
+            style={{ "--gx": GRID[i][0], "--gy": GRID[i][1], "--gr": `${GRID[i][2]}deg`, "--order": i }}
+          >
+            <div className="mg-spin">
+              <div className="mg-float">
+                <div className="mg-art">
+                  {it.photo ? <img src={it.photo} alt={it.name} /> : it.art === "hoodie" ? <Hoodie /> : <Shirt />}
                 </div>
-              ))}
-            </div>
-            <div className="mg-sum">
-              <div className="mg-sum-label">TOTAL VALUE</div>
-              <div className="mg-sum-num">${total}</div>
-              <div className="mg-stamp mg-stamp-big">
-                FREE
-                {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => <Spark key={i} i={i} />)}
+                <div className="mg-burst">
+                  <Burst />
+                </div>
               </div>
             </div>
           </div>
+        ))}
 
-          {items.map((it, i) => (
-            <div
-              key={it.key}
-              className={`mg-item mg-${stateOf(i)}`}
-              style={{
-                "--tx": TRAY_X[i],
-                "--ty": TRAY_Y,
-                "--gx": GRID[i][0],
-                "--gy": GRID[i][1],
-                "--order": i,
-              }}
-            >
-              <div className="mg-art">
-                {it.photo ? (
-                  <img src={it.photo} alt={it.name} />
-                ) : it.art === "hoodie" ? (
-                  <Hoodie />
-                ) : (
-                  <Shirt />
-                )}
+        <div className="mg-caps">
+          {caps.map((c, i) => (
+            <div key={i} className={`mg-cap${capBeat === i + 1 ? " is-on" : ""}`}>
+              <div className="mg-name">
+                {c.name.split(" ").map((w, k) => (
+                  <span key={k} style={{ "--k": k }}>
+                    {w}
+                  </span>
+                ))}
               </div>
-              <div className="mg-tag">
-                <span className="mg-tag-price">${it.price}</span>
-                <span className="mg-tag-label">VALUE</span>
-                <i className="mg-strike" />
+              <div className="mg-pills">
+                <span className="mg-pill mg-value">{c.value}</span>
+                <span className="mg-pill mg-free">
+                  FREE
+                  <i className="mg-shine" />
+                </span>
               </div>
-              <div className="mg-stamp">
-                FREE
-                {[0, 1, 2, 3, 4, 5, 6, 7].map((k) => <Spark key={k} i={k} />)}
-              </div>
-              <div className="mg-mini-free">FREE</div>
             </div>
           ))}
-
-          <div className="mg-lines">
-            {lines.map((l, i) => (
-              <div key={i} className={`mg-line mg-line-${i + 1}`}>
-                {l}
-              </div>
-            ))}
-          </div>
-
-          <div className="mg-traybar">
-            {items.map((it) => (
-              <div key={it.key} className="mg-slot" />
-            ))}
-          </div>
-          <div className="mg-cta">{cta}</div>
-
-          <div className="mg-total">
-            <span className="mg-total-label">GEAR VALUE</span>
-            <span className="mg-total-num" style={{ "--n": running }} />
-          </div>
-          <div className="mg-site">{site}</div>
         </div>
+
+        <div className="mg-cta">
+          {cta}
+          <i className="mg-shine" />
+        </div>
+        <div className="mg-site">{site}</div>
       </div>
 
-      <div className="mg-confetti" aria-hidden="true">
-        {Array.from({ length: 28 }, (_, i) => (
-          <i
-            key={i}
-            style={{
-              "--x": `${(i * 37) % 100}%`,
-              "--d": `${((i * 13) % 20) / 10}s`,
-              "--r": `${(i * 71) % 360}deg`,
-              "--c": i % 3,
-            }}
-          />
-        ))}
-      </div>
+      {!still && phase > 0 && <div key={`fl-${phase}`} className="mg-flash" aria-hidden="true" />}
     </div>
   );
 }
