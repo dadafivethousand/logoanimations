@@ -15,10 +15,11 @@ import "./Stylesheets/App.css";
 // import Wolverine from "./Components/Wolverine";
 // import Formula1 from "./Components/Formula1";
 // import Thanksgiving from "./Components/Thanksgiving";
-import FreeHat from "./Components/FreeHat";
+// import FreeHat from "./Components/FreeHat";
+import MapleGear from "./Components/MapleGear";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <FreeHat mode="animated" />;
+  return <MapleGear mode="animated" />;
 }
 export default App;
