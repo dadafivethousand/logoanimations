@@ -1,0 +1,371 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@800;900&display=swap");
+
+/* MapleBelt — 3,000 followers as a belt promotion.
+ * Namespace: mb-
+ *
+ * Colour story: a deep navy competition mat (the navy of the leaf's own
+ * lettering) under one cold spotlight; the belt is the only warm thing on it,
+ * and the black belt's red bar is the single accent.
+ *
+ * --u is the layout unit (same sheet as MapleGear). The card is a fixed
+ * 78 x 124u box centred in the frame; everything is placed in u:
+ *
+ *   leaf 0–30 · kicker 33 · count 37–70 · label 72 · belt 86–99
+ *   rank 102.5 · thanks 111–122
+ *
+ * Resting styles are the final (p4) frame; earlier phases hide things and
+ * entrances are transitions/animations on top — so .is-static only has to
+ * kill motion. */
+
+.mb-stage {
+  --u: min(0.9vw, 0.506vh);
+  --navy: #0d2152;
+  --red: #e4002b;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #050c1f;
+  color: #fff;
+  font-family: "Anton", "Impact", "Arial Narrow Bold", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---- the mat ----------------------------------------------------------- */
+
+.mb-bg,
+.mb-mat,
+.mb-spot,
+.mb-vignette,
+.mb-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mb-mat {
+  background:
+    /* the faint diamond texture of a competition mat */
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 14px),
+    linear-gradient(180deg, #0a1838 0%, #0d2152 55%, #081431 100%);
+}
+
+.mb-spot {
+  background:
+    radial-gradient(ellipse 70% 42% at 50% 46%, rgba(150, 185, 255, 0.28), transparent 70%),
+    radial-gradient(ellipse 40% 22% at 50% 72%, rgba(255, 255, 255, 0.07), transparent 70%);
+  opacity: 0.55;
+  transition: opacity 0.6s ease;
+}
+.mb-p3 .mb-spot,
+.mb-p4 .mb-spot {
+  opacity: 1;
+}
+
+.mb-vignette {
+  background: radial-gradient(ellipse 85% 65% at 50% 48%, transparent 45%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.mb-grain {
+  width: 100%;
+  height: 100%;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+}
+
+/* ---- the card ---------------------------------------------------------- */
+
+.mb-shake {
+  position: absolute;
+  inset: 0;
+}
+.mb-p3 .mb-shake {
+  animation: mb-shake 0.5s ease-out 0.05s;
+}
+@keyframes mb-shake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(calc(var(--u) * -1.6), calc(var(--u) * 1.1)); }
+  30% { transform: translate(calc(var(--u) * 1.4), calc(var(--u) * -0.9)); }
+  45% { transform: translate(calc(var(--u) * -0.9), calc(var(--u) * -0.6)); }
+  65% { transform: translate(calc(var(--u) * 0.5), calc(var(--u) * 0.4)); }
+  85% { transform: translate(calc(var(--u) * -0.2), 0); }
+}
+
+.mb-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--u) * 78);
+  height: calc(var(--u) * 124);
+  transform: translate(-50%, -50%);
+}
+
+.mb-card > * {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* the leaf */
+.mb-logo {
+  top: 0;
+  height: calc(var(--u) * 30);
+  filter: drop-shadow(0 calc(var(--u) * 0.8) calc(var(--u) * 1.6) rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 calc(var(--u) * 3) rgba(140, 180, 255, 0.35));
+  transition: opacity 0.5s ease, transform 0.75s cubic-bezier(0.2, 1.45, 0.4, 1);
+}
+.mb-p0 .mb-logo {
+  opacity: 0;
+  transform: translateX(-50%) translateY(calc(var(--u) * -10)) scale(0.7) rotate(-12deg);
+}
+
+.mb-kicker {
+  top: calc(var(--u) * 33);
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  font-size: calc(var(--u) * 3.6);
+  letter-spacing: calc(var(--u) * 0.9);
+  padding-left: calc(var(--u) * 0.9); /* balance the trailing tracking */
+  color: #b9cbf5;
+}
+
+/* the counter: fixed-width cells so the number doesn't wobble as it runs */
+.mb-count {
+  top: calc(var(--u) * 36);
+  display: flex;
+  font-size: calc(var(--u) * 30);
+  line-height: 1.12;
+  color: #fff;
+  text-shadow: 0 calc(var(--u) * 0.8) 0 rgba(0, 0, 0, 0.35);
+}
+.mb-digit {
+  display: inline-block;
+  width: 0.5em;
+  text-align: center;
+}
+.mb-comma {
+  display: inline-block;
+  width: 0.2em;
+  text-align: center;
+}
+.mb-p3 .mb-count,
+.mb-p4 .mb-count {
+  text-shadow:
+    0 calc(var(--u) * 0.8) 0 rgba(0, 0, 0, 0.35),
+    0 0 calc(var(--u) * 5) rgba(228, 0, 43, 0.55);
+}
+.mb-p3 .mb-count {
+  animation: mb-slam 0.55s cubic-bezier(0.2, 1.5, 0.35, 1);
+}
+@keyframes mb-slam {
+  0% { transform: translateX(-50%) scale(1.45); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+.mb-label {
+  top: calc(var(--u) * 72.5);
+  font-size: calc(var(--u) * 7);
+  letter-spacing: calc(var(--u) * 1.6);
+  padding-left: calc(var(--u) * 1.6);
+  line-height: 1;
+  color: #fff;
+}
+
+/* the belt: two full belts stacked, the black one wiped in over the white */
+.mb-beltbox {
+  top: calc(var(--u) * 85);
+  width: calc(var(--u) * 84);
+  height: calc(var(--u) * 13.44);
+  filter: drop-shadow(0 calc(var(--u) * 1.2) calc(var(--u) * 1.2) rgba(0, 0, 0, 0.55));
+  /* the long end fades into the mat instead of stopping */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+  overflow: hidden;
+}
+.mb-belt {
+  position: absolute;
+  inset: 0;
+}
+.mb-belt-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.mb-belt-black {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.42s cubic-bezier(0.7, 0, 0.3, 1);
+}
+.mb-p0 .mb-belt-black,
+.mb-p1 .mb-belt-black,
+.mb-p2 .mb-belt-black {
+  clip-path: inset(0 100% 0 0);
+  transition: none;
+}
+
+/* tape slapped onto the bar */
+.mb-tape {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mb-tape 0.32s cubic-bezier(0.25, 1.6, 0.4, 1) both;
+}
+@keyframes mb-tape {
+  0% { opacity: 0; transform: scale(1.9) rotate(-14deg); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* one pass of light down the new belt */
+.mb-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.45) 50%, transparent 65%);
+  background-size: 250% 100%;
+  background-position: 120% 0;
+  mix-blend-mode: screen;
+  animation: mb-sheen 0.9s ease-in-out 0.45s both;
+}
+@keyframes mb-sheen {
+  from { background-position: 120% 0; }
+  to { background-position: -40% 0; }
+}
+
+.mb-p1 .mb-kicker,
+.mb-p1 .mb-count,
+.mb-p1 .mb-label,
+.mb-p1 .mb-beltbox,
+.mb-p1 .mb-rank {
+  transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+.mb-p1 .mb-count { transition-delay: 0.12s; }
+.mb-p1 .mb-label { transition-delay: 0.2s; }
+.mb-p1 .mb-beltbox { transition-delay: 0.32s; }
+.mb-p1 .mb-rank { transition-delay: 0.42s; }
+.mb-p0 .mb-kicker,
+.mb-p0 .mb-count,
+.mb-p0 .mb-label,
+.mb-p0 .mb-beltbox,
+.mb-p0 .mb-rank {
+  opacity: 0;
+  transform: translateX(-50%) translateY(calc(var(--u) * 4));
+}
+
+.mb-rank {
+  top: calc(var(--u) * 102.5);
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--u) * 3.1);
+  letter-spacing: calc(var(--u) * 0.6);
+  padding-left: calc(var(--u) * 0.6);
+  color: #8fa6d8;
+  animation: mb-pop 0.3s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+.mb-p3 .mb-rank,
+.mb-p4 .mb-rank {
+  color: #fff;
+  background: var(--red);
+  padding: calc(var(--u) * 0.7) calc(var(--u) * 1.6) calc(var(--u) * 0.7) calc(var(--u) * 2.2);
+  border-radius: calc(var(--u) * 0.6);
+  top: calc(var(--u) * 102);
+}
+@keyframes mb-pop {
+  0% { transform: translateX(-50%) scale(1.25); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+.mb-thanks {
+  top: calc(var(--u) * 111);
+  font-size: calc(var(--u) * 10);
+  line-height: 1.1;
+  letter-spacing: calc(var(--u) * 0.6);
+  padding-left: calc(var(--u) * 0.6);
+  color: #fff;
+  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+.mb-p0 .mb-thanks,
+.mb-p1 .mb-thanks,
+.mb-p2 .mb-thanks,
+.mb-p3 .mb-thanks {
+  opacity: 0;
+  transform: translateX(-50%) translateY(calc(var(--u) * 5));
+}
+
+/* ---- the promotion hit ------------------------------------------------- */
+
+.mb-fx {
+  top: calc(var(--u) * 54);
+  width: 0;
+  height: 0;
+}
+.mb-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 20);
+  height: calc(var(--u) * 20);
+  margin: calc(var(--u) * -10) 0 0 calc(var(--u) * -10);
+  border-radius: 50%;
+  border: calc(var(--u) * 1.2) solid rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  animation: mb-ring 0.8s cubic-bezier(0.1, 0.7, 0.3, 1) both;
+}
+.mb-ring-2 {
+  border-color: var(--red);
+  animation-delay: 0.1s;
+}
+@keyframes mb-ring {
+  0% { opacity: 1; transform: scale(0.4); }
+  100% { opacity: 0; transform: scale(5.5); border-width: 1px; }
+}
+
+.mb-bit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * var(--s));
+  height: calc(var(--u) * var(--s) * 0.45);
+  border-radius: 1px;
+  opacity: 0;
+  animation: mb-bit 1.5s cubic-bezier(0.1, 0.8, 0.3, 1) var(--dl) both;
+}
+@keyframes mb-bit {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--a)) translateX(0) rotate(0deg);
+  }
+  75% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateX(calc(var(--u) * var(--d))) rotate(var(--spin));
+  }
+}
+
+.mb-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  pointer-events: none;
+  animation: mb-flash 0.45s ease-out both;
+}
+@keyframes mb-flash {
+  0% { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+
+/* ---- static / reduced motion ------------------------------------------- */
+
+.is-static *,
+.is-static *::before,
+.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* once the wipe has finished, the white belt underneath is gone for good —
+   no stripe edge can antialias out from behind the black one */
+.mb-p4 .mb-belt-white,
+.is-static .mb-belt-white {
+  visibility: hidden;
+}

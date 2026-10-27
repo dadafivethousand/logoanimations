@@ -16,10 +16,11 @@ import "./Stylesheets/App.css";
 // import Formula1 from "./Components/Formula1";
 // import Thanksgiving from "./Components/Thanksgiving";
 // import FreeHat from "./Components/FreeHat";
-import MapleGear from "./Components/MapleGear";
+// import MapleGear from "./Components/MapleGear";
+import MapleBelt from "./Components/MapleBelt";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <MapleGear mode="animated" />;
+  return <MapleBelt mode="animated" />;
 }
 export default App;
