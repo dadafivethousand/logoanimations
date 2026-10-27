@@ -1,0 +1,393 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@800;900&display=swap");
+
+/* MapleClimb — 3,000 followers as a summit at sunrise.
+ * Namespace: mc-
+ *
+ * Colour story: pre-dawn indigo with cold violet rock while the climb is on;
+ * at the summit the light turns — gold sun behind the peak, alpenglow pink on
+ * the snow and the lit face. Every scene colour is a registered custom
+ * property on the stage, so the whole mountain grades from night to sunrise
+ * together instead of cutting. The flag's red is the brand red.
+ *
+ * --u is the layout unit. The card is a fixed 78 x 142u box centred in the
+ * frame:   count 0–24 · label 25 · mountain 33–130 · thanks 131–141
+ *
+ * Resting styles are the final (p4) frame; earlier phases hide or darken
+ * things — so .is-static only has to kill motion. */
+
+@property --sky-top { syntax: "<color>"; inherits: true; initial-value: #0b0d27; }
+@property --sky-low { syntax: "<color>"; inherits: true; initial-value: #2a2150; }
+@property --glow { syntax: "<color>"; inherits: true; initial-value: #5a3466; }
+@property --lit-a { syntax: "<color>"; inherits: true; initial-value: #4a4f78; }
+@property --lit-b { syntax: "<color>"; inherits: true; initial-value: #23264a; }
+@property --shade-a { syntax: "<color>"; inherits: true; initial-value: #2a2c4d; }
+@property --shade-b { syntax: "<color>"; inherits: true; initial-value: #15162d; }
+@property --snow-a { syntax: "<color>"; inherits: true; initial-value: #c9cbe8; }
+@property --snow-b { syntax: "<color>"; inherits: true; initial-value: #9ea2cf; }
+@property --far { syntax: "<color>"; inherits: true; initial-value: #2b2952; }
+
+.mc-stage {
+  --u: min(0.9vw, 0.506vh);
+  /* sunrise — the resting (final) look */
+  --sky-top: #1e2b66;
+  --sky-low: #b4587a;
+  --glow: #ffb36b;
+  --lit-a: #e08c86;
+  --lit-b: #4d3a63;
+  --shade-a: #5a4473;
+  --shade-b: #1f1c3d;
+  --snow-a: #fff4e8;
+  --snow-b: #ffc4a6;
+  --far: #7c4f7e;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0d27;
+  color: #fff;
+  font-family: "Anton", "Impact", "Arial Narrow Bold", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: --sky-top 1.6s ease, --sky-low 1.6s ease, --glow 1.6s ease, --lit-a 1.4s ease,
+    --lit-b 1.4s ease, --shade-a 1.4s ease, --shade-b 1.4s ease, --snow-a 1.2s ease, --snow-b 1.2s ease,
+    --far 1.6s ease;
+}
+
+/* pre-dawn, for the whole climb */
+.mc-p0,
+.mc-p1,
+.mc-p2 {
+  --sky-top: #0b0d27;
+  --sky-low: #2a2150;
+  --glow: #5a3466;
+  --lit-a: #4a4f78;
+  --lit-b: #23264a;
+  --shade-a: #2a2c4d;
+  --shade-b: #15162d;
+  --snow-a: #c9cbe8;
+  --snow-b: #9ea2cf;
+  --far: #2b2952;
+}
+
+/* ---- sky ----------------------------------------------------------------- */
+
+.mc-bg,
+.mc-sky,
+.mc-dawn,
+.mc-stars,
+.mc-valley,
+.mc-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mc-sky {
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-low) 62%, #120f2a 100%);
+}
+.mc-dawn {
+  background: radial-gradient(ellipse 75% 32% at 50% 44%, var(--glow), transparent 72%);
+  opacity: 0.85;
+  transition: opacity 1.4s ease;
+}
+.mc-p0 .mc-dawn,
+.mc-p1 .mc-dawn,
+.mc-p2 .mc-dawn {
+  opacity: 0.45;
+}
+
+.mc-stars i {
+  position: absolute;
+  width: calc(var(--u) * var(--s) * 0.5);
+  height: calc(var(--u) * var(--s) * 0.5);
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.mc-p1 .mc-stars i,
+.mc-p2 .mc-stars i {
+  opacity: 0.8;
+  animation: mc-twinkle 2.6s ease-in-out var(--d) infinite;
+}
+@keyframes mc-twinkle {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 0.25; }
+}
+
+.mc-valley {
+  background: linear-gradient(180deg, transparent 62%, rgba(14, 11, 34, 0.75) 82%, #0d0b22 100%);
+}
+
+.mc-grain {
+  width: 100%;
+  height: 100%;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+}
+
+/* ---- card ---------------------------------------------------------------- */
+
+.mc-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--u) * 78);
+  height: calc(var(--u) * 142);
+  transform: translate(-50%, -50%);
+}
+.mc-card > * {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.mc-count {
+  top: 0;
+  display: flex;
+  font-size: calc(var(--u) * 22);
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 calc(var(--u) * 0.7) 0 rgba(0, 0, 0, 0.3);
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+.mc-digit {
+  display: inline-block;
+  width: 0.5em;
+  text-align: center;
+}
+.mc-comma {
+  display: inline-block;
+  width: 0.2em;
+  text-align: center;
+}
+.mc-p3 .mc-count,
+.mc-p4 .mc-count {
+  text-shadow: 0 calc(var(--u) * 0.7) 0 rgba(0, 0, 0, 0.3), 0 0 calc(var(--u) * 5) rgba(255, 190, 100, 0.75);
+}
+.mc-p3 .mc-count {
+  animation: mc-slam 0.6s cubic-bezier(0.2, 1.5, 0.35, 1);
+}
+@keyframes mc-slam {
+  0% { transform: translateX(-50%) scale(1.35); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+.mc-label {
+  top: calc(var(--u) * 25);
+  font-size: calc(var(--u) * 5.4);
+  line-height: 1;
+  letter-spacing: calc(var(--u) * 1.3);
+  padding-left: calc(var(--u) * 1.3);
+  color: #fff;
+  transition: opacity 0.6s ease 0.1s, transform 0.7s cubic-bezier(0.2, 1.2, 0.4, 1) 0.1s;
+}
+
+.mc-p0 .mc-count,
+.mc-p0 .mc-label {
+  opacity: 0;
+  transform: translateX(-50%) translateY(calc(var(--u) * -4));
+}
+
+.mc-mountain {
+  top: calc(var(--u) * 33);
+  width: calc(var(--u) * 78);
+  height: calc(var(--u) * 97.5);
+  /* the foot of the mountain dissolves into the valley haze */
+  /* and the ranges fade out at both sides rather than stopping at the box */
+  -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(180deg, #000 78%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  mask-composite: intersect;
+  transition: opacity 1s ease;
+}
+.mc-p0 .mc-mountain {
+  opacity: 0;
+}
+.mc-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.mc-thanks {
+  top: calc(var(--u) * 131);
+  font-size: calc(var(--u) * 9.5);
+  line-height: 1.1;
+  letter-spacing: calc(var(--u) * 0.6);
+  padding-left: calc(var(--u) * 0.6);
+  text-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 1.5) rgba(0, 0, 0, 0.5);
+  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+.mc-p0 .mc-thanks,
+.mc-p1 .mc-thanks,
+.mc-p2 .mc-thanks,
+.mc-p3 .mc-thanks {
+  opacity: 0;
+  transform: translateX(-50%) translateY(calc(var(--u) * 4));
+}
+
+/* ---- the mountain -------------------------------------------------------- */
+
+.mc-lit-a { stop-color: var(--lit-a); }
+.mc-lit-b { stop-color: var(--lit-b); }
+.mc-shade-a { stop-color: var(--shade-a); }
+.mc-shade-b { stop-color: var(--shade-b); }
+.mc-snow-a { stop-color: var(--snow-a); }
+.mc-snow-b { stop-color: var(--snow-b); }
+.mc-far { fill: var(--far); opacity: 0.85; }
+
+/* the sun sits below the peak until the summit, then rises behind it */
+.mc-sunwrap {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 1.6s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.8s ease;
+}
+.mc-p0 .mc-sunwrap,
+.mc-p1 .mc-sunwrap,
+.mc-p2 .mc-sunwrap {
+  transform: translateY(70px);
+  opacity: 0;
+}
+.mc-rays {
+  animation: mc-rays 30s linear infinite;
+}
+@keyframes mc-rays {
+  to { transform: rotate(360deg); }
+}
+
+.mc-trail-dim {
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 0.9;
+  stroke-dasharray: 1.4 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.mc-trail-lit {
+  stroke: #ffe08a;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mc-mark-dot {
+  fill: rgba(255, 255, 255, 0.35);
+  transition: fill 0.25s ease;
+}
+.mc-mark-tag {
+  fill: rgba(10, 10, 30, 0.55);
+  stroke: rgba(255, 255, 255, 0.25);
+  stroke-width: 0.6;
+  transition: fill 0.25s ease, stroke 0.25s ease;
+}
+.mc-mark-text {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  font-size: 7.6px;
+  fill: rgba(255, 255, 255, 0.55);
+  transition: fill 0.25s ease;
+}
+.mc-mark.is-hit .mc-mark-dot {
+  fill: #ffe08a;
+}
+.mc-mark.is-hit .mc-mark-tag {
+  fill: #ffe08a;
+  stroke: #fff;
+}
+.mc-mark.is-hit .mc-mark-text {
+  fill: #2a1a3a;
+}
+.mc-mark.is-hit .mc-mark-tag,
+.mc-mark.is-hit .mc-mark-text {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mc-tag 0.4s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+@keyframes mc-tag {
+  0% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+/* climber's stride */
+.mc-leg,
+.mc-pole {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+.mc-walking .mc-leg-a { animation: mc-stride 0.42s ease-in-out infinite alternate; }
+.mc-walking .mc-leg-b { animation: mc-stride 0.42s ease-in-out infinite alternate-reverse; }
+.mc-walking .mc-pole { animation: mc-stride 0.42s ease-in-out infinite alternate-reverse; }
+@keyframes mc-stride {
+  from { transform: rotate(-22deg); }
+  to { transform: rotate(22deg); }
+}
+
+/* the flag goes up, then unfurls */
+.mc-pole-up {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.mc-flag {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  transition: transform 0.6s cubic-bezier(0.2, 1.3, 0.4, 1) 0.3s;
+}
+.mc-p0 .mc-pole-up,
+.mc-p1 .mc-pole-up,
+.mc-p2 .mc-pole-up {
+  transform: scaleY(0);
+  transition: none;
+}
+.mc-p0 .mc-flag,
+.mc-p1 .mc-flag,
+.mc-p2 .mc-flag {
+  transform: scaleX(0);
+  transition: none;
+}
+.mc-wave {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  animation: mc-wave 2.2s ease-in-out infinite;
+}
+@keyframes mc-wave {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(-3deg) scaleX(0.96); }
+}
+
+.mc-puff circle {
+  opacity: 0;
+  animation: mc-puff 0.9s cubic-bezier(0.1, 0.7, 0.3, 1) both;
+}
+@keyframes mc-puff {
+  0% { opacity: 0.95; transform: rotate(var(--a)) translateX(0) scale(1); }
+  100% { opacity: 0; transform: rotate(var(--a)) translateX(var(--d)) scale(1.8); }
+}
+
+.mc-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, #fff3d6, rgba(255, 220, 160, 0.4) 60%, transparent);
+  pointer-events: none;
+  animation: mc-flash 0.8s ease-out both;
+}
+@keyframes mc-flash {
+  0% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+
+/* ---- static / reduced motion ------------------------------------------- */
+
+.is-static *,
+.is-static *::before,
+.is-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.is-static {
+  transition: none !important;
+}
