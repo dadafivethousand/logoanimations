@@ -18,10 +18,11 @@ import "./Stylesheets/App.css";
 // import FreeHat from "./Components/FreeHat";
 // import MapleGear from "./Components/MapleGear";
 // import MapleBelt from "./Components/MapleBelt";
-import MapleClimb from "./Components/MapleClimb";
+// import MapleClimb from "./Components/MapleClimb";
+import Mafia from "./Components/Mafia";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <MapleClimb mode="animated" />;
+  return <Mafia mode="animated" />;
 }
 export default App;
