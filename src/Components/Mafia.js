@@ -1,8 +1,8 @@
 // Mafia.js — a hook for the front of a video. A hanging lamp stutters on in a
 // foggy brick alley, a man in a fedora and a belted overcoat walks out of the
 // fog straight at the camera, stops under the light, and levels a pistol at
-// the viewer. Light catches his eyes over the sights on the click. No brand,
-// no text.
+// the viewer, off his right shoulder. A glint off the front sight on the
+// click. Dressed all in black. No brand, no text.
 //
 // HE WALKS AT THE CAMERA, NOT ACROSS IT. Walking out of the depth keeps one
 // front-facing figure the whole way: the walk is a scale-up from the vanishing
@@ -14,9 +14,9 @@
 //
 // LIT FROM ONE LAMP, ABOVE. Every top plane catches it — hat crown, brim edge,
 // shoulders, lapel edges, the top of the slide — and everything facing the
-// camera falls into shadow, with a cylinder falloff across the coat so the
-// body has a front and sides. The face sits in the brim's shadow until the eye
-// light; a cigarette ember warms the jaw from below.
+// camera, with a cylinder falloff across the coat so the
+// body has a front and sides. The face is lit the whole way — the brim shades
+// only the brow — and a cigarette ember warms the jaw.
 //
 // THE GUN POINTS AT THE VIEWER: a 1911 end-on. Slide face with the barrel
 // bushing and bore on top and the recoil spring plug under it, front sight
@@ -31,7 +31,7 @@ import usePhases from "../Utils/usePhases";
 // p2 he walks out of the fog toward the camera
 // p3 he stops under the light
 // p4 the gun comes up at the viewer, the camera pushes in
-// p5 click — the eye light, a glint off the front sight
+// p5 click — a glint off the front sight
 //
 // Plays ONCE and holds — loopAt is null. The smoke, fog and the lamp's sway
 // keep running on the held frame; that is ambient, not a restart.
@@ -94,10 +94,10 @@ function Gangster() {
           <feGaussianBlur stdDeviation="2.4" />
         </filter>
         <linearGradient id="mf-coat" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#4b4239" />
-          <stop offset="0.18" stopColor="#2c2520" />
-          <stop offset="0.6" stopColor="#1c1815" />
-          <stop offset="1" stopColor="#0f0d0b" />
+          <stop offset="0" stopColor="#3a3a3d" />
+          <stop offset="0.18" stopColor="#1c1c1e" />
+          <stop offset="0.6" stopColor="#111112" />
+          <stop offset="1" stopColor="#070708" />
         </linearGradient>
         <linearGradient id="mf-form" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#000" stopOpacity="0.65" />
@@ -106,40 +106,35 @@ function Gangster() {
           <stop offset="1" stopColor="#000" stopOpacity="0.65" />
         </linearGradient>
         <linearGradient id="mf-sleeve" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3f3730" />
-          <stop offset="0.3" stopColor="#221d19" />
-          <stop offset="1" stopColor="#13100e" />
+          <stop offset="0" stopColor="#353538" />
+          <stop offset="0.3" stopColor="#18181a" />
+          <stop offset="1" stopColor="#0a0a0b" />
         </linearGradient>
         <linearGradient id="mf-trouser" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#0c0a09" />
-          <stop offset="0.5" stopColor="#1f1b18" />
-          <stop offset="1" stopColor="#0c0a09" />
+          <stop offset="0" stopColor="#070708" />
+          <stop offset="0.5" stopColor="#1a1a1c" />
+          <stop offset="1" stopColor="#070708" />
         </linearGradient>
         <linearGradient id="mf-tie" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ff3355" />
-          <stop offset="0.5" stopColor="#c4001f" />
-          <stop offset="1" stopColor="#5e0011" />
+          <stop offset="0" stopColor="#3c3c40" />
+          <stop offset="0.45" stopColor="#0d0d0e" />
+          <stop offset="0.6" stopColor="#262629" />
+          <stop offset="1" stopColor="#050505" />
         </linearGradient>
         <linearGradient id="mf-shirt" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#d9cfbb" />
-          <stop offset="1" stopColor="#6f6656" />
+          <stop offset="0" stopColor="#2a2a2d" />
+          <stop offset="1" stopColor="#0e0e0f" />
         </linearGradient>
         <linearGradient id="mf-hat" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#5d5246" />
-          <stop offset="0.45" stopColor="#2a241f" />
-          <stop offset="1" stopColor="#141110" />
+          <stop offset="0" stopColor="#47474b" />
+          <stop offset="0.45" stopColor="#1c1c1e" />
+          <stop offset="1" stopColor="#0b0b0c" />
         </linearGradient>
-        <linearGradient id="mf-face" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#0f0b09" />
-          <stop offset="0.4" stopColor="#21180f" />
-          <stop offset="1" stopColor="#3a2a1f" />
-        </linearGradient>
-        <linearGradient id="mf-eyes" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#b88a62" stopOpacity="0" />
-          <stop offset="0.22" stopColor="#d5a97f" />
-          <stop offset="0.5" stopColor="#e2b98e" />
-          <stop offset="0.78" stopColor="#d5a97f" />
-          <stop offset="1" stopColor="#b88a62" stopOpacity="0" />
+        <linearGradient id="mf-skin" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#c99a75" />
+          <stop offset="0.45" stopColor="#c59672" />
+          <stop offset="0.8" stopColor="#a87a5c" />
+          <stop offset="1" stopColor="#8a5f46" />
         </linearGradient>
         <linearGradient id="mf-steel" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#8e877e" />
@@ -152,9 +147,9 @@ function Gangster() {
           <stop offset="1" stopColor="#2a2623" />
         </radialGradient>
         <linearGradient id="mf-glove" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3a302a" />
-          <stop offset="0.35" stopColor="#1a1512" />
-          <stop offset="1" stopColor="#0c0a09" />
+          <stop offset="0" stopColor="#3a3a3e" />
+          <stop offset="0.35" stopColor="#141415" />
+          <stop offset="1" stopColor="#060606" />
         </linearGradient>
         <clipPath id="mf-face-clip">
           <path d={FACE_D} />
@@ -187,22 +182,21 @@ function Gangster() {
         <path d="M134,88 C147,88 155,96 156,110 L159,160 C160,178 161,196 159,214 L145,216 C144,198 143,178 141,160 L138,118 Z" fill="url(#mf-sleeve)" />
         <path d="M146,92 C152,96 155,102 156,110" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.6" />
         <path d="M150,150 C151,160 151,170 150,180" stroke="#060505" strokeWidth="1" fill="none" opacity="0.6" />
-        <path d="M145,212 L159,210 L159,216 L145,218 Z" fill="#7a705f" />
+        <path d="M145,212 L159,210 L159,216 L145,218 Z" fill="#1e1e20" />
         <path d="M145,217 C143,226 145,238 151,241 C157,243 162,236 161,226 L159,215 Z" fill="url(#mf-glove)" />
         <path d="M147,224 C150,226 155,226 159,224 M147,231 C150,233 155,233 159,231" stroke="#3b322b" strokeWidth="0.8" fill="none" />
       </g>
 
       {/* ---- shirt and tie, behind the lapels ---- */}
       <path d="M88,80 L112,80 L100,150 Z" fill="url(#mf-shirt)" />
-      <path d="M88,80 L95,94 L100,84 L105,94 L112,80 L106,79 L100,82 L94,79 Z" fill="#e4dac6" />
-      <path d="M95,83 L105,83 L103,91 L97,91 Z" fill="#a8001c" />
+      <path d="M88,80 L95,94 L100,84 L105,94 L112,80 L106,79 L100,82 L94,79 Z" fill="#2c2c2f" />
+      <path d="M95,83 L105,83 L103,91 L97,91 Z" fill="#141416" />
       <path d="M97,91 L103,91 L107,140 L100,148 L93,140 Z" fill="url(#mf-tie)" />
-      <path d="M100,92 L100,138" stroke="#5e0011" strokeWidth="0.6" opacity="0.6" />
+      <path d="M100,92 L100,138" stroke={LIT} strokeWidth="0.5" opacity="0.18" />
 
       {/* ---- overcoat ---- */}
       <path d={TORSO_D} fill="url(#mf-coat)" />
       <g clipPath="url(#mf-torso-clip)">
-        <rect x="0" y="0" width="200" height="400" fill="url(#mf-pin)" />
         <rect x="0" y="0" width="200" height="400" filter="url(#mf-cloth)" />
         {/* folds in the skirt: a shadow with a lit lip beside it */}
         <g fill="none" strokeLinecap="round">
@@ -219,60 +213,77 @@ function Gangster() {
       </g>
 
       {/* lapels: peaked, the faces a shade up, edges catching the lamp */}
-      <path d="M88,80 L100,150 L77,125 L83,120 L71,96 Z" fill="#2f2822" />
-      <path d="M112,80 L100,150 L123,125 L117,120 L129,96 Z" fill="#2f2822" />
+      <path d="M88,80 L100,150 L77,125 L83,120 L71,96 Z" fill="#1b1b1d" />
+      <path d="M112,80 L100,150 L123,125 L117,120 L129,96 Z" fill="#1b1b1d" />
       <path d="M88,80 L71,96 L83,120 L77,125" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.45" />
       <path d="M112,80 L129,96 L117,120 L123,125" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.45" />
       <path d="M77,125 L100,150 L123,125" stroke="#080606" strokeWidth="1" fill="none" opacity="0.7" />
       {/* the double-breasted overlap, the belt, buttons, pocket flaps */}
       <path d="M100,150 C108,152 114,156 116,162 L118,292" stroke="#080606" strokeWidth="1.3" fill="none" />
       <path d="M101.5,151 C109,153 115,157 117.3,163" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.3" />
-      <path d="M59,167 L141,167 L140,178 L60,178 Z" fill="#0f0c0b" />
+      <path d="M59,167 L141,167 L140,178 L60,178 Z" fill="#0a0a0b" />
       <path d="M59,167 L141,167" stroke={LIT} strokeWidth="0.7" opacity="0.3" />
-      <rect x="107" y="165.5" width="11" height="14" rx="1.4" fill="none" stroke="#857a6c" strokeWidth="1.3" />
-      <path d="M112.5,167 L112.5,178" stroke="#857a6c" strokeWidth="1" />
+      <rect x="107" y="165.5" width="11" height="14" rx="1.4" fill="none" stroke="#7d7d80" strokeWidth="1.3" />
+      <path d="M112.5,167 L112.5,178" stroke="#7d7d80" strokeWidth="1" />
       {[[86, 156], [114, 156], [86, 196], [114, 196]].map(([x, y]) => (
         <g key={`${x}-${y}`}>
           <circle cx={x} cy={y} r="2.3" fill="#0b0908" />
           <path d={`M${x - 1.6},${y - 1} A2,2 0 0 1 ${x + 1.6},${y - 1}`} stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.45" />
         </g>
       ))}
-      <path d="M64,214 L91,212 L91,217 L64,219 Z" fill="#14110f" />
-      <path d="M109,212 L136,214 L136,219 L109,217 Z" fill="#14110f" />
+      <path d="M64,214 L91,212 L91,217 L64,219 Z" fill="#0d0d0e" />
+      <path d="M109,212 L136,214 L136,219 L109,217 Z" fill="#0d0d0e" />
       <path d="M64,214 L91,212 M109,212 L136,214" stroke={LIT} strokeWidth="0.6" opacity="0.25" />
       {/* collar turned up behind the neck */}
-      <path d="M84,82 C84,74 88,72 92,72 L94,82 Z M116,82 C116,74 112,72 108,72 L106,82 Z" fill="#241e19" />
+      <path d="M84,82 C84,74 88,72 92,72 L94,82 Z M116,82 C116,74 112,72 108,72 L106,82 Z" fill="#1a1a1c" />
       <path d="M84,81 C84,75 87,72.5 91,72.3 M116,81 C116,75 113,72.5 109,72.3" stroke={LIT} strokeWidth="0.8" fill="none" opacity="0.4" />
 
-      {/* ---- head ---- */}
-      <path d="M91,68 L109,68 L110,82 L90,82 Z" fill="#170f0b" />
-      <path d="M84,52 C80,51 79,61 84,64 Z" fill="#251a14" />
-      <path d="M116,52 C120,51 121,61 116,64 Z" fill="#251a14" />
-      <path d={FACE_D} fill="url(#mf-face)" />
+      {/* ---- head: lit by the lamp, the brim shading only the brow ---- */}
+      <path d="M91,68 L109,68 L110,82 L90,82 Z" fill="#7a5440" />
+      <path d="M90,74 C95,79 105,79 110,74 L110,82 L90,82 Z" fill="#3e281d" opacity="0.8" />
+      <path d="M84,51 C79.5,50 78.5,61 84,64.5 Z" fill="#a8775a" />
+      <path d="M83.5,53 C81.5,54 81.5,59 83.5,61" stroke="#6b4634" strokeWidth="0.8" fill="none" />
+      <path d="M116,51 C120.5,50 121.5,61 116,64.5 Z" fill="#a8775a" />
+      <path d="M116.5,53 C118.5,54 118.5,59 116.5,61" stroke="#6b4634" strokeWidth="0.8" fill="none" />
+      <path d={FACE_D} fill="url(#mf-skin)" />
       <g clipPath="url(#mf-face-clip)">
-        {/* cheekbones and jaw: bounce light from below picks out the planes */}
-        <path d="M86,62 C88,70 92,76 98,79" stroke="#5a4232" strokeWidth="1.2" fill="none" opacity="0.5" filter="url(#mf-soft)" />
-        <path d="M114,62 C112,70 108,76 102,79" stroke="#5a4232" strokeWidth="1.2" fill="none" opacity="0.5" filter="url(#mf-soft)" />
-        <path d="M98.5,58 L97.5,65.5 C99,66.6 101,66.6 102.5,65.5" stroke="#4d3829" strokeWidth="0.9" fill="none" opacity="0.8" />
-        <path d="M95,71 C98,72 102,72 105,71" stroke="#0b0706" strokeWidth="1.1" fill="none" strokeLinecap="round" />
-        <path d="M97,75.5 C99,76.3 101,76.3 103,75.5" stroke="#4d3829" strokeWidth="0.7" fill="none" opacity="0.6" />
-        <ellipse className="mf-emberlight" cx="112" cy="76" rx="12" ry="8" fill="#ff7a2a" opacity="0.22" filter="url(#mf-softer)" />
-
-        {/* the eye light: a slash of lamp under the brim */}
-        <g className="mf-eyelight">
-          <rect x="80" y="51" width="40" height="10" fill="url(#mf-eyes)" filter="url(#mf-soft)" />
-          <path d="M86,53.5 C89,52.3 94,52.4 97,54" stroke="#2a1a12" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-          <path d="M103,54 C106,52.4 111,52.3 114,53.5" stroke="#2a1a12" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-          {[92, 108].map((cx) => (
-            <g key={cx}>
-              <path d={`M${cx - 4},57 C${cx - 2},55.4 ${cx + 2},55.4 ${cx + 4},57 C${cx + 2},58.2 ${cx - 2},58.2 ${cx - 4},57 Z`} fill="#c9b49a" />
-              <circle cx={cx} cy="56.9" r="1.6" fill="#2b1a10" />
-              <circle cx={cx} cy="56.9" r="0.75" fill="#050302" />
-              <circle cx={cx + 0.6} cy="56.3" r="0.4" fill="#fff6e2" />
-              <path d={`M${cx - 4.2},56.9 C${cx - 2},55 ${cx + 2},55 ${cx + 4.2},56.9`} stroke="#1a0f0a" strokeWidth="0.9" fill="none" />
-            </g>
-          ))}
-        </g>
+        <rect x="80" y="40" width="40" height="40" fill="url(#mf-form)" opacity="0.55" />
+        {/* the brim's shadow across the brow */}
+        <rect x="80" y="38" width="40" height="13" fill="#1a0e08" opacity="0.55" filter="url(#mf-soft)" />
+        {/* five o'clock shadow on the jaw and lip */}
+        <path d="M85,64 C87,72 92,78 100,79 C108,78 113,72 115,64 C112,70 108,74 100,74.5 C92,74 88,70 85,64 Z" fill="#3c3438" opacity="0.35" filter="url(#mf-soft)" />
+        <path d="M94,68.5 C97,67.5 103,67.5 106,68.5 L106,70 L94,70 Z" fill="#3c3438" opacity="0.3" filter="url(#mf-soft)" />
+        {/* cheekbones catch the lamp; hollows beneath them */}
+        <ellipse cx="89" cy="62" rx="3.5" ry="2" fill="#e8bf98" opacity="0.35" filter="url(#mf-soft)" />
+        <ellipse cx="111" cy="62" rx="3.5" ry="2" fill="#e8bf98" opacity="0.35" filter="url(#mf-soft)" />
+        <path d="M87,66 C89,70 91,72 93,73 M113,66 C111,70 109,72 107,73" stroke="#7a5038" strokeWidth="1.2" fill="none" opacity="0.5" filter="url(#mf-soft)" />
+        {/* eye sockets */}
+        <ellipse cx="92" cy="56.5" rx="5.5" ry="3.2" fill="#6b4331" opacity="0.6" filter="url(#mf-soft)" />
+        <ellipse cx="108" cy="56.5" rx="5.5" ry="3.2" fill="#6b4331" opacity="0.6" filter="url(#mf-soft)" />
+        {/* brows, heavy and drawn down toward the nose */}
+        <path d="M85.5,53 C88.5,51.6 93.5,51.8 97.5,54.2" stroke="#1d120c" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+        <path d="M102.5,54.2 C106.5,51.8 111.5,51.6 114.5,53" stroke="#1d120c" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+        {[92, 108].map((cx) => (
+          <g key={cx}>
+            <path d={`M${cx - 4},57 C${cx - 2},55.4 ${cx + 2},55.4 ${cx + 4},57 C${cx + 2},58.2 ${cx - 2},58.2 ${cx - 4},57 Z`} fill="#d9cbb8" />
+            <circle cx={cx} cy="56.9" r="1.6" fill="#3a2414" />
+            <circle cx={cx} cy="56.9" r="0.75" fill="#050302" />
+            <circle cx={cx + 0.6} cy="56.3" r="0.4" fill="#fff6e2" />
+            <path d={`M${cx - 4.2},56.9 C${cx - 2},55 ${cx + 2},55 ${cx + 4.2},56.9`} stroke="#1a0f0a" strokeWidth="1" fill="none" />
+            <path d={`M${cx - 3.6},58.6 C${cx - 1.6},59.4 ${cx + 1.6},59.4 ${cx + 3.6},58.6`} stroke="#7a5038" strokeWidth="0.6" fill="none" opacity="0.7" />
+          </g>
+        ))}
+        {/* nose: lit ridge, shaded side, the tip, nostrils */}
+        <path d="M100.6,56 L101.4,63.5" stroke="#f0c9a2" strokeWidth="1.1" opacity="0.6" strokeLinecap="round" />
+        <path d="M98.6,56.5 C97.6,60 96.8,63 96.5,65" stroke="#7a5038" strokeWidth="1.1" fill="none" opacity="0.6" filter="url(#mf-soft)" />
+        <ellipse cx="100.5" cy="64.6" rx="2.4" ry="1.6" fill="#d9a882" />
+        <path d="M96.5,65.6 C97.5,66.8 99,66.8 99.5,66.2 M101.5,66.2 C102,66.8 103.5,66.8 104.5,65.6" stroke="#4a2a1c" strokeWidth="0.9" fill="none" />
+        {/* mouth set hard */}
+        <path d="M95.5,71 C98,70.2 102,70.2 104.5,71 C102,71.8 98,71.8 95.5,71 Z" fill="#7a4434" />
+        <path d="M95.5,71 C98,71.5 102,71.5 104.5,71" stroke="#2a140e" strokeWidth="0.9" fill="none" strokeLinecap="round" />
+        <path d="M97,73.2 C99,74 101,74 103,73.2" stroke="#e0b590" strokeWidth="0.8" fill="none" opacity="0.5" />
+        <ellipse cx="100" cy="76.6" rx="3" ry="1.2" fill="#e0b590" opacity="0.35" filter="url(#mf-soft)" />
+        <ellipse className="mf-emberlight" cx="112" cy="74" rx="10" ry="7" fill="#ff7a2a" opacity="0.18" filter="url(#mf-softer)" />
       </g>
 
       {/* ---- cigarette, and its smoke ---- */}
@@ -289,10 +300,10 @@ function Gangster() {
       {/* ---- fedora: pinched crown, band with a bow, snap brim ---- */}
       <path d="M79,40 C77,27 80,13 88,10 C93,8 97,13 100,12 C103,13 107,8 112,10 C120,13 123,27 121,40 Z" fill="url(#mf-hat)" />
       <path d="M93,11 C95,18 96,27 96,36 M107,11 C105,18 104,27 104,36" stroke="#0e0b09" strokeWidth="1.2" fill="none" opacity="0.6" filter="url(#mf-soft)" />
-      <path d="M78,34 C88,37 112,37 122,34 L122,41 C112,43 88,43 78,41 Z" fill="#0d0a09" />
+      <path d="M78,34 C88,37 112,37 122,34 L122,41 C112,43 88,43 78,41 Z" fill="#060607" />
       <path d="M78,34 C88,37 112,37 122,34" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.3" />
-      <path d="M80,35.5 L86,36.5 L85,41 L79,40 Z" fill="#1d1815" />
-      <path d="M64,44 C70,38.5 85,37 100,37 C115,37 130,38.5 136,44 C132,47 123,47 117,47 C111,49 106,50 100,50 C94,50 89,49 83,47 C77,47 68,47 64,44 Z" fill="#1a1613" />
+      <path d="M80,35.5 L86,36.5 L85,41 L79,40 Z" fill="#18181a" />
+      <path d="M64,44 C70,38.5 85,37 100,37 C115,37 130,38.5 136,44 C132,47 123,47 117,47 C111,49 106,50 100,50 C94,50 89,49 83,47 C77,47 68,47 64,44 Z" fill="#121214" />
       <path d="M81.5,19 C83,14 86,11 89,10 C93,8.5 97,13 100,12 C103,13 107,8.5 111,10 C114,11 117,14 118.5,19" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.65" />
       <path d="M66,43.5 C73,39.5 86,38.2 100,38.2 C114,38.2 127,39.5 134,43.5" stroke={LIT} strokeWidth="1.1" fill="none" opacity="0.55" />
       <path d="M82,47 C88,49 94,50 100,50 C106,50 112,49 118,47" stroke="#050404" strokeWidth="1" fill="none" />
@@ -301,7 +312,7 @@ function Gangster() {
       <g className="mf-arm mf-arm-down">
         <path d="M66,88 C53,88 45,96 44,110 L41,160 C40,178 39,196 41,214 L55,216 C56,198 57,178 59,160 L62,118 Z" fill="url(#mf-sleeve)" />
         <path d="M54,92 C48,96 45,102 44,110" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.6" />
-        <path d="M41,212 L55,210 L55,216 L41,218 Z" fill="#7a705f" />
+        <path d="M41,212 L55,210 L55,216 L41,218 Z" fill="#1e1e20" />
         <path d="M43,226 L50,226 L50,262 L43,262 Z" fill="url(#mf-steel)" />
         <path d="M43,226 L43,262" stroke={LIT} strokeWidth="0.6" opacity="0.4" />
         <path d="M41,217 C39,226 41,238 47,240 C53,241 57,234 56,226 L55,215 Z" fill="url(#mf-glove)" />
@@ -309,22 +320,21 @@ function Gangster() {
 
       {/* ---- gun arm, levelled at the camera ---- */}
       <g className="mf-arm-up">
-        {/* sleeve, foreshortening back to a raised shoulder */}
+        {/* the arm comes straight at the camera from his right shoulder, so
+            the sleeve is almost all foreshortened: a short tube flaring to the cuff */}
         <path
-          d="M57,88 C66,84 78,83 88,86 L92,114 C82,121 70,125 60,124 C54,118 51,107 51,100 C51,94 53,90 57,88 Z"
+          d="M52,90 C56,85 64,84 72,86 C82,89 90,97 90,108 C90,119 81,126 71,126 C60,126 52,119 50,109 C49,102 49,95 52,90 Z"
           fill="url(#mf-sleeve)"
         />
-        <path d="M56,89 C65,85 77,84 87,86.5" stroke={LIT} strokeWidth="1.5" fill="none" opacity="0.6" />
-        {/* folds bunch up round the forearm as it comes at the camera */}
-        <path d="M68,87 C64,96 64,110 70,122" stroke="#050404" strokeWidth="1.5" fill="none" opacity="0.55" filter="url(#mf-soft)" />
-        <path d="M69.5,88 C66,97 66,109 71.5,121" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.2" />
-        <path d="M79,86 C75,96 75,110 81,119" stroke="#050404" strokeWidth="1.3" fill="none" opacity="0.5" filter="url(#mf-soft)" />
-        <path d="M54,104 C58,114 64,121 72,124" stroke="#050404" strokeWidth="1.6" fill="none" opacity="0.6" filter="url(#mf-soft)" />
+        <path d="M53,89 C58,85.5 66,85 73,86.5" stroke={LIT} strokeWidth="1.5" fill="none" opacity="0.6" />
+        <path d="M56,96 C54,104 56,114 62,121" stroke="#020202" strokeWidth="1.5" fill="none" opacity="0.6" filter="url(#mf-soft)" />
+        <path d="M84,93 C88,100 88,112 83,120" stroke="#020202" strokeWidth="1.4" fill="none" opacity="0.55" filter="url(#mf-soft)" />
+        <g transform="translate(-28 6)">
         {/* coat cuff, then shirt cuff, round the wrist */}
-        <ellipse cx="100" cy="100" rx="17" ry="15" fill="#191512" />
+        <ellipse cx="100" cy="100" rx="17" ry="15" fill="#101011" />
         <path d="M84,96 C88,87 112,87 116,96" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.45" />
-        <ellipse cx="100" cy="100" rx="13" ry="11.5" fill="#6e6555" />
-        <ellipse cx="100" cy="98" rx="11" ry="8" fill="#9d9380" opacity="0.7" />
+        <ellipse cx="100" cy="100" rx="13" ry="11.5" fill="#1e1e20" />
+        <ellipse cx="100" cy="98" rx="11" ry="8" fill="#3a3a3e" opacity="0.7" />
 
         {/* the fist round the grip: three fingers on the front strap */}
         <path d="M88,90 C88,86 92,85 100,85 C108,85 112,86 112,90 L112,108 C112,113 107,115 100,115 C93,115 88,113 88,108 Z" fill="url(#mf-glove)" />
@@ -357,6 +367,7 @@ function Gangster() {
         <path d="M99,58.4 L101,58.4" stroke={LIT} strokeWidth="0.5" opacity="0.8" />
         <g className="mf-glint">
           <path d="M100,52 L100.9,57.5 L100,63 L99.1,57.5 Z M94.5,57.5 L100,56.6 L105.5,57.5 L100,58.4 Z" fill="#fff8e6" />
+        </g>
         </g>
       </g>
     </svg>

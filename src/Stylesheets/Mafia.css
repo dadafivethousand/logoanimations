@@ -312,15 +312,7 @@
   opacity: 1;
 }
 
-/* ---- the click: eye light, and a glint off the front sight ---- */
-
-.mf-eyelight {
-  opacity: 0;
-  transition: opacity 280ms ease-out;
-}
-.mf-p5 .mf-eyelight {
-  opacity: 1;
-}
+/* ---- the click: a glint off the front sight ---- */
 
 .mf-glint {
   transform-origin: 100px 57.5px;
@@ -390,7 +382,7 @@
 }
 
 /* ====================================================================
-   STATIC MODE — the poster: lit, aimed, eyes lit
+   STATIC MODE — the poster: lit, aimed
    ==================================================================== */
 
 .mf.is-static *,
