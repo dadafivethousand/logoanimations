@@ -206,12 +206,13 @@
   opacity: 0.85;
 }
 
-/* No entrance: he is cut in on the lamp's flash, already standing there. */
+/* No entrance: he is already standing there when the lamp flashes on. */
 .mf-walker {
   position: absolute;
   inset: 0;
   opacity: 0;
 }
+.mf-p1 .mf-walker,
 .mf-p2 .mf-walker,
 .mf-p3 .mf-walker,
 .mf-p4 .mf-walker,
@@ -255,19 +256,36 @@
 .mf-arm-off { transform-origin: 146px 90px; }
 .mf-arm-down { transform-origin: 54px 90px; }
 
-/* ---- the gun is up from the cut ---- */
+/* ---- the raise ---- */
+
+.mf-arm-down {
+  transition: opacity 90ms linear, transform 120ms ease-in;
+}
+.mf-p2 .mf-arm-down,
+.mf-p3 .mf-arm-down,
+.mf-p4 .mf-arm-down,
+.mf-p5 .mf-arm-down {
+  opacity: 0;
+  transform: rotate(-22deg);
+}
 
 .mf-arm-up {
+  transform-origin: 58px 92px;
+  transform: scale(0.45);
   opacity: 0;
+  transition:
+    transform 220ms cubic-bezier(0.2, 1.5, 0.45, 1),
+    opacity 70ms linear;
 }
 .mf-p2 .mf-arm-up,
 .mf-p3 .mf-arm-up,
 .mf-p4 .mf-arm-up,
 .mf-p5 .mf-arm-up {
+  transform: none;
   opacity: 1;
 }
 
-/* the cut: a white-hot frame off the lamp as he appears */
+/* the lamp's first flash: a white-hot frame, and he is there in it */
 .mf-cut {
   position: absolute;
   inset: 0;
@@ -275,7 +293,7 @@
   background: #fff6e4;
   opacity: 0;
 }
-.mf-p2 .mf-cut {
+.mf-p1 .mf-cut {
   animation: mf-cut 260ms ease-out both;
 }
 @keyframes mf-cut {
