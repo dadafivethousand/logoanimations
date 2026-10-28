@@ -26,16 +26,15 @@ import React from "react";
 import "../Stylesheets/Mafia.css";
 import usePhases from "../Utils/usePhases";
 
-// p1 the lamp stutters on: fog and the cone come up
-// p2 he walks out of the fog toward the camera
-// p3 the gun comes up as his last step lands — no pause — and the camera
-//    pushes in
-// p4-p6 three rounds: each a muzzle flash, recoil, a frame flash and shake,
+// p1 the lamp stutters on over an empty alley
+// p2 on its brightest flicker, a hard cut: he is standing there, already
+//    aiming; the camera starts a slow push in
+// p3-p5 three rounds: each a muzzle flash, recoil, a frame flash and shake,
 //    and a casing; smoke curls off the barrel after the first
 //
 // Plays ONCE and holds — loopAt is null. The smoke, fog and the lamp's sway
 // keep running on the held frame; that is ambient, not a restart.
-const CUES = [150, 600, 2620, 2900, 3180, 3500];
+const CUES = [150, 520, 820, 1100, 1420];
 
 export default function Mafia({ mode = "animated", loopAt = null }) {
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
@@ -66,6 +65,7 @@ export default function Mafia({ mode = "animated", loopAt = null }) {
         </div>
       </div>
 
+      <div className="mf-cut" aria-hidden />
       <div className="mf-flash" aria-hidden />
       <div className="mf-vignette" aria-hidden />
       <div className="mf-grain" aria-hidden />
@@ -326,29 +326,6 @@ function Gangster() {
       <path d="M81.5,19 C83,14 86,11 89,10 C93,8.5 97,13 100,12 C103,13 107,8.5 111,10 C114,11 117,14 118.5,19" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.65" />
       <path d="M66,43.5 C73,39.5 86,38.2 100,38.2 C114,38.2 127,39.5 134,43.5" stroke={LIT} strokeWidth="1.1" fill="none" opacity="0.55" />
       <path d="M82,47 C88,49 94,50 100,50 C106,50 112,49 118,47" stroke="#050404" strokeWidth="1" fill="none" />
-
-      {/* ---- gun arm, hanging, pistol pointed at the ground ---- */}
-      <g className="mf-arm mf-arm-down">
-        <path d="M66,88 C53,88 45,96 44,110 L41,160 C40,178 39,196 41,214 L55,216 C56,198 57,178 59,160 L62,118 Z" fill="url(#mf-sleeve)" />
-        <path d="M54,92 C48,96 45,102 44,110" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.6" />
-        <path d="M41,212 L55,210 L55,216 L41,218 Z" fill="#1e1e20" />
-        {/* the pistol, slide-top to camera, muzzle down along the thigh */}
-        <path d="M45.2,232 L51.4,232 L51.2,262 C51.2,264 50,265 48.3,265 C46.6,265 45.4,264 45.4,262 Z" fill="url(#mf-slidetop)" />
-        <path d="M46.2,234 L46.4,262" stroke={LIT} strokeWidth="0.55" opacity="0.55" />
-        <path d="M50.4,234 L50.2,262" stroke="#000" strokeWidth="0.6" opacity="0.7" />
-        <path d="M46,240 L50.6,240 M46,243 L50.6,243" stroke="#000" strokeWidth="0.4" opacity="0.5" />
-        <path d="M47.6,261 L49,261 L49,263.6 L47.6,263.6 Z" fill="#4a4540" />
-        <path d="M51.3,236 C53.6,238 54,244 52.2,247 L51.3,247" fill="none" stroke="#26231f" strokeWidth="1.3" />
-        <ellipse cx="48.3" cy="264.6" rx="2.6" ry="0.9" fill="#0a0908" />
-        {/* the fist round the grip: knuckles to the outside, thumb forward */}
-        <path d="M40.6,216 C39.4,223 39.8,231 41.6,237.5 L55.2,238 C56.6,231 56.8,223 55.6,215.5 Z" fill="url(#mf-glove)" />
-        <path d="M41.2,221 C40.4,226 40.6,231 41.6,236 M41,224.5 L43.6,224.8 M41,228.6 L43.8,228.9 M41.4,232.6 L44,232.9" stroke="#000" strokeWidth="0.7" fill="none" />
-        <path d="M40.8,222 C40.2,226 40.4,230 41,233" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.4" />
-        <path d="M54.6,219 C57.4,222 57.6,230 55.4,236 C54,238.6 51,238.4 50.4,236 C50.4,231 51.2,225 52,220 Z" fill="url(#mf-glove)" />
-        <path d="M56.4,224 C56.9,228 56.6,232 55.4,235" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.4" />
-        <path d="M52,221 C51.2,226 50.8,231 50.8,235.5" stroke="#000" strokeWidth="0.7" fill="none" />
-        <path d="M40.8,219.4 C45.5,220.4 50.5,220.4 55.4,218.8" stroke="#2c2c30" strokeWidth="0.8" fill="none" />
-      </g>
 
       {/* ---- gun arm, levelled at the camera ---- */}
       <g className="mf-arm-up">
