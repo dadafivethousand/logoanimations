@@ -34,7 +34,7 @@ import mapleLogo from "../Images/maple-logo.png";
 //
 // Plays ONCE and holds — loopAt is null. The smoke, fog and the lamp's sway
 // keep running on the held frame; that is ambient, not a restart.
-const CUES = [150, 900, 1200, 1480, 1800];
+const CUES = [40, 790, 1090, 1370, 1690];
 
 export default function Mafia({ mode = "animated", loopAt = null }) {
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
