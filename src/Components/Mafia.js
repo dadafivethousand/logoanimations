@@ -59,6 +59,9 @@ export default function Mafia({ mode = "animated", loopAt = null }) {
               <div className="mf-gait">
                 <Gangster />
               </div>
+              <div className="mf-reflect" aria-hidden>
+                <Gangster />
+              </div>
             </div>
           </div>
         </div>
@@ -169,29 +172,48 @@ function Gangster() {
         </clipPath>
       </defs>
 
-      {/* ---- legs: each its own group so the step cycle can lift it ---- */}
+      {/* ---- legs. Weight on his right leg (ours, left), which stands
+           straight; the other is relaxed, knee eased forward and the foot
+           turned out. Plain dark cloth: the form comes from soft shading and
+           the folds at knee and ankle, not from drawn crease lines. ---- */}
       <g className="mf-leg mf-leg-l">
-        <path d="M77,286 L98,286 L97,384 L80,384 Z" fill="url(#mf-trouser)" />
-        <path d="M88,290 L88.5,378" stroke={LIT} strokeWidth="0.7" opacity="0.18" />
-        <path d="M80,376 C86,379 92,379 97,376" stroke="#050404" strokeWidth="1.2" fill="none" opacity="0.8" />
-        <path d="M73,396 C71,388 76,381 88,381 C98,381 102,388 101,396 Z" fill="#0b0908" />
-        <ellipse cx="86" cy="385" rx="6" ry="1.4" fill={LIT} opacity="0.4" filter="url(#mf-soft)" />
-        <path d="M76,384 C80,382 86,381.5 92,382" stroke={LIT} strokeWidth="0.8" fill="none" opacity="0.5" />
+        <path d="M76,286 C77,320 78.5,352 80,381 L97,382 C97.5,352 98.5,320 99.5,286 Z" fill="#101012" />
+        <path d="M77.5,288 C78.4,320 79.6,352 81.2,380" stroke="#000" strokeWidth="2.6" fill="none" opacity="0.55" filter="url(#mf-soft)" />
+        <path d="M98.2,288 C97.4,320 96.6,352 96,380" stroke="#000" strokeWidth="2" fill="none" opacity="0.45" filter="url(#mf-soft)" />
+        <ellipse cx="88" cy="306" rx="6" ry="14" fill="#c9c4bb" opacity="0.06" filter="url(#mf-soft)" />
+        <path d="M81,331 C85,334 91,334 96.5,331" stroke="#000" strokeWidth="1.4" fill="none" opacity="0.4" filter="url(#mf-soft)" />
+        <path d="M81,366 C86,368.5 91,368.5 96.5,366" stroke="#000" strokeWidth="1.2" fill="none" opacity="0.45" filter="url(#mf-soft)" />
+        <path d="M80.4,373 C85,377 92,377 97,373.5" stroke="#000" strokeWidth="1.6" fill="none" opacity="0.7" filter="url(#mf-soft)" />
+        <path d="M71,396 C69.5,388 74.5,380.5 88,380.5 C98.5,380.5 102,387 101,396 Z" fill="#0a0a0b" />
+        <path d="M71,396 L101,396 L101.2,393.6 C91,394.8 80,394.8 70.8,393.6 Z" fill="#1d1d20" />
+        <path d="M84.5,381.8 C88,383.4 92,383.4 95.5,381.6" stroke="#232326" strokeWidth="0.8" fill="none" />
+        <path d="M74,390.5 C81,387.6 92,387.6 99,390.5" stroke="#26262a" strokeWidth="0.8" fill="none" />
+        <ellipse cx="84" cy="385.4" rx="5.5" ry="1.4" fill={LIT} opacity="0.32" filter="url(#mf-soft)" />
       </g>
       <g className="mf-leg mf-leg-r">
-        <path d="M102,286 L123,286 L120,384 L103,384 Z" fill="url(#mf-trouser)" />
-        <path d="M112,290 L111.5,378" stroke={LIT} strokeWidth="0.7" opacity="0.18" />
-        <path d="M103,376 C108,379 114,379 120,376" stroke="#050404" strokeWidth="1.2" fill="none" opacity="0.8" />
-        <path d="M99,396 C98,388 102,381 112,381 C124,381 129,388 127,396 Z" fill="#0b0908" />
-        <ellipse cx="114" cy="385" rx="6" ry="1.4" fill={LIT} opacity="0.4" filter="url(#mf-soft)" />
-        <path d="M108,382 C114,381.5 120,382 124,384" stroke={LIT} strokeWidth="0.8" fill="none" opacity="0.5" />
+        <path d="M100.5,286 C102.5,318 105,350 107.5,381 L124.5,380 C123,350 122.2,318 124,286 Z" fill="#101012" />
+        <path d="M102,288 C104,320 106.2,350 108.6,379" stroke="#000" strokeWidth="2" fill="none" opacity="0.45" filter="url(#mf-soft)" />
+        <path d="M122.6,288 C121.2,320 122,350 123.4,379" stroke="#000" strokeWidth="2.6" fill="none" opacity="0.55" filter="url(#mf-soft)" />
+        <ellipse cx="113" cy="308" rx="6" ry="14" fill="#c9c4bb" opacity="0.06" filter="url(#mf-soft)" />
+        <ellipse cx="114.5" cy="333" rx="6.5" ry="3" fill="#c9c4bb" opacity="0.05" filter="url(#mf-soft)" />
+        <path d="M106,337 C110,340.5 117,340.5 122.5,337" stroke="#000" strokeWidth="1.6" fill="none" opacity="0.5" filter="url(#mf-soft)" />
+        <path d="M108,368 C113,370.5 118,370.5 123.4,368" stroke="#000" strokeWidth="1.2" fill="none" opacity="0.45" filter="url(#mf-soft)" />
+        <path d="M107.8,373 C113,376.6 119,376.6 124.2,372.6" stroke="#000" strokeWidth="1.6" fill="none" opacity="0.7" filter="url(#mf-soft)" />
+        <path d="M104,396 C103,388 107.5,380 118,380 C129.5,380 134.5,387 133,396 Z" fill="#0a0a0b" />
+        <path d="M104,396 L133,396 L133.3,393.6 C123,394.8 113,394.8 103.8,393.6 Z" fill="#1d1d20" />
+        <path d="M112.5,381.4 C116,383 120,383 123.5,381.2" stroke="#232326" strokeWidth="0.8" fill="none" />
+        <path d="M105,390.5 C112,387.6 125,387.6 132,390.5" stroke="#26262a" strokeWidth="0.8" fill="none" />
+        <ellipse cx="121" cy="385" rx="5.5" ry="1.4" fill={LIT} opacity="0.32" filter="url(#mf-soft)" />
       </g>
+      {/* the coat's hem throws a soft shadow onto the legs below it */}
+      <ellipse cx="100" cy="297" rx="30" ry="5" fill="#000" opacity="0.6" filter="url(#mf-softer)" />
 
       {/* ---- the off arm, hanging, hand loosely curled ---- */}
       <g className="mf-arm mf-arm-off">
         <path d="M134,88 C147,88 155,96 156,110 L159,160 C160,178 161,196 159,214 L145,216 C144,198 143,178 141,160 L138,118 Z" fill="url(#mf-sleeve)" />
-        <path d="M146,92 C152,96 155,102 156,110" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.6" />
-        <path d="M150,150 C151,160 151,170 150,180" stroke="#060505" strokeWidth="1" fill="none" opacity="0.6" />
+        <path d="M146,92 C152,96 155,102 156,110" stroke={LIT} strokeWidth="1.5" fill="none" opacity="0.28" filter="url(#mf-soft)" />
+        <path d="M142.5,150 C147,154 152,155 157.5,151.5 M142.8,161 C147,164.5 152.5,165.5 158.2,162" stroke="#000" strokeWidth="1.3" fill="none" opacity="0.55" filter="url(#mf-soft)" />
+        <path d="M143,152.6 C147,156 152,157 157.6,153.8" stroke={LIT} strokeWidth="0.8" fill="none" opacity="0.08" filter="url(#mf-soft)" />
         <path d="M145,212 L159,210 L159,216 L145,218 Z" fill="#1e1e20" />
         {/* relaxed at his side: the back of the hand, fingers curled under,
             and the thumb lying forward along the front */}
@@ -210,7 +232,7 @@ function Gangster() {
       <path d="M88,80 L95,94 L100,84 L105,94 L112,80 L106,79 L100,82 L94,79 Z" fill="#2c2c2f" />
       <path d="M95,83 L105,83 L103,91 L97,91 Z" fill="#141416" />
       <path d="M97,91 L103,91 L107,140 L100,148 L93,140 Z" fill="url(#mf-tie)" />
-      <path d="M100,92 L100,138" stroke={LIT} strokeWidth="0.5" opacity="0.18" />
+      <path d="M100,92 L100,138" stroke={LIT} strokeWidth="0.8" opacity="0.12" filter="url(#mf-soft)" />
 
       {/* ---- overcoat ---- */}
       <path d={TORSO_D} fill="url(#mf-coat)" />
@@ -219,7 +241,7 @@ function Gangster() {
         {/* folds in the skirt: a shadow with a lit lip beside it */}
         <g fill="none" strokeLinecap="round">
           <path d="M74,184 C72,220 68,254 64,292" stroke="#050404" strokeWidth="2.4" opacity="0.6" filter="url(#mf-soft)" />
-          <path d="M76,186 C74,222 71,256 67,292" stroke={LIT} strokeWidth="0.8" opacity="0.12" />
+          <path d="M76,186 C74,222 71,256 67,292" stroke={LIT} strokeWidth="1.4" opacity="0.08" filter="url(#mf-soft)" />
           <path d="M127,184 C129,220 133,254 137,292" stroke="#050404" strokeWidth="2.4" opacity="0.6" filter="url(#mf-soft)" />
           <path d="M92,200 C91,236 90,262 88,292" stroke="#050404" strokeWidth="1.6" opacity="0.45" filter="url(#mf-soft)" />
           <path d="M66,120 C72,128 78,132 82,134" stroke="#050404" strokeWidth="1.4" opacity="0.5" filter="url(#mf-soft)" />
@@ -227,20 +249,20 @@ function Gangster() {
         </g>
         <rect x="0" y="0" width="200" height="400" fill="url(#mf-form)" />
         {/* the lamp on the shoulders, from above */}
-        <ellipse cx="100" cy="86" rx="58" ry="14" fill={LIT} opacity="0.16" filter="url(#mf-softer)" />
+        <ellipse cx="100" cy="88" rx="40" ry="10" fill={LIT} opacity="0.1" filter="url(#mf-softer)" />
       </g>
 
       {/* lapels: peaked, the faces a shade up, edges catching the lamp */}
       <path d="M88,80 L100,150 L77,125 L83,120 L71,96 Z" fill="#1b1b1d" />
       <path d="M112,80 L100,150 L123,125 L117,120 L129,96 Z" fill="#1b1b1d" />
-      <path d="M88,80 L71,96 L83,120 L77,125" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.45" />
-      <path d="M112,80 L129,96 L117,120 L123,125" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.45" />
-      <path d="M77,125 L100,150 L123,125" stroke="#080606" strokeWidth="1" fill="none" opacity="0.7" />
+      <path d="M88,80 L71,96 L83,120 L77,125" stroke={LIT} strokeWidth="1.2" fill="none" opacity="0.22" filter="url(#mf-soft)" />
+      <path d="M112,80 L129,96 L117,120 L123,125" stroke={LIT} strokeWidth="1.2" fill="none" opacity="0.22" filter="url(#mf-soft)" />
+      <path d="M77,125 L100,150 L123,125" stroke="#080606" strokeWidth="1.4" fill="none" opacity="0.6" filter="url(#mf-soft)" />
       {/* the double-breasted overlap, the belt, buttons, pocket flaps */}
       <path d="M100,150 C108,152 114,156 116,162 L118,292" stroke="#080606" strokeWidth="1.3" fill="none" />
-      <path d="M101.5,151 C109,153 115,157 117.3,163" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.3" />
+      <path d="M101.5,151 C109,153 115,157 117.3,163" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.15" filter="url(#mf-soft)" />
       <path d="M59,167 L141,167 L140,178 L60,178 Z" fill="#0a0a0b" />
-      <path d="M59,167 L141,167" stroke={LIT} strokeWidth="0.7" opacity="0.3" />
+      <path d="M59,167 L141,167" stroke={LIT} strokeWidth="1" opacity="0.14" filter="url(#mf-soft)" />
       <rect x="107" y="165.5" width="11" height="14" rx="1.4" fill="none" stroke="#7d7d80" strokeWidth="1.3" />
       <path d="M112.5,167 L112.5,178" stroke="#7d7d80" strokeWidth="1" />
       {[[86, 156], [114, 156], [86, 196], [114, 196]].map(([x, y]) => (
@@ -251,10 +273,10 @@ function Gangster() {
       ))}
       <path d="M64,214 L91,212 L91,217 L64,219 Z" fill="#0d0d0e" />
       <path d="M109,212 L136,214 L136,219 L109,217 Z" fill="#0d0d0e" />
-      <path d="M64,214 L91,212 M109,212 L136,214" stroke={LIT} strokeWidth="0.6" opacity="0.25" />
+      <path d="M64,214 L91,212 M109,212 L136,214" stroke={LIT} strokeWidth="0.9" opacity="0.12" filter="url(#mf-soft)" />
       {/* collar turned up behind the neck */}
       <path d="M84,82 C84,74 88,72 92,72 L94,82 Z M116,82 C116,74 112,72 108,72 L106,82 Z" fill="#1a1a1c" />
-      <path d="M84,81 C84,75 87,72.5 91,72.3 M116,81 C116,75 113,72.5 109,72.3" stroke={LIT} strokeWidth="0.8" fill="none" opacity="0.4" />
+      <path d="M84,81 C84,75 87,72.5 91,72.3 M116,81 C116,75 113,72.5 109,72.3" stroke={LIT} strokeWidth="1.2" fill="none" opacity="0.22" filter="url(#mf-soft)" />
 
       {/* ---- head: lit by the lamp, the brim shading only the brow ---- */}
       <path d="M91,68 L109,68 L110,82 L90,82 Z" fill="#7a5440" />
@@ -268,6 +290,8 @@ function Gangster() {
         <rect x="80" y="40" width="40" height="40" fill="url(#mf-form)" opacity="0.55" />
         {/* the brim's shadow across the brow */}
         <rect x="80" y="38" width="40" height="13" fill="#1a0e08" opacity="0.55" filter="url(#mf-soft)" />
+        {/* sideburns, trimmed short under the hat */}
+        <path d="M84,44 L88.4,44 L87.8,56 L84.6,57.5 Z M116,44 L111.6,44 L112.2,56 L115.4,57.5 Z" fill="#1b130e" opacity="0.92" />
         {/* five o'clock shadow on the jaw and lip */}
         <path d="M85,64 C87,72 92,78 100,79 C108,78 113,72 115,64 C112,70 108,74 100,74.5 C92,74 88,70 85,64 Z" fill="#3c3438" opacity="0.35" filter="url(#mf-soft)" />
         <path d="M94,68.5 C97,67.5 103,67.5 106,68.5 L106,70 L94,70 Z" fill="#3c3438" opacity="0.3" filter="url(#mf-soft)" />
@@ -319,17 +343,17 @@ function Gangster() {
       <path d="M79,40 C77,27 80,13 88,10 C93,8 97,13 100,12 C103,13 107,8 112,10 C120,13 123,27 121,40 Z" fill="url(#mf-hat)" />
       <path d="M93,11 C95,18 96,27 96,36 M107,11 C105,18 104,27 104,36" stroke="#0e0b09" strokeWidth="1.2" fill="none" opacity="0.6" filter="url(#mf-soft)" />
       <path d="M78,34 C88,37 112,37 122,34 L122,41 C112,43 88,43 78,41 Z" fill="#060607" />
-      <path d="M78,34 C88,37 112,37 122,34" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.3" />
+      <path d="M78,34 C88,37 112,37 122,34" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.18" filter="url(#mf-soft)" />
       <path d="M80,35.5 L86,36.5 L85,41 L79,40 Z" fill="#18181a" />
       <path d="M64,44 C70,38.5 85,37 100,37 C115,37 130,38.5 136,44 C132,47 123,47 117,47 C111,49 106,50 100,50 C94,50 89,49 83,47 C77,47 68,47 64,44 Z" fill="#121214" />
-      <path d="M81.5,19 C83,14 86,11 89,10 C93,8.5 97,13 100,12 C103,13 107,8.5 111,10 C114,11 117,14 118.5,19" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.65" />
-      <path d="M66,43.5 C73,39.5 86,38.2 100,38.2 C114,38.2 127,39.5 134,43.5" stroke={LIT} strokeWidth="1.1" fill="none" opacity="0.55" />
+      <path d="M81.5,19 C83,14 86,11 89,10 C93,8.5 97,13 100,12 C103,13 107,8.5 111,10 C114,11 117,14 118.5,19" stroke={LIT} strokeWidth="2.8" fill="none" opacity="0.5" filter="url(#mf-soft)" />
+      <path d="M66,43.5 C73,39.5 86,38.2 100,38.2 C114,38.2 127,39.5 134,43.5" stroke={LIT} strokeWidth="1.8" fill="none" opacity="0.4" filter="url(#mf-soft)" />
       <path d="M82,47 C88,49 94,50 100,50 C106,50 112,49 118,47" stroke="#050404" strokeWidth="1" fill="none" />
 
       {/* ---- gun arm, hanging, pistol pointed at the ground ---- */}
       <g className="mf-arm mf-arm-down">
         <path d="M66,88 C53,88 45,96 44,110 L41,160 C40,178 39,196 41,214 L55,216 C56,198 57,178 59,160 L62,118 Z" fill="url(#mf-sleeve)" />
-        <path d="M54,92 C48,96 45,102 44,110" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.6" />
+        <path d="M54,92 C48,96 45,102 44,110" stroke={LIT} strokeWidth="1.5" fill="none" opacity="0.28" filter="url(#mf-soft)" />
         <path d="M41,212 L55,210 L55,216 L41,218 Z" fill="#1e1e20" />
         {/* the pistol, slide-top to camera, muzzle down along the thigh */}
         <path d="M45.2,232 L51.4,232 L51.2,262 C51.2,264 50,265 48.3,265 C46.6,265 45.4,264 45.4,262 Z" fill="url(#mf-slidetop)" />
@@ -358,13 +382,13 @@ function Gangster() {
           d="M52,90 C56,85 64,84 72,86 C82,89 90,97 90,108 C90,119 81,126 71,126 C60,126 52,119 50,109 C49,102 49,95 52,90 Z"
           fill="url(#mf-sleeve)"
         />
-        <path d="M53,89 C58,85.5 66,85 73,86.5" stroke={LIT} strokeWidth="1.5" fill="none" opacity="0.6" />
+        <path d="M53,89 C58,85.5 66,85 73,86.5" stroke={LIT} strokeWidth="1.5" fill="none" opacity="0.28" filter="url(#mf-soft)" />
         <path d="M56,96 C54,104 56,114 62,121" stroke="#020202" strokeWidth="1.5" fill="none" opacity="0.6" filter="url(#mf-soft)" />
         <path d="M84,93 C88,100 88,112 83,120" stroke="#020202" strokeWidth="1.4" fill="none" opacity="0.55" filter="url(#mf-soft)" />
         <g transform="translate(-28 6)">
         {/* coat cuff, then shirt cuff, round the wrist */}
         <ellipse cx="100" cy="100" rx="17" ry="15" fill="#101011" />
-        <path d="M84,96 C88,87 112,87 116,96" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.45" />
+        <path d="M84,96 C88,87 112,87 116,96" stroke={LIT} strokeWidth="1.4" fill="none" opacity="0.25" filter="url(#mf-soft)" />
         <ellipse cx="100" cy="100" rx="13" ry="11.5" fill="#1e1e20" />
         <ellipse cx="100" cy="98" rx="11" ry="8" fill="#3a3a3e" opacity="0.7" />
 
@@ -438,4 +462,4 @@ const FACE_D =
   "M84,42 C83,60 86,72 92,77 C96,80 104,80 108,77 C114,72 117,60 116,42 Z";
 
 const TORSO_D =
-  "M88,80 L68,88 C60,91 56,98 56,108 L58,160 C58,166 60,170 62,174 C60,212 56,252 52,292 L148,292 C144,252 140,212 138,174 C140,170 142,166 142,160 L144,108 C144,98 140,91 132,88 L112,80 L100,150 Z";
+  "M88,80 L68,88 C60,91 56,98 56,108 L58,160 C58,166 60,170 62,174 C60,212 56,252 52,292 C80,297.5 120,297.5 148,292 C144,252 140,212 138,174 C140,170 142,166 142,160 L144,108 C144,98 140,91 132,88 L112,80 L100,150 Z";
