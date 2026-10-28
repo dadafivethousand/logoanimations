@@ -353,6 +353,9 @@ before treating it as final** — this is public-facing marketing.
 Ninjas reference to be removed: no logo, no WOODBRIDGE, no text. It is a
 noir hook for a video: a gangster walks out of the fog in a brick alley and
 levels a pistol at the camera.
+**Thug** is the same hook restyled as a modern rap video (balaclava, puffer,
+gold chain, sideways grip) and carries the same Maple Jiu Jitsu chest patch —
+the user compares the two takes side by side.
 
 Two themes depart from this, both because the user asked for it, and neither is
 a new licence: SoundOn renders a "SOUND ON" cue, and **Pokemon renders a promo**

@@ -19,10 +19,11 @@ import "./Stylesheets/App.css";
 // import MapleGear from "./Components/MapleGear";
 // import MapleBelt from "./Components/MapleBelt";
 // import MapleClimb from "./Components/MapleClimb";
-import Mafia from "./Components/Mafia";
+// import Mafia from "./Components/Mafia";
+import Thug from "./Components/Thug";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Mafia mode="animated" />;
+  return <Thug mode="animated" />;
 }
 export default App;
