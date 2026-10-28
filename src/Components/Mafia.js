@@ -1,8 +1,7 @@
 // Mafia.js — a hook for the front of a video. A hanging lamp stutters on in a
 // foggy brick alley, a man in a fedora and a belted overcoat walks out of the
 // fog straight at the camera, stops under the light, and levels a pistol at
-// the viewer, off his right shoulder. A glint off the front sight on the
-// click. Dressed all in black. No brand, no text.
+// the viewer, off his right shoulder, and fires. Dressed all in black. No brand, no text.
 //
 // HE WALKS AT THE CAMERA, NOT ACROSS IT. Walking out of the depth keeps one
 // front-facing figure the whole way: the walk is a scale-up from the vanishing
@@ -31,11 +30,12 @@ import usePhases from "../Utils/usePhases";
 // p2 he walks out of the fog toward the camera
 // p3 he stops under the light
 // p4 the gun comes up at the viewer, the camera pushes in
-// p5 click — a glint off the front sight
+// p5 he fires: muzzle flash, recoil, the frame shakes, a casing flies,
+//    smoke curls off the barrel
 //
 // Plays ONCE and holds — loopAt is null. The smoke, fog and the lamp's sway
 // keep running on the held frame; that is ambient, not a restart.
-const CUES = [150, 600, 2700, 3050, 3550];
+const CUES = [150, 600, 2700, 3050, 3700];
 
 export default function Mafia({ mode = "animated", loopAt = null }) {
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
@@ -66,6 +66,7 @@ export default function Mafia({ mode = "animated", loopAt = null }) {
         </div>
       </div>
 
+      <div className="mf-flash" aria-hidden />
       <div className="mf-vignette" aria-hidden />
       <div className="mf-grain" aria-hidden />
     </div>
@@ -142,6 +143,11 @@ function Gangster() {
           <stop offset="0.7" stopColor="#2b2724" />
           <stop offset="1" stopColor="#1a1816" />
         </linearGradient>
+        <radialGradient id="mf-flashglow">
+          <stop offset="0" stopColor="#fff3cf" stopOpacity="0.95" />
+          <stop offset="0.35" stopColor="#ffb347" stopOpacity="0.7" />
+          <stop offset="1" stopColor="#ff7a1a" stopOpacity="0" />
+        </radialGradient>
         <radialGradient id="mf-bushing" cx="0.45" cy="0.35" r="0.7">
           <stop offset="0" stopColor="#7d766d" />
           <stop offset="1" stopColor="#2a2623" />
@@ -183,8 +189,16 @@ function Gangster() {
         <path d="M146,92 C152,96 155,102 156,110" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.6" />
         <path d="M150,150 C151,160 151,170 150,180" stroke="#060505" strokeWidth="1" fill="none" opacity="0.6" />
         <path d="M145,212 L159,210 L159,216 L145,218 Z" fill="#1e1e20" />
-        <path d="M145,217 C143,226 145,238 151,241 C157,243 162,236 161,226 L159,215 Z" fill="url(#mf-glove)" />
-        <path d="M147,224 C150,226 155,226 159,224 M147,231 C150,233 155,233 159,231" stroke="#3b322b" strokeWidth="0.8" fill="none" />
+        {/* relaxed at his side: the back of the hand, fingers curled under,
+            and the thumb lying forward along the front */}
+        <path d="M145.5,217 C144.5,224 145,231 147,236 L158.5,237 C160.5,231 161,224 159.5,216 Z" fill="url(#mf-glove)" />
+        <path d="M147,235 C147,240 150,244.5 154,244.5 C158,244.5 160.3,241 159.8,236 Z" fill="url(#mf-glove)" />
+        <path d="M150.5,237 C150.2,239.5 150.8,241.5 151.8,243.4 M153.8,237.2 C153.6,240 154,242 154.8,244 M157,237 C157,239.5 157.4,241 158.2,242.6" stroke="#000" strokeWidth="0.7" fill="none" />
+        <path d="M147.2,235 C151,236.4 155,236.4 159.2,235" stroke={LIT} strokeWidth="0.7" fill="none" opacity="0.35" />
+        <path d="M145.5,219.5 C150,220.6 155,220.6 159.6,219" stroke="#2c2c30" strokeWidth="0.8" fill="none" />
+        <path d="M146.8,220 C143.2,222 141.6,228 142.5,233 C143.2,236.8 146.6,237.4 147.7,234.2 C148.2,230 148.4,225 148.7,221 Z" fill="url(#mf-glove)" />
+        <path d="M143.3,225 C142.6,228.5 142.7,231.8 143.6,234.4" stroke={LIT} strokeWidth="0.7" fill="none" opacity="0.4" />
+        <path d="M148.4,222 C148,227 147.8,231 147.5,234" stroke="#000" strokeWidth="0.8" fill="none" />
       </g>
 
       {/* ---- shirt and tie, behind the lapels ---- */}
@@ -320,6 +334,7 @@ function Gangster() {
 
       {/* ---- gun arm, levelled at the camera ---- */}
       <g className="mf-arm-up">
+        <g className="mf-recoil">
         {/* the arm comes straight at the camera from his right shoulder, so
             the sleeve is almost all foreshortened: a short tube flaring to the cuff */}
         <path
@@ -365,14 +380,36 @@ function Gangster() {
         <path d="M89.5,62.8 L110.5,62.8" stroke={LIT} strokeWidth="0.9" opacity="0.85" />
         <path d="M99,58.4 L101,58.4 L101.4,62 L98.6,62 Z" fill="#3a3632" />
         <path d="M99,58.4 L101,58.4" stroke={LIT} strokeWidth="0.5" opacity="0.8" />
-        <g className="mf-glint">
-          <path d="M100,52 L100.9,57.5 L100,63 L99.1,57.5 Z M94.5,57.5 L100,56.6 L105.5,57.5 L100,58.4 Z" fill="#fff8e6" />
+        {/* the shot. Fired straight at the camera, so the flash is a burst
+            round the bore rather than a jet out of the side */}
+        <g className="mf-muzzle">
+          <circle cx="100" cy="67.6" r="22" fill="url(#mf-flashglow)" />
+          <path d={FLASH_D} fill="#ffd27a" />
+          <path d={FLASH_D} fill="#fff6dc" transform="translate(100 67.6) scale(0.55) translate(-100 -67.6)" />
+          <circle cx="100" cy="67.6" r="3.6" fill="#ffffff" />
+        </g>
+        <rect className="mf-casing" x="86" y="64" width="2.6" height="5.4" rx="0.7" fill="#c9a04a" />
+        <g className="mf-gunsmoke" fill="none" stroke="#d8d2c6" strokeLinecap="round" filter="url(#mf-softer)">
+          <path className="mf-gs mf-gs-a" d="M100,62 C96,54 104,46 99,36 C95,28 102,20 98,10" strokeWidth="3" />
+          <path className="mf-gs mf-gs-b" d="M100,62 C105,54 97,44 103,34 C108,26 101,18 105,8" strokeWidth="2.4" />
+        </g>
         </g>
         </g>
       </g>
     </svg>
   );
 }
+
+// a ten-point burst round the muzzle, long and short rays alternating
+const FLASH_D = (() => {
+  const pts = [];
+  for (let i = 0; i < 20; i++) {
+    const a = (i / 20) * Math.PI * 2 - Math.PI / 2;
+    const r = i % 2 ? 4.5 : i % 4 ? 13 : 18;
+    pts.push(`${(100 + Math.cos(a) * r).toFixed(2)},${(67.6 + Math.sin(a) * r).toFixed(2)}`);
+  }
+  return `M${pts.join(" L")} Z`;
+})();
 
 const FACE_D =
   "M84,42 C83,60 86,72 92,77 C96,80 104,80 108,77 C114,72 117,60 116,42 Z";
