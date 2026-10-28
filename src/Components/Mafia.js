@@ -1,7 +1,7 @@
 // Mafia.js — a hook for the front of a video. A hanging lamp stutters on in a
 // foggy brick alley, a man in a fedora and a belted overcoat walks out of the
 // fog straight at the camera, stops under the light, and levels a pistol at
-// the viewer, off his right shoulder, and fires three rounds. Dressed all in black. No brand, no text.
+// the viewer, off his right shoulder, and fires three rounds. Dressed all in black, a Maple Jiu Jitsu patch on his chest. No text.
 //
 // HE WALKS AT THE CAMERA, NOT ACROSS IT. Walking out of the depth keeps one
 // front-facing figure the whole way: the walk is a scale-up from the vanishing
@@ -25,6 +25,7 @@
 import React from "react";
 import "../Stylesheets/Mafia.css";
 import usePhases from "../Utils/usePhases";
+import mapleLogo from "../Images/maple-logo.png";
 
 // p1 the lamp flashes on and he is already standing there, gun at his side
 // p2 he raises it at the viewer; the camera starts a slow push in
@@ -89,6 +90,10 @@ function Gangster() {
         <filter id="mf-cloth" x="0" y="0" width="100%" height="100%">
           <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" />
           <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0" />
+        </filter>
+        <filter id="mf-patchtone" x="-10%" y="-10%" width="120%" height="120%">
+          <feColorMatrix type="matrix" values="0.86 0 0 0 0  0 0.84 0 0 0  0 0 0.8 0 0  0 0 0 1 0" />
+          <feDropShadow dx="0" dy="0.5" stdDeviation="0.4" floodColor="#000" floodOpacity="0.8" />
         </filter>
         <filter id="mf-soft" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="1.2" />
@@ -274,6 +279,13 @@ function Gangster() {
       <path d="M64,214 L91,212 L91,217 L64,219 Z" fill="#0d0d0e" />
       <path d="M109,212 L136,214 L136,219 L109,217 Z" fill="#0d0d0e" />
       <path d="M64,214 L91,212 M109,212 L136,214" stroke={LIT} strokeWidth="0.9" opacity="0.12" filter="url(#mf-soft)" />
+      {/* the Maple Jiu Jitsu leaf, sewn on the left breast: the patch dimmed
+          to sit in the coat's light, with a soft shadow under it so it reads
+          as stitched on, not printed */}
+      <g className="mf-patch">
+        <ellipse cx="127" cy="136.6" rx="8.4" ry="8.6" fill="#000" opacity="0.5" filter="url(#mf-soft)" />
+        <image href={mapleLogo} x="119" y="127.8" width="16" height="16.2" preserveAspectRatio="xMidYMid meet" filter="url(#mf-patchtone)" />
+      </g>
       {/* collar turned up behind the neck */}
       <path d="M84,82 C84,74 88,72 92,72 L94,82 Z M116,82 C116,74 112,72 108,72 L106,82 Z" fill="#1a1a1c" />
       <path d="M84,81 C84,75 87,72.5 91,72.3 M116,81 C116,75 113,72.5 109,72.3" stroke={LIT} strokeWidth="1.2" fill="none" opacity="0.22" filter="url(#mf-soft)" />
