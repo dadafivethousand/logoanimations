@@ -351,8 +351,8 @@ before treating it as final** — this is public-facing marketing.
 
 **Mafia is not a Code Ninjas piece at all** — the user asked for every Code
 Ninjas reference to be removed: no logo, no WOODBRIDGE, no text. It is a
-black gangster silhouette with a tommy gun on a white ground — a hook for a
-video.
+noir hook for a video: a gangster walks out of the fog in a brick alley and
+levels a pistol at the camera.
 
 Two themes depart from this, both because the user asked for it, and neither is
 a new licence: SoundOn renders a "SOUND ON" cue, and **Pokemon renders a promo**

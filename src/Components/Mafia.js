@@ -1,90 +1,370 @@
-// Mafia.js — a hook for the front of a video: a gangster in silhouette on a
-// white ground, fedora and overcoat, a drum-fed tommy gun at the hip. He comes
-// up out of the white and swings the gun up level. No brand, no text.
+// Mafia.js — a hook for the front of a video. A hanging lamp stutters on in a
+// foggy brick alley, a man in a fedora and a belted overcoat walks out of the
+// fog straight at the camera, stops under the light, and levels a pistol at
+// the viewer. Light catches his eyes over the sights on the click. No brand,
+// no text.
 //
-// PROFILE, BECAUSE IT IS A SILHOUETTE. A silhouette carries only its outline,
-// and the tommy gun's outline — stock, drum, vertical foregrip, finned barrel —
-// only exists side-on. So is the fedora's. One flat black shape, with a white
-// hairline for the hat band as the only interior detail.
+// HE WALKS AT THE CAMERA, NOT ACROSS IT. Walking out of the depth keeps one
+// front-facing figure the whole way: the walk is a scale-up from the vanishing
+// point, with a step cycle, a bob and swinging arms on top.
+//
+// DRAWN TO REAL PROPORTIONS. About seven heads tall under the hat: waist at
+// the belt, the coat ending at the knee, and long legs below it. A big head on
+// a long torso with short legs is what makes a figure read as a cartoon.
+//
+// LIT FROM ONE LAMP, ABOVE. Every top plane catches it — hat crown, brim edge,
+// shoulders, lapel edges, the top of the slide — and everything facing the
+// camera falls into shadow, with a cylinder falloff across the coat so the
+// body has a front and sides. The face sits in the brim's shadow until the eye
+// light; a cigarette ember warms the jaw from below.
+//
+// THE GUN POINTS AT THE VIEWER: a 1911 end-on. Slide face with the barrel
+// bushing and bore on top and the recoil spring plug under it, front sight
+// blade, dust cover, the front of the trigger guard, and a gloved fist — three
+// fingers wrapped round the front strap, thumb along the side — with the shirt
+// and coat cuffs behind it and the sleeve foreshortening back to the shoulder.
 import React from "react";
 import "../Stylesheets/Mafia.css";
 import usePhases from "../Utils/usePhases";
 
-// p1 he fades up out of the white
-// p2 the gun swings up level
+// p1 the lamp stutters on: fog and the cone come up
+// p2 he walks out of the fog toward the camera
+// p3 he stops under the light
+// p4 the gun comes up at the viewer, the camera pushes in
+// p5 click — the eye light, a glint off the front sight
 //
-// Plays ONCE and holds — loopAt is null. The cigarette smoke keeps drifting on
-// the held frame; that is ambient, not a restart.
-const CUES = [150, 1000];
+// Plays ONCE and holds — loopAt is null. The smoke, fog and the lamp's sway
+// keep running on the held frame; that is ambient, not a restart.
+const CUES = [150, 600, 2700, 3050, 3550];
 
 export default function Mafia({ mode = "animated", loopAt = null }) {
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
 
   return (
     <div className={`mf mf-p${phase} ${isStatic ? "is-static" : ""}`} key={run}>
-      <div className="mf-card">
-        <div className="mf-figbox">
-          <div className="mf-shadow" aria-hidden />
-          <svg className="mf-man" viewBox="52 0 264 400" role="img" aria-label="Gangster with a tommy gun">
-            <g fill="var(--ink)">
-              {/* legs, in a planted stance */}
-              <path d="M102,326 L120,326 L112,382 L96,382 Z" />
-              <path d="M88,396 L94,380 L114,380 C122,382 126,388 126,396 Z" />
-              <path d="M124,326 L144,326 L150,382 L134,382 Z" />
-              <path d="M132,396 L134,380 L152,380 C162,382 168,388 168,396 Z" />
+      <div className="mf-world">
+        <div className="mf-wall" aria-hidden />
+        <div className="mf-lamp" aria-hidden>
+          <div className="mf-cone" />
+          <div className="mf-wire" />
+          <div className="mf-shade" />
+          <div className="mf-bulb" />
+        </div>
+        <div className="mf-fog mf-fog-a" aria-hidden />
+        <div className="mf-fog mf-fog-b" aria-hidden />
 
-              {/* overcoat */}
-              <path d="M104,104 C94,106 88,116 88,130 L92,226 C90,262 86,300 81,330 L163,330 C157,300 151,262 148,226 L152,140 C154,124 148,108 134,104 Z" />
-              <path d="M102,108 L110,90 L120,108 Z" />
-              <path d="M126,106 L136,94 L140,112 Z" />
-
-              {/* head and neck */}
-              <path d="M110,94 L130,98 L130,112 L108,112 Z" />
-              <path d="M102,58 C98,74 100,88 108,98 C114,104 124,104 130,102 C134,100 136,97 136,94 L138,90 L136,88 L139,82 L145,77 L139,70 L139,58 Z" />
-              <path d="M138,89 L151,87.5" stroke="var(--ink)" strokeWidth="2.2" strokeLinecap="round" />
-
-              {/* fedora */}
-              <path d="M98,50 C96,36 100,22 112,20 C122,18 132,20 138,24 C144,30 144,42 142,50 Z" />
-              <path d="M82,56 C90,50 110,48 124,48 C140,48 154,50 164,55 C156,59 140,59 124,59 C108,59 92,59 82,56 Z" />
-            </g>
-            <path d="M98.5,45 L142,45" stroke="var(--paper)" strokeWidth="1.3" />
-
-            {/* smoke off the cigarette */}
-            <g className="mf-smoke" fill="none" stroke="#9a9a9a" strokeLinecap="round">
-              <path className="mf-wisp mf-wisp-a" d="M152,85 C146,77 156,68 150,58 C145,50 154,42 150,34" strokeWidth="1.5" />
-              <path className="mf-wisp mf-wisp-b" d="M152,85 C159,77 147,66 154,56 C160,48 152,40 157,30" strokeWidth="1.1" />
-            </g>
-
-            {/* both arms and the gun swing together about the shoulder */}
-            <g className="mf-gun" fill="var(--ink)">
-              {/* far arm, reaching to the foregrip */}
-              <path d="M128,112 C142,110 150,120 150,132 L152,168 L216,190 L212,206 L146,186 C138,182 136,176 136,168 Z" />
-              <circle cx="217" cy="200" r="7.5" />
-
-              {/* the gun: stock, receiver, grip, drum, foregrip, finned barrel */}
-              <path d="M100,186 L150,191 L150,204 L104,214 C100,206 99,194 100,186 Z" />
-              <path d="M148,185 L202,185 L202,202 L148,202 Z" />
-              <path d="M152,185 L152,180 L157,180 L157,185 Z" />
-              <path d="M160,200 L171,200 L167,225 L156,223 Z" />
-              <path d="M171,202 C171,212 184,212 184,202" fill="none" stroke="var(--ink)" strokeWidth="2.4" />
-              <circle cx="194" cy="215" r="16" />
-              <path d="M210,198 L221,198 L223,223 L212,223 Z" />
-              <path d="M202,188 L232,188 L232,198 L202,198 Z" />
-              <path d="M232,190 L270,190 L270,196 L232,196 Z" />
-              {[236, 242, 248, 254, 260].map((x) => (
-                <rect key={x} x={x} y="187.5" width="3" height="11" />
-              ))}
-              <path d="M268,187 L282,187 L282,199 L268,199 Z" />
-              <circle cx="194" cy="215" r="5" fill="var(--paper)" />
-              <circle cx="194" cy="215" r="2.2" />
-
-              {/* near arm, on the rear grip */}
-              <path d="M108,110 C120,106 134,112 134,124 L134,170 C134,175 132,179 129,181 L162,196 L157,212 L118,190 C112,186 108,180 108,170 Z" />
-              <circle cx="162" cy="205" r="7.5" />
-            </g>
-          </svg>
+        <div className="mf-card">
+          <div className="mf-figbox">
+            <div className="mf-pool" aria-hidden />
+            <div className="mf-walker">
+              <div className="mf-shadow" aria-hidden />
+              <div className="mf-gait">
+                <Gangster />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div className="mf-vignette" aria-hidden />
+      <div className="mf-grain" aria-hidden />
     </div>
   );
 }
+
+const LIT = "#f3e6cb";
+
+// Front-facing, viewBox 200x400, feet on the bottom edge. Every animated group
+// carries no transform attribute — a CSS transform would replace it.
+function Gangster() {
+  return (
+    <svg className="mf-man" viewBox="0 0 200 400" aria-hidden>
+      <defs>
+        <pattern id="mf-pin" width="5" height="5" patternUnits="userSpaceOnUse">
+          <rect x="2" width="0.5" height="5" fill="#e9dcc0" opacity="0.07" />
+        </pattern>
+        <filter id="mf-cloth" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" />
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0" />
+        </filter>
+        <filter id="mf-soft" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="1.2" />
+        </filter>
+        <filter id="mf-softer" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.4" />
+        </filter>
+        <linearGradient id="mf-coat" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#4b4239" />
+          <stop offset="0.18" stopColor="#2c2520" />
+          <stop offset="0.6" stopColor="#1c1815" />
+          <stop offset="1" stopColor="#0f0d0b" />
+        </linearGradient>
+        <linearGradient id="mf-form" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#000" stopOpacity="0.65" />
+          <stop offset="0.28" stopColor="#000" stopOpacity="0" />
+          <stop offset="0.72" stopColor="#000" stopOpacity="0" />
+          <stop offset="1" stopColor="#000" stopOpacity="0.65" />
+        </linearGradient>
+        <linearGradient id="mf-sleeve" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3f3730" />
+          <stop offset="0.3" stopColor="#221d19" />
+          <stop offset="1" stopColor="#13100e" />
+        </linearGradient>
+        <linearGradient id="mf-trouser" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#0c0a09" />
+          <stop offset="0.5" stopColor="#1f1b18" />
+          <stop offset="1" stopColor="#0c0a09" />
+        </linearGradient>
+        <linearGradient id="mf-tie" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#ff3355" />
+          <stop offset="0.5" stopColor="#c4001f" />
+          <stop offset="1" stopColor="#5e0011" />
+        </linearGradient>
+        <linearGradient id="mf-shirt" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#d9cfbb" />
+          <stop offset="1" stopColor="#6f6656" />
+        </linearGradient>
+        <linearGradient id="mf-hat" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#5d5246" />
+          <stop offset="0.45" stopColor="#2a241f" />
+          <stop offset="1" stopColor="#141110" />
+        </linearGradient>
+        <linearGradient id="mf-face" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#0f0b09" />
+          <stop offset="0.4" stopColor="#21180f" />
+          <stop offset="1" stopColor="#3a2a1f" />
+        </linearGradient>
+        <linearGradient id="mf-eyes" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#b88a62" stopOpacity="0" />
+          <stop offset="0.22" stopColor="#d5a97f" />
+          <stop offset="0.5" stopColor="#e2b98e" />
+          <stop offset="0.78" stopColor="#d5a97f" />
+          <stop offset="1" stopColor="#b88a62" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="mf-steel" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#8e877e" />
+          <stop offset="0.18" stopColor="#4b4640" />
+          <stop offset="0.7" stopColor="#2b2724" />
+          <stop offset="1" stopColor="#1a1816" />
+        </linearGradient>
+        <radialGradient id="mf-bushing" cx="0.45" cy="0.35" r="0.7">
+          <stop offset="0" stopColor="#7d766d" />
+          <stop offset="1" stopColor="#2a2623" />
+        </radialGradient>
+        <linearGradient id="mf-glove" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3a302a" />
+          <stop offset="0.35" stopColor="#1a1512" />
+          <stop offset="1" stopColor="#0c0a09" />
+        </linearGradient>
+        <clipPath id="mf-face-clip">
+          <path d={FACE_D} />
+        </clipPath>
+        <clipPath id="mf-torso-clip">
+          <path d={TORSO_D} />
+        </clipPath>
+      </defs>
+
+      {/* ---- legs: each its own group so the step cycle can lift it ---- */}
+      <g className="mf-leg mf-leg-l">
+        <path d="M77,286 L98,286 L97,384 L80,384 Z" fill="url(#mf-trouser)" />
+        <path d="M88,290 L88.5,378" stroke={LIT} strokeWidth="0.7" opacity="0.18" />
+        <path d="M80,376 C86,379 92,379 97,376" stroke="#050404" strokeWidth="1.2" fill="none" opacity="0.8" />
+        <path d="M73,396 C71,388 76,381 88,381 C98,381 102,388 101,396 Z" fill="#0b0908" />
+        <ellipse cx="86" cy="385" rx="6" ry="1.4" fill={LIT} opacity="0.4" filter="url(#mf-soft)" />
+        <path d="M76,384 C80,382 86,381.5 92,382" stroke={LIT} strokeWidth="0.8" fill="none" opacity="0.5" />
+      </g>
+      <g className="mf-leg mf-leg-r">
+        <path d="M102,286 L123,286 L120,384 L103,384 Z" fill="url(#mf-trouser)" />
+        <path d="M112,290 L111.5,378" stroke={LIT} strokeWidth="0.7" opacity="0.18" />
+        <path d="M103,376 C108,379 114,379 120,376" stroke="#050404" strokeWidth="1.2" fill="none" opacity="0.8" />
+        <path d="M99,396 C98,388 102,381 112,381 C124,381 129,388 127,396 Z" fill="#0b0908" />
+        <ellipse cx="114" cy="385" rx="6" ry="1.4" fill={LIT} opacity="0.4" filter="url(#mf-soft)" />
+        <path d="M108,382 C114,381.5 120,382 124,384" stroke={LIT} strokeWidth="0.8" fill="none" opacity="0.5" />
+      </g>
+
+      {/* ---- the off arm, hanging, hand loosely curled ---- */}
+      <g className="mf-arm mf-arm-off">
+        <path d="M134,88 C147,88 155,96 156,110 L159,160 C160,178 161,196 159,214 L145,216 C144,198 143,178 141,160 L138,118 Z" fill="url(#mf-sleeve)" />
+        <path d="M146,92 C152,96 155,102 156,110" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.6" />
+        <path d="M150,150 C151,160 151,170 150,180" stroke="#060505" strokeWidth="1" fill="none" opacity="0.6" />
+        <path d="M145,212 L159,210 L159,216 L145,218 Z" fill="#7a705f" />
+        <path d="M145,217 C143,226 145,238 151,241 C157,243 162,236 161,226 L159,215 Z" fill="url(#mf-glove)" />
+        <path d="M147,224 C150,226 155,226 159,224 M147,231 C150,233 155,233 159,231" stroke="#3b322b" strokeWidth="0.8" fill="none" />
+      </g>
+
+      {/* ---- shirt and tie, behind the lapels ---- */}
+      <path d="M88,80 L112,80 L100,150 Z" fill="url(#mf-shirt)" />
+      <path d="M88,80 L95,94 L100,84 L105,94 L112,80 L106,79 L100,82 L94,79 Z" fill="#e4dac6" />
+      <path d="M95,83 L105,83 L103,91 L97,91 Z" fill="#a8001c" />
+      <path d="M97,91 L103,91 L107,140 L100,148 L93,140 Z" fill="url(#mf-tie)" />
+      <path d="M100,92 L100,138" stroke="#5e0011" strokeWidth="0.6" opacity="0.6" />
+
+      {/* ---- overcoat ---- */}
+      <path d={TORSO_D} fill="url(#mf-coat)" />
+      <g clipPath="url(#mf-torso-clip)">
+        <rect x="0" y="0" width="200" height="400" fill="url(#mf-pin)" />
+        <rect x="0" y="0" width="200" height="400" filter="url(#mf-cloth)" />
+        {/* folds in the skirt: a shadow with a lit lip beside it */}
+        <g fill="none" strokeLinecap="round">
+          <path d="M74,184 C72,220 68,254 64,292" stroke="#050404" strokeWidth="2.4" opacity="0.6" filter="url(#mf-soft)" />
+          <path d="M76,186 C74,222 71,256 67,292" stroke={LIT} strokeWidth="0.8" opacity="0.12" />
+          <path d="M127,184 C129,220 133,254 137,292" stroke="#050404" strokeWidth="2.4" opacity="0.6" filter="url(#mf-soft)" />
+          <path d="M92,200 C91,236 90,262 88,292" stroke="#050404" strokeWidth="1.6" opacity="0.45" filter="url(#mf-soft)" />
+          <path d="M66,120 C72,128 78,132 82,134" stroke="#050404" strokeWidth="1.4" opacity="0.5" filter="url(#mf-soft)" />
+          <path d="M134,120 C128,128 122,132 118,134" stroke="#050404" strokeWidth="1.4" opacity="0.5" filter="url(#mf-soft)" />
+        </g>
+        <rect x="0" y="0" width="200" height="400" fill="url(#mf-form)" />
+        {/* the lamp on the shoulders, from above */}
+        <ellipse cx="100" cy="86" rx="58" ry="14" fill={LIT} opacity="0.16" filter="url(#mf-softer)" />
+      </g>
+
+      {/* lapels: peaked, the faces a shade up, edges catching the lamp */}
+      <path d="M88,80 L100,150 L77,125 L83,120 L71,96 Z" fill="#2f2822" />
+      <path d="M112,80 L100,150 L123,125 L117,120 L129,96 Z" fill="#2f2822" />
+      <path d="M88,80 L71,96 L83,120 L77,125" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.45" />
+      <path d="M112,80 L129,96 L117,120 L123,125" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.45" />
+      <path d="M77,125 L100,150 L123,125" stroke="#080606" strokeWidth="1" fill="none" opacity="0.7" />
+      {/* the double-breasted overlap, the belt, buttons, pocket flaps */}
+      <path d="M100,150 C108,152 114,156 116,162 L118,292" stroke="#080606" strokeWidth="1.3" fill="none" />
+      <path d="M101.5,151 C109,153 115,157 117.3,163" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.3" />
+      <path d="M59,167 L141,167 L140,178 L60,178 Z" fill="#0f0c0b" />
+      <path d="M59,167 L141,167" stroke={LIT} strokeWidth="0.7" opacity="0.3" />
+      <rect x="107" y="165.5" width="11" height="14" rx="1.4" fill="none" stroke="#857a6c" strokeWidth="1.3" />
+      <path d="M112.5,167 L112.5,178" stroke="#857a6c" strokeWidth="1" />
+      {[[86, 156], [114, 156], [86, 196], [114, 196]].map(([x, y]) => (
+        <g key={`${x}-${y}`}>
+          <circle cx={x} cy={y} r="2.3" fill="#0b0908" />
+          <path d={`M${x - 1.6},${y - 1} A2,2 0 0 1 ${x + 1.6},${y - 1}`} stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.45" />
+        </g>
+      ))}
+      <path d="M64,214 L91,212 L91,217 L64,219 Z" fill="#14110f" />
+      <path d="M109,212 L136,214 L136,219 L109,217 Z" fill="#14110f" />
+      <path d="M64,214 L91,212 M109,212 L136,214" stroke={LIT} strokeWidth="0.6" opacity="0.25" />
+      {/* collar turned up behind the neck */}
+      <path d="M84,82 C84,74 88,72 92,72 L94,82 Z M116,82 C116,74 112,72 108,72 L106,82 Z" fill="#241e19" />
+      <path d="M84,81 C84,75 87,72.5 91,72.3 M116,81 C116,75 113,72.5 109,72.3" stroke={LIT} strokeWidth="0.8" fill="none" opacity="0.4" />
+
+      {/* ---- head ---- */}
+      <path d="M91,68 L109,68 L110,82 L90,82 Z" fill="#170f0b" />
+      <path d="M84,52 C80,51 79,61 84,64 Z" fill="#251a14" />
+      <path d="M116,52 C120,51 121,61 116,64 Z" fill="#251a14" />
+      <path d={FACE_D} fill="url(#mf-face)" />
+      <g clipPath="url(#mf-face-clip)">
+        {/* cheekbones and jaw: bounce light from below picks out the planes */}
+        <path d="M86,62 C88,70 92,76 98,79" stroke="#5a4232" strokeWidth="1.2" fill="none" opacity="0.5" filter="url(#mf-soft)" />
+        <path d="M114,62 C112,70 108,76 102,79" stroke="#5a4232" strokeWidth="1.2" fill="none" opacity="0.5" filter="url(#mf-soft)" />
+        <path d="M98.5,58 L97.5,65.5 C99,66.6 101,66.6 102.5,65.5" stroke="#4d3829" strokeWidth="0.9" fill="none" opacity="0.8" />
+        <path d="M95,71 C98,72 102,72 105,71" stroke="#0b0706" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+        <path d="M97,75.5 C99,76.3 101,76.3 103,75.5" stroke="#4d3829" strokeWidth="0.7" fill="none" opacity="0.6" />
+        <ellipse className="mf-emberlight" cx="112" cy="76" rx="12" ry="8" fill="#ff7a2a" opacity="0.22" filter="url(#mf-softer)" />
+
+        {/* the eye light: a slash of lamp under the brim */}
+        <g className="mf-eyelight">
+          <rect x="80" y="51" width="40" height="10" fill="url(#mf-eyes)" filter="url(#mf-soft)" />
+          <path d="M86,53.5 C89,52.3 94,52.4 97,54" stroke="#2a1a12" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+          <path d="M103,54 C106,52.4 111,52.3 114,53.5" stroke="#2a1a12" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+          {[92, 108].map((cx) => (
+            <g key={cx}>
+              <path d={`M${cx - 4},57 C${cx - 2},55.4 ${cx + 2},55.4 ${cx + 4},57 C${cx + 2},58.2 ${cx - 2},58.2 ${cx - 4},57 Z`} fill="#c9b49a" />
+              <circle cx={cx} cy="56.9" r="1.6" fill="#2b1a10" />
+              <circle cx={cx} cy="56.9" r="0.75" fill="#050302" />
+              <circle cx={cx + 0.6} cy="56.3" r="0.4" fill="#fff6e2" />
+              <path d={`M${cx - 4.2},56.9 C${cx - 2},55 ${cx + 2},55 ${cx + 4.2},56.9`} stroke="#1a0f0a" strokeWidth="0.9" fill="none" />
+            </g>
+          ))}
+        </g>
+      </g>
+
+      {/* ---- cigarette, and its smoke ---- */}
+      <path d="M104,71.5 L117,70" stroke="#e8dfcf" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M115,70.2 L117,70" stroke="#8a6a4a" strokeWidth="1.8" />
+      <circle className="mf-ember" cx="118" cy="69.9" r="1.4" fill="#ff6a1a" />
+      <circle cx="118" cy="69.9" r="3.5" fill="#ff7a2a" opacity="0.3" filter="url(#mf-soft)" />
+      <g className="mf-smoke" fill="none" stroke="#e9dcc0" strokeLinecap="round" filter="url(#mf-soft)">
+        <path className="mf-wisp mf-wisp-a" d="M119,67 C113,59 125,51 119,41 C114,33 123,25 119,17" strokeWidth="1.8" />
+        <path className="mf-wisp mf-wisp-b" d="M119,67 C126,59 116,49 123,39 C129,31 121,23 126,13" strokeWidth="1.4" />
+        <path className="mf-wisp mf-wisp-c" d="M119,67 C115,61 121,55 117,47 C113,39 119,33 115,25" strokeWidth="1.1" />
+      </g>
+
+      {/* ---- fedora: pinched crown, band with a bow, snap brim ---- */}
+      <path d="M79,40 C77,27 80,13 88,10 C93,8 97,13 100,12 C103,13 107,8 112,10 C120,13 123,27 121,40 Z" fill="url(#mf-hat)" />
+      <path d="M93,11 C95,18 96,27 96,36 M107,11 C105,18 104,27 104,36" stroke="#0e0b09" strokeWidth="1.2" fill="none" opacity="0.6" filter="url(#mf-soft)" />
+      <path d="M78,34 C88,37 112,37 122,34 L122,41 C112,43 88,43 78,41 Z" fill="#0d0a09" />
+      <path d="M78,34 C88,37 112,37 122,34" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.3" />
+      <path d="M80,35.5 L86,36.5 L85,41 L79,40 Z" fill="#1d1815" />
+      <path d="M64,44 C70,38.5 85,37 100,37 C115,37 130,38.5 136,44 C132,47 123,47 117,47 C111,49 106,50 100,50 C94,50 89,49 83,47 C77,47 68,47 64,44 Z" fill="#1a1613" />
+      <path d="M81.5,19 C83,14 86,11 89,10 C93,8.5 97,13 100,12 C103,13 107,8.5 111,10 C114,11 117,14 118.5,19" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.65" />
+      <path d="M66,43.5 C73,39.5 86,38.2 100,38.2 C114,38.2 127,39.5 134,43.5" stroke={LIT} strokeWidth="1.1" fill="none" opacity="0.55" />
+      <path d="M82,47 C88,49 94,50 100,50 C106,50 112,49 118,47" stroke="#050404" strokeWidth="1" fill="none" />
+
+      {/* ---- gun arm, hanging, pistol pointed at the ground ---- */}
+      <g className="mf-arm mf-arm-down">
+        <path d="M66,88 C53,88 45,96 44,110 L41,160 C40,178 39,196 41,214 L55,216 C56,198 57,178 59,160 L62,118 Z" fill="url(#mf-sleeve)" />
+        <path d="M54,92 C48,96 45,102 44,110" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.6" />
+        <path d="M41,212 L55,210 L55,216 L41,218 Z" fill="#7a705f" />
+        <path d="M43,226 L50,226 L50,262 L43,262 Z" fill="url(#mf-steel)" />
+        <path d="M43,226 L43,262" stroke={LIT} strokeWidth="0.6" opacity="0.4" />
+        <path d="M41,217 C39,226 41,238 47,240 C53,241 57,234 56,226 L55,215 Z" fill="url(#mf-glove)" />
+      </g>
+
+      {/* ---- gun arm, levelled at the camera ---- */}
+      <g className="mf-arm-up">
+        {/* sleeve, foreshortening back to a raised shoulder */}
+        <path
+          d="M57,88 C66,84 78,83 88,86 L92,114 C82,121 70,125 60,124 C54,118 51,107 51,100 C51,94 53,90 57,88 Z"
+          fill="url(#mf-sleeve)"
+        />
+        <path d="M56,89 C65,85 77,84 87,86.5" stroke={LIT} strokeWidth="1.5" fill="none" opacity="0.6" />
+        {/* folds bunch up round the forearm as it comes at the camera */}
+        <path d="M68,87 C64,96 64,110 70,122" stroke="#050404" strokeWidth="1.5" fill="none" opacity="0.55" filter="url(#mf-soft)" />
+        <path d="M69.5,88 C66,97 66,109 71.5,121" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.2" />
+        <path d="M79,86 C75,96 75,110 81,119" stroke="#050404" strokeWidth="1.3" fill="none" opacity="0.5" filter="url(#mf-soft)" />
+        <path d="M54,104 C58,114 64,121 72,124" stroke="#050404" strokeWidth="1.6" fill="none" opacity="0.6" filter="url(#mf-soft)" />
+        {/* coat cuff, then shirt cuff, round the wrist */}
+        <ellipse cx="100" cy="100" rx="17" ry="15" fill="#191512" />
+        <path d="M84,96 C88,87 112,87 116,96" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.45" />
+        <ellipse cx="100" cy="100" rx="13" ry="11.5" fill="#6e6555" />
+        <ellipse cx="100" cy="98" rx="11" ry="8" fill="#9d9380" opacity="0.7" />
+
+        {/* the fist round the grip: three fingers on the front strap */}
+        <path d="M88,90 C88,86 92,85 100,85 C108,85 112,86 112,90 L112,108 C112,113 107,115 100,115 C93,115 88,113 88,108 Z" fill="url(#mf-glove)" />
+        {[92.5, 99.5, 106.5].map((y, i) => (
+          <g key={y}>
+            <path d={`M${89 + i * 0.6},${y} C${94},${y + 1.6} ${106},${y + 1.6} ${111 - i * 0.6},${y}`} stroke="#050404" strokeWidth="1.1" fill="none" />
+            <path d={`M${91 + i},${y + 2.2} C${96},${y + 3.2} ${104},${y + 3.2} ${109 - i},${y + 2.2}`} stroke="#5b4e43" strokeWidth="0.7" fill="none" opacity="0.7" />
+          </g>
+        ))}
+        {/* thumb along the far side of the frame */}
+        <path d="M110,84 C115,83 117,88 116,94 C115,98 112,99 110,97 Z" fill="url(#mf-glove)" />
+        <path d="M111,85 C114,84.5 116,87 115.6,91" stroke="#5b4e43" strokeWidth="0.7" fill="none" />
+
+        {/* trigger guard front, dust cover */}
+        <path d="M93,80 L93,85 C93,91 107,91 107,85 L107,80" stroke="#36312d" strokeWidth="2.2" fill="none" />
+        <path d="M93.5,86 C95,90 105,90 106.5,86" stroke={LIT} strokeWidth="0.5" fill="none" opacity="0.35" />
+        <path d="M91,76 L109,76 L109,82 L91,82 Z" fill="#26221f" />
+        <path d="M91,76 L109,76" stroke={LIT} strokeWidth="0.5" opacity="0.3" />
+
+        {/* slide face, end-on: bushing + bore over the recoil spring plug */}
+        <rect x="89" y="62" width="22" height="15" rx="2" fill="url(#mf-steel)" />
+        <rect x="89.6" y="62.6" width="20.8" height="13.8" rx="1.6" fill="none" stroke="#9a9289" strokeWidth="0.4" opacity="0.5" />
+        <circle cx="100" cy="67.6" r="4.8" fill="url(#mf-bushing)" />
+        <circle cx="100" cy="67.6" r="4.8" fill="none" stroke="#151311" strokeWidth="0.6" />
+        <circle cx="100" cy="67.6" r="2.9" fill="#1c1a18" />
+        <circle cx="100" cy="67.6" r="2.3" fill="#000" />
+        <circle cx="100" cy="73.6" r="2.1" fill="#3a3632" stroke="#151311" strokeWidth="0.5" />
+        <path d="M89.5,62.8 L110.5,62.8" stroke={LIT} strokeWidth="0.9" opacity="0.85" />
+        <path d="M99,58.4 L101,58.4 L101.4,62 L98.6,62 Z" fill="#3a3632" />
+        <path d="M99,58.4 L101,58.4" stroke={LIT} strokeWidth="0.5" opacity="0.8" />
+        <g className="mf-glint">
+          <path d="M100,52 L100.9,57.5 L100,63 L99.1,57.5 Z M94.5,57.5 L100,56.6 L105.5,57.5 L100,58.4 Z" fill="#fff8e6" />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+const FACE_D =
+  "M84,42 C83,60 86,72 92,77 C96,80 104,80 108,77 C114,72 117,60 116,42 Z";
+
+const TORSO_D =
+  "M88,80 L68,88 C60,91 56,98 56,108 L58,160 C58,166 60,170 62,174 C60,212 56,252 52,292 L148,292 C144,252 140,212 138,174 C140,170 142,166 142,160 L144,108 C144,98 140,91 132,88 L112,80 L100,150 Z";
