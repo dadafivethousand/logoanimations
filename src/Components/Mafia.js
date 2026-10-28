@@ -1,59 +1,42 @@
 // Mafia.js — a hook for the front of a video. A hanging lamp stutters on in a
-// foggy alley, a man in a fedora and overcoat walks out of the fog straight at
-// the camera, stops under the light, and levels a pistol at the viewer. Light
-// catches his eyes over the sights, and the lockup slams in under his feet.
+// foggy alley, a man in a fedora and overcoat walks on from the left in
+// profile, stops under the light, turns to the camera and levels a pistol at
+// the viewer. Light catches his eyes over the sights on the click.
 //
-// HE WALKS AT THE CAMERA, NOT ACROSS IT. A profile walk-on would need a second
-// drawing for the turn to face us, and the turn is a cut. Walking out of the
-// depth keeps one front-facing figure the whole way: the walk is a scale-up
-// from the vanishing point, with a step cycle, a bob and swinging arms on top.
+// No brand on screen — this one is not a logo theme. The man is the whole
+// composition, centred under the lamp.
+//
+// TWO DRAWINGS, ONE TURN. The walk-on is a profile figure with a real step
+// cycle (legs pivot at the hip, arms swing opposite). The turn to camera is a
+// fast swap to a front-facing figure, each squashing on X through the change,
+// so at 150ms it reads as a turn rather than a cut.
 //
 // THE GUN POINTS AT THE VIEWER. A muzzle seen end-on is what makes this a
-// hook; a gun in profile aimed off-frame is a picture of a man with a gun. It
-// is drawn as the slide face with the bore dead centre, the trigger guard and
-// a gloved fist below it, and the sleeve foreshortening back to the shoulder.
-// The raise is a fast swap (hanging arm out, levelled arm scaling up from the
-// shoulder) — at 200ms the eye reads it as motion, not as a cut.
+// hook. It is drawn as the slide face with the bore dead centre, the trigger
+// guard and a gloved fist below it, and the sleeve foreshortening back to the
+// shoulder. The raise is the same kind of swap as the turn.
 //
 // THE EYE LIGHT. Noir's signature lighting slash — a strip of light across the
-// eyes under a dark brim — is the same band the Code Ninjas mask has, which is
-// why it lands on the click.
-//
-// The logo is shown in its own colours. A black hood on a dark set would be
-// lost, so it sits in the lamp's pool on the ground and a cream rim traces the
-// letterforms. WOODBRIDGE sits in flow under the mark, inside the same wrapper.
+// eyes under a dark brim — lands on the click.
 import React from "react";
 import "../Stylesheets/Mafia.css";
 import usePhases from "../Utils/usePhases";
-import useLogo from "../Utils/useLogo";
 
 // p1 the lamp stutters on: fog and the cone come up
-// p2 he walks out of the fog toward the camera
-// p3 he stops under the light
+// p2 he walks on from the left, in profile
+// p3 he stops under the light and turns to the camera
 // p4 the gun comes up at the viewer, the camera pushes in
 // p5 click — the eye light, a glint off the front sight
-// p6 the lockup slams in
 //
 // Plays ONCE and holds — loopAt is null. The smoke, fog and the lamp's sway
 // keep running on the held frame; that is ambient, not a restart.
-const CUES = [150, 600, 2700, 3050, 3550, 4100];
+const CUES = [150, 700, 2950, 3400, 3950];
 
-export default function Mafia({
-  mode = "animated",
-  caption = "WOODBRIDGE",
-  loopAt = null,
-}) {
-  const { logoVar, ready } = useLogo();
-  const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt, enabled: ready });
-
-  if (!ready) return <div className="mf mf-p0" aria-hidden />;
+export default function Mafia({ mode = "animated", loopAt = null }) {
+  const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
 
   return (
-    <div
-      className={`mf mf-p${phase} ${isStatic ? "is-static" : ""}`}
-      style={logoVar}
-      key={run}
-    >
+    <div className={`mf mf-p${phase} ${isStatic ? "is-static" : ""}`} key={run}>
       <div className="mf-world">
         <div className="mf-wall" aria-hidden />
         <div className="mf-lamp" aria-hidden>
@@ -70,25 +53,79 @@ export default function Mafia({
             <div className="mf-pool" aria-hidden />
             <div className="mf-walker">
               <div className="mf-shadow" aria-hidden />
-              <div className="mf-gait">
+              <div className="mf-side">
+                <SideMan />
+              </div>
+              <div className="mf-front">
                 <Gangster />
               </div>
             </div>
           </div>
-
-          <div className="mf-markwrap">
-            <div className="mf-markbox">
-              <div className="mf-mark" role="img" aria-label="Code Ninjas" />
-            </div>
-            <div className="mf-type">{caption}</div>
-          </div>
         </div>
       </div>
 
-      <div className="mf-flash" aria-hidden />
       <div className="mf-vignette" aria-hidden />
       <div className="mf-grain" aria-hidden />
     </div>
+  );
+}
+
+// Profile, facing right, same viewBox and feet line as the front figure.
+// Shares its gradients (the front figure's <defs> is always in the DOM).
+// Legs pivot at the hip under the coat; the far leg and far arm are drawn
+// darker and behind the coat.
+function SideMan() {
+  return (
+    <svg className="mf-man" viewBox="0 0 200 400" aria-hidden>
+      <g className="mf-sleg mf-sleg-far">
+        <path d="M91,296 L111,296 L109,382 L93,382 Z" fill="#0f0d0c" />
+        <path d="M89,396 L90,380 L110,380 C120,380 127,385 127,391 L127,396 Z" fill="#080706" />
+      </g>
+      <g className="mf-sarm mf-sarm-far">
+        <path d="M88,112 C98,108 110,112 110,124 L108,252 L93,254 L89,130 Z" fill="#100e0c" />
+        <path d="M93,252 C91,264 95,276 101,276 C107,276 110,266 108,252 Z" fill="#080706" />
+      </g>
+      <g className="mf-sleg mf-sleg-near">
+        <path d="M90,296 L112,296 L110,382 L92,382 Z" fill="#171412" />
+        <path d="M88,396 L89,380 L111,380 C121,380 128,385 128,391 L128,396 Z" fill="#0d0b0a" />
+        <path d="M100,382 C110,381 120,382 125,386" stroke="#8b8172" strokeWidth="1.4" fill="none" opacity="0.6" />
+      </g>
+
+      {/* coat, in profile — back on the left, chest on the right */}
+      <path d="M110,104 L118,106 L127,176 L121,178 Z" fill="url(#mf-tie)" />
+      <path
+        d="M88,104 C79,106 74,114 74,126 L76,226 C74,262 70,300 65,330 L141,330 C135,300 129,262 126,226 L128,140 C129,124 124,110 112,104 C108,110 104,112 100,112 C96,112 92,110 88,104 Z"
+        fill="url(#mf-coat)"
+      />
+      <path d="M112,104 C116,124 120,150 126,176" stroke="#4d453c" strokeWidth="1.4" fill="none" />
+      <rect x="76" y="230" width="51" height="11" fill="#100d0c" />
+      <rect x="110" y="229" width="9" height="13" rx="1.5" fill="none" stroke="#6a6156" strokeWidth="1.4" />
+      <path d="M78,120 C80,110 88,106 100,106" stroke="#efe2c6" strokeWidth="2" fill="none" opacity="0.55" />
+
+      {/* head, profile */}
+      <path d="M92,94 L106,98 L105,110 L92,110 Z" fill="#1a1411" />
+      <path
+        d="M86,56 C84,70 86,86 93,96 L104,100 C110,100 114,97 114,93 L116,89 L114,87 L117,81 L122,76 L116,69 L116,58 Z"
+        fill="#2a201a"
+      />
+      <path d="M90,70 C87,72 87,80 91,82" stroke="#1a1411" strokeWidth="2" fill="none" />
+      <path d="M116,88 L130,86" stroke="#e8dfcf" strokeWidth="2.2" strokeLinecap="round" />
+      <circle className="mf-ember" cx="131" cy="85.9" r="1.7" fill="#ff6a1a" />
+
+      {/* fedora, profile */}
+      <path d="M78,50 C76,36 80,22 92,20 C102,18 112,20 118,24 C124,30 124,42 122,50 Z" fill="url(#mf-hat)" />
+      <path d="M78,43 L122,43 L122,50 L78,50 Z" fill="#0e0c0b" />
+      <path d="M62,56 C70,50 90,48 104,48 C120,48 134,50 144,55 C136,59 120,59 104,59 C88,59 72,59 62,56 Z" fill="#1b1714" />
+      <path d="M80,30 C82,24 86,21 92,20 C102,18 112,20 118,24" stroke="#f3e6cb" strokeWidth="1.8" fill="none" opacity="0.6" />
+
+      {/* near arm, with the pistol held low */}
+      <g className="mf-sarm mf-sarm-near">
+        <path d="M89,112 C99,108 111,112 111,124 L109,252 L94,254 L90,130 Z" fill="url(#mf-coat)" />
+        <path d="M99,110 C106,112 110,116 111,124" stroke="#e9dcc0" strokeWidth="1.6" fill="none" opacity="0.45" />
+        <path d="M103,264 L131,276 L129,282 L101,271 Z" fill="url(#mf-steel)" />
+        <path d="M94,252 C92,264 96,276 102,276 C108,276 111,266 109,252 Z" fill="#110e0c" />
+      </g>
+    </svg>
   );
 }
 
