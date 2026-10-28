@@ -339,16 +339,22 @@ function Gangster() {
         <path className="mf-wisp mf-wisp-c" d="M119,67 C115,61 121,55 117,47 C113,39 119,33 115,25" strokeWidth="1.1" />
       </g>
 
-      {/* ---- fedora: pinched crown, band with a bow, snap brim ---- */}
-      <path d="M79,40 C77,27 80,13 88,10 C93,8 97,13 100,12 C103,13 107,8 112,10 C120,13 123,27 121,40 Z" fill="url(#mf-hat)" />
-      <path d="M93,11 C95,18 96,27 96,36 M107,11 C105,18 104,27 104,36" stroke="#0e0b09" strokeWidth="1.2" fill="none" opacity="0.6" filter="url(#mf-soft)" />
-      <path d="M78,34 C88,37 112,37 122,34 L122,41 C112,43 88,43 78,41 Z" fill="#060607" />
-      <path d="M78,34 C88,37 112,37 122,34" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.18" filter="url(#mf-soft)" />
-      <path d="M80,35.5 L86,36.5 L85,41 L79,40 Z" fill="#18181a" />
-      <path d="M64,44 C70,38.5 85,37 100,37 C115,37 130,38.5 136,44 C132,47 123,47 117,47 C111,49 106,50 100,50 C94,50 89,49 83,47 C77,47 68,47 64,44 Z" fill="#121214" />
-      <path d="M81.5,19 C83,14 86,11 89,10 C93,8.5 97,13 100,12 C103,13 107,8.5 111,10 C114,11 117,14 118.5,19" stroke={LIT} strokeWidth="2.8" fill="none" opacity="0.5" filter="url(#mf-soft)" />
-      <path d="M66,43.5 C73,39.5 86,38.2 100,38.2 C114,38.2 127,39.5 134,43.5" stroke={LIT} strokeWidth="1.8" fill="none" opacity="0.4" filter="url(#mf-soft)" />
-      <path d="M82,47 C88,49 94,50 100,50 C106,50 112,49 118,47" stroke="#050404" strokeWidth="1" fill="none" />
+      {/* ---- fedora. What separates it from a hard hat: the crown narrows
+           toward the top, a centre crease dips it into two lobes, the front
+           pinches shade in on either side, and the snap brim curls up at the
+           sides while the front dips down over the brow. ---- */}
+      <path d="M79,40 C79.5,32 81.5,22 85,15.5 C87,12 90.5,10.5 93,11.5 C96,12.6 98,15 100,16.5 C102,15 104,12.6 107,11.5 C109.5,10.5 113,12 115,15.5 C118.5,22 120.5,32 121,40 Z" fill="url(#mf-hat)" />
+      <path d="M86.5,15.5 C88.5,20.5 89.5,27 89.5,33.5" stroke="#000" strokeWidth="2.4" fill="none" opacity="0.55" filter="url(#mf-soft)" />
+      <path d="M113.5,15.5 C111.5,20.5 110.5,27 110.5,33.5" stroke="#000" strokeWidth="2.4" fill="none" opacity="0.55" filter="url(#mf-soft)" />
+      <path d="M100,17 C100.2,20 100.2,23 100,26" stroke="#000" strokeWidth="1.6" fill="none" opacity="0.5" filter="url(#mf-soft)" />
+      <path d="M83,22 C84.5,16 88,11.6 92,11.3 C95.5,11.6 98,14.5 100,16.6 C102,14.5 104.5,11.6 108,11.3 C112,11.6 115.5,16 117,22" stroke={LIT} strokeWidth="2.2" fill="none" opacity="0.45" filter="url(#mf-soft)" />
+      <path d="M90.5,18 C91.5,23 92,28 92,32" stroke={LIT} strokeWidth="1.2" fill="none" opacity="0.12" filter="url(#mf-soft)" />
+      <path d="M79.7,33 C88,35.6 112,35.6 120.3,33 L121,40.6 C112,42.6 88,42.6 79,40.6 Z" fill="#060607" />
+      <path d="M79.7,33.2 C88,35.8 112,35.8 120.3,33.2" stroke={LIT} strokeWidth="0.9" fill="none" opacity="0.16" filter="url(#mf-soft)" />
+      <path d="M80.4,34.6 L85.6,35.6 L85,40.8 L80,40.2 Z" fill="#18181a" />
+      <path d="M62,41 C66,41.6 72,40.2 79,39.8 L121,39.8 C128,40.2 134,41.6 138,41 C137,44.6 130,47 118,47.6 C112,49.6 106,50.6 100,50.6 C94,50.6 88,49.6 82,47.6 C70,47 63,44.6 62,41 Z" fill="#121214" />
+      <path d="M63.5,41.6 C69,42.6 75,41.4 80,41 M120,41 C125,41.4 131,42.6 136.5,41.6" stroke={LIT} strokeWidth="1.2" fill="none" opacity="0.3" filter="url(#mf-soft)" />
+      <path d="M82,47.6 C88,49.6 94,50.6 100,50.6 C106,50.6 112,49.6 118,47.6" stroke="#000" strokeWidth="1" fill="none" />
 
       {/* ---- gun arm, hanging, pistol pointed at the ground ---- */}
       <g className="mf-arm mf-arm-down">
