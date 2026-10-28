@@ -36,8 +36,10 @@
   transform-origin: 50% 46%;
   transition: transform 1500ms cubic-bezier(0.16, 0.8, 0.3, 1);
 }
+.mf-p3 .mf-world,
 .mf-p4 .mf-world,
-.mf-p5 .mf-world {
+.mf-p5 .mf-world,
+.mf-p6 .mf-world {
   transform: scale(1.06);
 }
 
@@ -59,7 +61,8 @@
 .mf-p2 .mf-wall,
 .mf-p3 .mf-wall,
 .mf-p4 .mf-wall,
-.mf-p5 .mf-wall {
+.mf-p5 .mf-wall,
+.mf-p6 .mf-wall {
   opacity: 0.85;
   animation: mf-flicker 620ms steps(1, end) both;
 }
@@ -79,7 +82,8 @@
 .mf-p2 .mf-lamp,
 .mf-p3 .mf-lamp,
 .mf-p4 .mf-lamp,
-.mf-p5 .mf-lamp {
+.mf-p5 .mf-lamp,
+.mf-p6 .mf-lamp {
   opacity: 1;
   animation:
     mf-flicker 620ms steps(1, end) both,
@@ -158,7 +162,8 @@
 .mf-p2 .mf-fog,
 .mf-p3 .mf-fog,
 .mf-p4 .mf-fog,
-.mf-p5 .mf-fog {
+.mf-p5 .mf-fog,
+.mf-p6 .mf-fog {
   opacity: 1;
 }
 @keyframes mf-drift {
@@ -200,7 +205,8 @@
 .mf-p2 .mf-pool,
 .mf-p3 .mf-pool,
 .mf-p4 .mf-pool,
-.mf-p5 .mf-pool {
+.mf-p5 .mf-pool,
+.mf-p6 .mf-pool {
   opacity: 0.85;
 }
 
@@ -222,7 +228,8 @@
 .mf-p2 .mf-walker,
 .mf-p3 .mf-walker,
 .mf-p4 .mf-walker,
-.mf-p5 .mf-walker {
+.mf-p5 .mf-walker,
+.mf-p6 .mf-walker {
   transform: none;
   opacity: 1;
   filter: none;
@@ -314,8 +321,10 @@
 .mf-arm-down {
   transition: opacity 90ms linear, transform 120ms ease-in;
 }
+.mf-p3 .mf-arm-down,
 .mf-p4 .mf-arm-down,
-.mf-p5 .mf-arm-down {
+.mf-p5 .mf-arm-down,
+.mf-p6 .mf-arm-down {
   opacity: 0;
   transform: rotate(-22deg);
 }
@@ -328,65 +337,29 @@
     transform 220ms cubic-bezier(0.2, 1.5, 0.45, 1),
     opacity 70ms linear;
 }
+.mf-p3 .mf-arm-up,
 .mf-p4 .mf-arm-up,
-.mf-p5 .mf-arm-up {
+.mf-p5 .mf-arm-up,
+.mf-p6 .mf-arm-up {
   transform: none;
   opacity: 1;
 }
 
-/* ---- the shot ---- */
+/* ---- the shots: three rounds, p4-p6 ----
+   One element can only replay an animation if its name changes, so the
+   per-shot effects on shared elements (recoil, frame flash, shake) get a
+   keyframe set per round, and each round has its own flash and casing. */
 
 .mf-recoil {
   transform-box: view-box;
   transform-origin: 58px 92px;
 }
-.mf-p5 .mf-recoil {
-  animation: mf-recoil 380ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
-}
-@keyframes mf-recoil {
-  0% { transform: none; }
-  12% { transform: rotate(-9deg) translateY(-3px); }
-  100% { transform: none; }
-}
-
 .mf-muzzle,
 .mf-casing {
   transform-box: fill-box;
   transform-origin: center;
   opacity: 0;
 }
-.mf-p5 .mf-muzzle {
-  animation: mf-muzzle 170ms ease-out both;
-}
-@keyframes mf-muzzle {
-  0% { opacity: 1; transform: scale(0.3) rotate(0deg); }
-  30% { opacity: 1; transform: scale(1.3) rotate(8deg); }
-  100% { opacity: 0; transform: scale(1.7) rotate(14deg); }
-}
-
-/* the casing kicks out of the ejection port on his right, tumbling */
-.mf-p5 .mf-casing {
-  animation: mf-casing 900ms cubic-bezier(0.25, 0.6, 0.6, 1) 30ms both;
-}
-@keyframes mf-casing {
-  0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
-  30% { opacity: 1; transform: translate(-22px, -26px) rotate(320deg); }
-  100% { opacity: 0; transform: translate(-44px, 70px) rotate(900deg); }
-}
-
-.mf-gs {
-  transform-box: view-box;
-  transform-origin: 100px 62px;
-  opacity: 0;
-}
-.mf-p5 .mf-gs-a { animation: mf-gunsmoke 3.4s ease-out 120ms infinite; }
-.mf-p5 .mf-gs-b { animation: mf-gunsmoke 3.4s ease-out 1.8s infinite; }
-@keyframes mf-gunsmoke {
-  0% { opacity: 0.7; transform: translateY(2px) scale(0.6); }
-  100% { opacity: 0; transform: translateY(-20px) scale(1.4, 1.5); }
-}
-
-/* the frame: a flash of the lamp's colour, and the camera kicks */
 .mf-flash {
   position: absolute;
   inset: 0;
@@ -395,22 +368,130 @@
   mix-blend-mode: screen;
   opacity: 0;
 }
-.mf-p5 .mf-flash {
-  animation: mf-flash 200ms ease-out both;
+
+/* round 1 */
+.mf-p4 .mf-recoil { animation: mf-recoil-1 270ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+.mf-p4 .mf-muzzle-1 { animation: mf-muzzle-1 150ms ease-out both; }
+.mf-p4 .mf-flash { animation: mf-flash-1 170ms ease-out both; }
+.mf-p4 .mf-world { animation: mf-shake-1 280ms linear both; }
+.mf-p4 .mf-casing-1,
+.mf-p5 .mf-casing-1,
+.mf-p6 .mf-casing-1 {
+  animation: mf-casing-1 900ms cubic-bezier(0.25, 0.6, 0.6, 1) 30ms both;
 }
-@keyframes mf-flash {
-  0% { opacity: 0.6; }
+@keyframes mf-recoil-1 {
+  0% { transform: none; }
+  14% { transform: rotate(-9deg) translateY(-3px); }
+  100% { transform: none; }
+}
+@keyframes mf-muzzle-1 {
+  0% { opacity: 1; transform: scale(0.3) rotate(0deg); }
+  30% { opacity: 1; transform: scale(1.3) rotate(8deg); }
+  100% { opacity: 0; transform: scale(1.7) rotate(14deg); }
+}
+@keyframes mf-flash-1 {
+  0% { opacity: 0.55; }
   100% { opacity: 0; }
 }
-.mf-p5 .mf-world {
-  animation: mf-shake 340ms linear both;
-}
-@keyframes mf-shake {
+@keyframes mf-shake-1 {
   0% { transform: scale(1.06); }
-  12% { transform: translate(-1vw, 0.6vh) scale(1.08); }
-  30% { transform: translate(0.8vw, -0.5vh) scale(1.072); }
-  55% { transform: translate(-0.4vw, 0.25vh) scale(1.065); }
+  14% { transform: translate(-1vw, 0.6vh) scale(1.08); }
+  34% { transform: translate(0.8vw, -0.5vh) scale(1.072); }
+  60% { transform: translate(-0.3vw, 0.2vh) scale(1.065); }
   100% { transform: scale(1.06); }
+}
+@keyframes mf-casing-1 {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  30% { opacity: 1; transform: translate(-22px, -26px) rotate(320deg); }
+  100% { opacity: 0; transform: translate(-44px, 70px) rotate(900deg); }
+}
+
+/* round 2 */
+.mf-p5 .mf-recoil { animation: mf-recoil-2 270ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+.mf-p5 .mf-muzzle-2 { animation: mf-muzzle-2 150ms ease-out both; }
+.mf-p5 .mf-flash { animation: mf-flash-2 170ms ease-out both; }
+.mf-p5 .mf-world { animation: mf-shake-2 280ms linear both; }
+.mf-p5 .mf-casing-2,
+.mf-p6 .mf-casing-2 {
+  animation: mf-casing-2 900ms cubic-bezier(0.25, 0.6, 0.6, 1) 30ms both;
+}
+@keyframes mf-recoil-2 {
+  0% { transform: none; }
+  14% { transform: rotate(-9deg) translateY(-3px); }
+  100% { transform: none; }
+}
+@keyframes mf-muzzle-2 {
+  0% { opacity: 1; transform: scale(0.3) rotate(-18deg); }
+  30% { opacity: 1; transform: scale(1.3) rotate(-10deg); }
+  100% { opacity: 0; transform: scale(1.7) rotate(-4deg); }
+}
+@keyframes mf-flash-2 {
+  0% { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+@keyframes mf-shake-2 {
+  0% { transform: scale(1.06); }
+  14% { transform: translate(1vw, 0.5vh) scale(1.08); }
+  34% { transform: translate(-0.7vw, -0.4vh) scale(1.072); }
+  60% { transform: translate(-0.3vw, 0.2vh) scale(1.065); }
+  100% { transform: scale(1.06); }
+}
+@keyframes mf-casing-2 {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  30% { opacity: 1; transform: translate(-26px, -22px) rotate(-280deg); }
+  100% { opacity: 0; transform: translate(-52px, 74px) rotate(-820deg); }
+}
+
+/* round 3 */
+.mf-p6 .mf-recoil { animation: mf-recoil-3 270ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+.mf-p6 .mf-muzzle-3 { animation: mf-muzzle-3 150ms ease-out both; }
+.mf-p6 .mf-flash { animation: mf-flash-3 170ms ease-out both; }
+.mf-p6 .mf-world { animation: mf-shake-3 280ms linear both; }
+.mf-p6 .mf-casing-3 {
+  animation: mf-casing-3 900ms cubic-bezier(0.25, 0.6, 0.6, 1) 30ms both;
+}
+@keyframes mf-recoil-3 {
+  0% { transform: none; }
+  14% { transform: rotate(-9deg) translateY(-3px); }
+  100% { transform: none; }
+}
+@keyframes mf-muzzle-3 {
+  0% { opacity: 1; transform: scale(0.3) rotate(8deg); }
+  30% { opacity: 1; transform: scale(1.3) rotate(16deg); }
+  100% { opacity: 0; transform: scale(1.7) rotate(22deg); }
+}
+@keyframes mf-flash-3 {
+  0% { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+@keyframes mf-shake-3 {
+  0% { transform: scale(1.06); }
+  14% { transform: translate(-1vw, 0.6vh) scale(1.08); }
+  34% { transform: translate(0.8vw, -0.5vh) scale(1.072); }
+  60% { transform: translate(-0.3vw, 0.2vh) scale(1.065); }
+  100% { transform: scale(1.06); }
+}
+@keyframes mf-casing-3 {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  30% { opacity: 1; transform: translate(-19px, -29px) rotate(360deg); }
+  100% { opacity: 0; transform: translate(-38px, 68px) rotate(1000deg); }
+}
+
+/* smoke curls off the barrel from the first round on */
+.mf-gs {
+  transform-box: view-box;
+  transform-origin: 100px 62px;
+  opacity: 0;
+}
+.mf-p4 .mf-gs-a,
+.mf-p5 .mf-gs-a,
+.mf-p6 .mf-gs-a { animation: mf-gunsmoke 3.4s ease-out 120ms infinite; }
+.mf-p4 .mf-gs-b,
+.mf-p5 .mf-gs-b,
+.mf-p6 .mf-gs-b { animation: mf-gunsmoke 3.4s ease-out 1.8s infinite; }
+@keyframes mf-gunsmoke {
+  0% { opacity: 0.7; transform: translateY(2px) scale(0.6); }
+  100% { opacity: 0; transform: translateY(-20px) scale(1.4, 1.5); }
 }
 
 /* ---- cigarette ---- */
@@ -445,7 +526,8 @@
   background: radial-gradient(ellipse 80% 70% at 50% 46%, transparent 45%, rgba(0, 0, 0, 0.88) 100%);
   transition: background-size 600ms ease;
 }
-.mf-p5 .mf-vignette {
+.mf-p5 .mf-vignette,
+.mf-p6 .mf-vignette {
   background: radial-gradient(ellipse 72% 62% at 50% 46%, transparent 40%, rgba(0, 0, 0, 0.92) 100%);
 }
 

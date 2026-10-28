@@ -1,7 +1,7 @@
 // Mafia.js — a hook for the front of a video. A hanging lamp stutters on in a
 // foggy brick alley, a man in a fedora and a belted overcoat walks out of the
 // fog straight at the camera, stops under the light, and levels a pistol at
-// the viewer, off his right shoulder, and fires. Dressed all in black. No brand, no text.
+// the viewer, off his right shoulder, and fires three rounds. Dressed all in black. No brand, no text.
 //
 // HE WALKS AT THE CAMERA, NOT ACROSS IT. Walking out of the depth keeps one
 // front-facing figure the whole way: the walk is a scale-up from the vanishing
@@ -28,14 +28,14 @@ import usePhases from "../Utils/usePhases";
 
 // p1 the lamp stutters on: fog and the cone come up
 // p2 he walks out of the fog toward the camera
-// p3 he stops under the light
-// p4 the gun comes up at the viewer, the camera pushes in
-// p5 he fires: muzzle flash, recoil, the frame shakes, a casing flies,
-//    smoke curls off the barrel
+// p3 the gun comes up as his last step lands — no pause — and the camera
+//    pushes in
+// p4-p6 three rounds: each a muzzle flash, recoil, a frame flash and shake,
+//    and a casing; smoke curls off the barrel after the first
 //
 // Plays ONCE and holds — loopAt is null. The smoke, fog and the lamp's sway
 // keep running on the held frame; that is ambient, not a restart.
-const CUES = [150, 600, 2700, 3050, 3700];
+const CUES = [150, 600, 2620, 2900, 3180, 3500];
 
 export default function Mafia({ mode = "animated", loopAt = null }) {
   const { phase, run, isStatic } = usePhases(CUES, { mode, loopAt });
@@ -142,6 +142,11 @@ function Gangster() {
           <stop offset="0.18" stopColor="#4b4640" />
           <stop offset="0.7" stopColor="#2b2724" />
           <stop offset="1" stopColor="#1a1816" />
+        </linearGradient>
+        <linearGradient id="mf-slidetop" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#7b746b" />
+          <stop offset="0.35" stopColor="#3f3a35" />
+          <stop offset="1" stopColor="#1c1a18" />
         </linearGradient>
         <radialGradient id="mf-flashglow">
           <stop offset="0" stopColor="#fff3cf" stopOpacity="0.95" />
@@ -327,9 +332,22 @@ function Gangster() {
         <path d="M66,88 C53,88 45,96 44,110 L41,160 C40,178 39,196 41,214 L55,216 C56,198 57,178 59,160 L62,118 Z" fill="url(#mf-sleeve)" />
         <path d="M54,92 C48,96 45,102 44,110" stroke={LIT} strokeWidth="1.6" fill="none" opacity="0.6" />
         <path d="M41,212 L55,210 L55,216 L41,218 Z" fill="#1e1e20" />
-        <path d="M43,226 L50,226 L50,262 L43,262 Z" fill="url(#mf-steel)" />
-        <path d="M43,226 L43,262" stroke={LIT} strokeWidth="0.6" opacity="0.4" />
-        <path d="M41,217 C39,226 41,238 47,240 C53,241 57,234 56,226 L55,215 Z" fill="url(#mf-glove)" />
+        {/* the pistol, slide-top to camera, muzzle down along the thigh */}
+        <path d="M45.2,232 L51.4,232 L51.2,262 C51.2,264 50,265 48.3,265 C46.6,265 45.4,264 45.4,262 Z" fill="url(#mf-slidetop)" />
+        <path d="M46.2,234 L46.4,262" stroke={LIT} strokeWidth="0.55" opacity="0.55" />
+        <path d="M50.4,234 L50.2,262" stroke="#000" strokeWidth="0.6" opacity="0.7" />
+        <path d="M46,240 L50.6,240 M46,243 L50.6,243" stroke="#000" strokeWidth="0.4" opacity="0.5" />
+        <path d="M47.6,261 L49,261 L49,263.6 L47.6,263.6 Z" fill="#4a4540" />
+        <path d="M51.3,236 C53.6,238 54,244 52.2,247 L51.3,247" fill="none" stroke="#26231f" strokeWidth="1.3" />
+        <ellipse cx="48.3" cy="264.6" rx="2.6" ry="0.9" fill="#0a0908" />
+        {/* the fist round the grip: knuckles to the outside, thumb forward */}
+        <path d="M40.6,216 C39.4,223 39.8,231 41.6,237.5 L55.2,238 C56.6,231 56.8,223 55.6,215.5 Z" fill="url(#mf-glove)" />
+        <path d="M41.2,221 C40.4,226 40.6,231 41.6,236 M41,224.5 L43.6,224.8 M41,228.6 L43.8,228.9 M41.4,232.6 L44,232.9" stroke="#000" strokeWidth="0.7" fill="none" />
+        <path d="M40.8,222 C40.2,226 40.4,230 41,233" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.4" />
+        <path d="M54.6,219 C57.4,222 57.6,230 55.4,236 C54,238.6 51,238.4 50.4,236 C50.4,231 51.2,225 52,220 Z" fill="url(#mf-glove)" />
+        <path d="M56.4,224 C56.9,228 56.6,232 55.4,235" stroke={LIT} strokeWidth="0.6" fill="none" opacity="0.4" />
+        <path d="M52,221 C51.2,226 50.8,231 50.8,235.5" stroke="#000" strokeWidth="0.7" fill="none" />
+        <path d="M40.8,219.4 C45.5,220.4 50.5,220.4 55.4,218.8" stroke="#2c2c30" strokeWidth="0.8" fill="none" />
       </g>
 
       {/* ---- gun arm, levelled at the camera ---- */}
@@ -382,13 +400,17 @@ function Gangster() {
         <path d="M99,58.4 L101,58.4" stroke={LIT} strokeWidth="0.5" opacity="0.8" />
         {/* the shot. Fired straight at the camera, so the flash is a burst
             round the bore rather than a jet out of the side */}
-        <g className="mf-muzzle">
-          <circle cx="100" cy="67.6" r="22" fill="url(#mf-flashglow)" />
-          <path d={FLASH_D} fill="#ffd27a" />
-          <path d={FLASH_D} fill="#fff6dc" transform="translate(100 67.6) scale(0.55) translate(-100 -67.6)" />
-          <circle cx="100" cy="67.6" r="3.6" fill="#ffffff" />
-        </g>
-        <rect className="mf-casing" x="86" y="64" width="2.6" height="5.4" rx="0.7" fill="#c9a04a" />
+        {SHOTS.map((k) => (
+          <g key={k} className={`mf-muzzle mf-muzzle-${k}`}>
+            <circle cx="100" cy="67.6" r="22" fill="url(#mf-flashglow)" />
+            <path d={FLASH_D} fill="#ffd27a" />
+            <path d={FLASH_D} fill="#fff6dc" transform="translate(100 67.6) scale(0.55) translate(-100 -67.6)" />
+            <circle cx="100" cy="67.6" r="3.6" fill="#ffffff" />
+          </g>
+        ))}
+        {SHOTS.map((k) => (
+          <rect key={k} className={`mf-casing mf-casing-${k}`} x="86" y="64" width="2.6" height="5.4" rx="0.7" fill="#c9a04a" />
+        ))}
         <g className="mf-gunsmoke" fill="none" stroke="#d8d2c6" strokeLinecap="round" filter="url(#mf-softer)">
           <path className="mf-gs mf-gs-a" d="M100,62 C96,54 104,46 99,36 C95,28 102,20 98,10" strokeWidth="3" />
           <path className="mf-gs mf-gs-b" d="M100,62 C105,54 97,44 103,34 C108,26 101,18 105,8" strokeWidth="2.4" />
@@ -399,6 +421,8 @@ function Gangster() {
     </svg>
   );
 }
+
+const SHOTS = [1, 2, 3];
 
 // a ten-point burst round the muzzle, long and short rays alternating
 const FLASH_D = (() => {
