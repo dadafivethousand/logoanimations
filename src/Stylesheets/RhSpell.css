@@ -22,20 +22,16 @@
 .rs-kicker {
   font-family: "Cinzel", Georgia, serif;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 10.5px;
   letter-spacing: 3px;
   fill: #8a5a2c;
 }
-/* the day, in gold on the red house banner */
 .rs-day {
   font-family: "Cinzel", Georgia, serif;
   font-weight: 700;
-  font-size: 28px;
-  letter-spacing: 4px;
-  fill: url(#rs-goldtxt);
-  stroke: #3a0208;
-  stroke-width: 0.6px;
-  paint-order: stroke;
+  font-size: 31px;
+  letter-spacing: 3px;
+  fill: #4a2210;
 }
 .rs-name {
   font-family: "IM Fell English", Georgia, serif;

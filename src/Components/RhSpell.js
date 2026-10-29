@@ -1,13 +1,11 @@
-// RhSpell.js — today's classes at Richmond Hill Jiu-Jitsu, as a wizard duel.
+// RhSpell.js — today's classes at Richmond Hill Jiu-Jitsu, cast by a wand.
 //
-// A castle on a cliff over a black lake, a full moon, floating candles. An
-// owl swoops in with a scroll in its talons and drops it; the scroll unrolls
-// under a red-and-gold house banner with the day on it. A wand rises into
-// frame and, for each class, winds up in a swish, flicks, and fires a
-// crackling bolt across the frame — it slams into the page with a flash, a
-// shockwave and a shower of sparks, and the class bursts onto the parchment
-// from the point of impact. To finish, the wand carves a lightning bolt in the
-// air and RHBJJ.CA lands under the scroll.
+// A candlelit stone hall, candles floating in the dark. A parchment scroll
+// unrolls with the day at its head. A wand rises into frame and, for each
+// class, winds up in a swish, flicks, and fires a jet of light — it slams
+// into the page with a flash, a shockwave and a shower of sparks, and the
+// class bursts onto the parchment from the point of impact. The page
+// shimmers and RHBJJ.CA appears under the scroll.
 //
 // Wizard-school styling: no names, crests, characters, spell words or
 // lettering from any film or book.
@@ -85,18 +83,16 @@ const seeded = (i, n) => {
 
 const SX0 = 44;
 const SX1 = 316;
-const ROLL_TOP = 128;
-const PAGE_BOTTOM = 468;
+const ROLL_TOP = 150;
+const PAGE_BOTTOM = 494;
 const BLOCK_H = 70;
-const READY = [262, 552]; // where the wand tip rests between spells
+const READY = [262, 574]; // where the wand tip rests between spells
 
 /* ---------------------------------------------------------------- timing */
 
-const T_OWL = [0.25, 1.55];
-const T_DROP = 1.2;
-const T_UNROLL = [1.2, 1.85];
-const T_WAND_IN = [1.6, 2.25];
-const T_FIRST = 2.3;
+const T_UNROLL = [0.45, 1.25];
+const T_WAND_IN = [1.05, 1.7];
+const T_FIRST = 1.75;
 const CYCLE = 1.25;
 // within a cycle
 const C_SWISH = 0.42; // wind-up loop ends
@@ -120,54 +116,8 @@ function plan(n) {
     return { t0, fire: t0 + C_FIRE, hit: t0 + C_HIT, end: t0 + CYCLE };
   });
   const fin = lines[n - 1].end;
-  return { lines, bolt: [fin, fin + 0.75], finHit: fin + 0.8, exit: fin + 1.25, end: fin + 3.2 };
+  return { lines, finale: fin + 0.1, exit: fin + 0.25, end: fin + 2.6 };
 }
-
-/* ---------------------------------------------------------------- the owl */
-
-function owlWings(flap) {
-  // flap in [-1, 1]: wings up to wings down
-  const wy = -14 * flap;
-  return `M-4,-2 C-14,${f1(-6 + wy * 0.6)} -24,${f1(-4 + wy)} -30,${f1(2 + wy * 1.1)} C-22,${f1(6 + wy * 0.5)} -12,6 -3,5 Z M4,-2 C14,${f1(-6 + wy * 0.6)} 24,${f1(-4 + wy)} 30,${f1(2 + wy * 1.1)} C22,${f1(6 + wy * 0.5)} 12,6 3,5 Z`;
-}
-
-/* ---------------------------------------------------------------- castle */
-
-const CASTLE = (() => {
-  // towers: [x, width, top, roof height]
-  const towers = [
-    [34, 16, 520, 26],
-    [58, 22, 496, 34],
-    [92, 14, 530, 20],
-    [118, 28, 470, 44],
-    [156, 18, 506, 30],
-    [186, 34, 452, 52],
-    [228, 16, 498, 28],
-    [252, 26, 478, 40],
-    [288, 14, 516, 22],
-    [312, 20, 500, 30],
-  ];
-  let d = "";
-  const windows = [];
-  towers.forEach(([x, w, top, rh], i) => {
-    d += ` M${x},562 L${x},${top} L${x + w / 2},${top - rh} L${x + w},${top} L${x + w},562 Z`;
-    const rows = Math.floor((560 - top) / 16);
-    for (let r = 0; r < rows; r++) {
-      if (seeded(i, r + 3) > 0.45) windows.push([x + w / 2 - 1.6, top + 8 + r * 16, seeded(i, r + 9)]);
-    }
-  });
-  d += " M20,562 L20,540 L340,540 L340,562 Z";
-  return { d, windows };
-})();
-
-// the finale's lightning bolt, carved big across the page
-const BOLT_SHAPE = [
-  [226, 250],
-  [168, 352],
-  [206, 356],
-  [140, 462],
-];
-const BOLT_C = [184, 356];
 
 export default function RhSpell({ mode = "animated", day: dayProp }) {
   const q = useMemo(() => new URLSearchParams(window.location.search), []);
@@ -183,8 +133,8 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
   const classes = SCHEDULE[day];
   const P = useMemo(() => plan(classes.length), [classes.length]);
 
-  const areaTop = 236;
-  const areaH = PAGE_BOTTOM - 18 - areaTop;
+  const areaTop = ROLL_TOP + 96;
+  const areaH = PAGE_BOTTOM - 20 - areaTop;
   const blocksTop = areaTop + (areaH - classes.length * BLOCK_H) / 2;
   const blockY = (i) => blocksTop + i * BLOCK_H;
   const target = (i) => [180, blockY(i) + 30];
@@ -198,14 +148,6 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
     const r = R.current;
     const set = (k, a, v) => r[k] && r[k].setAttribute(a, v);
     const n = classes.length;
-
-    const boltAt = (k) => {
-      const segs = BOLT_SHAPE.length - 1;
-      const x = clamp(k, 0, 1) * segs;
-      const i = Math.min(segs - 1, Math.floor(x));
-      const f = x - i;
-      return [lerp(BOLT_SHAPE[i][0], BOLT_SHAPE[i + 1][0], f), lerp(BOLT_SHAPE[i][1], BOLT_SHAPE[i + 1][1], f)];
-    };
 
     // where the wand tip is
     function tip(t) {
@@ -236,19 +178,9 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
           return [READY[0] + Math.cos(aim) * 34 * (1 - u) + 6 * Math.sin(u * 9) * (1 - u), READY[1] + Math.sin(aim) * 34 * (1 - u)];
         }
       }
-      if (t < P.bolt[0]) return READY;
-      if (t < P.bolt[0] + 0.2) {
-        const u = ease((t - P.bolt[0]) / 0.2);
-        return [lerp(READY[0], BOLT_SHAPE[0][0], u), lerp(READY[1], BOLT_SHAPE[0][1], u)];
-      }
-      if (t < P.bolt[1]) return boltAt((t - P.bolt[0] - 0.2) / (P.bolt[1] - P.bolt[0] - 0.2));
-      if (t < P.exit) {
-        const u = easeOut((t - P.bolt[1]) / (P.exit - P.bolt[1]));
-        const e = BOLT_SHAPE[BOLT_SHAPE.length - 1];
-        return [lerp(e[0], 238, u), lerp(e[1], 540, u)];
-      }
-      const u = ease((t - P.exit) / 0.7);
-      return [lerp(238, 470, u), lerp(540, 800, u)];
+      if (t < P.exit) return READY;
+      const u = ease((t - P.exit) / 0.8);
+      return [lerp(READY[0], 470, u), lerp(READY[1], 800, u)];
     }
 
     // how hard sparks pour off the tip
@@ -258,33 +190,35 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
         if (c >= 0 && c < C_SWISH) return 0.55;
         if (c >= C_SWISH && c < C_FIRE + 0.1) return 1;
       }
-      if (t >= P.bolt[0] + 0.2 && t < P.bolt[1]) return 1;
       return t > T_WAND_IN[0] && t < P.exit ? 0.12 : 0;
     }
 
-    // a jagged bolt from a to b, re-struck every tick so it crackles
-    function boltPath(a, b, headK, seed) {
-      const N = 12;
+    // the spell's flight: a gentle curve from the wand tip to the line
+    function jet(a, b) {
+      const mx = (a[0] + b[0]) / 2;
+      const my = (a[1] + b[1]) / 2;
       const dx = b[0] - a[0];
       const dy = b[1] - a[1];
       const L = Math.hypot(dx, dy) || 1;
-      const nx = -dy / L;
-      const ny = dx / L;
-      let d = `M${f1(a[0])},${f1(a[1])}`;
-      const last = Math.max(1, Math.round(N * headK));
-      for (let k = 1; k <= last; k++) {
-        const u = k / N;
-        const env = Math.sin(Math.min(1, u) * Math.PI);
-        const j = (seeded(seed, k) - 0.5) * 22 * env;
-        d += ` L${f1(a[0] + dx * u + nx * j)},${f1(a[1] + dy * u + ny * j)}`;
+      const c = [mx - (dy / L) * 34, my + (dx / L) * 34];
+      return (u) => [
+        (1 - u) * (1 - u) * a[0] + 2 * (1 - u) * u * c[0] + u * u * b[0],
+        (1 - u) * (1 - u) * a[1] + 2 * (1 - u) * u * c[1] + u * u * b[1],
+      ];
+    }
+    const seg = (B, u0, u1) => {
+      let d = "";
+      const N = 14;
+      for (let k = 0; k <= N; k++) {
+        const p = B(lerp(u0, u1, k / N));
+        d += `${k ? " L" : "M"}${f1(p[0])},${f1(p[1])}`;
       }
       return d;
-    }
+    };
 
     function render(ms) {
       const t = ms / 1000;
-      const tick = Math.floor(t * 30);
-
+      
       if (r.fade) r.fade.style.opacity = f1(1 - smooth(t / 0.5));
 
       /* shake and flash: every impact kicks the frame */
@@ -300,15 +234,6 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
           flash = Math.max(flash, 0.55 * Math.exp(-u * 10));
         }
       });
-      {
-        const u = t - P.finHit;
-        if (u > 0 && u < 0.8) {
-          const e = Math.exp(-u * 6);
-          sx += 9 * e * Math.sin(u * 80);
-          sy += 7 * e * Math.cos(u * 95);
-          flash = Math.max(flash, 0.75 * Math.exp(-u * 7));
-        }
-      }
       set("scene", "transform", `translate(${f1(sx)} ${f1(sy)})`);
       if (r.flash) r.flash.style.opacity = f1(flash);
 
@@ -320,33 +245,13 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
         const fl = r[`flame${i}`];
         if (fl) fl.setAttribute("transform", `scale(${f1((0.85 + 0.15 * Math.sin(t * 17 + i * 3)) * 100) / 100} ${f1((0.9 + 0.2 * Math.sin(t * 11 + i)) * 100) / 100})`);
       }
-      CASTLE.windows.forEach((w, i) => {
-        const el = r[`win${i}`];
-        if (el) el.setAttribute("opacity", f1(0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * (1 + w[2] * 3) + i))));
-      });
-
-      /* the owl: swoops in with the scroll, drops it, climbs away */
-      {
-        const k = (t - T_OWL[0]) / (T_OWL[1] - T_OWL[0]);
-        if (k > 0 && k < 1.05) {
-          const x = lerp(-60, 420, k);
-          const y = k < 0.6 ? lerp(10, 100, ease(k / 0.6)) : lerp(100, -60, ease((k - 0.6) / 0.4));
-          set("owl", "transform", `translate(${f1(x)} ${f1(y)}) rotate(${k < 0.6 ? 6 : -14}) scale(1.8)`);
-          set("owl-wings", "d", owlWings(Math.sin(t * 26)));
-          set("owl", "opacity", 1);
-          set("carried", "opacity", t < T_DROP ? 1 : 0);
-        } else {
-          set("owl", "opacity", 0);
-        }
-      }
-
-      /* the scroll drops, then unrolls downward */
+      /* the scroll unrolls downward */
       const ur = ease((t - T_UNROLL[0]) / (T_UNROLL[1] - T_UNROLL[0]));
       const bottom = lerp(ROLL_TOP + 14, PAGE_BOTTOM, ur);
       set("page-clip", "height", f1(bottom - ROLL_TOP));
       set("roll-bottom", "transform", `translate(0 ${f1(bottom - PAGE_BOTTOM)})`);
-      set("scroll", "opacity", t >= T_DROP ? 1 : 0);
-      set("head", "opacity", f1(smooth((t - 1.55) / 0.4)));
+      set("scroll", "opacity", f1(smooth((t - 0.3) / 0.3)));
+      set("head", "opacity", f1(smooth((t - 1.0) / 0.5)));
 
       /* each line: bolt out, impact, the class bursting outward from the hit */
       for (let i = 0; i < n; i++) {
@@ -355,12 +260,35 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
         const bu = t - L.fire;
         const bolt = r[`bolt${i}`];
         if (bolt) {
+          const flight = C_HIT - C_FIRE;
           if (bu > 0 && bu < BOLT_LIFE) {
-            const head = clamp(bu / (C_HIT - C_FIRE), 0, 1);
-            const d = boltPath(tip(L.fire), tg, head, tick * 7 + i * 101);
-            ["boltg", "boltm", "boltc"].forEach((k) => set(`${k}${i}`, "d", d));
-            const fadeK = bu < C_HIT - C_FIRE ? 1 : 1 - (bu - (C_HIT - C_FIRE)) / (BOLT_LIFE - (C_HIT - C_FIRE));
-            bolt.setAttribute("opacity", f1(clamp(fadeK, 0, 1)));
+            const B = jet(tip(L.fire), tg);
+            // the head flies out; after it lands the tail drains into the page
+            const head = clamp(bu / flight, 0, 1);
+            const drain = bu < flight ? 0 : (bu - flight) / (BOLT_LIFE - flight);
+            const tail = clamp(Math.max(head - 0.75, drain), 0, 1);
+            set(`boltg${i}`, "d", seg(B, tail, head));
+            set(`boltm${i}`, "d", seg(B, Math.max(tail, head - 0.4), head));
+            set(`boltc${i}`, "d", seg(B, Math.max(tail, head - 0.18), head));
+            const hp = B(head);
+            set(`bhead${i}`, "transform", `translate(${f1(hp[0])} ${f1(hp[1])}) scale(${f1(1 + 0.25 * Math.sin(t * 60))})`);
+            set(`bhead${i}`, "opacity", bu < flight ? 1 : 0);
+            // motes spiralling round the jet behind the head
+            for (let m = 0; m < 10; m++) {
+              const el = r[`bm${i}_${m}`];
+              if (!el) continue;
+              const u = head - m * 0.05;
+              if (u <= tail || u <= 0) {
+                el.setAttribute("opacity", 0);
+                continue;
+              }
+              const p0 = B(u);
+              const ang = u * 26 + m;
+              el.setAttribute("cx", f1(p0[0] + Math.cos(ang) * 6));
+              el.setAttribute("cy", f1(p0[1] + Math.sin(ang) * 6));
+              el.setAttribute("opacity", f1(1 - m / 10));
+            }
+            bolt.setAttribute("opacity", 1);
           } else bolt.setAttribute("opacity", 0);
         }
         const hu = t - L.hit;
@@ -396,44 +324,12 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
         }
       }
 
-      /* finale: the lightning bolt carved in the air, then it detonates */
+      /* finale: a shimmer down the page, and the site */
       {
-        const shown = t < P.bolt[0] + 0.2 ? 0 : clamp((t - P.bolt[0] - 0.2) / (P.bolt[1] - P.bolt[0] - 0.2), 0, 1);
-        const segs = BOLT_SHAPE.length - 1;
-        let d = `M${BOLT_SHAPE[0][0]},${BOLT_SHAPE[0][1]}`;
-        for (let i = 1; i <= segs; i++) {
-          if (shown * segs >= i) d += ` L${BOLT_SHAPE[i][0]},${BOLT_SHAPE[i][1]}`;
-          else {
-            const p = boltAt(shown);
-            d += ` L${f1(p[0])},${f1(p[1])}`;
-            break;
-          }
-        }
-        const after = t - P.finHit;
-        set("sigil", "opacity", f1(shown <= 0 ? 0 : after < 0 ? 1 : Math.max(0, 1 - after / 0.5)));
-        ["sigilg", "sigilm", "sigilc"].forEach((key) => set(key, "d", d));
-        if (after > 0 && after < 0.8) {
-          set("finring", "r", f1(10 + easeOut(after / 0.8) * 260));
-          set("finring", "opacity", f1(0.9 * (1 - after / 0.8)));
-        } else set("finring", "opacity", 0);
-        for (let j = 0; j < 60; j++) {
-          const el = r[`fb${j}`];
-          if (!el) continue;
-          if (after <= 0 || after > 1.3) {
-            el.setAttribute("opacity", 0);
-            continue;
-          }
-          const a = seeded(j, 21) * Math.PI * 2;
-          const v = 120 + seeded(j, 22) * 240;
-          el.setAttribute("cx", f1(BOLT_C[0] + Math.cos(a) * v * after * (1 - after * 0.35)));
-          el.setAttribute("cy", f1(BOLT_C[1] + Math.sin(a) * v * after * (1 - after * 0.35) + 90 * after * after));
-          el.setAttribute("r", f1((1 + seeded(j, 23) * 2) * (1 - after / 1.3)));
-          el.setAttribute("opacity", f1(1 - after / 1.3));
-        }
-        set("site", "opacity", f1(smooth((t - P.finHit - 0.2) / 0.5)));
-        const sh = (t - P.finHit) / 1.0;
+        const sh = (t - P.finale) / 1.1;
         set("shimmer", "opacity", sh > 0 && sh < 1 ? f1(Math.sin(sh * Math.PI) * 0.9) : 0);
         set("shimmer", "transform", `translate(0 ${f1(lerp(ROLL_TOP - 60, PAGE_BOTTOM + 40, clamp(sh, 0, 1)))})`);
+        set("site", "opacity", f1(smooth((t - P.finale - 0.4) / 0.6)));
       }
 
       /* the wand */
@@ -502,39 +398,30 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
   }, [renderMode, still, classes, P, blocksTop]);
 
   const CANDLES = [
-    [36, 60, 0.75],
-    [96, 96, 0.55],
-    [168, 40, 0.5],
-    [24, 250, 0.65],
-    [340, 230, 0.7],
-    [22, 420, 0.55],
-    [338, 400, 0.6],
-    [70, 30, 0.45],
-    [232, 92, 0.5],
-    [130, 64, 0.42],
+    [40, 70, 0.8],
+    [96, 112, 0.6],
+    [300, 60, 0.85],
+    [262, 118, 0.55],
+    [20, 300, 0.7],
+    [336, 270, 0.75],
+    [180, 34, 0.5],
+    [338, 560, 0.65],
+    [24, 590, 0.6],
+    [60, 470, 0.5],
   ];
 
   return (
     <div className={`rs${still ? " is-static" : ""}`}>
       <svg className="rs-svg" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden>
         <defs>
-          <linearGradient id="rs-night" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#0a0d1f" />
-            <stop offset="0.55" stopColor="#1b1a33" />
-            <stop offset="0.82" stopColor="#2a2238" />
-            <stop offset="1" stopColor="#07070d" />
-          </linearGradient>
-          <radialGradient id="rs-moon" cx="0.42" cy="0.4" r="0.6">
-            <stop offset="0" stopColor="#fffaf0" />
-            <stop offset="0.7" stopColor="#e9e2cf" />
-            <stop offset="1" stopColor="#c9c0aa" />
+          <radialGradient id="rs-hall" cx="0.5" cy="0.45" r="0.75">
+            <stop offset="0" stopColor="#3a2a1c" />
+            <stop offset="0.45" stopColor="#1b1510" />
+            <stop offset="1" stopColor="#07060a" />
           </radialGradient>
-          <radialGradient id="rs-moonglow">
-            <stop offset="0" stopColor="#d6dcff" stopOpacity="0.45" />
-            <stop offset="1" stopColor="#d6dcff" stopOpacity="0" />
-          </radialGradient>
-          <filter id="rs-cloud" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="6" />
+          <filter id="rs-stone" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.018 0.05" numOctaves="4" seed="5" />
+            <feColorMatrix type="matrix" values="0 0 0 0 0.5  0 0 0 0 0.42  0 0 0 0 0.36  0 0 0 0.22 0" />
           </filter>
           <radialGradient id="rs-flame" cx="0.5" cy="0.7" r="0.6">
             <stop offset="0" stopColor="#fffbe8" />
@@ -578,16 +465,6 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
             <stop offset="0.4" stopColor="#c9952f" />
             <stop offset="1" stopColor="#6a4410" />
           </linearGradient>
-          <linearGradient id="rs-banner" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#a3101e" />
-            <stop offset="0.5" stopColor="#7a0814" />
-            <stop offset="1" stopColor="#4a040b" />
-          </linearGradient>
-          <linearGradient id="rs-goldtxt" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#fff1b8" />
-            <stop offset="0.5" stopColor="#f2c14e" />
-            <stop offset="1" stopColor="#b8801c" />
-          </linearGradient>
           <filter id="rs-glow" x="-30%" y="-60%" width="160%" height="220%">
             <feGaussianBlur stdDeviation="3.2" result="b" />
             <feMerge>
@@ -620,10 +497,6 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
             <stop offset="0.5" stopColor="#fff3c4" stopOpacity="0.55" />
             <stop offset="1" stopColor="#fff3c4" stopOpacity="0" />
           </linearGradient>
-          <linearGradient id="rs-lake" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#1a1d33" />
-            <stop offset="1" stopColor="#05050a" />
-          </linearGradient>
           <clipPath id="rs-pageclip">
             <rect ref={ref("page-clip")} x={SX0 - 12} y={ROLL_TOP} width={SX1 - SX0 + 24} height="10" />
           </clipPath>
@@ -635,29 +508,9 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
         </defs>
 
         <g ref={ref("scene")}>
-          {/* ---- night sky, moon, a little cloud ---- */}
-          <rect x="-20" y="-20" width={W + 40} height={H + 40} fill="url(#rs-night)" />
-          {Array.from({ length: 50 }, (_, i) => (
-            <circle key={i} cx={seeded(i, 30) * W} cy={seeded(i, 31) * 420} r={0.4 + seeded(i, 32) * 0.9} fill="#e8ecff" opacity={0.3 + seeded(i, 33) * 0.6} />
-          ))}
-          <circle cx="292" cy="78" r="90" fill="url(#rs-moonglow)" />
-          <circle cx="292" cy="78" r="30" fill="url(#rs-moon)" />
-          <g filter="url(#rs-cloud)" opacity="0.6">
-            <ellipse cx="250" cy="96" rx="60" ry="8" fill="#2a2a44" />
-            <ellipse cx="90" cy="150" rx="80" ry="10" fill="#22223a" />
-          </g>
-
-          {/* ---- the castle on its cliff, the lake under it ---- */}
-          <path d="M-20,640 L-20,566 C40,556 80,570 130,562 C190,552 240,566 300,558 C330,554 360,560 380,566 L380,640 Z" fill="#0b0a12" />
-          <path d={CASTLE.d} fill="#0e0c18" />
-          {CASTLE.windows.map(([x, y], i) => (
-            <rect key={i} ref={ref(`win${i}`)} x={x} y={y} width="3.2" height="5" fill="#ffcf6a" />
-          ))}
-          <rect x="-20" y="590" width={W + 40} height="70" fill="url(#rs-lake)" />
-          {CASTLE.windows.map(([x, y], i) => (
-            <rect key={`r${i}`} x={x - 0.4} y={590 + (562 - y) * 0.35} width="4" height="1.2" fill="#ffcf6a" opacity="0.35" />
-          ))}
-          <path d="M-20,590 L380,590" stroke="#3a3a5a" strokeWidth="0.8" opacity="0.6" />
+          {/* ---- the hall: warm stone falling off into the dark ---- */}
+          <rect x="-20" y="-20" width={W + 40} height={H + 40} fill="url(#rs-hall)" />
+          <rect x="-20" y="-20" width={W + 40} height={H + 40} filter="url(#rs-stone)" />
 
           {/* ---- floating candles ---- */}
           {CANDLES.map(([x, y, s], i) => (
@@ -689,17 +542,17 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
               <rect x={SX0} y={PAGE_BOTTOM - 20} width={SX1 - SX0} height="20" fill="#000" opacity="0.15" />
 
               <g ref={ref("head")} opacity="0">
-                {/* the house banner across the head of the page */}
-                <path d="M34,150 L326,150 L318,171 L326,192 L34,192 L42,171 Z" fill="url(#rs-banner)" />
-                <path d="M34,150 L326,150 M34,192 L326,192" stroke="#e8b84a" strokeWidth="2.2" />
-                <path d="M38,155.5 L322,155.5 M38,186.5 L322,186.5" stroke="#e8b84a" strokeWidth="0.8" opacity="0.8" />
-                <text x="180" y="181" textAnchor="middle" className="rs-day">
+                <text x="180" y={ROLL_TOP + 38} textAnchor="middle" className="rs-kicker">
+                  TODAY AT THE ACADEMY
+                </text>
+                <text x="180" y={ROLL_TOP + 70} textAnchor="middle" className="rs-day">
                   {day.toUpperCase()}
                 </text>
-                <text x="180" y="217" textAnchor="middle" className="rs-kicker">
-                  TODAY&#8217;S CLASSES
-                </text>
-                <path d="M110,225 C135,221 158,228 180,224 C202,228 225,221 250,225" stroke="#7a4a22" strokeWidth="1" fill="none" />
+                {/* a flourished rule */}
+                <path d={`M92,${ROLL_TOP + 82} C120,${ROLL_TOP + 76} 150,${ROLL_TOP + 86} 180,${ROLL_TOP + 80} C210,${ROLL_TOP + 86} 240,${ROLL_TOP + 76} 268,${ROLL_TOP + 82}`} stroke="#7a4a22" strokeWidth="1.1" fill="none" />
+                <path d={`M180,${ROLL_TOP + 76} L184,${ROLL_TOP + 80} L180,${ROLL_TOP + 84} L176,${ROLL_TOP + 80} Z`} fill="#7a4a22" />
+                <circle cx="92" cy={ROLL_TOP + 82} r="1.6" fill="#7a4a22" />
+                <circle cx="268" cy={ROLL_TOP + 82} r="1.6" fill="#7a4a22" />
               </g>
 
               {classes.map(([name, a, b], i) => (
@@ -744,9 +597,17 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
             return (
               <g key={`s${i}`}>
                 <g ref={ref(`bolt${i}`)} opacity="0" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                  <path ref={ref(`boltg${i}`)} stroke={C.glow} strokeWidth="12" opacity="0.55" filter="url(#rs-bloom)" />
-                  <path ref={ref(`boltm${i}`)} stroke={C.mid} strokeWidth="4.2" />
-                  <path ref={ref(`boltc${i}`)} stroke={C.core} strokeWidth="1.6" />
+                  <path ref={ref(`boltg${i}`)} stroke={C.glow} strokeWidth="14" opacity="0.5" filter="url(#rs-bloom)" />
+                  <path ref={ref(`boltm${i}`)} stroke={C.mid} strokeWidth="5" opacity="0.9" />
+                  <path ref={ref(`boltc${i}`)} stroke={C.core} strokeWidth="2.2" />
+                  <g ref={ref(`bhead${i}`)}>
+                    <circle r="13" fill={C.glow} opacity="0.45" filter="url(#rs-bloom)" />
+                    <circle r="6.5" fill={C.mid} />
+                    <circle r="3.4" fill={C.core} />
+                  </g>
+                  {Array.from({ length: 10 }, (__, m) => (
+                    <circle key={m} ref={ref(`bm${i}_${m}`)} r="1.4" fill={C.core} opacity="0" />
+                  ))}
                 </g>
                 <circle ref={ref(`ring${i}`)} cx={target(i)[0]} cy={target(i)[1]} r="8" fill="none" stroke={C.mid} strokeWidth="2.4" opacity="0" />
                 <circle ref={ref(`core${i}`)} cx={target(i)[0]} cy={target(i)[1]} r="14" fill="url(#rs-core)" opacity="0" />
@@ -757,39 +618,9 @@ export default function RhSpell({ mode = "animated", day: dayProp }) {
             );
           })}
 
-          {/* ---- the finale's lightning bolt ---- */}
-          <g ref={ref("sigil")} opacity="0" fill="none" strokeLinecap="round" strokeLinejoin="miter">
-            <path ref={ref("sigilg")} stroke="#ff9a1a" strokeWidth="22" opacity="0.6" filter="url(#rs-bloom)" />
-            <path ref={ref("sigilm")} stroke="#ffd25a" strokeWidth="8" />
-            <path ref={ref("sigilc")} stroke="#fffbe8" strokeWidth="3" />
-          </g>
-          <circle ref={ref("finring")} cx={BOLT_C[0]} cy={BOLT_C[1]} r="10" fill="none" stroke="#ffe08a" strokeWidth="3" opacity="0" />
-          {Array.from({ length: 60 }, (_, j) => (
-            <circle key={j} ref={ref(`fb${j}`)} r="1" fill={j % 3 ? "#ffd25a" : "#ffffff"} opacity="0" />
-          ))}
-
-          <text ref={ref("site")} x="180" y="512" textAnchor="middle" className="rs-site" opacity="0">
+          <text ref={ref("site")} x="180" y={PAGE_BOTTOM + 46} textAnchor="middle" className="rs-site" opacity="0">
             RHBJJ.CA
           </text>
-
-          {/* ---- the owl, with the rolled scroll in its talons ---- */}
-          <g ref={ref("owl")} opacity="0">
-            <g ref={ref("carried")}>
-              <rect x="-22" y="12" width="44" height="9" rx="4.5" fill="url(#rs-wood)" />
-              <rect x="-19" y="13.5" width="38" height="6" rx="3" fill="#e2c892" />
-              <path d="M-4,8 L-6,14 M4,8 L6,14" stroke="#1a120a" strokeWidth="1.6" />
-            </g>
-            <path ref={ref("owl-wings")} fill="#3a2c36" />
-            <ellipse cx="0" cy="2" rx="8" ry="10" fill="#4a3a42" />
-            <ellipse cx="0" cy="4" rx="5" ry="6.5" fill="#6a5658" opacity="0.7" />
-            <circle cx="0" cy="-9" r="7" fill="#4a3a42" />
-            <path d="M-6,-13 L-4,-19 L-2,-14 M6,-13 L4,-19 L2,-14" fill="#4a3a42" stroke="#4a3a42" strokeWidth="1" />
-            <circle cx="-2.6" cy="-9.5" r="1.9" fill="#ffcf4a" />
-            <circle cx="2.6" cy="-9.5" r="1.9" fill="#ffcf4a" />
-            <circle cx="-2.6" cy="-9.5" r="0.8" fill="#000" />
-            <circle cx="2.6" cy="-9.5" r="0.8" fill="#000" />
-            <path d="M-1,-7 L0,-5 L1,-7 Z" fill="#c9a04a" />
-          </g>
 
           {/* ---- the wand ---- */}
           <g ref={ref("wand")}>
