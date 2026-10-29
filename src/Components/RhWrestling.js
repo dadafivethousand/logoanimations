@@ -310,7 +310,7 @@ export default function RhWrestling({ mode = "animated", day: dayProp }) {
           </clipPath>
           {classes.map((_, i) => (
             <clipPath key={i} id={`ow-rowclip${i}`}>
-              <rect ref={ref(`rowclip${i}`)} x={ROW_X0 - 10} y={rowY(i) - 4} width="0" height={ROW_H + 8} />
+              <rect ref={ref(`rowclip${i}`)} x={ROW_X0 - 10} y={rowY(i) - (i ? 1 : 4)} width="0" height={ROW_H + (i ? 1 : 4)} />
             </clipPath>
           ))}
           <clipPath id="ow-medalclip">
