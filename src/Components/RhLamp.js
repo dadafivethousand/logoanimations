@@ -98,7 +98,7 @@ const WORD_X = (() => {
   });
 })();
 const LAMP_S = 1.5; // the lamp stands well over the letters
-const LETTER_H = 43;
+const LETTER_H = 31.8; // the I's actual ink height at 46px — the lamp lands right on it
 
 /* ---------------------------------------------------------------- timing */
 
