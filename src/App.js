@@ -21,10 +21,14 @@ import "./Stylesheets/App.css";
 // import MapleClimb from "./Components/MapleClimb";
 // import Mafia from "./Components/Mafia";
 // import Thug from "./Components/Thug";
-import Bratva from "./Components/Bratva";
+// import Bratva from "./Components/Bratva";
+// import Cowboy from "./Components/Cowboy";
+// import Yakuza from "./Components/Yakuza";
+// import Hitman from "./Components/Hitman";
+import Thug2 from "./Components/Thug2";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Bratva mode="animated" />;
+  return <Thug2 mode="animated" />;
 }
 export default App;

@@ -356,6 +356,16 @@ levels a pistol at the camera.
 **Thug** is the same hook restyled as a modern rap video (balaclava, puffer,
 gold chain, sideways grip) and carries the same Maple Jiu Jitsu chest patch —
 the user compares the two takes side by side.
+The same hook has since been cast as more shooters, all built to Thug's 200x400
+viewBox and feet line so the takes cut together, each with the Maple leaf worn
+somewhere and no text: **Bratva** (90s Russian, leather jacket, sodium lamp in
+the snow), **Thug2** (hood + red bandana, high beams in a parking deck),
+**Yakuza** (white suit, irezumi, lantern alley), **Hitman** (suppressed pistol,
+quiet shots, hotel corridor) and **Cowboy** (high noon, fanned revolver).
+Recording these: a heavy SVG set can stall `record.js` on the opening flash
+(one bright frame held ~0.8s). Check the first 1.5s with ffmpeg `signalstats`
+YAVG and re-record, or render frame by frame with `tools/record-frames.js`
+(Hitman exposes `?render=1`).
 
 Two themes depart from this, both because the user asked for it, and neither is
 a new licence: SoundOn renders a "SOUND ON" cue, and **Pokemon renders a promo**
