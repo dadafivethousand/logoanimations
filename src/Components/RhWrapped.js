@@ -1,7 +1,7 @@
 // RhWrapped.js — a day's classes at Richmond Hill Jiu-Jitsu as a year-in-
 // review style music recap, story format.
 //
-// Story slides with progress bars across the top: "Your Monday, Wrapped." on
+// Story slides with progress bars across the top: "Your Monday Playlist." on
 // purple with blobs turning behind it; then a slide per class — "Your top
 // class" with a record spinning and an equalizer bouncing, "On repeat" with
 // rings pulsing — each a new colour, each coming in on a circle wipe; and a
@@ -304,7 +304,7 @@ export default function RhWrapped({ mode = "animated", day: dayProp }) {
               return <path key={k} d={`M300,140 L${f1(300 + Math.cos(a) * 34)},${f1(140 + Math.sin(a) * 34)}`} stroke="#3ad2ff" strokeWidth="6" strokeLinecap="round" />;
             })}
           </g>
-          {["Your", `${day},`, "Wrapped."].map((w, k) => (
+          {["Your", day, "Playlist."].map((w, k) => (
             <text key={k} ref={ref(`iw${k}`)} x="180" y={INTRO_Y[k]} textAnchor="middle" className={`wr-intro${k === 2 ? " wr-intro-hot" : ""}`} opacity="0">
               {w}
             </text>
@@ -393,7 +393,7 @@ export default function RhWrapped({ mode = "animated", day: dayProp }) {
               My {day}
             </text>
             <text x="62" y="258" className="wr-cardtitle wr-intro-hot">
-              Wrapped
+              Playlist
             </text>
             <text x="62" y="300" className="wr-cardkick">
               TOP CLASSES
