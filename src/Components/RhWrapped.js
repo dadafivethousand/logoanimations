@@ -426,6 +426,17 @@ export default function RhWrapped({ mode = "animated", day: dayProp }) {
           </g>
         </g>
 
+        {/* ---- the app badge, top-left, on every slide ---- */}
+        <g transform="translate(36 56)">
+          <circle r="13" fill="#1ed760" />
+          <path d="M-7.6,-3.6 C-2.4,-5.4 3.4,-5 8,-2.4" stroke="#000" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+          <path d="M-6.4,0.8 C-2,-0.6 2.8,-0.3 6.6,1.8" stroke="#000" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+          <path d="M-5.2,4.8 C-1.6,3.8 2.2,4 5.2,5.6" stroke="#000" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+          <text x="20" y="5.5" className="wr-app">
+            Spotify
+          </text>
+        </g>
+
         {/* ---- story progress bars ---- */}
         {Array.from({ length: slides }, (_, s) => (
           <g key={s}>

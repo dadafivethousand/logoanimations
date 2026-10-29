@@ -85,3 +85,11 @@
   letter-spacing: 1.5px;
   fill: #ffffff;
 }
+
+.wr-app {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: -0.3px;
+  fill: #ffffff;
+}
