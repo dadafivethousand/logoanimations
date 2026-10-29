@@ -22,16 +22,20 @@
 .rs-kicker {
   font-family: "Cinzel", Georgia, serif;
   font-weight: 700;
-  font-size: 10.5px;
+  font-size: 11px;
   letter-spacing: 3px;
   fill: #8a5a2c;
 }
+/* the day, in gold on the red house banner */
 .rs-day {
   font-family: "Cinzel", Georgia, serif;
   font-weight: 700;
-  font-size: 31px;
-  letter-spacing: 3px;
-  fill: #4a2210;
+  font-size: 28px;
+  letter-spacing: 4px;
+  fill: url(#rs-goldtxt);
+  stroke: #3a0208;
+  stroke-width: 0.6px;
+  paint-order: stroke;
 }
 .rs-name {
   font-family: "IM Fell English", Georgia, serif;
@@ -52,8 +56,8 @@
 .rs-site {
   font-family: "Cinzel", Georgia, serif;
   font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 4px;
+  font-size: 17px;
+  letter-spacing: 5px;
   fill: #f0cf8a;
 }
 
@@ -62,6 +66,15 @@
   inset: 0;
   pointer-events: none;
   background: radial-gradient(ellipse 80% 70% at 50% 48%, transparent 50%, rgba(0, 0, 0, 0.75) 100%);
+}
+/* the white-gold flash of each impact */
+.rs-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, #fff6dc, #ffd88a 55%, #a86a20);
+  mix-blend-mode: screen;
+  opacity: 0;
 }
 .rs-grain {
   position: absolute;
