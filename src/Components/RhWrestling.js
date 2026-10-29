@@ -76,7 +76,7 @@ const MAT = { cx: 180, cy: 500, rx: 210, ry: 96 };
 const ROW_X0 = 34;
 const ROW_X1 = 326;
 const ROW_H = 46;
-const ROW_GAP = 12;
+const ROW_GAP = 0; // the bars stack into one block, a divider between them
 const ROWS_TOP = 214;
 const TIME_W = 104;
 
@@ -449,6 +449,13 @@ export default function RhWrestling({ mode = "animated", day: dayProp }) {
                       {ap}
                     </text>
                   </g>
+                  {/* the divider where this bar meets the one above */}
+                  {i > 0 && (
+                    <>
+                      <rect x={ROW_X0} y={y - 1} width={ROW_X1 - ROW_X0} height="2.4" fill="#060b1e" />
+                      <rect x={ROW_X0} y={y + 1.4} width={ROW_X1 - ROW_X0} height="0.8" fill="#f2bf3a" opacity="0.7" />
+                    </>
+                  )}
                   <rect ref={ref(`glint${i}`)} x="0" y={y} width="60" height={ROW_H} fill="url(#ow-glint)" opacity="0" style={{ mixBlendMode: "screen" }} transform="skewX(-20)" />
                 </g>
               </g>
