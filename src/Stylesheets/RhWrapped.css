@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@700;800;900&display=swap");
+
+/* RhWrapped — a day's classes as a story-format music-recap. Everything
+   moving is set per frame from RhWrapped.js. Colour story: loud flat
+   colour per slide — purple, hot pink, acid lime — over near-black. */
+
+.wr {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #121014;
+}
+.wr-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.wr-intro {
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-size: 52px;
+  letter-spacing: -1.5px;
+  fill: #ffffff;
+}
+.wr-intro-hot {
+  fill: #c6f432;
+}
+.wr-label {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.2px;
+}
+.wr-big {
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-size: 70px;
+  letter-spacing: -3px;
+}
+.wr-chip {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+}
+.wr-reclabel {
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  fill: #ffffff;
+}
+.wr-cardkick {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  fill: #b9b2c6;
+}
+.wr-cardtitle {
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-size: 34px;
+  letter-spacing: -1px;
+  fill: #ffffff;
+}
+.wr-rank {
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-size: 20px;
+}
+.wr-rowname {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  font-size: 19px;
+  fill: #ffffff;
+}
+.wr-rowtime {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  fill: #b9b2c6;
+}
+.wr-site {
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  fill: #ffffff;
+}
