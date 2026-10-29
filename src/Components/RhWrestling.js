@@ -122,6 +122,11 @@ export default function RhWrestling({ mode = "animated", day: dayProp }) {
   const classes = SCHEDULE[day];
   const P = useMemo(() => plan(classes.length), [classes.length]);
   const rowY = (i) => ROWS_TOP + i * (ROW_H + ROW_GAP);
+  // the medal hangs straight off the last bar: the ribbon starts tucked under
+  // its bottom edge, and that is the point it swings from
+  const RIBBON_TOP = rowY(classes.length - 1) + ROW_H - 6;
+  const MEDAL_PIVOT = RIBBON_TOP + 70;
+  const MEDAL_Y = RIBBON_TOP + 142;
 
   const R = useRef({});
   const ref = (k) => (el) => {
@@ -193,7 +198,7 @@ export default function RhWrestling({ mode = "animated", day: dayProp }) {
         const swing = u > 0 ? 14 * Math.sin(u * 5.2) * Math.exp(-u * 1.6) : 0;
         const turn = u > 0 ? 1 - Math.abs(Math.sin(u * 3.4)) * Math.exp(-u * 0.9) : 1;
         set("medal", "opacity", u > 0 ? 1 : 0);
-        set("medal", "transform", `translate(0 ${f1(lerp(-150, 0, drop))}) rotate(${f1(swing)} 180 ${MEDAL_PIVOT})`);
+        set("medal", "transform", `translate(0 ${f1(lerp(-120, 0, drop))}) rotate(${f1(swing)} 180 ${RIBBON_TOP})`);
         // the disc turning on its ribbon: squeeze in x, never quite edge-on
         const sx = 0.3 + 0.7 * turn;
         set("disc", "transform", `translate(180 ${MEDAL_Y}) scale(${f1(sx * 1000) / 1000} 1) translate(-180 ${-MEDAL_Y})`);
@@ -235,7 +240,7 @@ export default function RhWrestling({ mode = "animated", day: dayProp }) {
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [renderMode, still, classes, P]);
+  }, [renderMode, still, classes, P, MEDAL_Y, RIBBON_TOP]);
 
   return (
     <div className={`ow${still ? " is-static" : ""}`}>
@@ -458,7 +463,3 @@ export default function RhWrestling({ mode = "animated", day: dayProp }) {
     </div>
   );
 }
-
-// the medal hangs over the centre of the mat
-const MEDAL_Y = 492;
-const MEDAL_PIVOT = 420;
