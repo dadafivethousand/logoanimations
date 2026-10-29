@@ -20,10 +20,11 @@ import "./Stylesheets/App.css";
 // import MapleBelt from "./Components/MapleBelt";
 // import MapleClimb from "./Components/MapleClimb";
 // import Mafia from "./Components/Mafia";
-import Thug from "./Components/Thug";
+// import Thug from "./Components/Thug";
+import Bratva from "./Components/Bratva";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Thug mode="animated" />;
+  return <Bratva mode="animated" />;
 }
 export default App;
