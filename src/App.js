@@ -25,10 +25,11 @@ import "./Stylesheets/App.css";
 // import Cowboy from "./Components/Cowboy";
 // import Yakuza from "./Components/Yakuza";
 // import Hitman from "./Components/Hitman";
-import Thug2 from "./Components/Thug2";
+// import Thug2 from "./Components/Thug2";
+import Army from "./Components/Army";
 
 // mode: "animated" to screen-record, "static" to hold the final frame as a still
 function App() {
-  return <Thug2 mode="animated" />;
+  return <Army mode="animated" />;
 }
 export default App;
