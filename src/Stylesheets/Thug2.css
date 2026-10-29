@@ -259,8 +259,20 @@
   transform: rotate(-22deg);
 }
 
+/* the free arm leaves his side as both hands come up to the gun */
+.t2-arm-off {
+  transition: opacity 90ms linear, transform 120ms ease-in;
+}
+.t2-p2 .t2-arm-off,
+.t2-p3 .t2-arm-off,
+.t2-p4 .t2-arm-off,
+.t2-p5 .t2-arm-off {
+  opacity: 0;
+  transform: rotate(22deg);
+}
+
 .t2-arm-up {
-  transform-origin: 58px 92px;
+  transform-origin: 96px 100px;
   transform: scale(0.45);
   opacity: 0;
   transition:
@@ -298,7 +310,8 @@
 
 .t2-recoil {
   transform-box: view-box;
-  transform-origin: 58px 92px;
+  /* two hands: the kick rises about the grip between both shoulders */
+  transform-origin: 96px 112px;
 }
 .t2-muzzle,
 .t2-casing {
@@ -327,7 +340,7 @@
 }
 @keyframes t2-recoil-1 {
   0% { transform: none; }
-  14% { transform: rotate(-9deg) translateY(-3px); }
+  14% { transform: rotate(-4deg) translateY(-4px); }
   100% { transform: none; }
 }
 @keyframes t2-muzzle-1 {
@@ -363,7 +376,7 @@
 }
 @keyframes t2-recoil-2 {
   0% { transform: none; }
-  14% { transform: rotate(-9deg) translateY(-3px); }
+  14% { transform: rotate(-4deg) translateY(-4px); }
   100% { transform: none; }
 }
 @keyframes t2-muzzle-2 {
@@ -398,7 +411,7 @@
 }
 @keyframes t2-recoil-3 {
   0% { transform: none; }
-  14% { transform: rotate(-9deg) translateY(-3px); }
+  14% { transform: rotate(-4deg) translateY(-4px); }
   100% { transform: none; }
 }
 @keyframes t2-muzzle-3 {

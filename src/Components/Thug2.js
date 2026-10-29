@@ -5,7 +5,7 @@
 // over a fitted cap, a red bandana over his nose and mouth, a heavy black zip
 // hoodie, a chunky gold chain with a medallion, baggy dark denim stacked over
 // tan work boots. Weight on one leg, shoulders squared, chin down. He brings a
-// pistol up turned on its side and fires three rounds at the camera. A Maple
+// pistol up in a two-handed grip, held upright, and fires three rounds at the camera. A Maple
 // Jiu Jitsu patch on the hoodie; no text.
 //
 // Same cue machine, shot effects, 200x400 viewBox and feet line as Thug, so the
@@ -773,46 +773,92 @@ function Gangster() {
         </g>
       </g>
 
-      {/* ================= GUN ARM, levelled at the camera, turned on its side */}
+      {/* ================= BOTH ARMS UP: a two-handed grip, pistol upright.
+          Seen from the front the arms are foreshortened toward the lens and
+          converge on the gun just off his face: his right arm a short fat
+          tube from the near shoulder, his left reaching across his chest with
+          a slight sag at the elbow, the support hand wrapped over the fist. */}
       <g className="t2-arm-up">
         <g className="t2-recoil">
-          {/* the sleeve comes at the lens from his right shoulder: a fat,
-              foreshortened tube with the fleece ringing round the cuff */}
-          <path d="M36,84 C38,67 53,60 65,64 C78,68 82,84 80,100 C79,113 71,120 60,120 C48,120 42,112 39,102 C36,96 35,90 36,84 Z" fill="url(#t2-sleeve)" />
-          <path d="M37,96 C42,108 56,113 71,106" stroke="#000" strokeWidth="1.7" fill="none" opacity="0.85" filter="url(#t2-soft)" />
-          <path d="M41,106 C48,116 62,118 75,110" stroke="#000" strokeWidth="1.5" fill="none" opacity="0.8" filter="url(#t2-soft)" />
-          <path d="M37.6,94.4 C42.6,106.4 56.6,111.4 70.6,104.4" stroke={TOP} strokeWidth="0.6" fill="none" opacity="0.3" />
-          <path d="M43,70 C51,62 64,62 73,68" stroke={TOP} strokeWidth="1.8" fill="none" opacity="0.4" filter="url(#t2-soft)" />
-          <path d="M36.4,80 C36,70 44,62 54,61" stroke={RIM} strokeWidth="1.1" fill="none" opacity="0.85" />
-          <g transform="translate(-21 9.4) rotate(90 100 67.6)">
-            {/* ribbed cuff round the wrist */}
-            <ellipse cx="100" cy="100" rx="17" ry="15" fill="#0b0b0c" />
-            <ellipse cx="100" cy="100" rx="13" ry="11.5" fill="#151517" />
-            {/* magazine base out of the grip */}
-            <path d="M95,110 L105,110 L104.8,116 C104.8,118 95.2,118 95.2,116 Z" fill="#141416" />
-            <rect x="94.6" y="115" width="10.8" height="3" rx="1" fill="#1d1d20" />
-            {/* the fist: three fingers wrapped on the front strap, rings, ink */}
+          {/* support arm (his left), across the chest */}
+          <path d="M152,94 C142,91 126,93 110,91.4 C102,90.6 96,90 90,90.6 L88.6,110.6 C95,111 104,112 113,115.6 C125,120.4 140,122 151,118 C158,113 159,99 152,94 Z" fill="url(#t2-sleeve)" />
+          <path d="M150.6,94 C141,91.4 126,93.4 110,91.8 C102,91 96,90.4 90.4,91" stroke={TOP} strokeWidth="1.3" fill="none" opacity="0.45" filter="url(#t2-soft)" />
+          <path d="M151,93.6 C141,90.6 126,92.6 110,91" stroke={RIM} strokeWidth="0.9" fill="none" opacity="0.75" />
+          {/* the fleece bunching toward the cuff, and the elbow's sag */}
+          <path d="M101,91 C99.4,98 100,105 102.6,112 M108,91.6 C106.4,99 107,106 110,113.6 M115,92.4 C113.8,99.6 114.6,107 117.6,116" stroke="#000" strokeWidth="1.5" fill="none" opacity="0.75" filter="url(#t2-soft)" />
+          <path d="M102.2,91 C100.8,97.6 101.4,104 103.8,110.6" stroke={TOP} strokeWidth="0.5" fill="none" opacity="0.3" />
+          <path d="M124,118 C130,114 138,114 146,117" stroke="#000" strokeWidth="1.8" fill="none" opacity="0.6" filter="url(#t2-soft)" />
+          <ellipse cx="132" cy="102" rx="12" ry="5" fill={TOP} opacity="0.07" filter="url(#t2-softer)" />
+          {/* its ribbed cuff */}
+          <path d="M86.4,90 L93.4,89.6 L93,111.6 L86,111.2 Z" fill="#0b0c0d" />
+          {[92, 95.6, 99.2, 102.8, 106.4].map((y) => (
+            <path key={y} d={`M86.6,${y} L93.2,${y - 0.2}`} stroke="#1f2124" strokeWidth="0.5" />
+          ))}
+
+          {/* gun arm (his right): a short foreshortened tube from the near shoulder */}
+          <path d="M38,90 C37,78 46,69 57,69 C66,69 74,74 78,82 C82,90 82,102 77,110 C72,117 62,120 52,118 C43,116 38,106 38,98 Z" fill="url(#t2-sleeve)" />
+          <path d="M39.6,100 C44,110 56,115 69,111" stroke="#000" strokeWidth="1.7" fill="none" opacity="0.85" filter="url(#t2-soft)" />
+          <path d="M40.2,98.4 C44.6,108.4 56.6,113.4 68.6,109.4" stroke={TOP} strokeWidth="0.6" fill="none" opacity="0.3" />
+          <path d="M44,74 C52,68 64,68 72,74" stroke={TOP} strokeWidth="1.8" fill="none" opacity="0.4" filter="url(#t2-soft)" />
+          <path d="M38.4,86 C38,76 45,69 54,68" stroke={RIM} strokeWidth="1.1" fill="none" opacity="0.85" />
+
+          {/* the pistol upright, end-on, in both hands. Local coordinates are
+              the old gun's: muzzle at (100,67.6), fist at (100,100). */}
+          <g transform="translate(-30 -3.6)">
+            {/* ribbed cuff round the gun wrist */}
+            <ellipse cx="100" cy="100" rx="16" ry="14.5" fill="#0b0b0c" />
+            <ellipse cx="100" cy="100" rx="12.4" ry="11" fill="#151517" />
+            {/* magazine base out of the bottom of the grip */}
+            <path d="M95,110 L105,110 L104.8,117 C104.8,119 95.2,119 95.2,117 Z" fill="#141416" />
+            <rect x="94.6" y="116" width="10.8" height="3" rx="1" fill="#1d1d20" />
+            <path d="M95.6,111 L95.6,117" stroke={RIM} strokeWidth="0.4" opacity="0.4" />
+            {/* the gun fist: fingers round the front strap */}
             <path d="M88,90 C88,86 92,85 100,85 C108,85 112,86 112,90 L112,108 C112,113 107,115 100,115 C93,115 88,113 88,108 Z" fill="url(#t2-hand)" />
-            {[92.5, 99.5, 106.5].map((y, i) => (
+            {/* shooting thumb, forward along the frame */}
+            <path d="M110,84 C114.6,83 116.4,87.6 115.4,92.6 C114.6,96 112,97 110.2,95.4 Z" fill="url(#t2-hand)" />
+            <path d="M111,85 C113.6,84.6 115.4,86.8 115,90.4" stroke="#1f1008" strokeWidth="0.7" fill="none" />
+
+            {/* the support hand: heel on the far side of the grip, four
+                fingers wrapped over the front of the gun fist, thumb forward
+                under the other one */}
+            <path d="M106,86.6 C112,84.6 120.4,86.4 122.4,92.4 L123.2,109.6 C122.4,116 116.4,118.4 110.4,117.2 Z" fill="url(#t2-hand)" />
+            <path d="M122.6,93 C123.4,100 123.6,106 123,110" stroke={RIM} strokeWidth="0.7" fill="none" opacity="0.75" />
+            {[95.6, 101, 106.4, 111.6].map((y, i) => (
               <g key={y}>
-                <path d={`M${89 + i * 0.6},${y} C94,${y + 1.6} 106,${y + 1.6} ${111 - i * 0.6},${y}`} stroke="#1f1008" strokeWidth="1.1" fill="none" />
-                <path d={`M${91 + i},${y + 2.2} C96,${y + 3.2} 104,${y + 3.2} ${109 - i},${y + 2.2}`} stroke="#a77352" strokeWidth="0.7" fill="none" opacity="0.6" />
+                <path
+                  d={`M${121 - i * 0.4},${y - 2.5} L${92.4 + i * 0.8},${y - 2.3} C${89.8 + i * 0.8},${y - 2.3} ${89.2 + i * 0.8},${y + 2.3} ${91.8 + i * 0.8},${y + 2.5} L${121 - i * 0.4},${y + 2.7} Z`}
+                  fill="url(#t2-hand)"
+                />
+                <path d={`M${121 - i * 0.4},${y + 2.7} L${91.8 + i * 0.8},${y + 2.5}`} stroke="#1f1008" strokeWidth="0.9" fill="none" />
+                <path d={`M${119 - i * 0.4},${y - 1.9} L${94 + i * 0.8},${y - 1.7}`} stroke="#a77352" strokeWidth="0.6" fill="none" opacity="0.55" />
+                {/* knuckle creases where the fingers bend round */}
+                <path d={`M${92.6 + i * 0.8},${y - 1.6} C${91.6 + i * 0.8},${y - 0.4} ${91.6 + i * 0.8},${y + 0.8} ${92.6 + i * 0.8},${y + 1.9}`} stroke="#1f1008" strokeWidth="0.6" fill="none" opacity="0.7" />
               </g>
             ))}
-            {/* knuckle ink: small marks, no letters */}
-            <path d="M92,96.4 l1,-1 1,1 -1,1 z M97,96.8 l1,-1 1,1 -1,1 z M102,96.8 l1,-1 1,1 -1,1 z" fill="#1a0e08" opacity="0.85" />
-            <path d="M93,103.6 h3 M99,104 h3 M105,103.6 h3" stroke="#1a0e08" strokeWidth="0.7" opacity="0.8" />
-            {/* rings */}
-            <path d="M95,100.6 C96.4,101.6 99.4,101.8 100.6,101" stroke="url(#t2-gold)" strokeWidth="1.6" fill="none" />
-            <path d="M101,93.6 C102.4,94.6 105.4,94.8 106.6,94" stroke="url(#t2-gold)" strokeWidth="1.6" fill="none" />
-            <circle cx="98" cy="101.6" r="0.6" fill="#fff" />
-            {/* thumb along the far side of the frame */}
-            <path d="M110,84 C115,83 117,88 116,94 C115,98 112,99 110,97 Z" fill="url(#t2-hand)" />
-            <path d="M111,85 C114,84.5 116,87 115.6,91" stroke="#1f1008" strokeWidth="0.7" fill="none" />
+            {/* small knuckle ink, no letters, and two gold rings */}
+            <path d="M104,95.6 l1,-1 1,1 -1,1 z M104,101 l1,-1 1,1 -1,1 z M104,106.4 l1,-1 1,1 -1,1 z" fill="#1a0e08" opacity="0.85" />
+            <path d="M98,98.4 L98.4,103.6" stroke="url(#t2-gold)" strokeWidth="1.8" />
+            <path d="M99,109.2 L99.4,114.2" stroke="url(#t2-gold)" strokeWidth="1.8" />
+            <circle cx="98.2" cy="99.6" r="0.55" fill="#fff" />
+            {/* support thumb, forward under the shooting thumb */}
+            <path d="M113,92.6 C117.4,91.6 119.4,96 118.6,100.6 C117.8,103.6 115,104.4 113.2,102.8 Z" fill="url(#t2-hand)" />
+            <path d="M114,93.6 C116.6,93.2 118.4,95.4 118,98.6" stroke="#1f1008" strokeWidth="0.7" fill="none" />
+
             {/* trigger guard, dust cover */}
             <path d="M92.5,80 L92.5,86 C92.5,90.5 107.5,90.5 107.5,86 L107.5,80" stroke="#1c1c1f" strokeWidth="2.3" fill="none" />
             <path d="M91,76 L109,76 L109,82 L91,82 Z" fill="#161618" />
-            {/* the slide end-on: square face, the bore, a sight */}
+            {/* the slide, a few degrees off the lens axis so its length reads:
+                a sliver of the top and the right side running back to the
+                rear sight, cocking serrations on the side */}
+            <path d="M88.5,61.5 L92.8,58.6 L116.2,58.6 L111.5,61.5 Z" fill="#4a4e55" />
+            <path d="M92.8,58.6 L116.2,58.6" stroke={TOP} strokeWidth="0.6" opacity="0.7" />
+            <path d="M111.5,61.5 L116.2,58.6 L116.2,73.4 L111.5,77.5 Z" fill="url(#t2-slidetop)" />
+            {[0, 1, 2, 3].map((k) => (
+              <path key={k} d={`M${112.6 + k * 0.9},${60.9 - k * 0.55} L${112.6 + k * 0.9},${75.2 - k * 0.9}`} stroke="#0c0c0e" strokeWidth="0.45" />
+            ))}
+            <path d="M116.2,58.6 L116.2,73.4" stroke={RIM} strokeWidth="0.5" opacity="0.7" />
+            <rect x="111.4" y="55.6" width="4.4" height="3.2" rx="0.5" fill="#1d1d20" />
+            {/* the muzzle face: square, the bore, the front sight */}
             <rect x="88.5" y="61.5" width="23" height="16" rx="1.4" fill="url(#t2-polymer)" />
             <rect x="89.1" y="62.1" width="21.8" height="14.8" rx="1.1" fill="none" stroke="#5a5a62" strokeWidth="0.4" opacity="0.6" />
             <circle cx="100" cy="67.6" r="3" fill="#2a2a2e" />
@@ -832,7 +878,7 @@ function Gangster() {
               <rect key={k} className={`t2-casing t2-casing-${k}`} x="86" y="64" width="2.6" height="5.4" rx="0.7" fill="#c9a04a" />
             ))}
           </g>
-          <g transform="translate(-21 9.4)">
+          <g transform="translate(-30 -3.6)">
             <g className="t2-gunsmoke" fill="none" stroke="#d8e2de" strokeLinecap="round" filter="url(#t2-softer)">
               <path className="t2-gs t2-gs-a" d="M100,62 C96,54 104,46 99,36 C95,28 102,20 98,10" strokeWidth="3" />
               <path className="t2-gs t2-gs-b" d="M100,62 C105,54 97,44 103,34 C108,26 101,18 105,8" strokeWidth="2.4" />
