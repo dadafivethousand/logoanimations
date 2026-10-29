@@ -2,11 +2,11 @@
 // a heavy bag.
 //
 // A dark gym, one hard spotlight, a heavy bag hanging on its chain. For each
-// class a strike comes into frame — a Muay Thai round kick from the left, a
-// cross from the right, then a finishing kick — and lands with a thud: dust
-// bursts off the leather, a shockwave ring, the bag swings on its chain, the
-// frame shakes, and the class slams onto the screen under the bag. Then
-// RHBJJ.CA, and the bag settles.
+// class a glove comes into frame — a jab from the left, a cross from the
+// right, a heavy left to finish — and lands with a thud: dust bursts off the
+// leather, a shockwave ring, the bag swings on its chain, the frame shakes,
+// and the class slams onto the screen under the bag. The site is printed on
+// the bag's band.
 //
 // Pure function of time:
 //   ?render=1      window.__ready / __renderAt(ms) / __rhBagEnd for
@@ -82,8 +82,8 @@ const BAG_X1 = 228;
 const BAG_TOP = 64;
 const BAG_BOT = 252;
 const HEAD_Y = 302; // the day
-const BLOCK0 = 334;
-const BLOCK_H = 62;
+const BLOCK0 = 336;
+const BLOCK_H = 56;
 
 /* ---------------------------------------------------------------- timing */
 
@@ -92,23 +92,17 @@ const T_FIRST = 1.25;
 const GAP = 1.1;
 const DUST = 34;
 
-// strikes: kick from the left, cross from the right, kick to finish
-const STRIKES = ["kick", "punch", "kick"];
+// punches only: jab from the left, cross from the right, alternating
+const STRIKES = ["left", "right", "left"];
 
 function plan(n) {
   const hits = Array.from({ length: n }, (_, i) => ({ t: T_FIRST + i * GAP, kind: STRIKES[i % STRIKES.length], heavy: i === n - 1 }));
   const last = hits[n - 1].t;
-  return { hits, site: last + 0.75, end: last + 3.0 };
+  return { hits, end: last + 2.6 };
 }
 
 // where on the bag each strike lands (bag-local, before swing)
-const CONTACT = { kick: [BAG_X0 + 4, 196], punch: [BAG_X1 - 4, 136] };
-
-// the kicking leg pivots at the fighter's hip on the frame edge; the lower
-// shin (70% of the way down the leg) is what lands
-const HIP = [-6, 304];
-const LEG_L = 245;
-const SHIN_HIT = 0.7;
+const CONTACT = { left: [BAG_X0 + 4, 196], right: [BAG_X1 - 4, 186] };
 
 export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
   const q = useMemo(() => new URLSearchParams(window.location.search), []);
@@ -140,7 +134,7 @@ export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
       for (const h of P.hits) {
         const u = t - h.t;
         if (u > 0) {
-          const dir = h.kind === "kick" ? -1 : 1; // kicked from the left, it swings right
+          const dir = h.kind === "left" ? -1 : 1; // hit from the left, it swings right
           a += dir * (h.heavy ? 11 : 8) * Math.sin(u * 7.5) * Math.exp(-u * 2.2);
         }
       }
@@ -194,48 +188,24 @@ export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
       // its shadow on the floor slides with the swing
       set("bagshadow", "transform", `translate(${f1(Math.sin((sw * Math.PI) / 180) * 260)} 0)`);
 
-      /* the strikes */
-      let legShown = false;
-      let gloveShown = false;
+      /* the gloves: each fires in from its side, lands, and snaps back */
+      const shown = { left: false, right: false };
       for (const h of P.hits) {
         const u = t - h.t;
-        const contact = rot(CONTACT[h.kind], swing(h.t));
-        if (h.kind === "kick" && u > -0.24 && u < 0.4) {
-          legShown = true;
-          const aimed = Math.atan2(contact[1] - HIP[1], contact[0] - HIP[0]);
-          const start = (72 * Math.PI) / 180;
-          let ang;
-          let op;
-          if (u < 0) {
-            const k = (u + 0.24) / 0.24;
-            ang = lerp(start, aimed, easeIn(k));
-            op = smooth(k / 0.35);
-          } else if (u < 0.08) {
-            ang = aimed - 0.03 * Math.sin((u / 0.08) * Math.PI);
-            op = 1;
-          } else {
-            const k = (u - 0.08) / 0.24;
-            ang = lerp(aimed, start, easeOut(k));
-            op = 1 - smooth(k / 0.6);
-          }
-          const dist = Math.hypot(contact[0] - HIP[0], contact[1] - HIP[1]);
-          const sc = dist / (SHIN_HIT * LEG_L);
-          set("leg", "transform", `translate(${HIP[0]} ${HIP[1]}) rotate(${f1((ang * 180) / Math.PI)}) scale(${f1(sc * 1000) / 1000} ${f1(Math.min(1.1, sc) * 1000) / 1000})`);
-          set("leg", "opacity", f1(op));
-          // a smear of motion behind the shin as it whips in
-          set("legblur", "opacity", u < 0 ? f1(0.55 * ((u + 0.24) / 0.24)) : 0);
-        }
-        if (h.kind === "punch" && u > -0.16 && u < 0.38) {
-          gloveShown = true;
-          let x;
-          if (u < 0) x = lerp(470, contact[0] + 4, easeIn((u + 0.16) / 0.16));
-          else if (u < 0.06) x = contact[0] + 4 + 6 * Math.sin((u / 0.06) * Math.PI);
-          else x = lerp(contact[0] + 4, 480, easeOut((u - 0.06) / 0.32));
-          set("arm", "transform", `translate(${f1(x)} ${f1(contact[1] + 2)})`);
-        }
+        if (u <= -0.16 || u >= 0.38) continue;
+        const c = rot(CONTACT[h.kind], swing(h.t));
+        const side = h.kind === "left" ? -1 : 1;
+        const off = side < 0 ? -110 : 470;
+        const land = c[0] + side * 4;
+        let x;
+        if (u < 0) x = lerp(off, land, easeIn((u + 0.16) / 0.16));
+        else if (u < 0.06) x = land + side * 6 * Math.sin((u / 0.06) * Math.PI);
+        else x = lerp(land, off + side * 10, easeOut((u - 0.06) / 0.32));
+        shown[h.kind] = true;
+        set(h.kind === "left" ? "armL" : "arm", "transform", `translate(${f1(x)} ${f1(c[1] + 2)})`);
       }
-      if (!legShown) set("leg", "opacity", 0);
-      set("arm", "opacity", gloveShown ? 1 : 0);
+      set("armL", "opacity", shown.left ? 1 : 0);
+      set("arm", "opacity", shown.right ? 1 : 0);
 
       P.hits.forEach((h, i) => {
         const u = t - h.t;
@@ -252,7 +222,7 @@ export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
           set(`pow${i}`, "opacity", 0);
         }
         // dust off the leather, thrown away from the strike
-        const away = h.kind === "kick" ? 1 : -1;
+        const away = h.kind === "left" ? 1 : -1;
         for (let j = 0; j < DUST; j++) {
           const el = r[`d${i}_${j}`];
           if (!el) continue;
@@ -291,7 +261,6 @@ export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
       /* the day, and the site at the end */
       set("head", "opacity", f1(smooth((t - 0.45) / 0.35)));
       set("head", "transform", `translate(0 ${f1(lerp(-10, 0, easeOut((t - 0.45) / 0.35)))})`);
-      set("site", "opacity", f1(smooth((t - P.site) / 0.5)));
 
       /* dust motes drifting in the beam */
       for (let j = 0; j < 36; j++) {
@@ -310,7 +279,7 @@ export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
       window.__rhBagEnd = endMs;
       render(0);
       const fonts = document.fonts
-        ? Promise.all([document.fonts.load('400 30px "Anton"'), document.fonts.load('900 15px "Inter"')]).then(() => document.fonts.ready)
+        ? Promise.all([document.fonts.load('400 24px "Anton"'), document.fonts.load('900 14px "Inter"')]).then(() => document.fonts.ready)
         : Promise.resolve();
       fonts.then(() => {
         render(0);
@@ -459,8 +428,8 @@ export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
               <rect x={BAG_X0} y="128" width={bagW} height="40" fill="#b8001f" />
               <rect x={BAG_X0} y="128" width={bagW} height="40" fill="url(#hb-leather)" opacity="0.45" style={{ mixBlendMode: "multiply" }} />
               <path d={`M${BAG_X0},129 L${BAG_X1},129 M${BAG_X0},167 L${BAG_X1},167`} stroke="#ffffff" strokeWidth="1" opacity="0.5" />
-              <text x="180" y="158" textAnchor="middle" className="hb-band">
-                RHBJJ
+              <text x="180" y="155" textAnchor="middle" className="hb-band">
+                RHBJJ.CA
               </text>
               {/* the hard top light running down the curve */}
               <rect x={BAG_X0 + 30} y={BAG_TOP + 8} width="12" height={bagH - 20} rx="6" fill="#fff" opacity="0.07" filter="url(#hb-soft)" />
@@ -487,34 +456,8 @@ export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
             </g>
           ))}
 
-          {/* ---- the kicking leg: hip at the origin, foot out along +x ---- */}
-          <g ref={ref("leg")} opacity="0">
-            <g ref={ref("legblur")} opacity="0" filter="url(#hb-blur6)">
-              <path d={`M0,-36 L${LEG_L},-16 L${LEG_L},16 L0,36 Z`} fill="#b67f58" opacity="0.55" transform="rotate(9)" />
-            </g>
-            {/* thigh */}
-            <path d="M0,-34 C40,-32 80,-27 112,-22 L112,22 C80,27 40,32 0,34 Z" fill="url(#hb-skin)" />
-            {/* Muay Thai shorts: wide satin leg with a white and gold trim */}
-            <path d="M-20,-42 C20,-41 60,-38 92,-33 L98,31 C62,36 22,41 -20,42 Z" fill="url(#hb-shorts)" />
-            <path d="M92,-33 L98,31" stroke="#ffffff" strokeWidth="3.4" />
-            <path d="M87,-33 L93,31" stroke="#ffd34a" strokeWidth="1.4" />
-            <path d="M-10,-38 C24,-37 58,-34 84,-30" stroke="#ff8a9a" strokeWidth="2.4" fill="none" opacity="0.6" />
-            <path d="M10,-6 C40,-3 66,2 88,8" stroke="#7a0016" strokeWidth="2" fill="none" opacity="0.5" />
-            {/* knee, then the shin: the hard front edge lit, tapering to the ankle */}
-            <ellipse cx="112" cy="0" rx="11" ry="22" fill="#c08a62" />
-            <path d="M112,-21 C140,-19 175,-16 205,-13 L205,13 C175,15 140,18 112,21 Z" fill="url(#hb-skin)" />
-            <path d="M118,-19 C146,-17 176,-14.6 203,-12" stroke="#f6cfae" strokeWidth="2.4" fill="none" opacity="0.75" />
-            <path d="M120,10 C150,12 178,11 202,9" stroke="#6a4028" strokeWidth="2" fill="none" opacity="0.35" />
-            {/* ankle support */}
-            <path d="M193,-14 L207,-14 L207,14 L193,14 Z" fill="#1a1a1c" />
-            <path d="M196,-14 L196,14 M200,-14 L200,14 M204,-14 L204,14" stroke="#3a3a3e" strokeWidth="0.8" />
-            {/* the foot, pointed: instep along the top, heel under, toes curled */}
-            <path d="M207,-13 C222,-15 236,-13 244,-7 C249,-3 249,3 245,6 C240,8 236,8 232,9 C224,14 214,15 207,13 Z" fill="url(#hb-skin)" />
-            <path d="M209,-12 C222,-14 234,-12 242,-7" stroke="#f6cfae" strokeWidth="1.6" fill="none" opacity="0.7" />
-            <path d="M238,4 L244,5 M234,6 L240,7.4" stroke="#6a4028" strokeWidth="0.8" opacity="0.6" />
-          </g>
-
-          {/* ---- the punching arm: a red glove on the end of it ---- */}
+          {/* ---- the gloves: the cross from the right, and the same arm
+              mirrored for the jab from the left ---- */}
           <g ref={ref("arm")} opacity="0">
             <path d="M18,-15 C80,-17 170,-22 260,-26 L260,26 C170,22 80,17 18,15 Z" fill="url(#hb-skin)" />
             <path d="M26,-14 C90,-16 170,-20 258,-24" stroke="#f3c7a2" strokeWidth="2" fill="none" opacity="0.6" />
@@ -527,6 +470,21 @@ export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
             <path d="M-2,-26 C-10,-34 4,-38 12,-30 L14,-22 Z" fill="url(#hb-glove)" />
             <path d="M-14,-12 C-17,-4 -16,6 -10,14" stroke="#ff8a98" strokeWidth="2.4" fill="none" opacity="0.7" strokeLinecap="round" />
             <path d="M2,-22 C-4,-14 -6,6 0,20" stroke="#6a0012" strokeWidth="1" fill="none" opacity="0.6" />
+          </g>
+          <g ref={ref("armL")} opacity="0">
+            <g transform="scale(-1 1)">
+            <path d="M18,-15 C80,-17 170,-22 260,-26 L260,26 C170,22 80,17 18,15 Z" fill="url(#hb-skin)" />
+            <path d="M26,-14 C90,-16 170,-20 258,-24" stroke="#f3c7a2" strokeWidth="2" fill="none" opacity="0.6" />
+            <path d="M30,10 C90,12 170,15 258,19" stroke="#6a4028" strokeWidth="2" fill="none" opacity="0.3" />
+            {/* white cuff */}
+            <rect x="12" y="-17" width="22" height="34" rx="5" fill="#f1f1f3" />
+            <path d="M16,-17 L16,17 M30,-17 L30,17" stroke="#c8c8ce" strokeWidth="0.8" />
+            {/* the glove: knuckle pad leading, thumb tucked on top */}
+            <path d="M14,-24 C4,-26 -12,-22 -18,-10 C-22,0 -20,14 -10,22 C-2,27 8,26 14,22 Z" fill="url(#hb-glove)" />
+            <path d="M-2,-26 C-10,-34 4,-38 12,-30 L14,-22 Z" fill="url(#hb-glove)" />
+            <path d="M-14,-12 C-17,-4 -16,6 -10,14" stroke="#ff8a98" strokeWidth="2.4" fill="none" opacity="0.7" strokeLinecap="round" />
+            <path d="M2,-22 C-4,-14 -6,6 0,20" stroke="#6a0012" strokeWidth="1" fill="none" opacity="0.6" />
+          </g>
           </g>
 
           {/* ---- the day and today's classes ---- */}
@@ -541,22 +499,19 @@ export default function RhHeavyBag({ mode = "animated", day: dayProp }) {
             return (
               <g key={i} ref={ref(`line${i}`)} opacity="0">
                 <g ref={ref(`glow${i}`)} opacity="0" filter="url(#hb-textglow)">
-                  <text x="180" y={y + 28} textAnchor="middle" className="hb-name" style={{ fill: "#ff3a55" }}>
+                  <text x="180" y={y + 26} textAnchor="middle" className="hb-name" style={{ fill: "#ff3a55" }}>
                     {name.toUpperCase()}
                   </text>
                 </g>
-                <text x="180" y={y + 28} textAnchor="middle" className="hb-name">
+                <text x="180" y={y + 26} textAnchor="middle" className="hb-name">
                   {name.toUpperCase()}
                 </text>
-                <text x="180" y={y + 48} textAnchor="middle" className="hb-time">
+                <text x="180" y={y + 44} textAnchor="middle" className="hb-time">
                   {span(a, b)}
                 </text>
               </g>
             );
           })}
-          <text ref={ref("site")} x="180" y={BLOCK0 + classes.length * BLOCK_H + 34} textAnchor="middle" className="hb-site" opacity="0">
-            RHBJJ.CA
-          </text>
 
           {/* motes in the beam */}
           {Array.from({ length: 36 }, (_, j) => (

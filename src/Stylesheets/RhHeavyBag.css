@@ -21,8 +21,8 @@
 
 .hb-band {
   font-family: "Anton", Impact, sans-serif;
-  font-size: 26px;
-  letter-spacing: 3px;
+  font-size: 19px;
+  letter-spacing: 1.5px;
   fill: #ffffff;
 }
 .hb-day {
@@ -33,14 +33,14 @@
 }
 .hb-name {
   font-family: "Anton", Impact, sans-serif;
-  font-size: 31px;
+  font-size: 24px;
   letter-spacing: 1.5px;
   fill: #ffffff;
 }
 .hb-time {
   font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   font-weight: 900;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 1.5px;
   fill: #ff3a55;
 }
