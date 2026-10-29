@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@800;900&display=swap");
+
+/* RhLamp — a day's classes delivered by a hopping desk lamp. Everything
+   moving is set per frame from RhLamp.js. Colour story: a dark blue stage,
+   brushed silver, warm bulb light, white letters on a reflective floor. */
+
+.lp {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #05070d;
+}
+.lp-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.lp-kicker {
+  font-family: "Nunito", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  font-size: 11px;
+  letter-spacing: 4px;
+  fill: #ffd98a;
+}
+.lp-day {
+  font-family: "Fredoka", "Arial Rounded MT Bold", sans-serif;
+  font-weight: 700;
+  font-size: 44px;
+  letter-spacing: 2px;
+  fill: #ffffff;
+}
+.lp-name {
+  font-family: "Fredoka", "Arial Rounded MT Bold", sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  fill: #ffffff;
+}
+.lp-time {
+  font-family: "Nunito", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 1px;
+  fill: #ffd98a;
+}
+.lp-letter {
+  font-family: "Fredoka", "Arial Rounded MT Bold", sans-serif;
+  font-weight: 700;
+  font-size: 46px;
+  fill: url(#lp-letter);
+}
+.lp-site {
+  font-family: "Nunito", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 5px;
+  fill: #c9cfdc;
+}
+.lp-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 85% 75% at 50% 55%, transparent 55%, rgba(0, 0, 0, 0.7) 100%);
+}
+.lp-fade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: #000;
+  opacity: 1;
+}
+.lp.is-static .lp-fade {
+  opacity: 0;
+}
